@@ -1,0 +1,30 @@
+<nav class="navbar">
+  <a routerLink="/" class="logo">
+    <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="3"/>
+      <path d="M12 20 L18 26 L28 14" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>WorkLink</span>
+  </a>
+  <div class="nav-right">
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
+      @if (themeService.isDark()) {
+        <!-- Sun icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      } @else {
+        <!-- Moon icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      }
+    </button>
+
+    @if (authService.isAuthenticated()) {
+      <span class="user-email">{{ authService.currentUser()?.email }}</span>
+      <span class="user-role">{{ authService.currentUser()?.role }}</span>
+      <button class="btn-logout" (click)="logout()">Logout</button>
+    } @else {
+      <a routerLink="/auth/login" class="nav-link">Login</a>
+      <a routerLink="/auth/register" class="nav-link btn-register">Register</a>
+    }
+  </div>
+</nav>

@@ -1,0 +1,193 @@
+<div class="complete-page">
+  <div class="complete-card">
+    <h2>Complétez votre profil</h2>
+    <p class="subtitle">
+      @if (selectedRole === 'FREELANCER') {
+        Inscription Freelancer via LinkedIn
+      } @else {
+        Inscription Company via LinkedIn
+      }
+    </p>
+
+    @if (errorMessage) {
+      <div class="error-message">{{ errorMessage }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <!-- ══ FREELANCER FORM ══ -->
+      @if (selectedRole === 'FREELANCER') {
+        <div class="form-row">
+          <div class="form-group">
+            <label>Prénom *</label>
+            <input formControlName="firstName" placeholder="Prénom" />
+          </div>
+          <div class="form-group">
+            <label>Nom *</label>
+            <input formControlName="lastName" placeholder="Nom" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Genre *</label>
+            <select formControlName="gender">
+              <option value="" disabled>Sélectionnez</option>
+              @for (g of genders; track g) {
+                <option [value]="g">{{ g }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date de naissance *</label>
+            <input type="date" formControlName="dateOfBirth" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Téléphone *</label>
+            <input formControlName="phoneNumber" placeholder="+216 XX XXX XXX" />
+          </div>
+          <div class="form-group">
+            <label>Années d'expérience *</label>
+            <input type="number" formControlName="yearsOfExperience" min="0" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Types de profil *</label>
+          <select formControlName="profileTypes" multiple>
+            @for (pt of profileTypes; track pt) {
+              <option [value]="pt">{{ pt }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>TJM (EUR) *</label>
+            <input type="number" formControlName="tjm" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Langues *</label>
+            <select formControlName="languages" multiple>
+              @for (l of languages; track l) {
+                <option [value]="l">{{ l }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Poste actuel</label>
+          <input formControlName="currentPosition" placeholder="Ex: Développeur Full Stack" />
+        </div>
+
+        <div class="form-group">
+          <label>Bio</label>
+          <textarea formControlName="bio" rows="3" placeholder="Décrivez-vous en quelques mots..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Compétences (séparées par des virgules)</label>
+          <input formControlName="skills" placeholder="Angular, Spring Boot, MongoDB..." />
+        </div>
+
+        <div class="form-group">
+          <label>URL Portfolio</label>
+          <input formControlName="portfolioUrl" placeholder="https://..." />
+        </div>
+      }
+
+      <!-- ══ COMPANY FORM ══ -->
+      @if (selectedRole === 'COMPANY') {
+        <div class="form-group">
+          <label>Nom de l'entreprise *</label>
+          <input formControlName="companyName" placeholder="Nom de l'entreprise" />
+        </div>
+
+        <div class="form-group">
+          <label>Adresse *</label>
+          <input formControlName="address" placeholder="Adresse complète" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Forme juridique *</label>
+            <select formControlName="legalForm">
+              <option value="" disabled>Sélectionnez</option>
+              @for (lf of legalForms; track lf) {
+                <option [value]="lf">{{ lf }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Registre de commerce *</label>
+            <input formControlName="tradeRegister" placeholder="N° registre" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date de fondation *</label>
+            <input type="date" formControlName="foundationDate" />
+          </div>
+          <div class="form-group">
+            <label>Secteur d'activité *</label>
+            <input formControlName="businessSector" placeholder="IT, Finance, ..." />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Site web</label>
+          <input formControlName="websiteUrl" placeholder="https://..." />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom du manager *</label>
+            <input formControlName="managerName" />
+          </div>
+          <div class="form-group">
+            <label>Email du manager *</label>
+            <input type="email" formControlName="managerEmail" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Poste du manager *</label>
+            <input formControlName="managerPosition" placeholder="CEO, CTO, ..." />
+          </div>
+          <div class="form-group">
+            <label>Téléphone du manager *</label>
+            <input formControlName="managerPhoneNumber" placeholder="+216 XX XXX XXX" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea formControlName="description" rows="3" placeholder="Décrivez votre entreprise..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Nombre d'employés</label>
+          <input type="number" formControlName="numberOfEmployees" min="1" />
+        </div>
+      }
+
+      <button
+        type="submit"
+        class="btn-submit"
+        [disabled]="form.invalid || loading"
+      >
+        {{ loading ? 'Inscription en cours...' : "S'inscrire" }}
+      </button>
+
+      <button type="button" class="btn-back" (click)="goBack()">
+        Retour au choix du rôle
+      </button>
+    </form>
+  </div>
+</div>

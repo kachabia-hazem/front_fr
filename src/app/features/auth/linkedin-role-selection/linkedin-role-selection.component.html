@@ -1,0 +1,30 @@
+<div class="role-page">
+  <div class="role-card">
+    @if (profile) {
+      <div class="profile-info">
+        @if (profile.picture) {
+          <img [src]="profile.picture" alt="Photo de profil" />
+        }
+        <h3>{{ profile.given_name }} {{ profile.family_name }}</h3>
+        <p>{{ profile.email }}</p>
+      </div>
+    }
+
+    <h2>Bienvenue sur WorkLink !</h2>
+    <p class="subtitle">Choisissez votre type de compte pour continuer</p>
+
+    <div class="role-options">
+      <button class="role-btn" (click)="selectRole('FREELANCER')">
+        <div class="role-icon">&#128188;</div>
+        <h4>Freelancer</h4>
+        <p>Je propose mes services</p>
+      </button>
+
+      <button class="role-btn" (click)="selectRole('COMPANY')">
+        <div class="role-icon">&#127970;</div>
+        <h4>Company</h4>
+        <p>Je recrute des freelancers</p>
+      </button>
+    </div>
+  </div>
+</div>

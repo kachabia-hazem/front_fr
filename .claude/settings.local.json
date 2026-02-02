@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(npx ng version)",
+      "Bash(npx ng build:*)",
+      "WebFetch(domain:cdn.discordapp.com)",
+      "Bash(dir:*)",
+      "Bash(npx ng serve:*)"
+    ]
+  }
+}

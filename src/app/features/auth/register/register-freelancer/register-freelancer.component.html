@@ -1,0 +1,69 @@
+<!-- TODO: Register freelancer form UI -->
+<div class="register-container">
+  <h2>Inscription Freelancer</h2>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <!-- Personal info -->
+    <div class="form-group">
+      <label for="firstName">Prénom</label>
+      <input id="firstName" formControlName="firstName" />
+    </div>
+    <div class="form-group">
+      <label for="lastName">Nom</label>
+      <input id="lastName" formControlName="lastName" />
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+    </div>
+    <div class="form-group">
+      <label for="password">Mot de passe</label>
+      <input id="password" type="password" formControlName="password" />
+    </div>
+    <div class="form-group">
+      <label for="gender">Genre</label>
+      <select id="gender" formControlName="gender">
+        @for (g of genders; track g) {
+          <option [value]="g">{{ g }}</option>
+        }
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="dateOfBirth">Date de naissance</label>
+      <input id="dateOfBirth" type="date" formControlName="dateOfBirth" />
+    </div>
+    <div class="form-group">
+      <label for="phoneNumber">Téléphone</label>
+      <input id="phoneNumber" formControlName="phoneNumber" />
+    </div>
+
+    <!-- Professional info -->
+    <div class="form-group">
+      <label for="yearsOfExperience">Années d'expérience</label>
+      <input id="yearsOfExperience" type="number" formControlName="yearsOfExperience" />
+    </div>
+    <div class="form-group">
+      <label for="tjm">TJM (€)</label>
+      <input id="tjm" type="number" formControlName="tjm" />
+    </div>
+    <div class="form-group">
+      <label for="currentPosition">Poste actuel</label>
+      <input id="currentPosition" formControlName="currentPosition" />
+    </div>
+    <div class="form-group">
+      <label for="bio">Bio</label>
+      <textarea id="bio" formControlName="bio"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="portfolioUrl">Portfolio URL</label>
+      <input id="portfolioUrl" formControlName="portfolioUrl" />
+    </div>
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+    <button type="submit" [disabled]="registerForm.invalid || loading">
+      {{ loading ? 'Inscription...' : "S'inscrire" }}
+    </button>
+  </form>
+  <p>Déjà un compte ? <a routerLink="/auth/login">Se connecter</a></p>
+</div>

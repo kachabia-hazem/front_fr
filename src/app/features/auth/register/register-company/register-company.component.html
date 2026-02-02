@@ -1,0 +1,82 @@
+<!-- TODO: Register company form UI -->
+<div class="register-container">
+  <h2>Inscription Entreprise</h2>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <!-- Company info -->
+    <div class="form-group">
+      <label for="companyName">Nom de l'entreprise</label>
+      <input id="companyName" formControlName="companyName" />
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" />
+    </div>
+    <div class="form-group">
+      <label for="password">Mot de passe</label>
+      <input id="password" type="password" formControlName="password" />
+    </div>
+    <div class="form-group">
+      <label for="address">Adresse</label>
+      <input id="address" formControlName="address" />
+    </div>
+    <div class="form-group">
+      <label for="websiteUrl">Site web</label>
+      <input id="websiteUrl" formControlName="websiteUrl" />
+    </div>
+    <div class="form-group">
+      <label for="legalForm">Forme juridique</label>
+      <select id="legalForm" formControlName="legalForm">
+        @for (lf of legalForms; track lf) {
+          <option [value]="lf">{{ lf }}</option>
+        }
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="tradeRegister">Registre de commerce</label>
+      <input id="tradeRegister" formControlName="tradeRegister" />
+    </div>
+    <div class="form-group">
+      <label for="foundationDate">Date de fondation</label>
+      <input id="foundationDate" type="date" formControlName="foundationDate" />
+    </div>
+    <div class="form-group">
+      <label for="businessSector">Secteur d'activité</label>
+      <input id="businessSector" formControlName="businessSector" />
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="numberOfEmployees">Nombre d'employés</label>
+      <input id="numberOfEmployees" type="number" formControlName="numberOfEmployees" />
+    </div>
+
+    <!-- Manager info -->
+    <h3>Responsable</h3>
+    <div class="form-group">
+      <label for="managerName">Nom du responsable</label>
+      <input id="managerName" formControlName="managerName" />
+    </div>
+    <div class="form-group">
+      <label for="managerEmail">Email du responsable</label>
+      <input id="managerEmail" type="email" formControlName="managerEmail" />
+    </div>
+    <div class="form-group">
+      <label for="managerPosition">Poste du responsable</label>
+      <input id="managerPosition" formControlName="managerPosition" />
+    </div>
+    <div class="form-group">
+      <label for="managerPhoneNumber">Téléphone du responsable</label>
+      <input id="managerPhoneNumber" formControlName="managerPhoneNumber" />
+    </div>
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+    <button type="submit" [disabled]="registerForm.invalid || loading">
+      {{ loading ? 'Inscription...' : "S'inscrire" }}
+    </button>
+  </form>
+  <p>Déjà un compte ? <a routerLink="/auth/login">Se connecter</a></p>
+</div>
