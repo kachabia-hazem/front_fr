@@ -1,0 +1,173 @@
+<!-- Hero Banner -->
+<div class="hero-banner">
+  <h1>Build Your Profile</h1>
+  <p>Complete your profile to attract more clients and opportunities</p>
+</div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading your profile...</p>
+  </div>
+} @else {
+  <div class="edit-profile-container">
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <div class="profile-layout">
+        <!-- Left Sidebar -->
+        <aside class="profile-sidebar">
+          <!-- Profile Picture -->
+          <div class="avatar-section">
+            @if (freelancer()?.profilePicture) {
+              <img [src]="freelancer()!.profilePicture" alt="Profile" class="sidebar-avatar" />
+            } @else {
+              <div class="sidebar-avatar avatar-initials">{{ initials }}</div>
+            }
+            <button type="button" class="btn-upload" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload Photo
+            </button>
+          </div>
+
+          <!-- Current Position -->
+          <div class="sidebar-section">
+            <label class="sidebar-label">Current Position</label>
+            <input type="text" formControlName="currentPosition" class="sidebar-input" placeholder="e.g. Full Stack Developer" />
+          </div>
+
+          <!-- Languages -->
+          <div class="sidebar-section">
+            <label class="sidebar-label">Languages</label>
+            <div class="checkbox-group compact">
+              @for (lang of languageOptions; track lang) {
+                <label class="checkbox-item">
+                  <input type="checkbox" [value]="lang" [checked]="isLanguageSelected(lang)" (change)="onLanguageChange($event)" />
+                  <span>{{ formatEnumLabel(lang) }}</span>
+                </label>
+              }
+            </div>
+          </div>
+
+          <!-- CV Upload -->
+          <div class="sidebar-section">
+            <label class="sidebar-label">CV / Resume</label>
+            <button type="button" class="btn-upload" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload CV
+            </button>
+            @if (freelancer()?.cvUrl) {
+              <a [href]="freelancer()!.cvUrl" target="_blank" class="cv-link">View current CV</a>
+            }
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="profile-main">
+          <!-- Personal Information -->
+          <section class="form-section">
+            <h2 class="section-title">Personal Information</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>First Name</label>
+                <input type="text" formControlName="firstName" placeholder="First name" />
+              </div>
+              <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" formControlName="lastName" placeholder="Last name" />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" formControlName="email" placeholder="Email" />
+              </div>
+              <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" formControlName="phoneNumber" placeholder="+216 XX XXX XXX" />
+              </div>
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" formControlName="dateOfBirth" />
+              </div>
+              <div class="form-group">
+                <label>Gender</label>
+                <div class="radio-group">
+                  @for (g of genderOptions; track g) {
+                    <label class="radio-item">
+                      <input type="radio" formControlName="gender" [value]="g" />
+                      <span>{{ formatEnumLabel(g) }}</span>
+                    </label>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Types -->
+            <div class="form-group full-width">
+              <label>Profile Type(s)</label>
+              <div class="checkbox-group">
+                @for (type of profileTypeOptions; track type) {
+                  <label class="checkbox-item">
+                    <input type="checkbox" [value]="type" [checked]="isProfileTypeSelected(type)" (change)="onProfileTypeChange($event)" />
+                    <span>{{ formatEnumLabel(type) }}</span>
+                  </label>
+                }
+              </div>
+            </div>
+          </section>
+
+          <!-- Skills, Projects & Work Experience -->
+          <section class="form-section">
+            <h2 class="section-title">Skills, Projects & Work Experience</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Years of Experience</label>
+                <input type="number" formControlName="yearsOfExperience" min="0" placeholder="0" />
+              </div>
+              <div class="form-group">
+                <label>Portfolio URL</label>
+                <input type="url" formControlName="portfolioUrl" placeholder="https://your-portfolio.com" />
+              </div>
+            </div>
+            <div class="form-group full-width">
+              <label>Skills</label>
+              <textarea formControlName="skills" rows="3" placeholder="e.g. Angular, Java, Spring Boot, MongoDB (comma-separated)"></textarea>
+            </div>
+            <div class="form-group full-width">
+              <label>Bio / About Me</label>
+              <textarea formControlName="bio" rows="4" placeholder="Tell clients about yourself, your experience, and what makes you stand out..."></textarea>
+            </div>
+          </section>
+
+          <!-- Other -->
+          <section class="form-section">
+            <h2 class="section-title">Other</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>TJM (Daily Rate in TND)</label>
+                <input type="number" formControlName="tjm" min="0" placeholder="e.g. 300" />
+              </div>
+            </div>
+          </section>
+
+          <!-- Messages -->
+          @if (successMessage()) {
+            <div class="alert alert-success">{{ successMessage() }}</div>
+          }
+          @if (errorMessage()) {
+            <div class="alert alert-error">{{ errorMessage() }}</div>
+          }
+
+          <!-- Submit -->
+          <div class="form-actions">
+            <button type="submit" class="btn-update" [disabled]="saving()">
+              @if (saving()) {
+                <span class="btn-spinner"></span>
+                Saving...
+              } @else {
+                Update Profile
+              }
+            </button>
+          </div>
+        </main>
+      </div>
+    </form>
+  </div>
+}

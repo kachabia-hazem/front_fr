@@ -117,51 +117,6 @@
             <input type="text" formControlName="currentPosition" placeholder="Job Title" />
           </div>
 
-          <div class="form-row">
-            <div class="form-field">
-              <label>Years of Experience</label>
-              <input type="number" formControlName="yearsOfExperience" placeholder="0" />
-            </div>
-            <div class="form-field">
-              <label>TJM (Daily Rate &euro;)</label>
-              <input type="number" formControlName="tjm" placeholder="0" />
-            </div>
-          </div>
-
-          <!-- Profile Types -->
-          <div class="form-field">
-            <label>Profile Types</label>
-            <div class="chip-group">
-              @for (pt of profileTypes; track pt) {
-                <button
-                  type="button"
-                  class="chip"
-                  [class.selected]="isProfileTypeSelected(pt)"
-                  (click)="toggleProfileType(pt)"
-                >
-                  {{ profileTypeLabels[pt] || pt }}
-                </button>
-              }
-            </div>
-          </div>
-
-          <!-- Languages -->
-          <div class="form-field">
-            <label>Languages</label>
-            <div class="chip-group">
-              @for (lang of languages; track lang) {
-                <button
-                  type="button"
-                  class="chip"
-                  [class.selected]="isLanguageSelected(lang)"
-                  (click)="toggleLanguage(lang)"
-                >
-                  {{ lang }}
-                </button>
-              }
-            </div>
-          </div>
-
           <!-- Password -->
           <div class="form-field">
             <label>Password</label>

@@ -6,8 +6,6 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import {
   Gender,
-  ProfileType,
-  Language,
   LegalForm,
   RegisterFreelancerRequest,
   RegisterCompanyRequest,
@@ -38,26 +36,7 @@ export class RegisterComponent {
   private cooldownInterval: any = null;
 
   genders = Object.values(Gender);
-  profileTypes = Object.values(ProfileType);
-  languages = Object.values(Language);
   legalForms = Object.values(LegalForm);
-
-  selectedProfileTypes: ProfileType[] = [];
-  selectedLanguages: Language[] = [];
-
-  profileTypeLabels: Record<string, string> = {
-    BI_DATA: 'BI & Data',
-    BUSINESS_CONSULTING: 'Business Consulting',
-    ERP_CRM: 'ERP & CRM',
-    INDUSTRIAL_IT_ELECTRONICS: 'Industrial IT & Electronics',
-    NEW_TECHNOLOGIES: 'New Technologies',
-    OFFICE_SUPPORT: 'Office & Support',
-    TESTING_QUALITY: 'Testing & Quality',
-    SYSTEM_RESOURCES: 'System Resources',
-    STUDIES_DEVELOPMENT: 'Studies & Development',
-    SYSTEMS_INFRASTRUCTURE: 'Systems & Infrastructure',
-    OTHER: 'Other',
-  };
 
   legalFormLabels: Record<string, string> = {
     SARL: 'SARL \u2013 Limited Liability Company',
@@ -80,8 +59,6 @@ export class RegisterComponent {
       gender: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
       currentPosition: [''],
-      yearsOfExperience: [0, [Validators.required, Validators.min(0)]],
-      tjm: [null, [Validators.required, Validators.min(0.01)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
     });
 
@@ -194,32 +171,6 @@ export class RegisterComponent {
     }, 1000);
   }
 
-  toggleProfileType(type: ProfileType): void {
-    const idx = this.selectedProfileTypes.indexOf(type);
-    if (idx >= 0) {
-      this.selectedProfileTypes.splice(idx, 1);
-    } else {
-      this.selectedProfileTypes.push(type);
-    }
-  }
-
-  isProfileTypeSelected(type: ProfileType): boolean {
-    return this.selectedProfileTypes.includes(type);
-  }
-
-  toggleLanguage(lang: Language): void {
-    const idx = this.selectedLanguages.indexOf(lang);
-    if (idx >= 0) {
-      this.selectedLanguages.splice(idx, 1);
-    } else {
-      this.selectedLanguages.push(lang);
-    }
-  }
-
-  isLanguageSelected(lang: Language): boolean {
-    return this.selectedLanguages.includes(lang);
-  }
-
   togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
@@ -247,22 +198,9 @@ export class RegisterComponent {
       this.errorMessage = this.getFormErrors(this.freelancerForm);
       return;
     }
-    if (this.selectedProfileTypes.length === 0) {
-      this.loading = false;
-      this.errorMessage = 'Veuillez sélectionner au moins un type de profil.';
-      return;
-    }
-    if (this.selectedLanguages.length === 0) {
-      this.loading = false;
-      this.errorMessage = 'Veuillez sélectionner au moins une langue.';
-      return;
-    }
-
     const form = this.freelancerForm.value;
     const request: RegisterFreelancerRequest = {
       ...form,
-      profileTypes: this.selectedProfileTypes,
-      languages: this.selectedLanguages,
     };
 
     this.authService.registerFreelancer(request).subscribe({
@@ -300,8 +238,6 @@ export class RegisterComponent {
     phoneNumber: 'Phone Number',
     gender: 'Gender',
     dateOfBirth: 'Date of Birth',
-    yearsOfExperience: 'Years of Experience',
-    tjm: 'TJM',
     password: 'Password',
     companyName: 'Company Name',
     foundationDate: 'Foundation Date',

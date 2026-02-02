@@ -15,14 +15,7 @@ export interface RegisterFreelancerRequest {
   gender: Gender;
   dateOfBirth: string;
   phoneNumber: string;
-  yearsOfExperience: number;
-  profileTypes: ProfileType[];
-  tjm: number;
-  languages: Language[];
   currentPosition?: string;
-  bio?: string;
-  skills?: string[];
-  portfolioUrl?: string;
 }
 
 export interface RegisterCompanyRequest {

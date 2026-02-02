@@ -38,6 +38,13 @@ export const routes: Routes = [
             (m) => m.DashboardComponent,
           ),
       },
+      {
+        path: 'edit-profile',
+        loadComponent: () =>
+          import('./features/edit-profile/edit-profile.component').then(
+            (m) => m.EditProfileComponent,
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
