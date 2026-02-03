@@ -1,0 +1,89 @@
+<div class="step-work-experience">
+  <div class="step-header">
+    <h3>Experience Professionnelle</h3>
+    <p>Detaillez vos experiences de travail pour mettre en avant votre parcours.</p>
+  </div>
+
+  <section class="section">
+    <div class="section-header">
+      <h4>Experiences</h4>
+      <button type="button" class="btn-add" (click)="addExperience.emit()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Ajouter
+      </button>
+    </div>
+
+    @if (workExperienceArray.length === 0) {
+      <div class="empty-state">
+        <p>Aucune experience ajoutee</p>
+      </div>
+    } @else {
+      <div class="items-list">
+        @for (exp of workExperienceArray.controls; track exp; let i = $index) {
+          <div class="item-card" [formGroup]="$any(exp)">
+            <button type="button" class="btn-remove" (click)="removeExperience(i)" title="Supprimer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Poste *</label>
+                <input type="text" formControlName="jobTitle" placeholder="ex: Developpeur Full Stack" />
+              </div>
+              <div class="form-group">
+                <label>Entreprise *</label>
+                <input type="text" formControlName="company" placeholder="ex: Tech Solutions SARL" />
+              </div>
+            </div>
+
+            <div class="form-row three-cols">
+              <div class="form-group">
+                <label>Date de debut *</label>
+                <input type="date" formControlName="startDate" />
+              </div>
+              <div class="form-group">
+                <label>Date de fin</label>
+                <input type="date" formControlName="endDate" [disabled]="isCurrentJob(i)" />
+              </div>
+              <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    [checked]="isCurrentJob(i)"
+                    (change)="onCurrentChange($event, i)" />
+                  <span>Poste actuel</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Description</label>
+              <app-rich-text-editor
+                formControlName="description"
+                placeholder="Decrivez vos responsabilites, realisations, technologies utilisees..."
+                [minLength]="0"
+                [maxLength]="1000">
+              </app-rich-text-editor>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <div class="tips">
+    <h4>Conseils pour decrire vos experiences</h4>
+    <ul>
+      <li>Utilisez des verbes d'action: developpe, concu, gere, optimise...</li>
+      <li>Quantifiez vos realisations quand possible</li>
+      <li>Mentionnez les technologies et outils utilises</li>
+      <li>Mettez en avant vos responsabilites et reussites</li>
+    </ul>
+  </div>
+</div>

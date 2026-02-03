@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { FreelancerService } from '../../../core/services/freelancer.service';
 import { Freelancer } from '../../../core/models';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-navbar',
@@ -44,6 +45,12 @@ export class NavbarComponent implements OnInit {
     const f = this.freelancer();
     if (!f) return '';
     return `${f.firstName || ''} ${f.lastName || ''}`.trim();
+  }
+
+  getFileUrl(relativePath: string | undefined): string {
+    if (!relativePath) return '';
+    const baseUrl = environment.apiUrl.replace(/\/api$/, '');
+    return baseUrl + relativePath;
   }
 
   toggleDropdown(event: Event): void {

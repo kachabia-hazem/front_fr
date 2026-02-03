@@ -1,0 +1,119 @@
+<div class="step-education-projects">
+  <div class="step-header">
+    <h3>Education & Projets</h3>
+    <p>Ajoutez vos diplomes et projets realises pour montrer votre parcours.</p>
+  </div>
+
+  <!-- Education Section -->
+  <section class="section">
+    <div class="section-header">
+      <h4>Education</h4>
+      <button type="button" class="btn-add" (click)="addEducation.emit()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Ajouter
+      </button>
+    </div>
+
+    @if (educationArray.length === 0) {
+      <div class="empty-state">
+        <p>Aucune education ajoutee</p>
+      </div>
+    } @else {
+      <div class="items-list">
+        @for (edu of educationArray.controls; track edu; let i = $index) {
+          <div class="item-card" [formGroup]="$any(edu)">
+            <button type="button" class="btn-remove" (click)="removeEducation(i)" title="Supprimer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Diplome *</label>
+                <input type="text" formControlName="diploma" placeholder="ex: Licence en Informatique" />
+              </div>
+              <div class="form-group">
+                <label>Etablissement *</label>
+                <input type="text" formControlName="institution" placeholder="ex: Universite de Tunis" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group small">
+                <label>Annee *</label>
+                <input type="number" formControlName="year" [min]="1990" [max]="currentYear + 5" placeholder="2023" />
+              </div>
+              <div class="form-group flex-1">
+                <label>Description</label>
+                <input type="text" formControlName="description" placeholder="Specialite, mentions..." />
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Projects Section -->
+  <section class="section">
+    <div class="section-header">
+      <h4>Projets</h4>
+      <button type="button" class="btn-add" (click)="addProject.emit()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Ajouter
+      </button>
+    </div>
+
+    @if (projectsArray.length === 0) {
+      <div class="empty-state">
+        <p>Aucun projet ajoute</p>
+      </div>
+    } @else {
+      <div class="items-list">
+        @for (proj of projectsArray.controls; track proj; let i = $index) {
+          <div class="item-card" [formGroup]="$any(proj)">
+            <button type="button" class="btn-remove" (click)="removeProject(i)" title="Supprimer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nom du projet *</label>
+                <input type="text" formControlName="name" placeholder="ex: Application E-commerce" />
+              </div>
+              <div class="form-group">
+                <label>URL</label>
+                <input type="url" formControlName="url" placeholder="https://..." />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Technologies</label>
+              <input
+                type="text"
+                [value]="getTechnologiesString(i)"
+                (input)="onTechnologiesInput($event, i)"
+                placeholder="Angular, Spring Boot, MongoDB (separees par virgule)" />
+            </div>
+
+            <div class="form-group">
+              <label>Description</label>
+              <textarea formControlName="description" rows="2" placeholder="Decrivez brievement le projet..."></textarea>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+</div>

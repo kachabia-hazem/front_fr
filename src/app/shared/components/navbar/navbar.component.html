@@ -21,7 +21,7 @@
         <!-- Freelancer Profile Section -->
         <div class="profile-section" (click)="toggleDropdown($event)">
           @if (freelancer()?.profilePicture) {
-            <img [src]="freelancer()!.profilePicture" alt="Profile" class="profile-avatar" />
+            <img [src]="getFileUrl(freelancer()!.profilePicture)" alt="Profile" class="profile-avatar" />
           } @else {
             <div class="profile-avatar avatar-initials">{{ initials }}</div>
           }

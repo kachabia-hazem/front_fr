@@ -1,0 +1,26 @@
+<div class="step-bio">
+  <div class="step-header">
+    <h3>Presentez-vous</h3>
+    <p>Ecrivez une bio professionnelle pour vous presenter aux clients potentiels.</p>
+  </div>
+
+  <div class="bio-editor" [formGroup]="form">
+    <app-rich-text-editor
+      formControlName="bio"
+      label="Votre Bio"
+      placeholder="Parlez de votre parcours, vos competences cles, et ce qui vous distingue..."
+      [minLength]="100"
+      [maxLength]="2000">
+    </app-rich-text-editor>
+  </div>
+
+  <div class="tips">
+    <h4>Conseils pour une bio efficace</h4>
+    <ul>
+      <li>Commencez par votre titre professionnel et annees d'experience</li>
+      <li>Mentionnez vos domaines d'expertise principaux</li>
+      <li>Incluez des realisations concretes ou projets marquants</li>
+      <li>Restez concis et professionnel</li>
+    </ul>
+  </div>
+</div>

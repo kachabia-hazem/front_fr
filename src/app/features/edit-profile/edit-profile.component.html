@@ -18,14 +18,23 @@
           <!-- Profile Picture -->
           <div class="avatar-section">
             @if (freelancer()?.profilePicture) {
-              <img [src]="freelancer()!.profilePicture" alt="Profile" class="sidebar-avatar" />
+              <img [src]="getFileUrl(freelancer()!.profilePicture)" alt="Profile" class="sidebar-avatar" />
             } @else {
               <div class="sidebar-avatar avatar-initials">{{ initials }}</div>
             }
-            <button type="button" class="btn-upload" disabled>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Upload Photo
-            </button>
+            @if (uploadingPhoto()) {
+              <div class="upload-loading">
+                <span class="btn-spinner"></span>
+                Uploading...
+              </div>
+            } @else {
+              <app-file-upload
+                label="Upload Photo"
+                accept=".jpg,.jpeg,.png,.gif,.webp"
+                [maxSizeMB]="5"
+                (fileSelected)="onProfilePictureSelected($event)">
+              </app-file-upload>
+            }
           </div>
 
           <!-- Current Position -->
@@ -50,13 +59,35 @@
           <!-- CV Upload -->
           <div class="sidebar-section">
             <label class="sidebar-label">CV / Resume</label>
-            <button type="button" class="btn-upload" disabled>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Upload CV
-            </button>
-            @if (freelancer()?.cvUrl) {
-              <a [href]="freelancer()!.cvUrl" target="_blank" class="cv-link">View current CV</a>
+            @if (uploadingCv()) {
+              <div class="upload-loading">
+                <span class="btn-spinner"></span>
+                Uploading...
+              </div>
+            } @else {
+              <app-file-upload
+                label="Upload CV"
+                accept=".pdf,.doc,.docx"
+                [maxSizeMB]="10"
+                (fileSelected)="onCvFileSelected($event)">
+              </app-file-upload>
             }
+            @if (freelancer()?.cvUrl) {
+              <a [href]="getFileUrl(freelancer()!.cvUrl)" target="_blank" class="cv-link">View current CV</a>
+            }
+          </div>
+
+          <!-- Manual CV -->
+          <div class="sidebar-section">
+            <label class="sidebar-label">CV Manuel</label>
+            <button type="button" class="btn-cv-manual" (click)="openCvWizard()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              CV manuellement
+            </button>
+            <p class="cv-hint">Creez votre CV etape par etape</p>
           </div>
         </aside>
 
@@ -170,4 +201,12 @@
       </div>
     </form>
   </div>
+}
+
+@if (showCvWizard()) {
+  <app-manual-cv-wizard
+    [freelancer]="freelancer()"
+    (closed)="closeCvWizard()"
+    (saved)="onCvSaved($event)">
+  </app-manual-cv-wizard>
 }

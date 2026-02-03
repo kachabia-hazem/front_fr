@@ -1,0 +1,25 @@
+<div class="stepper">
+  @for (step of steps; track step.label; let i = $index) {
+    <div
+      class="step"
+      [class.completed]="isCompleted(i)"
+      [class.active]="isActive(i)"
+      [class.pending]="isPending(i)"
+      [class.clickable]="isCompleted(i)"
+      (click)="goToStep(i)">
+      <div class="step-indicator">
+        @if (isCompleted(i)) {
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        } @else {
+          <span>{{ i + 1 }}</span>
+        }
+      </div>
+      <span class="step-label">{{ step.label }}</span>
+    </div>
+    @if (i < steps.length - 1) {
+      <div class="step-connector" [class.completed]="isCompleted(i + 1)"></div>
+    }
+  }
+</div>

@@ -1,0 +1,110 @@
+<div class="step-skills-certifications">
+  <div class="step-header">
+    <h3>Competences & Certifications</h3>
+    <p>Listez vos competences et certifications professionnelles.</p>
+  </div>
+
+  <!-- Skills Section -->
+  <section class="section">
+    <div class="section-header">
+      <h4>Competences</h4>
+    </div>
+
+    <div class="skills-input">
+      <input
+        type="text"
+        [value]="newSkill()"
+        (input)="onSkillInput($event)"
+        (keydown)="onSkillKeydown($event)"
+        placeholder="Tapez une competence et appuyez sur Entree..." />
+      <button type="button" class="btn-add-skill" (click)="addSkill()" [disabled]="!newSkill().trim()">
+        Ajouter
+      </button>
+    </div>
+
+    @if (skills.length > 0) {
+      <div class="skills-tags">
+        @for (skill of skills; track skill; let i = $index) {
+          <span class="skill-tag">
+            {{ skill }}
+            <button type="button" class="btn-remove-tag" (click)="removeSkill(i)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </span>
+        }
+      </div>
+    } @else {
+      <p class="hint-text">Ajoutez vos competences techniques et soft skills</p>
+    }
+  </section>
+
+  <!-- Certifications Section -->
+  <section class="section">
+    <div class="section-header">
+      <h4>Certifications</h4>
+      <button type="button" class="btn-add" (click)="addCertification.emit()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Ajouter
+      </button>
+    </div>
+
+    @if (certificationsArray.length === 0) {
+      <div class="empty-state">
+        <p>Aucune certification ajoutee</p>
+      </div>
+    } @else {
+      <div class="items-list">
+        @for (cert of certificationsArray.controls; track cert; let i = $index) {
+          <div class="item-card" [formGroup]="$any(cert)">
+            <button type="button" class="btn-remove" (click)="removeCertification(i)" title="Supprimer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nom de la certification *</label>
+                <input type="text" formControlName="name" placeholder="ex: AWS Solutions Architect" />
+              </div>
+              <div class="form-group">
+                <label>Organisme *</label>
+                <input type="text" formControlName="issuer" placeholder="ex: Amazon Web Services" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date d'obtention</label>
+                <input type="date" formControlName="issueDate" />
+              </div>
+              <div class="form-group">
+                <label>Date d'expiration</label>
+                <input type="date" formControlName="expiryDate" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Certificat (PDF, JPG, PNG)</label>
+              <app-file-upload
+                label="Uploader le certificat"
+                [formControl]="$any(cert.get('certificateUrl'))"
+                (fileSelected)="onFileSelected($event, i)">
+              </app-file-upload>
+              @if (uploadingIndex() === i) {
+                <p class="uploading-text">Upload en cours...</p>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </section>
+</div>

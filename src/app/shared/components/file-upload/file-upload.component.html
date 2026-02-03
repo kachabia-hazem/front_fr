@@ -1,0 +1,42 @@
+<div class="file-upload" [class.disabled]="disabled" [class.has-error]="error">
+  <input
+    type="file"
+    [accept]="accept"
+    (change)="onFileChange($event)"
+    [disabled]="disabled"
+    #fileInput
+    class="file-input" />
+
+  @if (hasFile) {
+    <div class="file-preview">
+      <div class="file-info">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+        </svg>
+        <span class="file-name">{{ fileName }}</span>
+      </div>
+      <button type="button" class="btn-clear" (click)="clearFile(); fileInput.value = ''" title="Remove file">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  } @else {
+    <button type="button" class="btn-upload" (click)="fileInput.click()" [disabled]="disabled">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="17 8 12 3 7 8"></polyline>
+        <line x1="12" y1="3" x2="12" y2="15"></line>
+      </svg>
+      <span>{{ label }}</span>
+    </button>
+  }
+
+  @if (error) {
+    <p class="error-message">{{ error }}</p>
+  }
+
+  <p class="file-hint">Max {{ maxSizeMB }}MB - {{ accept }}</p>
+</div>

@@ -1,0 +1,93 @@
+<div class="wizard-overlay" (click)="close()">
+  <div class="wizard-container" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="wizard-header">
+      <h2>Creer votre CV</h2>
+      <button type="button" class="btn-close" (click)="close()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Stepper -->
+    <app-stepper
+      [steps]="steps"
+      [currentStep]="currentStep()"
+      (stepChange)="onStepChange($event)">
+    </app-stepper>
+
+    <!-- Content -->
+    <div class="wizard-content">
+      @switch (currentStep()) {
+        @case (0) {
+          <app-step-bio [form]="cvForm"></app-step-bio>
+        }
+        @case (1) {
+          <app-step-education-projects
+            [form]="cvForm"
+            [educationArray]="educationArray"
+            [projectsArray]="projectsArray"
+            (addEducation)="educationArray.push(createEducationGroup())"
+            (addProject)="projectsArray.push(createProjectGroup())">
+          </app-step-education-projects>
+        }
+        @case (2) {
+          <app-step-skills-certifications
+            [form]="cvForm"
+            [certificationsArray]="certificationsArray"
+            (addCertification)="certificationsArray.push(createCertificationGroup())">
+          </app-step-skills-certifications>
+        }
+        @case (3) {
+          <app-step-work-experience
+            [form]="cvForm"
+            [workExperienceArray]="workExperienceArray"
+            (addExperience)="workExperienceArray.push(createWorkExperienceGroup())">
+          </app-step-work-experience>
+        }
+      }
+    </div>
+
+    <!-- Error Message -->
+    @if (errorMessage()) {
+      <div class="error-alert">{{ errorMessage() }}</div>
+    }
+
+    <!-- Footer -->
+    <div class="wizard-footer">
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="previousStep()"
+        [disabled]="isFirstStep">
+        Precedent
+      </button>
+
+      <div class="footer-right">
+        @if (isLastStep) {
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="onSave()"
+            [disabled]="saving()">
+            @if (saving()) {
+              <span class="btn-spinner"></span>
+              Sauvegarde...
+            } @else {
+              Sauvegarder
+            }
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="nextStep()">
+            Suivant
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

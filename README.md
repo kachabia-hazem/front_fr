@@ -1,59 +1,93 @@
-# FreelancePlatformFrontend
+# WorkLink - Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.2.
+Platform de freelance - Application Angular 21.
+
+## Prerequisites
+
+- Node.js 18+
+- npm 9+ ou yarn
+
+## Configuration
+
+### 1. Copier le fichier d'environnement
+
+```bash
+cp src/environments/environment.example.ts src/environments/environment.ts
+```
+
+### 2. Configurer les variables
+
+Ouvrir `src/environments/environment.ts` et remplir:
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8080/api',
+
+  // Google OAuth (https://console.cloud.google.com/)
+  googleClientId: 'votre-google-client-id.apps.googleusercontent.com',
+
+  // LinkedIn OAuth (https://www.linkedin.com/developers/)
+  linkedInClientId: 'votre-linkedin-client-id',
+  linkedInRedirectUri: 'http://localhost:4200/auth/linkedin/callback',
+};
+```
+
+### 3. Créer environment.prod.ts pour la production
+
+```bash
+cp src/environments/environment.example.ts src/environments/environment.prod.ts
+```
+
+Modifier `production: true` et ajuster l'URL de l'API.
+
+## Installation
+
+```bash
+npm install
+```
 
 ## Development server
-
-To start a local development server, run:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
+L'application sera disponible sur `http://localhost:4200`
 
 ## Building
-
-To build the project run:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Pour la production:
 
 ```bash
-ng test
+ng build --configuration production
 ```
 
-## Running end-to-end tests
+## Structure
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```
+src/app/
+├── core/            # Services, Guards, Interceptors
+├── features/        # Composants de pages
+│   ├── auth/        # Login, Register
+│   └── edit-profile # Édition profil
+├── shared/          # Composants réutilisables
+│   └── components/
+│       ├── navbar/
+│       └── file-upload/
+└── environments/    # Configuration
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Fonctionnalités
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Authentification JWT
+- OAuth Google & LinkedIn
+- Upload de photo de profil
+- Upload de CV
+- Édition de profil complet
+- CV manuel étape par étape
+- Thème clair/sombre

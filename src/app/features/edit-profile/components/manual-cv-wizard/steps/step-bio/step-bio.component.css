@@ -1,0 +1,58 @@
+.step-bio {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.step-header {
+  text-align: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--nav-border, #e5e7eb);
+}
+
+.step-header h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+}
+
+.step-header p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.bio-editor {
+  flex: 1;
+}
+
+.tips {
+  background: var(--toggle-bg, #f9fafb);
+  border: 1px solid var(--nav-border, #e5e7eb);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.tips h4 {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #5aaa9e;
+}
+
+.tips ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.tips li {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 0.35rem;
+  line-height: 1.5;
+}
+
+.tips li:last-child {
+  margin-bottom: 0;
+}

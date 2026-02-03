@@ -1,4 +1,5 @@
 import { Gender, Language, LegalForm, ProfileType, Role } from './enums.model';
+import { Education, Project, Certification, WorkExperience } from './cv.model';
 
 export interface User {
   id: string;
@@ -27,6 +28,11 @@ export interface Freelancer extends User {
   cvUrl?: string;
   rating: number;
   completedProjects: number;
+  // CV Data
+  education?: Education[];
+  projects?: Project[];
+  certifications?: Certification[];
+  workExperience?: WorkExperience[];
 }
 
 export interface Company extends User {

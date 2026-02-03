@@ -2,12 +2,16 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FreelancerService, UpdateFreelancerRequest } from '../../core/services/freelancer.service';
+import { CvService } from '../../core/services/cv.service';
 import { Freelancer, Gender, ProfileType, Language } from '../../core/models';
+import { ManualCvWizardComponent } from './components/manual-cv-wizard/manual-cv-wizard.component';
+import { FileUploadComponent } from '../../shared/components/file-upload/file-upload.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ManualCvWizardComponent, FileUploadComponent],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.css',
 })
@@ -18,6 +22,9 @@ export class EditProfileComponent implements OnInit {
   saving = signal(false);
   successMessage = signal('');
   errorMessage = signal('');
+  showCvWizard = signal(false);
+  uploadingPhoto = signal(false);
+  uploadingCv = signal(false);
 
   genderOptions = Object.values(Gender);
   profileTypeOptions = Object.values(ProfileType);
@@ -26,6 +33,7 @@ export class EditProfileComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private freelancerService: FreelancerService,
+    private cvService: CvService,
   ) {}
 
   ngOnInit(): void {
@@ -86,6 +94,13 @@ export class EditProfileComponent implements OnInit {
     ).toUpperCase();
   }
 
+  getFileUrl(relativePath: string | undefined): string {
+    if (!relativePath) return '';
+    // L'URL de base est http://localhost:8080/api, on enlève /api pour avoir http://localhost:8080
+    const baseUrl = environment.apiUrl.replace(/\/api$/, '');
+    return baseUrl + relativePath;
+  }
+
   onProfileTypeChange(event: Event): void {
     const checkbox = event.target as HTMLInputElement;
     const current: string[] = this.profileForm.get('profileTypes')!.value || [];
@@ -121,6 +136,70 @@ export class EditProfileComponent implements OnInit {
       .replace(/_/g, ' ')
       .toLowerCase()
       .replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  openCvWizard(): void {
+    this.showCvWizard.set(true);
+  }
+
+  closeCvWizard(): void {
+    this.showCvWizard.set(false);
+  }
+
+  onCvSaved(freelancer: Freelancer): void {
+    this.freelancer.set(freelancer);
+    this.showCvWizard.set(false);
+    this.successMessage.set('CV updated successfully!');
+  }
+
+  onProfilePictureSelected(file: File): void {
+    this.uploadingPhoto.set(true);
+    this.errorMessage.set('');
+
+    this.cvService.uploadProfilePicture(file).subscribe({
+      next: (response) => {
+        this.cvService.updateProfilePictureUrl(response.url).subscribe({
+          next: (freelancer) => {
+            this.freelancer.set(freelancer);
+            this.successMessage.set('Photo de profil mise à jour!');
+            this.uploadingPhoto.set(false);
+          },
+          error: () => {
+            this.errorMessage.set('Erreur lors de la mise à jour de la photo.');
+            this.uploadingPhoto.set(false);
+          },
+        });
+      },
+      error: () => {
+        this.errorMessage.set('Erreur lors du téléchargement de la photo.');
+        this.uploadingPhoto.set(false);
+      },
+    });
+  }
+
+  onCvFileSelected(file: File): void {
+    this.uploadingCv.set(true);
+    this.errorMessage.set('');
+
+    this.cvService.uploadCv(file).subscribe({
+      next: (response) => {
+        this.cvService.updateCvUrl(response.url).subscribe({
+          next: (freelancer) => {
+            this.freelancer.set(freelancer);
+            this.successMessage.set('CV mis à jour!');
+            this.uploadingCv.set(false);
+          },
+          error: () => {
+            this.errorMessage.set('Erreur lors de la mise à jour du CV.');
+            this.uploadingCv.set(false);
+          },
+        });
+      },
+      error: () => {
+        this.errorMessage.set('Erreur lors du téléchargement du CV.');
+        this.uploadingCv.set(false);
+      },
+    });
   }
 
   onSubmit(): void {
