@@ -96,6 +96,54 @@ export class EditProfileComponent implements OnInit {
     ).toUpperCase();
   }
 
+  // Profile completion percentage
+  get profileCompletion(): number {
+    const f = this.freelancer();
+    if (!f) return 0;
+
+    const fields = [
+      { value: f.firstName, weight: 10 },
+      { value: f.lastName, weight: 10 },
+      { value: f.gender, weight: 5 },
+      { value: f.dateOfBirth, weight: 5 },
+      { value: f.phoneNumber, weight: 10 },
+      { value: f.profileTypes?.length, weight: 10 },
+      { value: f.tjm, weight: 5 },
+      { value: f.languages?.length, weight: 5 },
+      { value: f.profilePicture, weight: 10 },
+      { value: f.bio, weight: 10 },
+      { value: f.skills?.length, weight: 10 },
+      { value: f.currentPosition, weight: 5 },
+      { value: f.location, weight: 5 },
+    ];
+
+    let completed = 0;
+    let total = 0;
+
+    for (const field of fields) {
+      total += field.weight;
+      if (field.value) {
+        completed += field.weight;
+      }
+    }
+
+    return Math.round((completed / total) * 100);
+  }
+
+  get isProfileComplete(): boolean {
+    return this.profileCompletion >= 100;
+  }
+
+  // SVG circle properties for progress ring
+  get progressCircumference(): number {
+    return 2 * Math.PI * 45; // radius = 45 for larger circle
+  }
+
+  get progressOffset(): number {
+    const progress = this.profileCompletion / 100;
+    return this.progressCircumference * (1 - progress);
+  }
+
   getFileUrl(relativePath: string | undefined): string {
     if (!relativePath) return '';
     // L'URL de base est http://localhost:8080/api, on enlève /api pour avoir http://localhost:8080

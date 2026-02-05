@@ -85,6 +85,53 @@ export class EditCompanyProfileComponent implements OnInit {
     return c.companyName.charAt(0).toUpperCase();
   }
 
+  // Profile completion percentage
+  get profileCompletion(): number {
+    const c = this.company();
+    if (!c) return 0;
+
+    const fields = [
+      { value: c.companyName, weight: 15 },
+      { value: c.address, weight: 10 },
+      { value: c.legalForm, weight: 10 },
+      { value: c.tradeRegister, weight: 10 },
+      { value: c.foundationDate, weight: 5 },
+      { value: c.businessSector, weight: 10 },
+      { value: c.managerName, weight: 10 },
+      { value: c.managerEmail, weight: 5 },
+      { value: c.managerPosition, weight: 5 },
+      { value: c.managerPhoneNumber, weight: 5 },
+      { value: c.companyLogo, weight: 10 },
+      { value: c.description, weight: 5 },
+    ];
+
+    let completed = 0;
+    let total = 0;
+
+    for (const field of fields) {
+      total += field.weight;
+      if (field.value) {
+        completed += field.weight;
+      }
+    }
+
+    return Math.round((completed / total) * 100);
+  }
+
+  get isProfileComplete(): boolean {
+    return this.profileCompletion >= 100;
+  }
+
+  // SVG circle properties for progress ring
+  get progressCircumference(): number {
+    return 2 * Math.PI * 45;
+  }
+
+  get progressOffset(): number {
+    const progress = this.profileCompletion / 100;
+    return this.progressCircumference * (1 - progress);
+  }
+
   getFileUrl(relativePath: string | undefined): string {
     if (!relativePath) return '';
     const baseUrl = environment.apiUrl.replace(/\/api$/, '');

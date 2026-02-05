@@ -23,17 +23,10 @@ export const AUTH_ROUTES: Routes = [
       import('./register/register.component').then((m) => m.RegisterComponent),
   },
   {
-    path: 'linkedin/role-selection',
+    path: 'oauth/role-selection',
     loadComponent: () =>
-      import('./linkedin-role-selection/linkedin-role-selection.component').then(
-        (m) => m.LinkedInRoleSelectionComponent,
-      ),
-  },
-  {
-    path: 'linkedin/complete-profile',
-    loadComponent: () =>
-      import('./linkedin-complete-profile/linkedin-complete-profile.component').then(
-        (m) => m.LinkedInCompleteProfileComponent,
+      import('./oauth-role-selection/oauth-role-selection.component').then(
+        (m) => m.OAuthRoleSelectionComponent,
       ),
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

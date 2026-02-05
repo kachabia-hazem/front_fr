@@ -4,6 +4,24 @@
   <p>Complete your profile to attract talented freelancers</p>
 </div>
 
+<!-- Profile Completion Bar -->
+@if (!loading() && company()) {
+  <div class="completion-section">
+    <div class="completion-header">
+      <span class="completion-label">Profile Completion</span>
+      <span class="completion-percent" [class.complete]="isProfileComplete">{{ profileCompletion }}%</span>
+    </div>
+    <div class="completion-bar">
+      <div class="completion-fill" [class.complete]="isProfileComplete" [style.width.%]="profileCompletion"></div>
+    </div>
+    @if (!isProfileComplete) {
+      <p class="completion-hint">Complete your profile to increase visibility and attract more freelancers</p>
+    } @else {
+      <p class="completion-hint complete">Your profile is complete! You're ready to hire.</p>
+    }
+  </div>
+}
+
 @if (loading()) {
   <div class="loading-container">
     <div class="spinner"></div>
@@ -17,11 +35,39 @@
         <aside class="profile-sidebar">
           <!-- Company Logo -->
           <div class="avatar-section">
-            @if (company()?.companyLogo) {
-              <img [src]="getFileUrl(company()!.companyLogo)" alt="Company Logo" class="sidebar-avatar" />
-            } @else {
-              <div class="sidebar-avatar avatar-initials">{{ initials }}</div>
-            }
+            <div class="avatar-wrapper-large company-logo-wrapper">
+              <!-- Progress Ring SVG -->
+              <svg class="progress-ring-large" viewBox="0 0 100 100">
+                <rect
+                  class="progress-ring-bg-rect"
+                  x="5"
+                  y="5"
+                  width="90"
+                  height="90"
+                  rx="12"
+                  fill="none"
+                  stroke-width="4"
+                />
+                <rect
+                  class="progress-ring-rect"
+                  [class.complete]="isProfileComplete"
+                  x="5"
+                  y="5"
+                  width="90"
+                  height="90"
+                  rx="12"
+                  fill="none"
+                  stroke-width="4"
+                  [style.strokeDasharray]="360"
+                  [style.strokeDashoffset]="360 - (360 * profileCompletion / 100)"
+                />
+              </svg>
+              @if (company()?.companyLogo) {
+                <img [src]="getFileUrl(company()!.companyLogo)" alt="Company Logo" class="sidebar-avatar company-avatar" />
+              } @else {
+                <div class="sidebar-avatar avatar-initials company-avatar">{{ initials }}</div>
+              }
+            </div>
             @if (uploadingLogo()) {
               <div class="upload-loading">
                 <span class="btn-spinner"></span>

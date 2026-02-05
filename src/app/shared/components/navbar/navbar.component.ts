@@ -20,6 +20,93 @@ export class NavbarComponent implements OnInit {
   company = signal<Company | null>(null);
   showDropdown = false;
 
+  // Profile completion percentage
+  get profileCompletion(): number {
+    const f = this.freelancer();
+    const c = this.company();
+
+    if (f) {
+      return this.calculateFreelancerCompletion(f);
+    }
+    if (c) {
+      return this.calculateCompanyCompletion(c);
+    }
+    return 0;
+  }
+
+  get isProfileComplete(): boolean {
+    return this.profileCompletion >= 100;
+  }
+
+  private calculateFreelancerCompletion(f: Freelancer): number {
+    const fields = [
+      { value: f.firstName, weight: 10 },
+      { value: f.lastName, weight: 10 },
+      { value: f.gender, weight: 5 },
+      { value: f.dateOfBirth, weight: 5 },
+      { value: f.phoneNumber, weight: 10 },
+      { value: f.profileTypes?.length, weight: 10 },
+      { value: f.tjm, weight: 5 },
+      { value: f.languages?.length, weight: 5 },
+      { value: f.profilePicture, weight: 10 },
+      { value: f.bio, weight: 10 },
+      { value: f.skills?.length, weight: 10 },
+      { value: f.currentPosition, weight: 5 },
+      { value: f.location, weight: 5 },
+    ];
+
+    let completed = 0;
+    let total = 0;
+
+    for (const field of fields) {
+      total += field.weight;
+      if (field.value) {
+        completed += field.weight;
+      }
+    }
+
+    return Math.round((completed / total) * 100);
+  }
+
+  private calculateCompanyCompletion(c: Company): number {
+    const fields = [
+      { value: c.companyName, weight: 15 },
+      { value: c.address, weight: 10 },
+      { value: c.legalForm, weight: 10 },
+      { value: c.tradeRegister, weight: 10 },
+      { value: c.foundationDate, weight: 5 },
+      { value: c.businessSector, weight: 10 },
+      { value: c.managerName, weight: 10 },
+      { value: c.managerEmail, weight: 5 },
+      { value: c.managerPosition, weight: 5 },
+      { value: c.managerPhoneNumber, weight: 5 },
+      { value: c.companyLogo, weight: 10 },
+      { value: c.description, weight: 5 },
+    ];
+
+    let completed = 0;
+    let total = 0;
+
+    for (const field of fields) {
+      total += field.weight;
+      if (field.value) {
+        completed += field.weight;
+      }
+    }
+
+    return Math.round((completed / total) * 100);
+  }
+
+  // SVG circle properties for progress ring
+  get progressCircumference(): number {
+    return 2 * Math.PI * 22; // radius = 22
+  }
+
+  get progressOffset(): number {
+    const progress = this.profileCompletion / 100;
+    return this.progressCircumference * (1 - progress);
+  }
+
   constructor(
     public authService: AuthService,
     public themeService: ThemeService,

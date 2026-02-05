@@ -4,6 +4,24 @@
   <p>Complete your profile to attract more clients and opportunities</p>
 </div>
 
+<!-- Profile Completion Bar -->
+@if (!loading() && freelancer()) {
+  <div class="completion-section">
+    <div class="completion-header">
+      <span class="completion-label">Profile Completion</span>
+      <span class="completion-percent" [class.complete]="isProfileComplete">{{ profileCompletion }}%</span>
+    </div>
+    <div class="completion-bar">
+      <div class="completion-fill" [class.complete]="isProfileComplete" [style.width.%]="profileCompletion"></div>
+    </div>
+    @if (!isProfileComplete) {
+      <p class="completion-hint">Complete your profile to increase visibility and attract more clients</p>
+    } @else {
+      <p class="completion-hint complete">Your profile is complete! You're ready to get hired.</p>
+    }
+  </div>
+}
+
 @if (loading()) {
   <div class="loading-container">
     <div class="spinner"></div>
@@ -17,11 +35,35 @@
         <aside class="profile-sidebar">
           <!-- Profile Picture -->
           <div class="avatar-section">
-            @if (freelancer()?.profilePicture) {
-              <img [src]="getFileUrl(freelancer()!.profilePicture)" alt="Profile" class="sidebar-avatar" />
-            } @else {
-              <div class="sidebar-avatar avatar-initials">{{ initials }}</div>
-            }
+            <div class="avatar-wrapper-large">
+              <!-- Progress Ring SVG -->
+              <svg class="progress-ring-large" viewBox="0 0 100 100">
+                <circle
+                  class="progress-ring-bg"
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  fill="none"
+                  stroke-width="4"
+                />
+                <circle
+                  class="progress-ring-circle"
+                  [class.complete]="isProfileComplete"
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  fill="none"
+                  stroke-width="4"
+                  [style.strokeDasharray]="progressCircumference"
+                  [style.strokeDashoffset]="progressOffset"
+                />
+              </svg>
+              @if (freelancer()?.profilePicture) {
+                <img [src]="getFileUrl(freelancer()!.profilePicture)" alt="Profile" class="sidebar-avatar" />
+              } @else {
+                <div class="sidebar-avatar avatar-initials">{{ initials }}</div>
+              }
+            </div>
             @if (uploadingPhoto()) {
               <div class="upload-loading">
                 <span class="btn-spinner"></span>

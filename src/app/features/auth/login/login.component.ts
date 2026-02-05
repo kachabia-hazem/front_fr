@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
-      agreeTerms: [false],
+      agreeTerms: [false, [Validators.requiredTrue]],
     });
   }
 
@@ -76,9 +76,18 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.errorMessage = '';
 
     this.authService.googleLogin({ idToken: response.credential }).subscribe({
-      next: () => {
+      next: (authResponse) => {
         this.googleLoading = false;
-        this.router.navigate(['/dashboard']);
+
+        if (authResponse.needsRegistration && authResponse.oauthProfile) {
+          // New user - redirect to role selection
+          sessionStorage.setItem('oauth_profile', JSON.stringify(authResponse.oauthProfile));
+          this.router.navigate(['/auth/oauth/role-selection']);
+        } else {
+          // Existing user - save auth and go to dashboard
+          this.authService.setAuthenticated(authResponse);
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: (err) => {
         this.googleLoading = false;

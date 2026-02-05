@@ -1,4 +1,4 @@
-import { Gender, Language, LegalForm, ProfileType } from './enums.model';
+import { Gender, LegalForm } from './enums.model';
 
 // ── Request DTOs ──
 
@@ -59,49 +59,27 @@ export interface OAuthLinkedInRequest {
   code: string;
 }
 
-export interface OAuthLinkedInCompleteRequest {
+// ── Simple OAuth Complete Request ──
+
+export interface OAuthCompleteRequest {
   role: string;
   email: string;
-  linkedInId?: string;
-  // Freelancer fields
+  providerId: string;
+  provider: 'GOOGLE' | 'LINKEDIN';
   firstName?: string;
   lastName?: string;
-  gender?: Gender;
-  dateOfBirth?: string;
-  phoneNumber?: string;
-  yearsOfExperience?: number;
-  profileTypes?: ProfileType[];
-  tjm?: number;
-  languages?: Language[];
-  currentPosition?: string;
-  bio?: string;
-  skills?: string[];
-  portfolioUrl?: string;
   profilePicture?: string;
-  // Company fields
-  companyName?: string;
-  address?: string;
-  websiteUrl?: string;
-  legalForm?: LegalForm;
-  tradeRegister?: string;
-  foundationDate?: string;
-  businessSector?: string;
-  managerName?: string;
-  managerEmail?: string;
-  managerPosition?: string;
-  managerPhoneNumber?: string;
-  description?: string;
-  numberOfEmployees?: number;
 }
 
-// ── LinkedIn Profile ──
+// ── Generic OAuth Profile ──
 
-export interface LinkedInProfile {
-  sub: string;
+export interface OAuthProfile {
+  providerId: string;
   email: string;
-  given_name: string;
-  family_name: string;
+  firstName: string;
+  lastName: string;
   picture: string;
+  provider: 'GOOGLE' | 'LINKEDIN';
 }
 
 // ── Response DTO ──
@@ -113,5 +91,5 @@ export interface AuthResponse {
   id: string;
   message: string;
   needsRegistration?: boolean;
-  linkedInProfile?: LinkedInProfile;
+  oauthProfile?: OAuthProfile;
 }

@@ -20,11 +20,40 @@
       @if (hasProfile) {
         <!-- Profile Section (Freelancer or Company) -->
         <div class="profile-section" (click)="toggleDropdown($event)">
-          @if (profilePicture) {
-            <img [src]="getFileUrl(profilePicture)" alt="Profile" class="profile-avatar" [class.company-avatar]="isCompany" />
-          } @else {
-            <div class="profile-avatar avatar-initials" [class.company-avatar]="isCompany">{{ initials }}</div>
-          }
+          <div class="avatar-wrapper" [class.company-wrapper]="isCompany">
+            <!-- Progress Ring SVG -->
+            <svg class="progress-ring" viewBox="0 0 50 50">
+              <!-- Background circle -->
+              <circle
+                class="progress-ring-bg"
+                cx="25"
+                cy="25"
+                r="22"
+                fill="none"
+                stroke-width="3"
+              />
+              <!-- Progress circle -->
+              <circle
+                class="progress-ring-circle"
+                [class.complete]="isProfileComplete"
+                cx="25"
+                cy="25"
+                r="22"
+                fill="none"
+                stroke-width="3"
+                [style.strokeDasharray]="progressCircumference"
+                [style.strokeDashoffset]="progressOffset"
+              />
+            </svg>
+            @if (profilePicture) {
+              <img [src]="getFileUrl(profilePicture)" alt="Profile" class="profile-avatar" [class.company-avatar]="isCompany" />
+            } @else {
+              <div class="profile-avatar avatar-initials" [class.company-avatar]="isCompany">{{ initials }}</div>
+            }
+            @if (!isProfileComplete) {
+              <span class="completion-badge">{{ profileCompletion }}%</span>
+            }
+          </div>
           <div class="profile-info">
             <span class="profile-name">{{ displayName }}</span>
             <span class="profile-role" [class.role-freelancer]="isFreelancer" [class.role-company]="isCompany">

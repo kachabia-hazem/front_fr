@@ -11,7 +11,7 @@ import {
   RegisterAdminRequest,
   OAuthGoogleRequest,
   OAuthLinkedInRequest,
-  OAuthLinkedInCompleteRequest,
+  OAuthCompleteRequest,
   Role,
 } from '../models';
 
@@ -75,18 +75,16 @@ export class AuthService {
   // ── OAuth API calls ──
 
   googleLogin(request: OAuthGoogleRequest): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${this.apiUrl}/oauth/google`, request)
-      .pipe(tap((response) => this.handleAuthSuccess(response)));
+    return this.http.post<AuthResponse>(`${this.apiUrl}/oauth/google`, request);
   }
 
   linkedInLogin(request: OAuthLinkedInRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/oauth/linkedin`, request);
   }
 
-  linkedInCompleteRegistration(request: OAuthLinkedInCompleteRequest): Observable<AuthResponse> {
+  oauthCompleteRegistration(request: OAuthCompleteRequest): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${this.apiUrl}/oauth/linkedin/complete-registration`, request)
+      .post<AuthResponse>(`${this.apiUrl}/oauth/complete-registration`, request)
       .pipe(tap((response) => this.handleAuthSuccess(response)));
   }
 
@@ -98,6 +96,12 @@ export class AuthService {
 
   getToken(): string | null {
     return this.currentUserSignal()?.token ?? null;
+  }
+
+  // ── Public helper to set auth state ──
+
+  setAuthenticated(response: AuthResponse): void {
+    this.handleAuthSuccess(response);
   }
 
   // ── Private helpers ──

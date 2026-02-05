@@ -119,11 +119,12 @@ export class LinkedInCallbackComponent implements OnInit {
       next: (response) => {
         this.loading = false;
 
-        if (response.needsRegistration) {
-          sessionStorage.setItem('linkedin_profile', JSON.stringify(response.linkedInProfile));
-          this.router.navigate(['/auth/linkedin/role-selection']);
+        if (response.needsRegistration && response.oauthProfile) {
+          // New user - redirect to role selection
+          sessionStorage.setItem('oauth_profile', JSON.stringify(response.oauthProfile));
+          this.router.navigate(['/auth/oauth/role-selection']);
         } else {
-          localStorage.setItem('auth', JSON.stringify(response));
+          this.authService.setAuthenticated(response);
           this.router.navigate(['/dashboard']);
         }
       },
