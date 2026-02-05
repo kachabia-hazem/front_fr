@@ -15,6 +15,7 @@ export interface UpdateFreelancerRequest {
   tjm?: number;
   languages?: string[];
   currentPosition?: string;
+  location?: string;
   bio?: string;
   skills?: string[];
   portfolioUrl?: string;
@@ -32,5 +33,13 @@ export class FreelancerService {
 
   updateMyProfile(data: UpdateFreelancerRequest): Observable<Freelancer> {
     return this.http.put<Freelancer>(`${this.apiUrl}/me`, data);
+  }
+
+  getFreelancerById(id: string): Observable<Freelancer> {
+    return this.http.get<Freelancer>(`${this.apiUrl}/public/${id}`);
+  }
+
+  getAllFreelancers(): Observable<Freelancer[]> {
+    return this.http.get<Freelancer[]>(`${this.apiUrl}/public/all`);
   }
 }

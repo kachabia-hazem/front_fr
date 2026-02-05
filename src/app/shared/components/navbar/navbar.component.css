@@ -90,6 +90,11 @@
   border: 2px solid #fff;
 }
 
+/* Company avatar style (square instead of round) */
+.profile-avatar.company-avatar {
+  border-radius: 0.5rem;
+}
+
 .profile-info {
   display: flex;
   flex-direction: column;
@@ -105,6 +110,49 @@
 .profile-email {
   font-size: 0.72rem;
   color: var(--text-secondary, #6b7280);
+}
+
+/* ── Role Badge ── */
+
+.profile-role {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 1rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.profile-role svg {
+  flex-shrink: 0;
+}
+
+/* Freelancer - Teal/Cyan theme */
+.role-freelancer {
+  background: linear-gradient(135deg, #e0f7f4 0%, #ccefea 100%);
+  color: #0d9488;
+  border: 1px solid #99e0d6;
+}
+
+.profile-section:hover .role-freelancer {
+  background: linear-gradient(135deg, #ccefea 0%, #b3e6df 100%);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.2);
+}
+
+/* Company - Purple/Indigo theme */
+.role-company {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+  color: #7c3aed;
+  border: 1px solid #c4b5fd;
+}
+
+.profile-section:hover .role-company {
+  background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
 }
 
 .dropdown-arrow {

@@ -1,0 +1,147 @@
+<!-- Hero Banner -->
+<div class="hero-banner">
+  <h1>Build Your Company Profile</h1>
+  <p>Complete your profile to attract talented freelancers</p>
+</div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading your profile...</p>
+  </div>
+} @else {
+  <div class="edit-profile-container">
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <div class="profile-layout">
+        <!-- Left Sidebar -->
+        <aside class="profile-sidebar">
+          <!-- Company Logo -->
+          <div class="avatar-section">
+            @if (company()?.companyLogo) {
+              <img [src]="getFileUrl(company()!.companyLogo)" alt="Company Logo" class="sidebar-avatar" />
+            } @else {
+              <div class="sidebar-avatar avatar-initials">{{ initials }}</div>
+            }
+            @if (uploadingLogo()) {
+              <div class="upload-loading">
+                <span class="btn-spinner"></span>
+                Uploading...
+              </div>
+            } @else {
+              <app-file-upload
+                label="Upload Logo"
+                accept=".jpg,.jpeg,.png,.gif,.webp"
+                [maxSizeMB]="5"
+                (fileSelected)="onLogoSelected($event)">
+              </app-file-upload>
+            }
+          </div>
+
+          <!-- Business Sector -->
+          <div class="sidebar-section">
+            <label class="sidebar-label">Business Sector</label>
+            <input type="text" formControlName="businessSector" class="sidebar-input" placeholder="e.g. Technology, Finance" />
+          </div>
+
+          <!-- Legal Form -->
+          <div class="sidebar-section">
+            <label class="sidebar-label">Legal Form</label>
+            <select formControlName="legalForm" class="sidebar-input">
+              <option value="">Select legal form</option>
+              @for (form of legalFormOptions; track form) {
+                <option [value]="form">{{ form }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Number of Employees -->
+          <div class="sidebar-section">
+            <label class="sidebar-label">Number of Employees</label>
+            <input type="number" formControlName="numberOfEmployees" class="sidebar-input" min="1" placeholder="e.g. 50" />
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="profile-main">
+          <!-- Company Information -->
+          <section class="form-section">
+            <h2 class="section-title">Company Information</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Company Name</label>
+                <input type="text" formControlName="companyName" placeholder="Company name" />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" formControlName="email" placeholder="Email" />
+              </div>
+              <div class="form-group">
+                <label>Address</label>
+                <input type="text" formControlName="address" placeholder="Company address" />
+              </div>
+              <div class="form-group">
+                <label>Website URL</label>
+                <input type="url" formControlName="websiteUrl" placeholder="https://your-company.com" />
+              </div>
+              <div class="form-group">
+                <label>Trade Register</label>
+                <input type="text" formControlName="tradeRegister" placeholder="Trade register number" />
+              </div>
+              <div class="form-group">
+                <label>Foundation Date</label>
+                <input type="date" formControlName="foundationDate" />
+              </div>
+            </div>
+            <div class="form-group full-width">
+              <label>Description</label>
+              <textarea formControlName="description" rows="4" placeholder="Tell freelancers about your company, your mission, and your projects..."></textarea>
+            </div>
+          </section>
+
+          <!-- Manager Information -->
+          <section class="form-section">
+            <h2 class="section-title">Manager Information</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Manager Name</label>
+                <input type="text" formControlName="managerName" placeholder="Full name" />
+              </div>
+              <div class="form-group">
+                <label>Manager Position</label>
+                <input type="text" formControlName="managerPosition" placeholder="e.g. CEO, HR Manager" />
+              </div>
+              <div class="form-group">
+                <label>Manager Email</label>
+                <input type="email" formControlName="managerEmail" placeholder="manager@company.com" />
+              </div>
+              <div class="form-group">
+                <label>Manager Phone</label>
+                <input type="tel" formControlName="managerPhoneNumber" placeholder="+216 XX XXX XXX" />
+              </div>
+            </div>
+          </section>
+
+          <!-- Messages -->
+          @if (successMessage()) {
+            <div class="alert alert-success">{{ successMessage() }}</div>
+          }
+          @if (errorMessage()) {
+            <div class="alert alert-error">{{ errorMessage() }}</div>
+          }
+
+          <!-- Submit -->
+          <div class="form-actions">
+            <button type="submit" class="btn-update" [disabled]="saving()">
+              @if (saving()) {
+                <span class="btn-spinner"></span>
+                Saving...
+              } @else {
+                Update Profile
+              }
+            </button>
+          </div>
+        </main>
+      </div>
+    </form>
+  </div>
+}

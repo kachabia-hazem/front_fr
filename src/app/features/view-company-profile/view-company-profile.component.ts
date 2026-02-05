@@ -1,0 +1,100 @@
+import { Component, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { CompanyService } from '../../core/services/company.service';
+import { AuthService } from '../../core/services/auth.service';
+import { Company } from '../../core/models';
+import { environment } from '../../../environments/environment';
+
+@Component({
+  selector: 'app-view-company-profile',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './view-company-profile.component.html',
+  styleUrl: './view-company-profile.component.css',
+})
+export class ViewCompanyProfileComponent implements OnInit {
+  company = signal<Company | null>(null);
+  loading = signal(true);
+  error = signal('');
+  isOwnProfile = signal(false);
+
+  constructor(
+    private route: ActivatedRoute,
+    private companyService: CompanyService,
+    private authService: AuthService,
+  ) {}
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      this.loadCompany(id);
+    } else {
+      this.loadOwnProfile();
+    }
+  }
+
+  private loadCompany(id: string): void {
+    this.companyService.getCompanyById(id).subscribe({
+      next: (company) => {
+        this.company.set(company);
+        this.checkIfOwnProfile(company);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set('Company not found');
+        this.loading.set(false);
+      },
+    });
+  }
+
+  private loadOwnProfile(): void {
+    this.companyService.getMyProfile().subscribe({
+      next: (company) => {
+        this.company.set(company);
+        this.isOwnProfile.set(true);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set('Failed to load profile');
+        this.loading.set(false);
+      },
+    });
+  }
+
+  private checkIfOwnProfile(company: Company): void {
+    const currentUser = this.authService.currentUser();
+    if (currentUser && currentUser.email === company.email) {
+      this.isOwnProfile.set(true);
+    }
+  }
+
+  get initials(): string {
+    const c = this.company();
+    if (!c || !c.companyName) return '?';
+    return c.companyName.charAt(0).toUpperCase();
+  }
+
+  getFileUrl(relativePath: string | undefined): string {
+    if (!relativePath) return '';
+    const baseUrl = environment.apiUrl.replace(/\/api$/, '');
+    return baseUrl + relativePath;
+  }
+
+  formatEnumLabel(value: string): string {
+    return value
+      .replace(/_/g, ' ')
+      .toLowerCase()
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  formatDate(date: string | undefined): string {
+    if (!date) return '';
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+}

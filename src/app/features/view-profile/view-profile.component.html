@@ -1,0 +1,258 @@
+<!-- Hero Banner -->
+<div class="hero-banner">
+  <h1>Freelancer Profile Details</h1>
+</div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading profile...</p>
+  </div>
+} @else if (error()) {
+  <div class="error-container">
+    <p>{{ error() }}</p>
+  </div>
+} @else if (freelancer()) {
+  <div class="profile-container">
+    <!-- Profile Header Section -->
+    <section class="profile-header">
+      <div class="header-left">
+        @if (freelancer()!.profilePicture) {
+          <img [src]="getFileUrl(freelancer()!.profilePicture)" alt="Profile" class="profile-avatar" />
+        } @else {
+          <div class="profile-avatar avatar-initials">{{ initials }}</div>
+        }
+      </div>
+
+      <div class="header-right">
+        <div class="header-top">
+          <div class="header-info">
+            <h2 class="profile-name">{{ fullName }}</h2>
+            @if (freelancer()!.currentPosition) {
+              <p class="profile-position">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                {{ freelancer()!.currentPosition }}
+              </p>
+            }
+            @if (freelancer()!.location) {
+              <p class="profile-location">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ freelancer()!.location }}
+              </p>
+            }
+          </div>
+
+          <div class="header-actions">
+            @if (freelancer()!.cvUrl) {
+              <a [href]="getFileUrl(freelancer()!.cvUrl)" target="_blank" class="btn-download-cv">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download CV
+              </a>
+            }
+            @if (freelancer()!.tjm) {
+              <div class="tjm-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                {{ freelancer()!.tjm }} TND/jour
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Expertise Tags -->
+        @if (freelancer()!.profileTypes && freelancer()!.profileTypes.length > 0) {
+          <div class="expertise-section">
+            <label class="section-label">Expertise</label>
+            <div class="tags-container">
+              @for (type of freelancer()!.profileTypes; track type) {
+                <span class="tag">{{ formatEnumLabel(type) }}</span>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Bio -->
+        @if (freelancer()!.bio) {
+          <div class="bio-section">
+            <label class="section-label">Bio</label>
+            <p class="bio-text">{{ freelancer()!.bio }}</p>
+          </div>
+        }
+
+        <!-- Portfolio & Experience Row -->
+        <div class="info-row">
+          @if (freelancer()!.portfolioUrl) {
+            <div class="info-column">
+              <label class="section-label">Portfolio</label>
+              <a [href]="freelancer()!.portfolioUrl" target="_blank" class="portfolio-link">
+                {{ freelancer()!.portfolioUrl }}
+              </a>
+            </div>
+          }
+
+          <div class="info-column">
+            <label class="section-label">Experience</label>
+            <div class="experience-tags">
+              @if (freelancer()!.yearsOfExperience) {
+                <span class="exp-tag">{{ freelancer()!.yearsOfExperience }} years</span>
+              }
+              @if (freelancer()!.skills && freelancer()!.skills!.length > 0) {
+                @for (skill of freelancer()!.skills!.slice(0, 5); track skill) {
+                  <span class="exp-tag">{{ skill }}</span>
+                }
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info Cards -->
+    <section class="info-cards">
+      <div class="info-card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h4>Availability</h4>
+        <p>{{ freelancer()!.tjm ? 'Available' : 'Contact for availability' }}</p>
+      </div>
+
+      <div class="info-card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h4>Daily Rate</h4>
+        <p>{{ freelancer()!.tjm ? freelancer()!.tjm + ' TND/day' : 'Negotiable' }}</p>
+      </div>
+
+      <div class="info-card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h4>Completed Projects</h4>
+        <p>{{ freelancer()!.completedProjects || 0 }} projects</p>
+      </div>
+    </section>
+
+    <!-- Work Experience Section -->
+    <section class="collapsible-section">
+      <button class="section-header" (click)="toggleSection('workExperience')">
+        <h3>Work Experience</h3>
+        <svg [class.rotated]="showWorkExperience()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      @if (showWorkExperience()) {
+        <div class="section-content">
+          @if (freelancer()!.workExperience && freelancer()!.workExperience!.length > 0) {
+            <div class="timeline">
+              @for (exp of freelancer()!.workExperience; track exp.id) {
+                <div class="timeline-item">
+                  <div class="timeline-marker"></div>
+                  <div class="timeline-content">
+                    <h4 class="exp-title">{{ exp.jobTitle }}</h4>
+                    <p class="exp-company">{{ exp.company }}</p>
+                    <p class="exp-dates">{{ formatDate(exp.startDate) }} - {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate) }}</p>
+                    @if (exp.description) {
+                      <p class="exp-description">{{ exp.description }}</p>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty-message">No work experience added yet.</p>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Certifications Section -->
+    <section class="collapsible-section">
+      <button class="section-header" (click)="toggleSection('certifications')">
+        <h3>Certifications</h3>
+        <svg [class.rotated]="showCertifications()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      @if (showCertifications()) {
+        <div class="section-content">
+          @if (freelancer()!.certifications && freelancer()!.certifications!.length > 0) {
+            <div class="certifications-grid">
+              @for (cert of freelancer()!.certifications; track cert.id) {
+                <div class="cert-card">
+                  <h4>{{ cert.name }}</h4>
+                  <p class="cert-issuer">{{ cert.issuer }}</p>
+                  @if (cert.issueDate) {
+                    <p class="cert-date">Issued: {{ formatDate(cert.issueDate) }}</p>
+                  }
+                  @if (cert.certificateUrl) {
+                    <a [href]="getFileUrl(cert.certificateUrl)" target="_blank" class="cert-link">View Certificate</a>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty-message">No certifications added yet.</p>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Education Section -->
+    <section class="collapsible-section">
+      <button class="section-header" (click)="toggleSection('education')">
+        <h3>Education</h3>
+        <svg [class.rotated]="showEducation()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      @if (showEducation()) {
+        <div class="section-content">
+          @if (freelancer()!.education && freelancer()!.education!.length > 0) {
+            <div class="education-list">
+              @for (edu of freelancer()!.education; track edu.id) {
+                <div class="edu-item">
+                  <h4>{{ edu.diploma }}</h4>
+                  <p class="edu-school">{{ edu.institution }}</p>
+                  <p class="edu-dates">{{ edu.year }}</p>
+                  @if (edu.description) {
+                    <p class="edu-field">{{ edu.description }}</p>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty-message">No education added yet.</p>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Skills Section -->
+    <section class="collapsible-section">
+      <button class="section-header" (click)="toggleSection('skills')">
+        <h3>Skills</h3>
+        <svg [class.rotated]="showSkills()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      @if (showSkills()) {
+        <div class="section-content">
+          @if (freelancer()!.skills && freelancer()!.skills!.length > 0) {
+            <div class="skills-container">
+              @for (skill of freelancer()!.skills; track skill) {
+                <span class="skill-tag">{{ skill }}</span>
+              }
+            </div>
+          } @else {
+            <p class="empty-message">No skills added yet.</p>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Languages -->
+    @if (freelancer()!.languages && freelancer()!.languages.length > 0) {
+      <section class="languages-section">
+        <h3>Languages</h3>
+        <div class="languages-list">
+          @for (lang of freelancer()!.languages; track lang) {
+            <span class="lang-tag">{{ formatEnumLabel(lang) }}</span>
+          }
+        </div>
+      </section>
+    }
+  </div>
+}

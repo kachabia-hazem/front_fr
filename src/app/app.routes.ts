@@ -38,11 +38,48 @@ export const routes: Routes = [
             (m) => m.DashboardComponent,
           ),
       },
+      // Freelancer profile routes
       {
         path: 'edit-profile',
         loadComponent: () =>
           import('./features/edit-profile/edit-profile.component').then(
             (m) => m.EditProfileComponent,
+          ),
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/view-profile/view-profile.component').then(
+            (m) => m.ViewProfileComponent,
+          ),
+      },
+      {
+        path: 'profile/:id',
+        loadComponent: () =>
+          import('./features/view-profile/view-profile.component').then(
+            (m) => m.ViewProfileComponent,
+          ),
+      },
+      // Company profile routes
+      {
+        path: 'edit-company-profile',
+        loadComponent: () =>
+          import('./features/edit-company-profile/edit-company-profile.component').then(
+            (m) => m.EditCompanyProfileComponent,
+          ),
+      },
+      {
+        path: 'company-profile',
+        loadComponent: () =>
+          import('./features/view-company-profile/view-company-profile.component').then(
+            (m) => m.ViewCompanyProfileComponent,
+          ),
+      },
+      {
+        path: 'company-profile/:id',
+        loadComponent: () =>
+          import('./features/view-company-profile/view-company-profile.component').then(
+            (m) => m.ViewCompanyProfileComponent,
           ),
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

@@ -1,0 +1,165 @@
+<!-- Hero Banner -->
+<div class="hero-banner">
+  <h1>Company Profile Details</h1>
+</div>
+
+@if (loading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading profile...</p>
+  </div>
+} @else if (error()) {
+  <div class="error-container">
+    <p>{{ error() }}</p>
+  </div>
+} @else if (company()) {
+  <div class="profile-container">
+    <!-- Profile Header Section -->
+    <section class="profile-header">
+      <div class="header-left">
+        @if (company()!.companyLogo) {
+          <img [src]="getFileUrl(company()!.companyLogo)" alt="Company Logo" class="profile-avatar" />
+        } @else {
+          <div class="profile-avatar avatar-initials">{{ initials }}</div>
+        }
+      </div>
+
+      <div class="header-right">
+        <div class="header-top">
+          <div class="header-info">
+            <h2 class="profile-name">{{ company()!.companyName }}</h2>
+            @if (company()!.businessSector) {
+              <p class="profile-position">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                {{ company()!.businessSector }}
+              </p>
+            }
+            @if (company()!.address) {
+              <p class="profile-location">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ company()!.address }}
+              </p>
+            }
+          </div>
+
+          <div class="header-actions">
+            @if (company()!.websiteUrl) {
+              <a [href]="company()!.websiteUrl" target="_blank" class="btn-website">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                Visit Website
+              </a>
+            }
+            @if (company()!.legalForm) {
+              <div class="legal-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                {{ company()!.legalForm }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Description -->
+        @if (company()!.description) {
+          <div class="bio-section">
+            <label class="section-label">About the Company</label>
+            <p class="bio-text">{{ company()!.description }}</p>
+          </div>
+        }
+
+        <!-- Company Info Row -->
+        <div class="info-row">
+          @if (company()!.tradeRegister) {
+            <div class="info-column">
+              <label class="section-label">Trade Register</label>
+              <p class="info-value">{{ company()!.tradeRegister }}</p>
+            </div>
+          }
+
+          @if (company()!.foundationDate) {
+            <div class="info-column">
+              <label class="section-label">Founded</label>
+              <p class="info-value">{{ formatDate(company()!.foundationDate) }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Info Cards -->
+    <section class="info-cards">
+      <div class="info-card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h4>Employees</h4>
+        <p>{{ company()!.numberOfEmployees || 'Not specified' }}</p>
+      </div>
+
+      <div class="info-card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h4>Posted Projects</h4>
+        <p>{{ company()!.postedProjects || 0 }} projects</p>
+      </div>
+
+      <div class="info-card">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <h4>Sector</h4>
+        <p>{{ company()!.businessSector || 'Not specified' }}</p>
+      </div>
+    </section>
+
+    <!-- Manager Information Section -->
+    <section class="manager-section">
+      <h3>Manager Information</h3>
+      <div class="manager-card">
+        <div class="manager-info">
+          <div class="manager-row">
+            <div class="manager-field">
+              <label class="section-label">Name</label>
+              <p class="manager-value">{{ company()!.managerName }}</p>
+            </div>
+            <div class="manager-field">
+              <label class="section-label">Position</label>
+              <p class="manager-value">{{ company()!.managerPosition }}</p>
+            </div>
+          </div>
+          <div class="manager-row">
+            <div class="manager-field">
+              <label class="section-label">Email</label>
+              <a [href]="'mailto:' + company()!.managerEmail" class="manager-link">{{ company()!.managerEmail }}</a>
+            </div>
+            <div class="manager-field">
+              <label class="section-label">Phone</label>
+              <a [href]="'tel:' + company()!.managerPhoneNumber" class="manager-link">{{ company()!.managerPhoneNumber }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    @if (company()!.websiteUrl || company()!.email) {
+      <section class="contact-section">
+        <h3>Contact</h3>
+        <div class="contact-list">
+          @if (company()!.email) {
+            <a [href]="'mailto:' + company()!.email" class="contact-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              {{ company()!.email }}
+            </a>
+          }
+          @if (company()!.websiteUrl) {
+            <a [href]="company()!.websiteUrl" target="_blank" class="contact-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              {{ company()!.websiteUrl }}
+            </a>
+          }
+        </div>
+      </section>
+    }
+  </div>
+}

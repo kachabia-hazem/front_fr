@@ -17,31 +17,49 @@
     </button>
 
     @if (authService.isAuthenticated()) {
-      @if (freelancer()) {
-        <!-- Freelancer Profile Section -->
+      @if (hasProfile) {
+        <!-- Profile Section (Freelancer or Company) -->
         <div class="profile-section" (click)="toggleDropdown($event)">
-          @if (freelancer()?.profilePicture) {
-            <img [src]="getFileUrl(freelancer()!.profilePicture)" alt="Profile" class="profile-avatar" />
+          @if (profilePicture) {
+            <img [src]="getFileUrl(profilePicture)" alt="Profile" class="profile-avatar" [class.company-avatar]="isCompany" />
           } @else {
-            <div class="profile-avatar avatar-initials">{{ initials }}</div>
+            <div class="profile-avatar avatar-initials" [class.company-avatar]="isCompany">{{ initials }}</div>
           }
           <div class="profile-info">
             <span class="profile-name">{{ displayName }}</span>
-            <span class="profile-email">{{ freelancer()!.email }}</span>
+            <span class="profile-role" [class.role-freelancer]="isFreelancer" [class.role-company]="isCompany">
+              @if (isFreelancer) {
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              } @else if (isCompany) {
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+              }
+              {{ isFreelancer ? 'Freelancer' : 'Company' }}
+            </span>
           </div>
           <svg class="dropdown-arrow" [class.open]="showDropdown" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
 
         @if (showDropdown) {
           <div class="dropdown-menu" (click)="$event.stopPropagation()">
-            <a routerLink="/profile" class="dropdown-item" (click)="showDropdown = false">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              View Profile
-            </a>
-            <a routerLink="/edit-profile" class="dropdown-item" (click)="showDropdown = false">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              Edit Profile
-            </a>
+            @if (isFreelancer) {
+              <a routerLink="/profile" class="dropdown-item" (click)="showDropdown = false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                View Profile
+              </a>
+              <a routerLink="/edit-profile" class="dropdown-item" (click)="showDropdown = false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit Profile
+              </a>
+            } @else if (isCompany) {
+              <a routerLink="/company-profile" class="dropdown-item" (click)="showDropdown = false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                View Profile
+              </a>
+              <a routerLink="/edit-company-profile" class="dropdown-item" (click)="showDropdown = false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit Profile
+              </a>
+            }
             <div class="dropdown-divider"></div>
             <button class="dropdown-item dropdown-item-danger" (click)="logout()">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -50,7 +68,7 @@
           </div>
         }
       } @else {
-        <!-- Non-freelancer authenticated user fallback -->
+        <!-- Non-freelancer/company authenticated user fallback -->
         <span class="user-email">{{ authService.currentUser()?.email }}</span>
         <span class="user-role">{{ authService.currentUser()?.role }}</span>
         <button class="btn-logout" (click)="logout()">Logout</button>
