@@ -1,20 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
 import {
   Gender,
   LegalForm,
-  RegisterFreelancerRequest,
-  RegisterCompanyRequest,
 } from '../../../core/models';
+import { PhoneInputComponent } from '../../../shared/components/phone-input/phone-input.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, PhoneInputComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
@@ -23,17 +20,7 @@ export class RegisterComponent {
   freelancerForm: FormGroup;
   companyForm: FormGroup;
   errorMessage = '';
-  loading = false;
   showPassword = false;
-
-  // Email verification state
-  emailVerified = false;
-  verificationSent = false;
-  verificationCode = '';
-  verificationLoading = false;
-  verificationError = '';
-  cooldownSeconds = 0;
-  private cooldownInterval: any = null;
 
   genders = Object.values(Gender);
   legalForms = Object.values(LegalForm);
@@ -48,193 +35,169 @@ export class RegisterComponent {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
     private router: Router,
   ) {
+    const savedRole = sessionStorage.getItem('register_role');
+    if (savedRole === 'freelancer' || savedRole === 'company') {
+      this.selectedRole = savedRole;
+    }
+
     this.freelancerForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern(/^[a-zA-ZÀ-ÿ\s'-]+$/)]],
+      lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern(/^[a-zA-ZÀ-ÿ\s'-]+$/)]],
       phoneNumber: ['', [Validators.required, Validators.pattern(/^[+0]\d{8,15}$/)]],
       gender: ['', Validators.required],
-      dateOfBirth: ['', Validators.required],
-      currentPosition: [''],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      dateOfBirth: ['', [Validators.required, this.pastDateValidator, this.minAgeValidator(18)]],
+      currentPosition: ['', [Validators.maxLength(100)]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(64), this.strongPasswordValidator]],
     });
 
     this.companyForm = this.fb.group({
-      companyName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      foundationDate: ['', Validators.required],
-      websiteUrl: [''],
-      businessSector: ['', Validators.required],
+      companyName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      foundationDate: ['', [Validators.required, this.pastDateValidator]],
+      websiteUrl: ['', [this.optionalUrlValidator]],
+      businessSector: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       legalForm: ['', Validators.required],
-      address: ['', Validators.required],
-      tradeRegister: ['', Validators.required],
-      managerName: ['', Validators.required],
+      address: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
+      tradeRegister: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), Validators.pattern(/^[a-zA-Z0-9\-/]+$/)]],
+      managerName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100), Validators.pattern(/^[a-zA-ZÀ-ÿ\s'-]+$/)]],
       managerEmail: ['', [Validators.required, Validators.email]],
-      managerPosition: ['', Validators.required],
+      managerPosition: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       managerPhoneNumber: ['', [Validators.required, Validators.pattern(/^[+0]\d{8,15}$/)]],
-      description: [''],
-      numberOfEmployees: [null],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      description: ['', [Validators.maxLength(500)]],
+      numberOfEmployees: [null, [Validators.min(1), Validators.max(1000000)]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(64), this.strongPasswordValidator]],
     });
+
+    this.restoreFormData();
   }
+
+  // ── Custom Validators ──
+
+  private pastDateValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null;
+    const date = new Date(control.value);
+    if (date >= new Date()) return { pastDate: true };
+    return null;
+  }
+
+  private minAgeValidator(minAge: number) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) return null;
+      const birth = new Date(control.value);
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      if (age < minAge) return { minAge: { required: minAge, actual: age } };
+      return null;
+    };
+  }
+
+  private strongPasswordValidator(control: AbstractControl): ValidationErrors | null {
+    const v = control.value;
+    if (!v) return null;
+    const errors: ValidationErrors = {};
+    if (!/[A-Z]/.test(v)) errors['noUppercase'] = true;
+    if (!/[a-z]/.test(v)) errors['noLowercase'] = true;
+    if (!/[0-9]/.test(v)) errors['noDigit'] = true;
+    return Object.keys(errors).length ? errors : null;
+  }
+
+  private optionalUrlValidator(control: AbstractControl): ValidationErrors | null {
+    const v = control.value;
+    if (!v || v.trim() === '') return null;
+    if (!/^https?:\/\/.+\..+/.test(v)) return { invalidUrl: true };
+    return null;
+  }
+
+  // ── Field error messages ──
+
+  getFieldError(form: FormGroup, fieldName: string): string {
+    const control = form.get(fieldName);
+    if (!control || !control.touched || !control.errors) return '';
+
+    const errors = control.errors;
+    const label = this.fieldLabels[fieldName] || fieldName;
+
+    if (errors['required']) return `${label} is required.`;
+    if (errors['minlength']) return `${label} must be at least ${errors['minlength'].requiredLength} characters.`;
+    if (errors['maxlength']) return `${label} must not exceed ${errors['maxlength'].requiredLength} characters.`;
+    if (errors['pattern']) {
+      if (fieldName === 'firstName' || fieldName === 'lastName' || fieldName === 'managerName') {
+        return `${label} must contain only letters.`;
+      }
+      if (fieldName === 'phoneNumber' || fieldName === 'managerPhoneNumber') {
+        return `${label} must start with + or 0 followed by 8-15 digits.`;
+      }
+      if (fieldName === 'tradeRegister') {
+        return `${label} must contain only letters, numbers and dashes.`;
+      }
+      return `${label} format is invalid.`;
+    }
+    if (errors['email']) return `Please enter a valid email address.`;
+    if (errors['pastDate']) return `${label} must be in the past.`;
+    if (errors['minAge']) return `You must be at least ${errors['minAge'].required} years old.`;
+    if (errors['invalidUrl']) return `URL must start with http:// or https://`;
+    if (errors['noUppercase']) return `Password must contain at least one uppercase letter.`;
+    if (errors['noLowercase']) return `Password must contain at least one lowercase letter.`;
+    if (errors['noDigit']) return `Password must contain at least one number.`;
+    if (errors['min']) return `${label} must be at least ${errors['min'].min}.`;
+    if (errors['max']) return `${label} must not exceed ${errors['max'].max}.`;
+
+    return `${label} is invalid.`;
+  }
+
+  hasFieldError(form: FormGroup, fieldName: string): boolean {
+    const control = form.get(fieldName);
+    return !!(control && control.touched && control.invalid);
+  }
+
+  // ── Existing methods ──
 
   selectRole(role: 'freelancer' | 'company'): void {
     this.selectedRole = role;
     this.errorMessage = '';
-    this.resetVerificationState();
-  }
-
-  private resetVerificationState(): void {
-    this.emailVerified = false;
-    this.verificationSent = false;
-    this.verificationCode = '';
-    this.verificationLoading = false;
-    this.verificationError = '';
-    this.cooldownSeconds = 0;
-    if (this.cooldownInterval) {
-      clearInterval(this.cooldownInterval);
-      this.cooldownInterval = null;
-    }
-  }
-
-  get currentEmailValue(): string {
-    const form = this.selectedRole === 'freelancer' ? this.freelancerForm : this.companyForm;
-    return form.get('email')?.value || '';
-  }
-
-  sendVerificationCode(): void {
-    const email = this.currentEmailValue;
-    const emailControl = this.selectedRole === 'freelancer'
-      ? this.freelancerForm.get('email')
-      : this.companyForm.get('email');
-
-    if (!email || emailControl?.invalid) {
-      this.verificationError = 'Please enter a valid email address.';
-      return;
-    }
-
-    this.verificationLoading = true;
-    this.verificationError = '';
-
-    this.authService.sendVerificationCode(email).subscribe({
-      next: () => {
-        this.verificationSent = true;
-        this.verificationLoading = false;
-        this.startCooldown();
-      },
-      error: (err) => {
-        this.verificationLoading = false;
-        this.verificationError = err.error?.message || 'Failed to send verification code.';
-      },
-    });
-  }
-
-  submitVerificationCode(): void {
-    const email = this.currentEmailValue;
-    if (!this.verificationCode || this.verificationCode.length !== 6) {
-      this.verificationError = 'Please enter the 6-digit code.';
-      return;
-    }
-
-    this.verificationLoading = true;
-    this.verificationError = '';
-
-    this.authService.verifyCode(email, this.verificationCode).subscribe({
-      next: (res) => {
-        this.verificationLoading = false;
-        if (res.verified) {
-          this.emailVerified = true;
-          this.verificationError = '';
-        } else {
-          this.verificationError = 'Invalid code. Please try again.';
-        }
-      },
-      error: (err) => {
-        this.verificationLoading = false;
-        this.verificationError = err.error?.message || 'Verification failed.';
-      },
-    });
-  }
-
-  private startCooldown(): void {
-    this.cooldownSeconds = 60;
-    if (this.cooldownInterval) clearInterval(this.cooldownInterval);
-    this.cooldownInterval = setInterval(() => {
-      this.cooldownSeconds--;
-      if (this.cooldownSeconds <= 0) {
-        clearInterval(this.cooldownInterval);
-        this.cooldownInterval = null;
-      }
-    }, 1000);
   }
 
   togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
 
-  onSubmit(): void {
-    if (!this.emailVerified) {
-      this.errorMessage = 'Please verify your email address before registering.';
+  onContinue(): void {
+    const form = this.selectedRole === 'freelancer' ? this.freelancerForm : this.companyForm;
+
+    if (form.invalid) {
+      form.markAllAsTouched();
+      this.errorMessage = this.getFormErrors(form);
       return;
     }
 
     this.errorMessage = '';
-    this.loading = true;
-
-    if (this.selectedRole === 'freelancer') {
-      this.submitFreelancer();
-    } else {
-      this.submitCompany();
-    }
+    sessionStorage.setItem('register_role', this.selectedRole);
+    sessionStorage.setItem('register_data', JSON.stringify(form.value));
+    this.router.navigate(['/auth/register/verify']);
   }
 
-  private submitFreelancer(): void {
-    if (this.freelancerForm.invalid) {
-      this.freelancerForm.markAllAsTouched();
-      this.loading = false;
-      this.errorMessage = this.getFormErrors(this.freelancerForm);
-      return;
+  private restoreFormData(): void {
+    const savedData = sessionStorage.getItem('register_data');
+    const savedRole = sessionStorage.getItem('register_role');
+    if (!savedData || !savedRole) return;
+    try {
+      const data = JSON.parse(savedData);
+      if (savedRole === 'freelancer') {
+        this.freelancerForm.patchValue(data);
+      } else if (savedRole === 'company') {
+        this.companyForm.patchValue(data);
+      }
+    } catch {
+      // Ignore parse errors
     }
-    const form = this.freelancerForm.value;
-    const request: RegisterFreelancerRequest = {
-      ...form,
-    };
-
-    this.authService.registerFreelancer(request).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
-      error: (err) => {
-        this.loading = false;
-        this.errorMessage = this.extractError(err);
-      },
-    });
-  }
-
-  private submitCompany(): void {
-    if (this.companyForm.invalid) {
-      this.companyForm.markAllAsTouched();
-      this.loading = false;
-      this.errorMessage = this.getFormErrors(this.companyForm);
-      return;
-    }
-
-    const request: RegisterCompanyRequest = { ...this.companyForm.value };
-
-    this.authService.registerCompany(request).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
-      error: (err) => {
-        this.loading = false;
-        this.errorMessage = this.extractError(err);
-      },
-    });
   }
 
   private fieldLabels: Record<string, string> = {
     firstName: 'First Name',
     lastName: 'Last Name',
-    email: 'Email',
     phoneNumber: 'Phone Number',
     gender: 'Gender',
     dateOfBirth: 'Date of Birth',
@@ -249,6 +212,10 @@ export class RegisterComponent {
     managerEmail: 'Manager Email',
     managerPosition: 'Manager Position',
     managerPhoneNumber: 'Manager Phone',
+    websiteUrl: 'Website URL',
+    description: 'Description',
+    numberOfEmployees: 'Number of Employees',
+    currentPosition: 'Job Title',
   };
 
   private getFormErrors(form: FormGroup): string {
@@ -258,16 +225,7 @@ export class RegisterComponent {
         invalidFields.push(this.fieldLabels[key] || key);
       }
     }
-    if (invalidFields.length === 0) return 'Veuillez remplir tous les champs obligatoires.';
-    return `Champs invalides : ${invalidFields.join(', ')}`;
-  }
-
-  private extractError(err: any): string {
-    if (err.error?.message) return err.error.message;
-    if (err.error?.error) return err.error.error;
-    if (typeof err.error === 'object' && err.error !== null) {
-      return Object.values(err.error).join(', ');
-    }
-    return "L'inscription a échoué. Veuillez réessayer.";
+    if (invalidFields.length === 0) return 'Please fill in all required fields.';
+    return `Invalid fields: ${invalidFields.join(', ')}`;
   }
 }

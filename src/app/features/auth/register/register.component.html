@@ -12,9 +12,6 @@
       <p class="left-text">
         Register to manage your projects, connect with talent, and grow your business.
       </p>
-      <div class="illustration">
-        <img src="assets/images/register-character.png" alt="" />
-      </div>
     </div>
   </div>
 
@@ -22,6 +19,17 @@
   <div class="right-panel">
     <div class="register-card">
       <h2>Register</h2>
+
+      <!-- Step indicator -->
+      <div class="step-indicator">
+        <div class="step-dot active"></div>
+        <div class="step-line-horizontal"></div>
+        <div class="step-dot"></div>
+      </div>
+      <div class="step-labels">
+        <span class="step-label active">Information</span>
+        <span class="step-label">Email Verification</span>
+      </div>
 
       <!-- Role Toggle -->
       <div class="field-label">Role</div>
@@ -52,102 +60,72 @@
 
       <!-- ═══════ FREELANCER FORM ═══════ -->
       @if (selectedRole === 'freelancer') {
-        <form [formGroup]="freelancerForm" (ngSubmit)="onSubmit()">
-          <div class="form-field">
-            <label>First Name</label>
-            <input type="text" formControlName="firstName" placeholder="First Name" />
-          </div>
-
-          <div class="form-field">
-            <label>Last Name</label>
-            <input type="text" formControlName="lastName" placeholder="Last Name" />
-          </div>
-
-          <div class="form-field icon-field">
-            <label>Email Address</label>
-            <div class="email-verify-row">
-              <div class="icon-input" style="flex:1">
-                <svg class="field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                <input type="email" formControlName="email" placeholder="Email Address" [readonly]="emailVerified" />
-              </div>
-              @if (emailVerified) {
-                <span class="verified-badge">&#10003; Verified</span>
-              } @else {
-                <button type="button" class="btn-verify" (click)="sendVerificationCode()" [disabled]="verificationLoading || cooldownSeconds > 0">
-                  {{ verificationLoading ? 'Sending...' : cooldownSeconds > 0 ? 'Resend (' + cooldownSeconds + 's)' : verificationSent ? 'Resend' : 'Send Code' }}
-                </button>
-              }
-            </div>
-            <!-- Verification code section - always visible -->
-            @if (!emailVerified) {
-              <div class="verification-section">
-                <div class="verification-label">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  Enter verification code
-                </div>
-                <div class="email-verify-row">
-                  <input
-                    type="text"
-                    class="code-input"
-                    [(ngModel)]="verificationCode"
-                    [ngModelOptions]="{standalone: true}"
-                    placeholder="000000"
-                    maxlength="6"
-                    [disabled]="!verificationSent"
-                  />
-                  <button
-                    type="button"
-                    class="btn-confirm-code"
-                    (click)="submitVerificationCode()"
-                    [disabled]="verificationLoading || !verificationSent || verificationCode.length !== 6"
-                  >
-                    {{ verificationLoading ? 'Checking...' : 'Confirm' }}
-                  </button>
-                </div>
-                @if (!verificationSent) {
-                  <div class="verification-hint">Click "Send Code" to receive a 6-digit code via email</div>
-                }
-              </div>
-            }
-            @if (verificationError) {
-              <div class="verification-error">{{ verificationError }}</div>
+        <form [formGroup]="freelancerForm" (ngSubmit)="onContinue()">
+          <div class="form-field" [class.has-error]="hasFieldError(freelancerForm, 'firstName')">
+            <label>First Name <span class="required">*</span></label>
+            <input type="text" formControlName="firstName" placeholder="John" />
+            @if (hasFieldError(freelancerForm, 'firstName')) {
+              <div class="field-error">{{ getFieldError(freelancerForm, 'firstName') }}</div>
             }
           </div>
 
-          <div class="form-field">
-            <label>Phone Number</label>
-            <input type="tel" formControlName="phoneNumber" placeholder="+216 XX XXX XXX" />
+          <div class="form-field" [class.has-error]="hasFieldError(freelancerForm, 'lastName')">
+            <label>Last Name <span class="required">*</span></label>
+            <input type="text" formControlName="lastName" placeholder="Doe" />
+            @if (hasFieldError(freelancerForm, 'lastName')) {
+              <div class="field-error">{{ getFieldError(freelancerForm, 'lastName') }}</div>
+            }
+          </div>
+
+          <div class="form-field" [class.has-error]="hasFieldError(freelancerForm, 'phoneNumber')">
+            <label>Phone Number <span class="required">*</span></label>
+            <app-phone-input
+              formControlName="phoneNumber"
+              placeholder="XX XXX XXX"
+            ></app-phone-input>
+            @if (hasFieldError(freelancerForm, 'phoneNumber')) {
+              <div class="field-error">{{ getFieldError(freelancerForm, 'phoneNumber') }}</div>
+            }
           </div>
 
           <div class="form-row">
-            <div class="form-field">
-              <label>Gender</label>
+            <div class="form-field" [class.has-error]="hasFieldError(freelancerForm, 'gender')">
+              <label>Gender <span class="required">*</span></label>
               <select formControlName="gender">
                 <option value="" disabled>Select</option>
                 @for (g of genders; track g) {
                   <option [value]="g">{{ g }}</option>
                 }
               </select>
+              @if (hasFieldError(freelancerForm, 'gender')) {
+                <div class="field-error">{{ getFieldError(freelancerForm, 'gender') }}</div>
+              }
             </div>
-            <div class="form-field">
-              <label>Date of Birth</label>
+            <div class="form-field" [class.has-error]="hasFieldError(freelancerForm, 'dateOfBirth')">
+              <label>Date of Birth <span class="required">*</span></label>
               <input type="date" formControlName="dateOfBirth" />
+              @if (hasFieldError(freelancerForm, 'dateOfBirth')) {
+                <div class="field-error">{{ getFieldError(freelancerForm, 'dateOfBirth') }}</div>
+              }
             </div>
           </div>
 
-          <div class="form-field">
+          <div class="form-field" [class.has-error]="hasFieldError(freelancerForm, 'currentPosition')">
             <label>Job Title</label>
-            <input type="text" formControlName="currentPosition" placeholder="Job Title" />
+            <input type="text" formControlName="currentPosition" placeholder="Full Stack Developer" />
+            @if (hasFieldError(freelancerForm, 'currentPosition')) {
+              <div class="field-error">{{ getFieldError(freelancerForm, 'currentPosition') }}</div>
+            }
           </div>
 
           <!-- Password -->
-          <div class="form-field">
-            <label>Password</label>
+          <div class="form-field" [class.has-error]="hasFieldError(freelancerForm, 'password')">
+            <label>Password <span class="required">*</span></label>
             <div class="icon-input">
               <input
                 [type]="showPassword ? 'text' : 'password'"
                 formControlName="password"
-                placeholder="Password (min. 8 characters)"
+                placeholder="Min. 8 characters"
               />
               <button type="button" class="toggle-pw" (click)="togglePassword()">
                 @if (showPassword) {
@@ -157,6 +135,9 @@
                 }
               </button>
             </div>
+            @if (hasFieldError(freelancerForm, 'password')) {
+              <div class="field-error">{{ getFieldError(freelancerForm, 'password') }}</div>
+            }
           </div>
 
           <!-- Error -->
@@ -164,152 +145,144 @@
             <div class="error-message">{{ errorMessage }}</div>
           }
 
-          <!-- Submit -->
-          <button type="submit" class="btn-submit" [disabled]="loading || !emailVerified">
-            {{ loading ? 'Creating...' : 'Create Account' }}
+          <!-- Continue -->
+          <button type="submit" class="btn-submit">
+            Continue
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 0.4rem; vertical-align: middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
         </form>
       }
 
       <!-- ═══════ COMPANY FORM ═══════ -->
       @if (selectedRole === 'company') {
-        <form [formGroup]="companyForm" (ngSubmit)="onSubmit()">
-          <div class="form-field">
-            <label>Company Name</label>
-            <input type="text" formControlName="companyName" placeholder="Company Name" />
-          </div>
-
-          <div class="form-field icon-field">
-            <label>Email Address</label>
-            <div class="email-verify-row">
-              <div class="icon-input" style="flex:1">
-                <svg class="field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                <input type="email" formControlName="email" placeholder="Email Address" [readonly]="emailVerified" />
-              </div>
-              @if (emailVerified) {
-                <span class="verified-badge">&#10003; Verified</span>
-              } @else {
-                <button type="button" class="btn-verify" (click)="sendVerificationCode()" [disabled]="verificationLoading || cooldownSeconds > 0">
-                  {{ verificationLoading ? 'Sending...' : cooldownSeconds > 0 ? 'Resend (' + cooldownSeconds + 's)' : verificationSent ? 'Resend' : 'Send Code' }}
-                </button>
-              }
-            </div>
-            <!-- Verification code section - always visible -->
-            @if (!emailVerified) {
-              <div class="verification-section">
-                <div class="verification-label">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  Enter verification code
-                </div>
-                <div class="email-verify-row">
-                  <input
-                    type="text"
-                    class="code-input"
-                    [(ngModel)]="verificationCode"
-                    [ngModelOptions]="{standalone: true}"
-                    placeholder="000000"
-                    maxlength="6"
-                    [disabled]="!verificationSent"
-                  />
-                  <button
-                    type="button"
-                    class="btn-confirm-code"
-                    (click)="submitVerificationCode()"
-                    [disabled]="verificationLoading || !verificationSent || verificationCode.length !== 6"
-                  >
-                    {{ verificationLoading ? 'Checking...' : 'Confirm' }}
-                  </button>
-                </div>
-                @if (!verificationSent) {
-                  <div class="verification-hint">Click "Send Code" to receive a 6-digit code via email</div>
-                }
-              </div>
-            }
-            @if (verificationError) {
-              <div class="verification-error">{{ verificationError }}</div>
+        <form [formGroup]="companyForm" (ngSubmit)="onContinue()">
+          <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'companyName')">
+            <label>Company Name <span class="required">*</span></label>
+            <input type="text" formControlName="companyName" placeholder="Acme Corporation" />
+            @if (hasFieldError(companyForm, 'companyName')) {
+              <div class="field-error">{{ getFieldError(companyForm, 'companyName') }}</div>
             }
           </div>
 
-          <div class="form-field">
-            <label>Foundation Date</label>
+          <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'foundationDate')">
+            <label>Foundation Date <span class="required">*</span></label>
             <input type="date" formControlName="foundationDate" />
+            @if (hasFieldError(companyForm, 'foundationDate')) {
+              <div class="field-error">{{ getFieldError(companyForm, 'foundationDate') }}</div>
+            }
           </div>
 
-          <div class="form-field icon-field">
+          <div class="form-field icon-field" [class.has-error]="hasFieldError(companyForm, 'websiteUrl')">
             <label>Website URL</label>
             <div class="icon-input">
               <svg class="field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-              <input type="url" formControlName="websiteUrl" placeholder="Website URL" />
+              <input type="url" formControlName="websiteUrl" placeholder="https://company.com" />
             </div>
+            @if (hasFieldError(companyForm, 'websiteUrl')) {
+              <div class="field-error">{{ getFieldError(companyForm, 'websiteUrl') }}</div>
+            }
           </div>
 
-          <div class="form-field">
-            <label>Sector of Activity</label>
-            <input type="text" formControlName="businessSector" placeholder="Sector of activity" />
+          <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'businessSector')">
+            <label>Sector of Activity <span class="required">*</span></label>
+            <input type="text" formControlName="businessSector" placeholder="Technology, Finance..." />
+            @if (hasFieldError(companyForm, 'businessSector')) {
+              <div class="field-error">{{ getFieldError(companyForm, 'businessSector') }}</div>
+            }
           </div>
 
-          <div class="form-field">
-            <label>Legal Form</label>
+          <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'legalForm')">
+            <label>Legal Form <span class="required">*</span></label>
             <select formControlName="legalForm">
               <option value="" disabled>Select a form</option>
               @for (lf of legalForms; track lf) {
                 <option [value]="lf">{{ legalFormLabels[lf] || lf }}</option>
               }
             </select>
+            @if (hasFieldError(companyForm, 'legalForm')) {
+              <div class="field-error">{{ getFieldError(companyForm, 'legalForm') }}</div>
+            }
           </div>
 
-          <div class="form-field">
-            <label>Address</label>
-            <input type="text" formControlName="address" placeholder="Company address" />
+          <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'address')">
+            <label>Address <span class="required">*</span></label>
+            <input type="text" formControlName="address" placeholder="123 Business Street, City" />
+            @if (hasFieldError(companyForm, 'address')) {
+              <div class="field-error">{{ getFieldError(companyForm, 'address') }}</div>
+            }
           </div>
 
-          <div class="form-field">
-            <label>Trade Register</label>
-            <input type="text" formControlName="tradeRegister" placeholder="Trade register number" />
+          <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'tradeRegister')">
+            <label>Trade Register <span class="required">*</span></label>
+            <input type="text" formControlName="tradeRegister" placeholder="B123456789" />
+            @if (hasFieldError(companyForm, 'tradeRegister')) {
+              <div class="field-error">{{ getFieldError(companyForm, 'tradeRegister') }}</div>
+            }
           </div>
 
           <div class="section-title">Manager Information</div>
 
           <div class="form-row">
-            <div class="form-field">
-              <label>Manager Name</label>
-              <input type="text" formControlName="managerName" placeholder="Full name" />
+            <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'managerName')">
+              <label>Manager Name <span class="required">*</span></label>
+              <input type="text" formControlName="managerName" placeholder="John Doe" />
+              @if (hasFieldError(companyForm, 'managerName')) {
+                <div class="field-error">{{ getFieldError(companyForm, 'managerName') }}</div>
+              }
             </div>
-            <div class="form-field">
-              <label>Manager Email</label>
-              <input type="email" formControlName="managerEmail" placeholder="manager@email.com" />
+            <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'managerEmail')">
+              <label>Manager Email <span class="required">*</span></label>
+              <input type="email" formControlName="managerEmail" placeholder="manager@company.com" />
+              @if (hasFieldError(companyForm, 'managerEmail')) {
+                <div class="field-error">{{ getFieldError(companyForm, 'managerEmail') }}</div>
+              }
             </div>
           </div>
 
           <div class="form-row">
-            <div class="form-field">
-              <label>Manager Position</label>
+            <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'managerPosition')">
+              <label>Manager Position <span class="required">*</span></label>
               <input type="text" formControlName="managerPosition" placeholder="CEO, CTO..." />
+              @if (hasFieldError(companyForm, 'managerPosition')) {
+                <div class="field-error">{{ getFieldError(companyForm, 'managerPosition') }}</div>
+              }
             </div>
-            <div class="form-field">
-              <label>Manager Phone</label>
-              <input type="tel" formControlName="managerPhoneNumber" placeholder="+216 XX XXX XXX" />
+            <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'managerPhoneNumber')">
+              <label>Manager Phone <span class="required">*</span></label>
+              <app-phone-input
+                formControlName="managerPhoneNumber"
+                placeholder="XX XXX XXX"
+              ></app-phone-input>
+              @if (hasFieldError(companyForm, 'managerPhoneNumber')) {
+                <div class="field-error">{{ getFieldError(companyForm, 'managerPhoneNumber') }}</div>
+              }
             </div>
           </div>
 
-          <div class="form-field">
+          <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'description')">
             <label>Description</label>
             <input type="text" formControlName="description" placeholder="Short company description" />
+            @if (hasFieldError(companyForm, 'description')) {
+              <div class="field-error">{{ getFieldError(companyForm, 'description') }}</div>
+            }
           </div>
 
-          <div class="form-field">
+          <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'numberOfEmployees')">
             <label>Number of Employees</label>
-            <input type="number" formControlName="numberOfEmployees" placeholder="e.g. 50" />
+            <input type="number" formControlName="numberOfEmployees" placeholder="e.g. 50" min="1" />
+            @if (hasFieldError(companyForm, 'numberOfEmployees')) {
+              <div class="field-error">{{ getFieldError(companyForm, 'numberOfEmployees') }}</div>
+            }
           </div>
 
           <!-- Password -->
-          <div class="form-field">
-            <label>Password</label>
+          <div class="form-field" [class.has-error]="hasFieldError(companyForm, 'password')">
+            <label>Password <span class="required">*</span></label>
             <div class="icon-input">
               <input
                 [type]="showPassword ? 'text' : 'password'"
                 formControlName="password"
-                placeholder="Password (min. 8 characters)"
+                placeholder="Min. 8 characters"
               />
               <button type="button" class="toggle-pw" (click)="togglePassword()">
                 @if (showPassword) {
@@ -319,6 +292,9 @@
                 }
               </button>
             </div>
+            @if (hasFieldError(companyForm, 'password')) {
+              <div class="field-error">{{ getFieldError(companyForm, 'password') }}</div>
+            }
           </div>
 
           <!-- Error -->
@@ -326,9 +302,10 @@
             <div class="error-message">{{ errorMessage }}</div>
           }
 
-          <!-- Submit -->
-          <button type="submit" class="btn-submit" [disabled]="loading || !emailVerified">
-            {{ loading ? 'Creating...' : 'Create Account' }}
+          <!-- Continue -->
+          <button type="submit" class="btn-submit">
+            Continue
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 0.4rem; vertical-align: middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
         </form>
       }

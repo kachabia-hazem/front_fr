@@ -67,8 +67,19 @@ export class ForgotPasswordComponent {
     if (this.codeForm.invalid) return;
 
     this.code = this.codeForm.value.code;
+    this.loading = true;
     this.errorMessage = '';
-    this.step = 'reset';
+
+    this.authService.verifyCode(this.email, this.code).subscribe({
+      next: () => {
+        this.loading = false;
+        this.step = 'reset';
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errorMessage = err.error?.message || 'Code de vérification invalide ou expiré.';
+      },
+    });
   }
 
   resetPassword(): void {

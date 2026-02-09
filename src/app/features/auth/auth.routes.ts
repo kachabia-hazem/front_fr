@@ -23,6 +23,14 @@ export const AUTH_ROUTES: Routes = [
       import('./register/register.component').then((m) => m.RegisterComponent),
   },
   {
+    path: 'register/verify',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./register/register-verify/register-verify.component').then(
+        (m) => m.RegisterVerifyComponent,
+      ),
+  },
+  {
     path: 'oauth/role-selection',
     loadComponent: () =>
       import('./oauth-role-selection/oauth-role-selection.component').then(
