@@ -52,6 +52,12 @@
   margin-bottom: 2rem;
 }
 
+.brand-logo-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
 .brand-name {
   font-size: 1.5rem;
   font-weight: 700;

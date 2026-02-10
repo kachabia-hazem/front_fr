@@ -82,6 +82,46 @@ export const routes: Routes = [
             (m) => m.ViewCompanyProfileComponent,
           ),
       },
+      // Post a job (Company only)
+      {
+        path: 'post-job',
+        loadComponent: () =>
+          import('./features/post-job/post-job.component').then(
+            (m) => m.PostJobComponent,
+          ),
+      },
+      // Edit a mission (Company only)
+      {
+        path: 'edit-mission/:id',
+        loadComponent: () =>
+          import('./features/post-job/post-job.component').then(
+            (m) => m.PostJobComponent,
+          ),
+      },
+      // Freelancers list
+      {
+        path: 'freelancers',
+        loadComponent: () =>
+          import('./features/freelancers/freelancers.component').then(
+            (m) => m.FreelancersComponent,
+          ),
+      },
+      // Mission detail (must be before the list route)
+      {
+        path: 'missions/:id',
+        loadComponent: () =>
+          import('./features/mission-detail/mission-detail.component').then(
+            (m) => m.MissionDetailComponent,
+          ),
+      },
+      // Missions list
+      {
+        path: 'missions',
+        loadComponent: () =>
+          import('./features/missions/missions.component').then(
+            (m) => m.MissionsComponent,
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

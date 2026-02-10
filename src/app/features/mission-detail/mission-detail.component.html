@@ -1,0 +1,250 @@
+<!-- Loading -->
+@if (loading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading mission...</p>
+  </div>
+} @else if (error()) {
+  <div class="error-container">
+    <div class="error-icon">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+    </div>
+    <p>{{ error() }}</p>
+    <button class="btn-back-error" (click)="goBack()">Back to Missions</button>
+  </div>
+} @else if (mission()) {
+
+  <!-- Back Button -->
+  <div class="back-bar">
+    <button class="btn-back" (click)="goBack()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Missions
+    </button>
+  </div>
+
+  <!-- ═══ Mission Detail Container ═══ -->
+  <div class="detail-wrapper">
+    <div class="detail-container">
+
+      <!-- Mission Header -->
+      <div class="mission-header">
+        <div class="header-top">
+          <h1 class="mission-title">{{ mission()!.jobTitle | uppercase }}</h1>
+          <div class="header-badges">
+            @if (mission()!.status) {
+              <span class="badge badge-status">{{ mission()!.status }}</span>
+            }
+            @if (mission()!.createdAt) {
+              <span class="meta-date">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                {{ getTimeAgo(mission()!.createdAt!) }}
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Badges Row -->
+        <div class="badges-row">
+          @if (mission()!.location) {
+            <span class="badge badge-location">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              {{ mission()!.location }}
+            </span>
+          }
+          @if (mission()!.missionType) {
+            <span class="badge badge-type">{{ mission()!.missionType }}</span>
+          }
+          @if (mission()!.field) {
+            <span class="badge badge-field">{{ mission()!.field }}</span>
+          }
+          @if (mission()!.yearsOfExperience) {
+            <span class="badge badge-exp">{{ mission()!.yearsOfExperience }} ans exp.</span>
+          }
+        </div>
+      </div>
+
+      <!-- Key Info Cards -->
+      <div class="info-cards-row">
+        @if (mission()!.tjm) {
+          <div class="info-card info-card-tjm">
+            <div class="info-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="info-card-content">
+              <span class="info-card-label">TJM</span>
+              <span class="info-card-value tjm-value">{{ mission()!.tjm }} DT/jour</span>
+            </div>
+          </div>
+        }
+
+        @if (mission()!.startDate) {
+          <div class="info-card">
+            <div class="info-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="info-card-content">
+              <span class="info-card-label">Duration</span>
+              <span class="info-card-value">{{ formatDate(mission()!.startDate) }}@if (mission()!.endDate) { — {{ formatDate(mission()!.endDate) }}}</span>
+            </div>
+          </div>
+        }
+
+        @if (mission()!.yearsOfExperience) {
+          <div class="info-card">
+            <div class="info-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="info-card-content">
+              <span class="info-card-label">Experience</span>
+              <span class="info-card-value">{{ mission()!.yearsOfExperience }} ans</span>
+            </div>
+          </div>
+        }
+
+        @if (mission()!.location) {
+          <div class="info-card">
+            <div class="info-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div class="info-card-content">
+              <span class="info-card-label">Location</span>
+              <span class="info-card-value">{{ mission()!.location }}</span>
+            </div>
+          </div>
+        }
+
+        @if (mission()!.missionType) {
+          <div class="info-card">
+            <div class="info-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <div class="info-card-content">
+              <span class="info-card-label">Employment Type</span>
+              <span class="info-card-value">{{ mission()!.missionType }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Description Section -->
+      <div class="section">
+        <h2 class="section-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Description
+        </h2>
+        <p class="description-text">{{ mission()!.description }}</p>
+      </div>
+
+      <!-- Required Skills -->
+      @if (mission()!.requiredSkills) {
+        <div class="section">
+          <h2 class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Required Skills
+          </h2>
+          <div class="skills-list">
+            @for (skill of getSkillsList(mission()!.requiredSkills); track skill) {
+              <span class="skill-tag">{{ skill }}</span>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Technical Environment -->
+      @if (mission()!.technicalEnvironment) {
+        <div class="section">
+          <h2 class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Technical Environment
+          </h2>
+          <p class="section-text">{{ mission()!.technicalEnvironment }}</p>
+        </div>
+      }
+
+      <!-- Business Sector / Field -->
+      @if (mission()!.missionBusinessSector || mission()!.field) {
+        <div class="section">
+          <h2 class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            Business Sector / Field
+          </h2>
+          <div class="sector-badges">
+            @if (mission()!.missionBusinessSector) {
+              <span class="badge badge-sector">{{ mission()!.missionBusinessSector }}</span>
+            }
+            @if (mission()!.field) {
+              <span class="badge badge-field-lg">{{ mission()!.field }}</span>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Application Deadline -->
+      @if (mission()!.applicationDeadline) {
+        <div class="section">
+          <h2 class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Application Deadline
+          </h2>
+          <p class="deadline-text">{{ formatDate(mission()!.applicationDeadline!) }}</p>
+        </div>
+      }
+
+      <!-- Footer Actions -->
+      @if (isFreelancer) {
+        <div class="detail-actions">
+          <button class="btn-postuler-lg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            Postuler
+          </button>
+          <button class="btn-matching-lg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/></svg>
+            Matching
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- ═══ Company Section ═══ -->
+    @if (mission()!.companyName || mission()!.companyId) {
+      <div class="company-section">
+        <h2 class="company-section-title">About the Company</h2>
+        <div class="company-card">
+          <div class="company-header">
+            <div class="company-avatar">
+              @if (mission()!.companyLogo) {
+                <img [src]="getFileUrl(mission()!.companyLogo)" [alt]="mission()!.companyName" />
+              } @else {
+                <span class="avatar-letter">{{ (mission()!.companyName || 'C').charAt(0) | uppercase }}</span>
+              }
+            </div>
+            <div class="company-info">
+              <h3 class="company-name">{{ mission()!.companyName || 'Entreprise' }}</h3>
+              @if (mission()!.businessSector) {
+                <span class="company-sector">{{ mission()!.businessSector }}</span>
+              }
+            </div>
+          </div>
+
+          @if (mission()!.companyDescription) {
+            <p class="company-description">{{ getTruncatedDescription(mission()!.companyDescription, 300) }}</p>
+          }
+
+          @if (mission()!.numberOfEmployees) {
+            <div class="company-stat">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>{{ mission()!.numberOfEmployees }} employees</span>
+            </div>
+          }
+
+          @if (mission()!.companyId) {
+            <a class="btn-view-company" [routerLink]="['/company-profile', mission()!.companyId]">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              View Company Profile
+            </a>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

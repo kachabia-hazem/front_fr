@@ -8,6 +8,12 @@
   transition: background 0.3s, border-color 0.3s;
 }
 
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
 .logo {
   display: flex;
   align-items: center;
@@ -15,7 +21,64 @@
   text-decoration: none;
   font-size: 1.25rem;
   font-weight: 700;
+  color: var(--logo-color, #1f2937);
+}
+
+.logo-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-menu-link {
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  padding: 0.4rem 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.nav-menu-link:hover {
+  color: var(--text-primary, #1f2937);
+}
+
+.nav-menu-link.active-link {
   color: var(--logo-color, #5aaa9e);
+  border-bottom-color: var(--logo-color, #5aaa9e);
+}
+
+/* ── Post a Job Button ── */
+
+.btn-post-job {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #5aaa9e 0%, #478f85 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(90, 170, 158, 0.3);
+}
+
+.btn-post-job:hover {
+  background: linear-gradient(135deg, #478f85 0%, #3a7d72 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(90, 170, 158, 0.4);
+  color: #fff;
 }
 
 .nav-right {
