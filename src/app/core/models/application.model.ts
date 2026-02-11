@@ -11,6 +11,8 @@ export interface CreateApplicationRequest {
   salaryExpectations: string;
   currentSalaryAndNotice: string;
   previouslyWorked: string;
+  previousWorkDate?: string;
+  previousWorkExperience?: string;
 }
 
 export interface Application {
@@ -29,6 +31,8 @@ export interface Application {
   salaryExpectations: string;
   currentSalaryAndNotice: string;
   previouslyWorked: string;
+  previousWorkDate?: string;
+  previousWorkExperience?: string;
   status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'WITHDRAWN';
   submittedAt: string;
   updatedAt: string;

@@ -477,6 +477,42 @@
               }
             </div>
 
+            <!-- Conditional fields when "Yes" is selected -->
+            @if (questionsForm.get('previouslyWorked')?.value === 'yes') {
+              <div class="form-group">
+                <label class="form-label" for="previousWorkDate">
+                  When did you work with us? <span class="required-star">*</span>
+                </label>
+                <input
+                  id="previousWorkDate"
+                  type="date"
+                  class="form-input"
+                  formControlName="previousWorkDate"
+                  [class.input-error]="isQuestionInvalid('previousWorkDate')"
+                />
+                @if (isQuestionInvalid('previousWorkDate')) {
+                  <span class="field-error">Please provide the date</span>
+                }
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="previousWorkExperience">
+                  Tell us about your experience <span class="required-star">*</span>
+                </label>
+                <textarea
+                  id="previousWorkExperience"
+                  class="form-input form-textarea"
+                  formControlName="previousWorkExperience"
+                  placeholder="Describe your previous experience with this company..."
+                  rows="4"
+                  [class.input-error]="isQuestionInvalid('previousWorkExperience')"
+                ></textarea>
+                @if (isQuestionInvalid('previousWorkExperience')) {
+                  <span class="field-error">Please describe your experience</span>
+                }
+              </div>
+            }
+
             <!-- Buttons -->
             <div class="form-buttons">
               <button type="button" class="btn-previous" (click)="onPrevious()">
@@ -665,6 +701,18 @@
                   <span class="review-field-label">Previously worked with us</span>
                   <span class="review-field-value">{{ questionsForm.get('previouslyWorked')?.value === 'yes' ? 'Yes' : 'No' }}</span>
                 </div>
+                @if (questionsForm.get('previouslyWorked')?.value === 'yes') {
+                  <div class="review-field-divider"></div>
+                  <div class="review-field">
+                    <span class="review-field-label">Previous work date</span>
+                    <span class="review-field-value">{{ questionsForm.get('previousWorkDate')?.value || '—' }}</span>
+                  </div>
+                  <div class="review-field-divider"></div>
+                  <div class="review-field">
+                    <span class="review-field-label">Previous experience</span>
+                    <span class="review-field-value">{{ questionsForm.get('previousWorkExperience')?.value || '—' }}</span>
+                  </div>
+                }
               </div>
             </div>
 

@@ -92,6 +92,25 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
       salaryExpectations: ['', Validators.required],
       currentSalaryAndNotice: ['', Validators.required],
       previouslyWorked: ['', Validators.required],
+      previousWorkDate: [''],
+      previousWorkExperience: [''],
+    });
+
+    // Toggle validators when "previouslyWorked" changes
+    this.questionsForm.get('previouslyWorked')?.valueChanges.subscribe((value) => {
+      const dateCtrl = this.questionsForm.get('previousWorkDate')!;
+      const expCtrl = this.questionsForm.get('previousWorkExperience')!;
+      if (value === 'yes') {
+        dateCtrl.setValidators(Validators.required);
+        expCtrl.setValidators(Validators.required);
+      } else {
+        dateCtrl.clearValidators();
+        expCtrl.clearValidators();
+        dateCtrl.setValue('');
+        expCtrl.setValue('');
+      }
+      dateCtrl.updateValueAndValidity();
+      expCtrl.updateValueAndValidity();
     });
 
     const missionId = this.route.snapshot.paramMap.get('id');
@@ -475,6 +494,8 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
       salaryExpectations: this.questionsForm.get('salaryExpectations')?.value,
       currentSalaryAndNotice: this.questionsForm.get('currentSalaryAndNotice')?.value,
       previouslyWorked: this.questionsForm.get('previouslyWorked')?.value,
+      previousWorkDate: this.questionsForm.get('previousWorkDate')?.value || undefined,
+      previousWorkExperience: this.questionsForm.get('previousWorkExperience')?.value || undefined,
     };
 
     this.applicationService.submitApplication(request).subscribe({

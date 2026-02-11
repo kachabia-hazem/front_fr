@@ -220,6 +220,12 @@
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
 }
 
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.5;
+}
+
 .field-error {
   font-size: 0.78rem;
   color: #ef4444;
