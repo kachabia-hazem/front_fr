@@ -106,6 +106,14 @@ export const routes: Routes = [
             (m) => m.FreelancersComponent,
           ),
       },
+      // Apply to a mission (Freelancer)
+      {
+        path: 'apply/:id',
+        loadComponent: () =>
+          import('./features/apply-mission/apply-mission.component').then(
+            (m) => m.ApplyMissionComponent,
+          ),
+      },
       // Mission detail (must be before the list route)
       {
         path: 'missions/:id',

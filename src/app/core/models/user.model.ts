@@ -22,6 +22,10 @@ export interface Freelancer extends User {
   languages: Language[];
   currentPosition?: string;
   location?: string;
+  country?: string;
+  postalCode?: string;
+  city?: string;
+  postalAddress?: string;
   bio?: string;
   profilePicture?: string;
   skills?: string[];

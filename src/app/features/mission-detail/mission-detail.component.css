@@ -186,6 +186,11 @@
   letter-spacing: 0.04em;
 }
 
+.badge-status-closed {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
 .badge-location {
   background: #f3f4f6;
   color: #6b7280;

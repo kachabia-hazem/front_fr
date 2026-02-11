@@ -1,0 +1,774 @@
+<!-- Loading State -->
+@if (loading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading application form...</p>
+  </div>
+} @else if (error()) {
+  <div class="error-container">
+    <div class="error-icon">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="15" y1="9" x2="9" y2="15"/>
+        <line x1="9" y1="9" x2="15" y2="15"/>
+      </svg>
+    </div>
+    <p>{{ error() }}</p>
+    <button class="btn-back-error" (click)="saveAndClose()">Back to Missions</button>
+  </div>
+} @else {
+
+  <!-- Main Layout -->
+  <div class="apply-page">
+    <div class="apply-layout" [class.layout-full-width]="currentStep >= 5">
+
+      <!-- ══════ Left Column: Form ══════ -->
+      <div class="form-column">
+
+        <!-- Save & Close -->
+        @if (currentStep !== 5) {
+          <button class="btn-save-close" (click)="saveAndClose()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            Save & Close
+          </button>
+        }
+
+        <!-- Progress Bar -->
+        <div class="progress-section">
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" [style.width.%]="progressPercent"></div>
+          </div>
+          <span class="progress-label">{{ progressPercent }}%</span>
+        </div>
+
+        <!-- ══════ STEP 1: Contact Information ══════ -->
+        @if (currentStep === 1) {
+          <div class="step-header">
+            <h1 class="step-title">Your Contact Information</h1>
+            <p class="step-subtitle">Fields marked with an asterisk (<span class="required-star">*</span>) are required.</p>
+          </div>
+
+          <form [formGroup]="contactForm" (ngSubmit)="onContinue()" class="application-form">
+
+            <!-- First Name -->
+            <div class="form-group">
+              <label class="form-label" for="firstName">
+                First Name <span class="required-star">*</span>
+              </label>
+              <input
+                id="firstName"
+                type="text"
+                class="form-input"
+                formControlName="firstName"
+                placeholder="Enter your first name"
+                [class.input-error]="isFieldInvalid('firstName')"
+              />
+              @if (isFieldInvalid('firstName')) {
+                <span class="field-error">First name is required</span>
+              }
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+              <label class="form-label" for="lastName">
+                Last Name <span class="required-star">*</span>
+              </label>
+              <input
+                id="lastName"
+                type="text"
+                class="form-input"
+                formControlName="lastName"
+                placeholder="Enter your last name"
+                [class.input-error]="isFieldInvalid('lastName')"
+              />
+              @if (isFieldInvalid('lastName')) {
+                <span class="field-error">Last name is required</span>
+              }
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label class="form-label" for="email">Email Address</label>
+              <div class="email-display">
+                <span class="email-value">{{ freelancer()?.email }}</span>
+                <div class="email-info-icon-wrapper">
+                  <div class="email-info-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="16" x2="12" y2="12"/>
+                      <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                  </div>
+                  <div class="email-tooltip">
+                    This is the email address associated with your account. To change it, go to your account settings.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-group">
+              <label class="form-label" for="phoneNumber">
+                Phone Number <span class="required-star">*</span>
+              </label>
+              <app-phone-input
+                formControlName="phoneNumber"
+                placeholder="Phone number"
+                [class.input-error]="isFieldInvalid('phoneNumber')"
+              ></app-phone-input>
+              @if (isFieldInvalid('phoneNumber')) {
+                <span class="field-error">
+                  @if (contactForm.get('phoneNumber')?.errors?.['required']) {
+                    Phone number is required
+                  } @else {
+                    Please enter a valid phone number
+                  }
+                </span>
+              }
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+              @if (editingFromReview) {
+                <button type="button" class="btn-previous" (click)="onPrevious()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"/>
+                  </svg>
+                  Cancel
+                </button>
+              }
+              <button type="submit" class="btn-continue">
+                @if (editingFromReview) {
+                  Save Changes
+                } @else {
+                  Continue
+                }
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 6 15 12 9 18"/>
+                </svg>
+              </button>
+            </div>
+          </form>
+        }
+
+        <!-- ══════ STEP 2: Location Information ══════ -->
+        @if (currentStep === 2) {
+          <div class="step-header">
+            <h1 class="step-title">Verify Your Location Details</h1>
+            <p class="step-description">
+              By providing your location, you help us match you with relevant jobs and estimate your commute time. Any changes will be saved to your profile.
+            </p>
+            <p class="step-subtitle">Fields marked with an asterisk (<span class="required-star">*</span>) are required.</p>
+          </div>
+
+          <form [formGroup]="locationForm" (ngSubmit)="onContinue()" class="application-form">
+
+            <!-- Country -->
+            <div class="form-group">
+              <label class="form-label">
+                Country <span class="required-star">*</span>
+              </label>
+              @if (!editingCountry) {
+                <div class="country-display">
+                  <span class="country-value">{{ locationForm.get('country')?.value || 'Not set' }}</span>
+                  <button type="button" class="btn-edit-inline" (click)="toggleEditCountry()">Edit</button>
+                </div>
+              } @else {
+                <input
+                  type="text"
+                  class="form-input"
+                  formControlName="country"
+                  placeholder="Enter your country"
+                  [class.input-error]="isFieldInvalid('country')"
+                />
+                @if (isFieldInvalid('country')) {
+                  <span class="field-error">Country is required</span>
+                }
+              }
+            </div>
+
+            <!-- Postal Code -->
+            <div class="form-group">
+              <label class="form-label" for="postalCode">Postal Code</label>
+              <input
+                id="postalCode"
+                type="text"
+                class="form-input"
+                formControlName="postalCode"
+                placeholder="Enter your postal code"
+              />
+            </div>
+
+            <!-- City -->
+            <div class="form-group">
+              <label class="form-label" for="city">City</label>
+              <input
+                id="city"
+                type="text"
+                class="form-input"
+                formControlName="city"
+                placeholder="Enter your city"
+              />
+            </div>
+
+            <!-- Postal Address -->
+            <div class="form-group">
+              <label class="form-label" for="postalAddress">Postal Address</label>
+              <p class="field-hint">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                Employers will not see this information.
+              </p>
+              <input
+                id="postalAddress"
+                type="text"
+                class="form-input"
+                formControlName="postalAddress"
+                placeholder="Enter your postal address"
+              />
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+              <button type="button" class="btn-previous" (click)="onPrevious()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15 18 9 12 15 6"/>
+                </svg>
+                @if (editingFromReview) { Cancel } @else { Previous }
+              </button>
+              <button type="submit" class="btn-continue">
+                @if (editingFromReview) { Save Changes } @else { Continue }
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 6 15 12 9 18"/>
+                </svg>
+              </button>
+            </div>
+          </form>
+        }
+
+        <!-- ══════ STEP 3: CV Upload ══════ -->
+        @if (currentStep === 3) {
+          <div class="step-header">
+            <h1 class="step-title">Upload Your CV</h1>
+            <p class="step-description">
+              Please upload your CV so we can review your qualifications.
+            </p>
+          </div>
+
+          <!-- Hidden file input -->
+          <input
+            type="file"
+            accept=".pdf,.docx,.rtf,.txt"
+            (change)="onCvFileSelected($event)"
+            #cvFileInput
+            class="cv-file-input"
+          />
+
+          <div class="cv-options">
+            <!-- Option 1: Import CV (upload file) -->
+            <div
+              class="cv-option-card"
+              [class.cv-option-selected]="cvOption === 'upload'"
+              (click)="cvFileInput.click()"
+            >
+              <div class="cv-option-header">
+                <div class="cv-option-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                </div>
+                <div class="cv-option-text">
+                  <h3 class="cv-option-title">Import your CV</h3>
+                  <p class="cv-option-desc">Accepted file types: PDF (recommended), DOCX, RTF or TXT.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Separator -->
+            <div class="cv-separator">
+              <span>or</span>
+            </div>
+
+            <!-- Option 2: Import from profile -->
+            @if (hasProfileCv) {
+              <div
+                class="cv-option-card"
+                [class.cv-option-selected]="cvOption === 'profile'"
+                (click)="selectCvOption('profile')"
+              >
+                <div class="cv-option-header">
+                  <div class="cv-option-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                  </div>
+                  <div class="cv-option-text">
+                    <h3 class="cv-option-title">Import your CV from your profile</h3>
+                    <p class="cv-option-desc">Use the CV you already uploaded to your profile.</p>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- CV Selected Info + Clear -->
+          @if (cvOption) {
+            <div class="cv-selected-bar">
+              <div class="cv-file-info">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                </svg>
+                <span>{{ cvOption === 'upload' ? uploadedCvName : profileCvName }}</span>
+              </div>
+              <button type="button" class="cv-clear-btn" (click)="clearCvSelection(); cvFileInput.value = ''">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          }
+
+          <!-- PDF Preview -->
+          @if (pdfLoading) {
+            <div class="pdf-loading">
+              <div class="spinner"></div>
+              <p>Loading preview...</p>
+            </div>
+          }
+
+          @if (showPdfPreview) {
+            <div class="pdf-preview-container">
+              <div class="pdf-canvas-wrapper">
+                <!-- Left Arrow -->
+                <button
+                  type="button"
+                  class="pdf-nav-arrow pdf-nav-left"
+                  [disabled]="pdfCurrentPage <= 1"
+                  (click)="goToPdfPage(pdfCurrentPage - 1)"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="15 18 9 12 15 6"/>
+                  </svg>
+                </button>
+
+                <canvas #pdfCanvas class="pdf-canvas"></canvas>
+
+                <!-- Right Arrow -->
+                <button
+                  type="button"
+                  class="pdf-nav-arrow pdf-nav-right"
+                  [disabled]="pdfCurrentPage >= pdfTotalPages"
+                  (click)="goToPdfPage(pdfCurrentPage + 1)"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="9 6 15 12 9 18"/>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Page Navigation -->
+              <div class="pdf-page-nav">
+                <input
+                  type="number"
+                  class="pdf-page-input"
+                  [value]="pdfCurrentPage"
+                  (change)="onPageInputChange($event)"
+                  min="1"
+                  [max]="pdfTotalPages"
+                />
+                <span class="pdf-page-total">/ {{ pdfTotalPages }}</span>
+              </div>
+            </div>
+          }
+
+          <!-- Buttons -->
+          <div class="form-buttons" style="margin-top: 1.5rem;">
+            <button type="button" class="btn-previous" (click)="onPrevious()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+              @if (editingFromReview) { Cancel } @else { Previous }
+            </button>
+            <button type="button" class="btn-continue" (click)="onContinue()">
+              @if (editingFromReview) { Save Changes } @else { Continue }
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 6 15 12 9 18"/>
+              </svg>
+            </button>
+          </div>
+        }
+
+        <!-- ══════ STEP 4: Employer Questions ══════ -->
+        @if (currentStep === 4) {
+          <div class="step-header">
+            <h1 class="step-title">A Few Questions</h1>
+            <p class="step-description">
+              Help the employer better understand your profile by answering the following questions.
+            </p>
+            <p class="step-subtitle">Fields marked with an asterisk (<span class="required-star">*</span>) are required.</p>
+          </div>
+
+          <form [formGroup]="questionsForm" (ngSubmit)="onContinue()" class="application-form">
+
+            <!-- Q1: Salary Expectations -->
+            <div class="form-group">
+              <label class="form-label" for="salaryExpectations">
+                Please confirm your salary expectations <span class="required-star">*</span>
+              </label>
+              <input
+                id="salaryExpectations"
+                type="text"
+                class="form-input"
+                formControlName="salaryExpectations"
+                placeholder="e.g. 500 DT/day"
+                [class.input-error]="isQuestionInvalid('salaryExpectations')"
+              />
+              @if (isQuestionInvalid('salaryExpectations')) {
+                <span class="field-error">This field is required</span>
+              }
+            </div>
+
+            <!-- Q2: Current Salary & Notice Period -->
+            <div class="form-group">
+              <label class="form-label" for="currentSalaryAndNotice">
+                Please confirm your current salary and notice period <span class="required-star">*</span>
+              </label>
+              <input
+                id="currentSalaryAndNotice"
+                type="text"
+                class="form-input"
+                formControlName="currentSalaryAndNotice"
+                placeholder="e.g. 400 DT/day, 1 month notice"
+                [class.input-error]="isQuestionInvalid('currentSalaryAndNotice')"
+              />
+              @if (isQuestionInvalid('currentSalaryAndNotice')) {
+                <span class="field-error">This field is required</span>
+              }
+            </div>
+
+            <!-- Q3: Previously Worked -->
+            <div class="form-group">
+              <label class="form-label">
+                Have you previously worked with us? <span class="required-star">*</span>
+              </label>
+              <div class="radio-group">
+                <label class="radio-option" [class.radio-selected]="questionsForm.get('previouslyWorked')?.value === 'yes'">
+                  <input type="radio" formControlName="previouslyWorked" value="yes" />
+                  <span class="radio-circle"></span>
+                  <span class="radio-label">Yes</span>
+                </label>
+                <label class="radio-option" [class.radio-selected]="questionsForm.get('previouslyWorked')?.value === 'no'">
+                  <input type="radio" formControlName="previouslyWorked" value="no" />
+                  <span class="radio-circle"></span>
+                  <span class="radio-label">No</span>
+                </label>
+              </div>
+              @if (isQuestionInvalid('previouslyWorked')) {
+                <span class="field-error">Please select an option</span>
+              }
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+              <button type="button" class="btn-previous" (click)="onPrevious()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15 18 9 12 15 6"/>
+                </svg>
+                @if (editingFromReview) { Cancel } @else { Previous }
+              </button>
+              <button type="submit" class="btn-continue">
+                @if (editingFromReview) { Save Changes } @else { Continue }
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 6 15 12 9 18"/>
+                </svg>
+              </button>
+            </div>
+          </form>
+        }
+
+        <!-- ══════ STEP 5: Preparation ══════ -->
+        @if (currentStep === 5) {
+          <div class="preparation-container">
+            <div class="preparation-illustration">
+              <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background circle -->
+                <circle cx="80" cy="80" r="70" fill="#f0f4f8"/>
+                <!-- Document 1 (back) -->
+                <g transform="rotate(-8, 80, 80)">
+                  <rect x="42" y="30" width="72" height="92" rx="6" fill="#fff" stroke="#d1d5db" stroke-width="1.5"/>
+                  <rect x="54" y="52" width="48" height="4" rx="2" fill="#c7d8e8"/>
+                  <rect x="54" y="62" width="40" height="4" rx="2" fill="#c7d8e8"/>
+                  <rect x="54" y="72" width="44" height="4" rx="2" fill="#c7d8e8"/>
+                  <rect x="54" y="82" width="36" height="4" rx="2" fill="#c7d8e8"/>
+                  <rect x="54" y="92" width="42" height="4" rx="2" fill="#c7d8e8"/>
+                </g>
+                <!-- Document 2 (front) with profile -->
+                <g transform="rotate(6, 85, 78)">
+                  <rect x="52" y="34" width="68" height="88" rx="6" fill="#fff" stroke="#d1d5db" stroke-width="1.5"/>
+                  <!-- Profile circle -->
+                  <circle cx="86" cy="62" r="14" fill="#e8f4f2"/>
+                  <circle cx="86" cy="58" r="6" fill="#5aaa9e"/>
+                  <path d="M76 72c0-5.5 4.5-8 10-8s10 2.5 10 8" fill="#5aaa9e" opacity="0.7"/>
+                  <!-- Lines -->
+                  <rect x="64" y="84" width="44" height="3.5" rx="1.75" fill="#c7d8e8"/>
+                  <rect x="64" y="93" width="36" height="3.5" rx="1.75" fill="#c7d8e8"/>
+                  <rect x="64" y="102" width="40" height="3.5" rx="1.75" fill="#c7d8e8"/>
+                </g>
+              </svg>
+            </div>
+            <h2 class="preparation-title">Preparing your application</h2>
+            <div class="preparation-bar-track">
+              <div class="preparation-bar-fill" [style.width.%]="preparationProgress"></div>
+            </div>
+          </div>
+        }
+
+        <!-- ══════ STEP 6: Review ══════ -->
+        @if (currentStep === 6) {
+          <div class="review-container">
+            <h1 class="step-title">Review Your Application</h1>
+            <p class="step-description">
+              You will not be able to make changes after submitting your application.
+            </p>
+
+            <!-- ── Contact Information ── -->
+            <div class="review-section">
+              <div class="review-section-header">
+                <h3 class="review-section-title">Contact Information</h3>
+                <button type="button" class="btn-review-edit" (click)="goToStep(1)">Edit</button>
+              </div>
+              <div class="review-fields">
+                <div class="review-field">
+                  <span class="review-field-label">First Name</span>
+                  <span class="review-field-value">{{ contactForm.get('firstName')?.value }}</span>
+                </div>
+                <div class="review-field-divider"></div>
+                <div class="review-field">
+                  <span class="review-field-label">Last Name</span>
+                  <span class="review-field-value">{{ contactForm.get('lastName')?.value }}</span>
+                </div>
+                <div class="review-field-divider"></div>
+                <div class="review-field">
+                  <span class="review-field-label">Full Name</span>
+                  <span class="review-field-value">{{ contactFullName }}</span>
+                </div>
+                <div class="review-field-divider"></div>
+                <div class="review-field">
+                  <span class="review-field-label">Email Address</span>
+                  <span class="review-field-value review-field-bold">{{ freelancer()?.email }}</span>
+                  <p class="review-field-hint">
+                    To help prevent fraud, your email address may be hidden from employers. They will still be able to contact you through the platform.
+                  </p>
+                </div>
+                <div class="review-field-divider"></div>
+                <div class="review-field">
+                  <span class="review-field-label">Phone Number</span>
+                  <span class="review-field-value review-field-bold">{{ contactForm.get('phoneNumber')?.value }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Location Details ── -->
+            <div class="review-section">
+              <div class="review-section-header">
+                <h3 class="review-section-title">Location Details</h3>
+                <button type="button" class="btn-review-edit" (click)="goToStep(2)">Edit</button>
+              </div>
+              <div class="review-fields">
+                <div class="review-field">
+                  <span class="review-field-label">Country</span>
+                  <span class="review-field-value">{{ locationForm.get('country')?.value || '—' }}</span>
+                </div>
+                @if (locationForm.get('postalCode')?.value) {
+                  <div class="review-field-divider"></div>
+                  <div class="review-field">
+                    <span class="review-field-label">Postal Code</span>
+                    <span class="review-field-value">{{ locationForm.get('postalCode')?.value }}</span>
+                  </div>
+                }
+                @if (locationForm.get('city')?.value) {
+                  <div class="review-field-divider"></div>
+                  <div class="review-field">
+                    <span class="review-field-label">City</span>
+                    <span class="review-field-value">{{ locationForm.get('city')?.value }}</span>
+                  </div>
+                }
+                @if (locationForm.get('postalAddress')?.value) {
+                  <div class="review-field-divider"></div>
+                  <div class="review-field">
+                    <span class="review-field-label">Postal Address</span>
+                    <span class="review-field-value">{{ locationForm.get('postalAddress')?.value }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- ── CV ── -->
+            <div class="review-section">
+              <div class="review-section-header">
+                <h3 class="review-section-title">CV / Resume</h3>
+                <div class="review-cv-actions">
+                  @if (cvOption) {
+                    <button type="button" class="btn-review-download" (click)="downloadCv()">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                      </svg>
+                      Download
+                    </button>
+                  }
+                  <button type="button" class="btn-review-edit" (click)="goToStep(3)">Edit</button>
+                </div>
+              </div>
+              <div class="review-fields">
+                <div class="review-field">
+                  <span class="review-field-label">Attached CV</span>
+                  <div class="review-cv-file">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5aaa9e" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                    <span class="review-field-value">{{ reviewCvName }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Employer Questions ── -->
+            <div class="review-section">
+              <div class="review-section-header">
+                <h3 class="review-section-title">Employer Questions</h3>
+                <button type="button" class="btn-review-edit" (click)="goToStep(4)">Edit</button>
+              </div>
+              <div class="review-fields">
+                <div class="review-field">
+                  <span class="review-field-label">Salary expectations</span>
+                  <span class="review-field-value">{{ questionsForm.get('salaryExpectations')?.value || '—' }}</span>
+                </div>
+                <div class="review-field-divider"></div>
+                <div class="review-field">
+                  <span class="review-field-label">Current salary and notice period</span>
+                  <span class="review-field-value">{{ questionsForm.get('currentSalaryAndNotice')?.value || '—' }}</span>
+                </div>
+                <div class="review-field-divider"></div>
+                <div class="review-field">
+                  <span class="review-field-label">Previously worked with us</span>
+                  <span class="review-field-value">{{ questionsForm.get('previouslyWorked')?.value === 'yes' ? 'Yes' : 'No' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Error -->
+            @if (submitError()) {
+              <div class="submit-error-message" style="color: #dc3545; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 14px;">
+                {{ submitError() }}
+              </div>
+            }
+
+            <!-- Submit Button -->
+            <div class="review-submit-area">
+              <button type="button" class="btn-submit-application" (click)="onSubmitApplication()" [disabled]="submitting()">
+                @if (submitting()) {
+                  Submitting...
+                } @else {
+                  Submit Application
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 6 15 12 9 18"/>
+                  </svg>
+                }
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- ══════ Right Column: Mission Summary (steps 1-4 only) ══════ -->
+      @if (currentStep <= 4) {
+        <div class="summary-column">
+          <div class="mission-summary-card">
+            <!-- Job Title & Company -->
+            <h2 class="summary-job-title">{{ mission()!.jobTitle }}</h2>
+            <p class="summary-company-info">
+              {{ mission()!.companyName || 'Company' }}
+              @if (mission()!.location) {
+                <span class="summary-dot">&middot;</span>
+                {{ mission()!.location }}
+              }
+            </p>
+
+            <div class="summary-divider"></div>
+
+            <!-- About Company -->
+            @if (mission()!.companyName || mission()!.companyDescription) {
+              <h3 class="summary-section-title">About {{ mission()!.companyName || 'the Company' }}</h3>
+              @if (mission()!.companyDescription) {
+                <p class="summary-description">
+                  @if (showFullDescription()) {
+                    {{ mission()!.companyDescription }}
+                  } @else {
+                    {{ getTruncatedDescription(mission()!.companyDescription, 200) }}
+                  }
+                </p>
+                @if (mission()!.companyDescription!.length > 200) {
+                  <button class="btn-toggle-desc" (click)="toggleDescription()">
+                    @if (showFullDescription()) {
+                      Show less
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+                    } @else {
+                      View full job description
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    }
+                  </button>
+                }
+              }
+            }
+
+            <!-- Quick Info -->
+            <div class="summary-divider"></div>
+            <div class="summary-quick-info">
+              @if (mission()!.missionType) {
+                <div class="quick-info-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                  </svg>
+                  <span>{{ mission()!.missionType }}</span>
+                </div>
+              }
+              @if (mission()!.tjm) {
+                <div class="quick-info-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  </svg>
+                  <span>{{ mission()!.tjm }} DT/day</span>
+                </div>
+              }
+              @if (mission()!.yearsOfExperience) {
+                <div class="quick-info-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                  <span>{{ mission()!.yearsOfExperience }}+ years experience</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+
+}

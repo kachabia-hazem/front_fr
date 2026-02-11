@@ -32,7 +32,7 @@
           <h1 class="mission-title">{{ mission()!.jobTitle | uppercase }}</h1>
           <div class="header-badges">
             @if (mission()!.status) {
-              <span class="badge badge-status">{{ mission()!.status }}</span>
+              <span class="badge badge-status" [class.badge-status-closed]="mission()!.status === 'CLOSED'">{{ mission()!.status }}</span>
             }
             @if (mission()!.createdAt) {
               <span class="meta-date">
@@ -191,11 +191,11 @@
       }
 
       <!-- Footer Actions -->
-      @if (isFreelancer) {
+      @if (isFreelancer && mission()!.status !== 'CLOSED') {
         <div class="detail-actions">
-          <button class="btn-postuler-lg">
+          <button class="btn-postuler-lg" (click)="applyToMission()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-            Postuler
+            Apply
           </button>
           <button class="btn-matching-lg">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/></svg>

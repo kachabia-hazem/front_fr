@@ -16,6 +16,10 @@ export interface UpdateFreelancerRequest {
   languages?: string[];
   currentPosition?: string;
   location?: string;
+  country?: string;
+  postalCode?: string;
+  city?: string;
+  postalAddress?: string;
   bio?: string;
   skills?: string[];
   portfolioUrl?: string;

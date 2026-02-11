@@ -496,7 +496,7 @@ export class MissionsComponent implements OnInit {
   }
 
   getMissionStatus(mission: any): string {
-    if (this.isDeadlinePassed(mission)) return 'CLOSED';
+    if (mission.status === 'CLOSED' || this.isDeadlinePassed(mission)) return 'CLOSED';
     return mission.status || 'OPEN';
   }
 
@@ -550,5 +550,10 @@ export class MissionsComponent implements OnInit {
     if (!relativePath) return '';
     const baseUrl = environment.apiUrl.replace(/\/api$/, '');
     return baseUrl + relativePath;
+  }
+
+  applyToMission(event: Event, mission: Mission): void {
+    event.stopPropagation();
+    this.router.navigate(['/apply', mission.id]);
   }
 }

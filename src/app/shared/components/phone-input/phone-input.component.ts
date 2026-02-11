@@ -7,6 +7,7 @@ export interface Country {
   code: string;
   dialCode: string;
   flag: string;
+  format?: string; // e.g. 'XX-XXX-XXX'
 }
 
 @Component({
@@ -32,18 +33,18 @@ export class PhoneInputComponent implements ControlValueAccessor {
   selectedCountry: Country;
 
   countries: Country[] = [
-    { name: 'Tunisia', code: 'tn', dialCode: '+216', flag: 'https://flagcdn.com/w40/tn.png' },
-    { name: 'France', code: 'fr', dialCode: '+33', flag: 'https://flagcdn.com/w40/fr.png' },
-    { name: 'United States', code: 'us', dialCode: '+1', flag: 'https://flagcdn.com/w40/us.png' },
-    { name: 'United Kingdom', code: 'gb', dialCode: '+44', flag: 'https://flagcdn.com/w40/gb.png' },
+    { name: 'Tunisia', code: 'tn', dialCode: '+216', flag: 'https://flagcdn.com/w40/tn.png', format: 'XX-XXX-XXX' },
+    { name: 'France', code: 'fr', dialCode: '+33', flag: 'https://flagcdn.com/w40/fr.png', format: 'X XX XX XX XX' },
+    { name: 'United States', code: 'us', dialCode: '+1', flag: 'https://flagcdn.com/w40/us.png', format: 'XXX-XXX-XXXX' },
+    { name: 'United Kingdom', code: 'gb', dialCode: '+44', flag: 'https://flagcdn.com/w40/gb.png', format: 'XXXX XXXXXX' },
     { name: 'Germany', code: 'de', dialCode: '+49', flag: 'https://flagcdn.com/w40/de.png' },
     { name: 'Spain', code: 'es', dialCode: '+34', flag: 'https://flagcdn.com/w40/es.png' },
     { name: 'Italy', code: 'it', dialCode: '+39', flag: 'https://flagcdn.com/w40/it.png' },
     { name: 'Belgium', code: 'be', dialCode: '+32', flag: 'https://flagcdn.com/w40/be.png' },
     { name: 'Switzerland', code: 'ch', dialCode: '+41', flag: 'https://flagcdn.com/w40/ch.png' },
-    { name: 'Canada', code: 'ca', dialCode: '+1', flag: 'https://flagcdn.com/w40/ca.png' },
-    { name: 'Morocco', code: 'ma', dialCode: '+212', flag: 'https://flagcdn.com/w40/ma.png' },
-    { name: 'Algeria', code: 'dz', dialCode: '+213', flag: 'https://flagcdn.com/w40/dz.png' },
+    { name: 'Canada', code: 'ca', dialCode: '+1', flag: 'https://flagcdn.com/w40/ca.png', format: 'XXX-XXX-XXXX' },
+    { name: 'Morocco', code: 'ma', dialCode: '+212', flag: 'https://flagcdn.com/w40/ma.png', format: 'XXX-XXXXXX' },
+    { name: 'Algeria', code: 'dz', dialCode: '+213', flag: 'https://flagcdn.com/w40/dz.png', format: 'XXX-XX-XX-XX' },
     { name: 'Libya', code: 'ly', dialCode: '+218', flag: 'https://flagcdn.com/w40/ly.png' },
     { name: 'Egypt', code: 'eg', dialCode: '+20', flag: 'https://flagcdn.com/w40/eg.png' },
     { name: 'Saudi Arabia', code: 'sa', dialCode: '+966', flag: 'https://flagcdn.com/w40/sa.png' },
@@ -119,29 +120,66 @@ export class PhoneInputComponent implements ControlValueAccessor {
     );
   }
 
+  get phonePlaceholder(): string {
+    return this.selectedCountry.format || 'Phone number';
+  }
+
+  get maxDigits(): number {
+    if (this.selectedCountry.format) {
+      return this.selectedCountry.format.replace(/[^X]/g, '').length;
+    }
+    return 15;
+  }
+
   selectCountry(country: Country): void {
     this.selectedCountry = country;
     this.isDropdownOpen = false;
+    // Re-format existing digits with new country format
+    const digits = this.phoneNumber.replace(/\D/g, '');
+    this.phoneNumber = this.formatDigits(digits);
     this.updateValue();
   }
 
   onPhoneInput(): void {
+    // Extract only digits from input
+    const digits = this.phoneNumber.replace(/\D/g, '').substring(0, this.maxDigits);
+    this.phoneNumber = this.formatDigits(digits);
     this.updateValue();
   }
 
+  private formatDigits(digits: string): string {
+    const format = this.selectedCountry.format;
+    if (!format || digits.length === 0) return digits;
+
+    let result = '';
+    let digitIndex = 0;
+    for (let i = 0; i < format.length && digitIndex < digits.length; i++) {
+      if (format[i] === 'X') {
+        result += digits[digitIndex];
+        digitIndex++;
+      } else {
+        result += format[i];
+      }
+    }
+    return result;
+  }
+
   private updateValue(): void {
-    const fullNumber = this.selectedCountry.dialCode + this.phoneNumber.replace(/^\s+/, '');
+    const digits = this.phoneNumber.replace(/\D/g, '');
+    const fullNumber = this.selectedCountry.dialCode + digits;
     this.onChange(fullNumber);
   }
 
   // ControlValueAccessor methods
   writeValue(value: string): void {
     if (value) {
-      // Try to parse the country code from the value
-      const country = this.countries.find((c) => value.startsWith(c.dialCode));
+      // Try to parse the country code from the value (sort by longest dialCode first to avoid partial matches)
+      const sortedCountries = [...this.countries].sort((a, b) => b.dialCode.length - a.dialCode.length);
+      const country = sortedCountries.find((c) => value.startsWith(c.dialCode));
       if (country) {
         this.selectedCountry = country;
-        this.phoneNumber = value.substring(country.dialCode.length).trim();
+        const rawDigits = value.substring(country.dialCode.length).replace(/\D/g, '');
+        this.phoneNumber = this.formatDigits(rawDigits);
       } else {
         this.phoneNumber = value;
       }

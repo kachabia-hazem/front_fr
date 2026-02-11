@@ -100,4 +100,11 @@ export class MissionDetailComponent implements OnInit {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
   }
+
+  applyToMission(): void {
+    const id = this.mission()?.id;
+    if (id) {
+      this.router.navigate(['/apply', id]);
+    }
+  }
 }
