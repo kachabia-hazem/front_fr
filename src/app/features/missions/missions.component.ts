@@ -3,9 +3,12 @@ import { CommonModule, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MissionService } from '../../core/services/mission.service';
+import { FreelancerService } from '../../core/services/freelancer.service';
+import { ToastService } from '../../core/services/toast.service';
 import { Mission } from '../../core/models/mission.model';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
+import { getProfileCompletion } from '../../core/utils/profile-completion';
 
 @Component({
   selector: 'app-missions',
@@ -98,9 +101,13 @@ export class MissionsComponent implements OnInit {
   // Card menu
   openMenuId: string | null = null;
 
+  private profileCompletion: number | null = null;
+
   constructor(
     private missionService: MissionService,
     public authService: AuthService,
+    private freelancerService: FreelancerService,
+    private toastService: ToastService,
     private router: Router,
   ) {}
 
@@ -263,6 +270,11 @@ export class MissionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadMissions();
+    if (this.isFreelancer) {
+      this.freelancerService.getMyProfile().subscribe({
+        next: (f) => this.profileCompletion = getProfileCompletion(f),
+      });
+    }
   }
 
   loadMissions(): void {
@@ -554,6 +566,13 @@ export class MissionsComponent implements OnInit {
 
   applyToMission(event: Event, mission: Mission): void {
     event.stopPropagation();
+    if (this.profileCompletion !== null && this.profileCompletion < 80) {
+      this.toastService.show(
+        `Your profile is ${this.profileCompletion}% complete. Please complete at least 80% of your profile before applying.`,
+        'warning'
+      );
+      return;
+    }
     this.router.navigate(['/apply', mission.id]);
   }
 }

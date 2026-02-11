@@ -2,9 +2,12 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MissionService } from '../../core/services/mission.service';
+import { FreelancerService } from '../../core/services/freelancer.service';
+import { ToastService } from '../../core/services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Mission } from '../../core/models/mission.model';
 import { environment } from '../../../environments/environment';
+import { getProfileCompletion } from '../../core/utils/profile-completion';
 
 @Component({
   selector: 'app-mission-detail',
@@ -17,11 +20,14 @@ export class MissionDetailComponent implements OnInit {
   mission = signal<Mission | null>(null);
   loading = signal(true);
   error = signal('');
+  private profileCompletion: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private missionService: MissionService,
+    private freelancerService: FreelancerService,
+    private toastService: ToastService,
     private authService: AuthService,
   ) {}
 
@@ -36,6 +42,11 @@ export class MissionDetailComponent implements OnInit {
     } else {
       this.error.set('Mission not found');
       this.loading.set(false);
+    }
+    if (this.isFreelancer) {
+      this.freelancerService.getMyProfile().subscribe({
+        next: (f) => this.profileCompletion = getProfileCompletion(f),
+      });
     }
   }
 
@@ -102,6 +113,13 @@ export class MissionDetailComponent implements OnInit {
   }
 
   applyToMission(): void {
+    if (this.profileCompletion !== null && this.profileCompletion < 80) {
+      this.toastService.show(
+        `Your profile is ${this.profileCompletion}% complete. Please complete at least 80% of your profile before applying.`,
+        'warning'
+      );
+      return;
+    }
     const id = this.mission()?.id;
     if (id) {
       this.router.navigate(['/apply', id]);
