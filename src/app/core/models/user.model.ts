@@ -33,6 +33,9 @@ export interface Freelancer extends User {
   cvUrl?: string;
   rating: number;
   completedProjects: number;
+  // Card customization
+  cardBackground?: string;
+  portfolioImages?: string[];
   // CV Data
   education?: Education[];
   projects?: Project[];

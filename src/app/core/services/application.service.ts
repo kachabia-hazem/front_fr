@@ -17,4 +17,12 @@ export class ApplicationService {
   getMyApplications(): Observable<Application[]> {
     return this.http.get<Application[]>(`${this.apiUrl}/my`);
   }
+
+  checkIfApplied(missionId: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/check/${missionId}`);
+  }
+
+  withdrawApplication(missionId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/withdraw/${missionId}`);
+  }
 }

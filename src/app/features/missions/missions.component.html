@@ -145,12 +145,21 @@
     <!-- Speciality -->
     <div class="filter-section">
       <h4>Speciality</h4>
-      @for (spec of specialities; track spec.value) {
+      @for (spec of visibleSpecialities; track spec.value) {
         <label class="filter-checkbox">
           <input type="checkbox" [(ngModel)]="spec.checked" (change)="applyFilters()" />
           <span class="checkmark"></span>
           {{ spec.label }}
         </label>
+      }
+      @if (specialities.length > 6) {
+        <button class="btn-see-more" (click)="showAllSpecialities = !showAllSpecialities">
+          {{ showAllSpecialities ? 'See less' : 'See more' }}
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+            [style.transform]="showAllSpecialities ? 'rotate(180deg)' : 'rotate(0)'">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
       }
     </div>
 
@@ -169,6 +178,12 @@
 
   <!-- ═══ Right Content ═══ -->
   <main class="content">
+    <!-- Hero Headline -->
+    <div class="missions-headline">
+      <h1 class="headline-title">Find the Best Jobs with <span class="headline-brand">WorkLink</span></h1>
+      <p class="headline-subtitle">Connect with top companies, land freelance missions that match your skills, and build the career you deserve.</p>
+    </div>
+
     <!-- Tabs + View Toggle -->
     <div class="content-header">
       <div class="tabs">
@@ -314,7 +329,7 @@
 
             <!-- Description -->
             <p class="card-description">
-              {{ mission.description }}
+              {{ stripHtml(mission.description) }}
             </p>
 
             <!-- Skills Tags -->
@@ -338,7 +353,14 @@
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/></svg>
                   Matching
                 </button>
-                <button class="btn-postuler" (click)="applyToMission($event, mission)">Apply</button>
+                @if (hasApplied(mission)) {
+                  <button class="btn-cancel-application" (click)="cancelApplication($event, mission)" [disabled]="cancellingMissionIds.has(mission.id!)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    {{ cancellingMissionIds.has(mission.id!) ? 'Cancelling...' : 'Cancel Application' }}
+                  </button>
+                } @else {
+                  <button class="btn-postuler" (click)="applyToMission($event, mission)">Apply</button>
+                }
               }
             </div>
           </div>
@@ -451,7 +473,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             Description
           </h3>
-          <p class="modal-description">{{ selectedMission.description }}</p>
+          <p class="modal-description" [innerHTML]="selectedMission.description"></p>
         </div>
 
         <!-- Required Skills -->
@@ -476,7 +498,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
               Technical Environment
             </h3>
-            <p class="modal-text">{{ selectedMission.technicalEnvironment }}</p>
+            <p class="modal-text" [innerHTML]="selectedMission.technicalEnvironment"></p>
           </div>
         }
 
@@ -550,15 +572,98 @@
             </div>
           </div>
         }
+        <!-- Similar Missions -->
+        <div class="modal-section similar-section">
+          <h3 class="modal-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+            Similar Missions
+          </h3>
+
+          @if (similarMissions.length > 0) {
+            <div class="similar-grid">
+              @for (sim of similarMissions; track sim.id) {
+                <div class="similar-card" (click)="switchToMission(sim)">
+                  <!-- Accent top bar -->
+                  <div class="similar-card-accent"></div>
+                  <!-- Card body -->
+                  <div class="similar-card-body">
+                    <!-- Header: logo + info -->
+                    <div class="similar-card-top">
+                      <div class="similar-logo">
+                        @if (sim.companyLogo) {
+                          <img [src]="getFileUrl(sim.companyLogo)" [alt]="sim.companyName" />
+                        } @else {
+                          <span class="similar-logo-letter">{{ (sim.companyName || 'C').charAt(0) | uppercase }}</span>
+                        }
+                      </div>
+                      <div class="similar-card-info">
+                        <span class="similar-job-title">{{ sim.jobTitle }}</span>
+                        <span class="similar-company-name">{{ sim.companyName || 'Entreprise' }}</span>
+                      </div>
+                      <div class="similar-card-arrow">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                      </div>
+                    </div>
+                    <!-- Badges row -->
+                    <div class="similar-badges">
+                      @if (sim.location) {
+                        <span class="similar-badge similar-badge-location">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                          {{ sim.location }}
+                        </span>
+                      }
+                      @if (sim.missionType) {
+                        <span class="similar-badge similar-badge-type">{{ sim.missionType }}</span>
+                      }
+                      @if (sim.tjm) {
+                        <span class="similar-badge similar-badge-tjm">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                          {{ sim.tjm }} DT/j
+                        </span>
+                      }
+                    </div>
+                    <!-- Skills -->
+                    @if (sim.requiredSkills) {
+                      <div class="similar-skills">
+                        @for (skill of getSkillsList(sim.requiredSkills).slice(0, 3); track skill) {
+                          <span class="similar-skill-tag">{{ skill }}</span>
+                        }
+                        @if (getSkillsList(sim.requiredSkills).length > 3) {
+                          <span class="similar-skill-more">+{{ getSkillsList(sim.requiredSkills).length - 3 }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="similar-empty">
+              <div class="similar-empty-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+              <p class="similar-empty-title">This is the only mission like this!</p>
+              <p class="similar-empty-text">Don't miss out — apply fast before it's gone.</p>
+            </div>
+          }
+        </div>
+
       </div>
 
       <!-- Modal Footer Actions -->
       @if (isFreelancer) {
         <div class="modal-footer">
-          <button class="btn-postuler-modal" (click)="applyToMission($event, selectedMission!)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-            Apply
-          </button>
+          @if (hasApplied(selectedMission!)) {
+            <button class="btn-cancel-application-modal" (click)="cancelApplication($event, selectedMission!)" [disabled]="cancellingMissionIds.has(selectedMission!.id!)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              {{ cancellingMissionIds.has(selectedMission!.id!) ? 'Cancelling...' : 'Cancel Application' }}
+            </button>
+          } @else {
+            <button class="btn-postuler-modal" (click)="applyToMission($event, selectedMission!)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              Apply
+            </button>
+          }
           <button class="btn-matching-modal">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/></svg>
             Matching

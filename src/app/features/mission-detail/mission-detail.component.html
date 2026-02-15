@@ -193,10 +193,17 @@
       <!-- Footer Actions -->
       @if (isFreelancer && mission()!.status !== 'CLOSED') {
         <div class="detail-actions">
-          <button class="btn-postuler-lg" (click)="applyToMission()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-            Apply
-          </button>
+          @if (hasApplied()) {
+            <button class="btn-withdraw-lg" (click)="withdrawApplication()" [disabled]="withdrawing()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              {{ withdrawing() ? 'Withdrawing...' : 'Withdraw Application' }}
+            </button>
+          } @else {
+            <button class="btn-postuler-lg" (click)="applyToMission()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              Apply
+            </button>
+          }
           <button class="btn-matching-lg">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/></svg>
             Matching

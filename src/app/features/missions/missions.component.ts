@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MissionService } from '../../core/services/mission.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
+import { ApplicationService } from '../../core/services/application.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Mission } from '../../core/models/mission.model';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
 import { getProfileCompletion } from '../../core/utils/profile-completion';
+import { SECTOR_OPTIONS, SPECIALITY_OPTIONS, CATEGORY_OPTIONS } from '../../core/constants/mission-options';
 
 @Component({
   selector: 'app-missions',
@@ -47,46 +49,14 @@ export class MissionsComponent implements OnInit {
     { label: 'Freelance', value: 'Freelance', checked: false },
   ];
 
-  categories = [
-    { label: 'Front-end Developer', value: 'front-end', checked: false },
-    { label: 'Back-end Developer', value: 'back-end', checked: false },
-    { label: 'Full Stack Developer', value: 'full stack', checked: false },
-    { label: 'Mobile Developer', value: 'mobile', checked: false },
-    { label: 'Software Engineer', value: 'software engineer', checked: false },
-    { label: 'DevOps Engineer', value: 'devops', checked: false },
-    { label: 'Data Scientist', value: 'data', checked: false },
-    { label: 'UI/UX Designer', value: 'design', checked: false },
-    { label: 'Project Manager', value: 'project manager', checked: false },
-    { label: 'QA / Tester', value: 'qa', checked: false },
-    { label: 'CMS Developer', value: 'cms', checked: false },
-    { label: 'Web Integrator', value: 'integrator', checked: false },
-  ];
+  categories = CATEGORY_OPTIONS.map(c => ({ ...c, checked: false }));
   showAllCategories = false;
 
-  sectors = [
-    { label: 'Digital Services & IT', value: 'digital services', checked: false },
-    { label: 'Software Publishing', value: 'software', checked: false },
-    { label: 'E-commerce', value: 'e-commerce', checked: false },
-    { label: 'Consulting & Audit', value: 'consulting', checked: false },
-    { label: 'Banking & Finance', value: 'banking', checked: false },
-    { label: 'Healthcare', value: 'healthcare', checked: false },
-    { label: 'Telecom', value: 'telecom', checked: false },
-    { label: 'Education', value: 'education', checked: false },
-    { label: 'Industry', value: 'industry', checked: false },
-    { label: 'Media & Entertainment', value: 'media', checked: false },
-    { label: 'Real Estate', value: 'real estate', checked: false },
-    { label: 'Energy', value: 'energy', checked: false },
-  ];
+  sectors = SECTOR_OPTIONS.map(s => ({ ...s, checked: false }));
   showAllSectors = false;
 
-  specialities = [
-    { label: 'React', value: 'React', checked: false },
-    { label: 'Angular', value: 'Angular', checked: false },
-    { label: 'Java', value: 'Java', checked: false },
-    { label: 'Spring Boot', value: 'Spring Boot', checked: false },
-    { label: 'Node.js', value: 'Node.js', checked: false },
-    { label: 'Python', value: 'Python', checked: false },
-  ];
+  specialities = SPECIALITY_OPTIONS.map(s => ({ ...s, checked: false }));
+  showAllSpecialities = false;
 
   experienceLevels = [
     { label: '0-2 years', min: 0, max: 2, checked: false },
@@ -101,12 +71,17 @@ export class MissionsComponent implements OnInit {
   // Card menu
   openMenuId: string | null = null;
 
+  // Track which missions the freelancer has already applied to
+  appliedMissionIds = new Set<string>();
+  cancellingMissionIds = new Set<string>();
+
   private profileCompletion: number | null = null;
 
   constructor(
     private missionService: MissionService,
     public authService: AuthService,
     private freelancerService: FreelancerService,
+    private applicationService: ApplicationService,
     private toastService: ToastService,
     private router: Router,
   ) {}
@@ -116,10 +91,83 @@ export class MissionsComponent implements OnInit {
     this.openMenuId = null;
   }
 
+  similarMissions: Mission[] = [];
+
   openDetail(mission: Mission): void {
     this.selectedMission = mission;
     this.modalClosing = false;
+    this.similarMissions = this.computeSimilarMissions(mission);
     document.body.style.overflow = 'hidden';
+  }
+
+  switchToMission(mission: Mission): void {
+    this.selectedMission = mission;
+    this.similarMissions = this.computeSimilarMissions(mission);
+    const body = document.querySelector('.modal-body');
+    if (body) body.scrollTop = 0;
+  }
+
+  private computeSimilarMissions(mission: Mission): Mission[] {
+    const field = mission.field?.toLowerCase() || '';
+    const sector = mission.missionBusinessSector?.toLowerCase() || '';
+    const speciality = mission.speciality?.toLowerCase() || '';
+    const skills = (mission.requiredSkills?.replace(/<[^>]*>/g, '') || '').toLowerCase();
+    const title = mission.jobTitle?.toLowerCase() || '';
+
+    const scored = this.missions
+      .filter(m => m.id !== mission.id && !this.isExpiredOver1h(m))
+      .map(m => {
+        let score = 0;
+        const mField = m.field?.toLowerCase() || '';
+        const mSector = m.missionBusinessSector?.toLowerCase() || '';
+        const mSpec = m.speciality?.toLowerCase() || '';
+        const mSkills = (m.requiredSkills?.replace(/<[^>]*>/g, '') || '').toLowerCase();
+        const mTitle = m.jobTitle?.toLowerCase() || '';
+
+        // Field match (strong signal)
+        if (field && mField && (mField.includes(field) || field.includes(mField))) score += 3;
+
+        // Sector overlap
+        if (sector && mSector) {
+          const sectorWords = sector.split(/[,;]+/).map(s => s.trim()).filter(s => s);
+          const mSectorWords = mSector.split(/[,;]+/).map(s => s.trim()).filter(s => s);
+          for (const sw of sectorWords) {
+            if (mSectorWords.some(ms => ms.includes(sw) || sw.includes(ms))) { score += 2; break; }
+          }
+        }
+
+        // Speciality overlap
+        if (speciality && mSpec) {
+          const specWords = speciality.split(/[,;]+/).map(s => s.trim()).filter(s => s);
+          const mSpecWords = mSpec.split(/[,;]+/).map(s => s.trim()).filter(s => s);
+          for (const sp of specWords) {
+            if (mSpecWords.some(ms => ms.includes(sp) || sp.includes(ms))) { score += 2; break; }
+          }
+        }
+
+        // Skills keyword overlap
+        if (skills && mSkills) {
+          const skillTokens = skills.split(/[,;]+/).map(s => s.trim()).filter(s => s.length > 2);
+          for (const sk of skillTokens) {
+            if (mSkills.includes(sk)) { score += 1; }
+          }
+        }
+
+        // Title similarity
+        if (title && mTitle) {
+          const titleWords = title.split(/\s+/).filter(w => w.length > 3);
+          for (const tw of titleWords) {
+            if (mTitle.includes(tw)) { score += 1; }
+          }
+        }
+
+        return { mission: m, score };
+      })
+      .filter(s => s.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+
+    return scored.map(s => s.mission);
   }
 
   closeDetail(): void {
@@ -138,13 +186,15 @@ export class MissionsComponent implements OnInit {
   }
 
   getAllSkillsList(skills: string): string[] {
-    return skills.split(/[,;]+/).map(s => s.trim()).filter(s => s.length > 0);
+    const plain = skills.replace(/<[^>]*>/g, '');
+    return plain.split(/[,;]+/).map(s => s.trim()).filter(s => s.length > 0);
   }
 
   getTruncatedDescription(text: string | undefined, maxLength = 200): string {
     if (!text) return '';
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+    const plain = text.replace(/<[^>]*>/g, '');
+    if (plain.length <= maxLength) return plain;
+    return plain.substring(0, maxLength) + '...';
   }
 
   // Visible items (for "See more" toggle)
@@ -154,6 +204,10 @@ export class MissionsComponent implements OnInit {
 
   get visibleSectors() {
     return this.showAllSectors ? this.sectors : this.sectors.slice(0, 6);
+  }
+
+  get visibleSpecialities() {
+    return this.showAllSpecialities ? this.specialities : this.specialities.slice(0, 6);
   }
 
   // Count matching missions per filter option
@@ -274,7 +328,44 @@ export class MissionsComponent implements OnInit {
       this.freelancerService.getMyProfile().subscribe({
         next: (f) => this.profileCompletion = getProfileCompletion(f),
       });
+      this.loadMyApplications();
     }
+  }
+
+  loadMyApplications(): void {
+    this.applicationService.getMyApplications().subscribe({
+      next: (applications) => {
+        this.appliedMissionIds.clear();
+        for (const app of applications) {
+          if (app.status !== 'WITHDRAWN') {
+            this.appliedMissionIds.add(app.missionId);
+          }
+        }
+      },
+    });
+  }
+
+  hasApplied(mission: Mission): boolean {
+    return this.appliedMissionIds.has(mission.id!);
+  }
+
+  cancelApplication(event: Event, mission: Mission): void {
+    event.stopPropagation();
+    if (this.cancellingMissionIds.has(mission.id!)) return;
+
+    this.cancellingMissionIds.add(mission.id!);
+    this.applicationService.withdrawApplication(mission.id!).subscribe({
+      next: () => {
+        this.appliedMissionIds.delete(mission.id!);
+        this.cancellingMissionIds.delete(mission.id!);
+        this.toastService.show('Your application has been cancelled.', 'success');
+      },
+      error: (err) => {
+        this.cancellingMissionIds.delete(mission.id!);
+        const message = err.error?.message || err.error?.error || 'Failed to cancel application.';
+        this.toastService.show(message, 'error');
+      },
+    });
   }
 
   loadMissions(): void {
@@ -338,6 +429,7 @@ export class MissionsComponent implements OnInit {
     if (activeSpecs.length > 0) {
       result = result.filter(m =>
         activeSpecs.some(s =>
+          m.speciality?.toLowerCase().includes(s) ||
           m.requiredSkills?.toLowerCase().includes(s) ||
           m.technicalEnvironment?.toLowerCase().includes(s) ||
           m.field?.toLowerCase().includes(s) ||
@@ -538,7 +630,13 @@ export class MissionsComponent implements OnInit {
   }
 
   getSkillsList(skills: string): string[] {
-    return skills.split(/[,;]+/).map(s => s.trim()).filter(s => s.length > 0).slice(0, 6);
+    const plain = skills.replace(/<[^>]*>/g, '').replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
+    return plain.split(/[,;]+/).map(s => s.trim()).filter(s => s.length > 0).slice(0, 6);
+  }
+
+  stripHtml(html: string): string {
+    if (!html) return '';
+    return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
   formatDate(date: string | any): string {

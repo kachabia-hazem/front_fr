@@ -98,6 +98,14 @@ export const routes: Routes = [
             (m) => m.PostJobComponent,
           ),
       },
+      // Customize card (Freelancer only)
+      {
+        path: 'customize-card',
+        loadComponent: () =>
+          import('./features/customize-card/customize-card.component').then(
+            (m) => m.CustomizeCardComponent,
+          ),
+      },
       // Freelancers list
       {
         path: 'freelancers',

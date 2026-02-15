@@ -164,6 +164,66 @@
             </div>
           </div>
         </div>
+
+        <div class="form-row">
+          <div class="form-field speciality-field">
+            <label>Speciality</label>
+
+            <!-- Selected chips -->
+            @if (selectedSpecialities.length > 0) {
+              <div class="sector-chips">
+                @for (spec of selectedSpecialities; track spec) {
+                  <span class="sector-chip">
+                    {{ spec }}
+                    <button type="button" class="chip-remove" (click)="removeSpeciality(spec)">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </span>
+                }
+              </div>
+            }
+
+            <!-- Dropdown trigger -->
+            <div class="sector-dropdown-wrapper">
+              <input
+                type="text"
+                class="sector-search"
+                [(ngModel)]="specialitySearch"
+                [ngModelOptions]="{standalone: true}"
+                (focus)="specialityDropdownOpen = true"
+                placeholder="Search or select specialities..."
+              />
+              <button type="button" class="sector-toggle" (click)="toggleSpecialityDropdown()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline [attr.points]="specialityDropdownOpen ? '18 15 12 9 6 15' : '6 9 12 15 18 9'"/></svg>
+              </button>
+
+              @if (specialityDropdownOpen && filteredSpecialityOptions.length > 0) {
+                <div class="sector-dropdown">
+                  @for (option of filteredSpecialityOptions; track option) {
+                    <button type="button" class="sector-option" (click)="selectSpeciality(option)">
+                      {{ option }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Custom input -->
+            <div class="custom-sector-row">
+              <input
+                type="text"
+                [(ngModel)]="customSpecialityInput"
+                [ngModelOptions]="{standalone: true}"
+                (keydown)="onCustomSpecialityKeydown($event)"
+                placeholder="Or type a custom speciality and press Enter"
+                class="custom-sector-input"
+              />
+              <button type="button" class="btn-add-sector" (click)="addCustomSpeciality()" [disabled]="!customSpecialityInput.trim()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -178,21 +238,30 @@
       <div class="section-card">
         <div class="form-field" [class.has-error]="hasError('description')">
           <label>Description <span class="required">*</span></label>
-          <textarea formControlName="description" rows="6" placeholder="Add your job description..."></textarea>
-          <div class="textarea-toolbar">
-            <button type="button" class="toolbar-btn"><strong>B</strong></button>
-            <button type="button" class="toolbar-btn"><em>I</em></button>
-            <button type="button" class="toolbar-btn"><u>U</u></button>
-            <button type="button" class="toolbar-btn"><s>S</s></button>
-            <button type="button" class="toolbar-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-            </button>
-            <button type="button" class="toolbar-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
-            </button>
-            <button type="button" class="toolbar-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            </button>
+          <div class="editor-wrapper">
+            <div class="textarea-toolbar">
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'bold')"><strong>B</strong></button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'italic')"><em>I</em></button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'underline')"><u>U</u></button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'strikeThrough')"><s>S</s></button>
+              <button type="button" class="toolbar-btn" (mousedown)="insertLink($event)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'justifyLeft')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+              </button>
+              <button type="button" class="toolbar-btn" (mousedown)="insertList($event)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </button>
+            </div>
+            <div
+              class="rich-editor"
+              contenteditable="true"
+              #descriptionEditor
+              (input)="onEditorInput('description', descriptionEditor)"
+              (paste)="onEditorPaste($event)"
+              data-placeholder="Add your job description..."
+            ></div>
           </div>
           @if (hasError('description')) {
             <div class="field-error">{{ getError('description') }}</div>
@@ -212,21 +281,30 @@
       <div class="section-card">
         <div class="form-field" [class.has-error]="hasError('requiredSkills')">
           <label>Required Skills <span class="required">*</span></label>
-          <textarea formControlName="requiredSkills" rows="5" placeholder="Add your job professional skills ..."></textarea>
-          <div class="textarea-toolbar">
-            <button type="button" class="toolbar-btn"><strong>B</strong></button>
-            <button type="button" class="toolbar-btn"><em>I</em></button>
-            <button type="button" class="toolbar-btn"><u>U</u></button>
-            <button type="button" class="toolbar-btn"><s>S</s></button>
-            <button type="button" class="toolbar-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-            </button>
-            <button type="button" class="toolbar-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
-            </button>
-            <button type="button" class="toolbar-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            </button>
+          <div class="editor-wrapper">
+            <div class="textarea-toolbar">
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'bold')"><strong>B</strong></button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'italic')"><em>I</em></button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'underline')"><u>U</u></button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'strikeThrough')"><s>S</s></button>
+              <button type="button" class="toolbar-btn" (mousedown)="insertLink($event)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'justifyLeft')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+              </button>
+              <button type="button" class="toolbar-btn" (mousedown)="insertList($event)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </button>
+            </div>
+            <div
+              class="rich-editor"
+              contenteditable="true"
+              #requiredSkillsEditor
+              (input)="onEditorInput('requiredSkills', requiredSkillsEditor)"
+              (paste)="onEditorPaste($event)"
+              data-placeholder="Add your job professional skills ..."
+            ></div>
           </div>
           @if (hasError('requiredSkills')) {
             <div class="field-error">{{ getError('requiredSkills') }}</div>
@@ -235,21 +313,30 @@
 
         <div class="form-field">
           <label>Technical Environment</label>
-          <textarea formControlName="technicalEnvironment" rows="5" placeholder="Add your job professional skills..."></textarea>
-          <div class="textarea-toolbar">
-            <button type="button" class="toolbar-btn"><strong>B</strong></button>
-            <button type="button" class="toolbar-btn"><em>I</em></button>
-            <button type="button" class="toolbar-btn"><u>U</u></button>
-            <button type="button" class="toolbar-btn"><s>S</s></button>
-            <button type="button" class="toolbar-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-            </button>
-            <button type="button" class="toolbar-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
-            </button>
-            <button type="button" class="toolbar-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            </button>
+          <div class="editor-wrapper">
+            <div class="textarea-toolbar">
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'bold')"><strong>B</strong></button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'italic')"><em>I</em></button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'underline')"><u>U</u></button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'strikeThrough')"><s>S</s></button>
+              <button type="button" class="toolbar-btn" (mousedown)="insertLink($event)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </button>
+              <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'justifyLeft')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+              </button>
+              <button type="button" class="toolbar-btn" (mousedown)="insertList($event)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </button>
+            </div>
+            <div
+              class="rich-editor"
+              contenteditable="true"
+              #technicalEnvironmentEditor
+              (input)="onEditorInput('technicalEnvironment', technicalEnvironmentEditor)"
+              (paste)="onEditorPaste($event)"
+              data-placeholder="Add your technical environment..."
+            ></div>
           </div>
         </div>
       </div>

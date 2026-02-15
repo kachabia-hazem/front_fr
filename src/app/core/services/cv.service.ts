@@ -40,4 +40,14 @@ export class CvService {
   updateCvUrl(cvUrl: string): Observable<Freelancer> {
     return this.http.put<Freelancer>(`${this.apiUrl}/me/cv-url`, { cvUrl });
   }
+
+  uploadPortfolioImage(file: File): Observable<{ url: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ url: string }>(`${this.filesUrl}/portfolio-images`, formData);
+  }
+
+  updateCardCustomization(data: { cardBackground?: string; portfolioImages?: string[] }): Observable<Freelancer> {
+    return this.http.put<Freelancer>(`${this.apiUrl}/me/card-customization`, data);
+  }
 }

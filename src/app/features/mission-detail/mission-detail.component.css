@@ -423,6 +423,34 @@
   box-shadow: 0 5px 15px rgba(90, 170, 158, 0.35);
 }
 
+.btn-withdraw-lg {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 2rem;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 3px 10px rgba(239, 68, 68, 0.3);
+}
+
+.btn-withdraw-lg:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(239, 68, 68, 0.35);
+}
+
+.btn-withdraw-lg:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .btn-matching-lg {
   display: inline-flex;
   align-items: center;
@@ -606,6 +634,7 @@
   }
 
   .btn-postuler-lg,
+  .btn-withdraw-lg,
   .btn-matching-lg {
     width: 100%;
     justify-content: center;

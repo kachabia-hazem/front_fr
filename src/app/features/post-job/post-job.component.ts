@@ -1,10 +1,11 @@
-import { Component, HostListener, ElementRef, OnInit } from '@angular/core';
+import { Component, HostListener, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MissionService } from '../../core/services/mission.service';
 import { CreateMissionRequest } from '../../core/models/mission.model';
+import { SECTOR_OPTIONS, SPECIALITY_OPTIONS } from '../../core/constants/mission-options';
 
 @Component({
   selector: 'app-post-job',
@@ -18,37 +19,30 @@ export class PostJobComponent implements OnInit {
   loading = false;
   errorMessage = '';
   successMessage = '';
+
+  // Sector multi-select
   selectedSectors: string[] = [];
   customSectorInput = '';
   sectorDropdownOpen = false;
   sectorSearch = '';
 
+  // Speciality multi-select
+  selectedSpecialities: string[] = [];
+  customSpecialityInput = '';
+  specialityDropdownOpen = false;
+  specialitySearch = '';
+
   // Edit mode
   isEditMode = false;
   missionId: string | null = null;
 
-  sectorOptions = [
-    'Development',
-    'Front-end Development',
-    'Back-end Development',
-    'Full Stack Development',
-    'Mobile Development',
-    'DevOps',
-    'Data Science',
-    'Machine Learning / AI',
-    'Cloud Computing',
-    'Cybersecurity',
-    'UI/UX Design',
-    'Graphic Design',
-    'Project Management',
-    'QA / Testing',
-    'Database Administration',
-    'Network Engineering',
-    'Blockchain',
-    'Embedded Systems',
-    'ERP / CRM',
-    'Business Intelligence',
-  ];
+  sectorOptions = SECTOR_OPTIONS.map(s => s.label);
+  specialityOptions = SPECIALITY_OPTIONS.map(s => s.label);
+
+  // Rich editor refs
+  @ViewChild('descriptionEditor') descriptionEditorRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('requiredSkillsEditor') skillsEditorRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('technicalEnvironmentEditor') techEnvEditorRef!: ElementRef<HTMLDivElement>;
 
   constructor(
     private fb: FormBuilder,
@@ -65,11 +59,12 @@ export class PostJobComponent implements OnInit {
       yearsOfExperience: [0, [Validators.required, Validators.min(0)]],
       startDate: ['', [Validators.required]],
       endDate: ['', [Validators.required]],
-      description: ['', [Validators.required, Validators.minLength(20)]],
+      description: ['', [Validators.required]],
       requiredSkills: ['', [Validators.required]],
       technicalEnvironment: [''],
       applicationDeadline: [''],
       missionBusinessSector: [''],
+      speciality: [''],
       tjm: [null, [Validators.required, Validators.min(0)]],
     });
   }
@@ -100,12 +95,29 @@ export class PostJobComponent implements OnInit {
           technicalEnvironment: mission.technicalEnvironment || '',
           applicationDeadline: this.toDateInput(mission.applicationDeadline),
           missionBusinessSector: mission.missionBusinessSector || '',
+          speciality: mission.speciality || '',
           tjm: mission.tjm ?? null,
         });
         // Restore selected sectors
         if (mission.missionBusinessSector) {
           this.selectedSectors = mission.missionBusinessSector.split(',').map((s: string) => s.trim()).filter((s: string) => s);
         }
+        // Restore selected specialities
+        if (mission.speciality) {
+          this.selectedSpecialities = mission.speciality.split(',').map((s: string) => s.trim()).filter((s: string) => s);
+        }
+        // Populate rich editors with existing content
+        setTimeout(() => {
+          if (this.descriptionEditorRef) {
+            this.descriptionEditorRef.nativeElement.innerHTML = mission.description || '';
+          }
+          if (this.skillsEditorRef) {
+            this.skillsEditorRef.nativeElement.innerHTML = mission.requiredSkills || '';
+          }
+          if (this.techEnvEditorRef) {
+            this.techEnvEditorRef.nativeElement.innerHTML = mission.technicalEnvironment || '';
+          }
+        });
         this.loading = false;
       },
       error: () => {
@@ -153,7 +165,47 @@ export class PostJobComponent implements OnInit {
     if (sectorEl && !sectorEl.contains(event.target)) {
       this.sectorDropdownOpen = false;
     }
+    const specEl = this.elRef.nativeElement.querySelector('.speciality-field');
+    if (specEl && !specEl.contains(event.target)) {
+      this.specialityDropdownOpen = false;
+    }
   }
+
+  // ── Rich Editor methods ──
+
+  execFormat(event: Event, command: string): void {
+    event.preventDefault();
+    document.execCommand(command, false);
+  }
+
+  insertLink(event: Event): void {
+    event.preventDefault();
+    const url = prompt('Enter URL:');
+    if (url) {
+      document.execCommand('createLink', false, url);
+    }
+  }
+
+  insertList(event: Event): void {
+    event.preventDefault();
+    document.execCommand('insertUnorderedList', false);
+  }
+
+  onEditorInput(field: string, editor: HTMLElement): void {
+    const text = editor.innerText.replace(/\n/g, '').trim();
+    const value = text ? editor.innerHTML : '';
+    this.missionForm.patchValue({ [field]: value });
+    this.missionForm.get(field)?.markAsDirty();
+    this.missionForm.get(field)?.markAsTouched();
+  }
+
+  onEditorPaste(event: ClipboardEvent): void {
+    event.preventDefault();
+    const text = event.clipboardData?.getData('text/plain') || '';
+    document.execCommand('insertText', false, text);
+  }
+
+  // ── Sector methods ──
 
   get filteredSectorOptions(): string[] {
     const q = this.sectorSearch.toLowerCase();
@@ -203,6 +255,59 @@ export class PostJobComponent implements OnInit {
       missionBusinessSector: this.selectedSectors.join(', ')
     });
   }
+
+  // ── Speciality methods ──
+
+  get filteredSpecialityOptions(): string[] {
+    const q = this.specialitySearch.toLowerCase();
+    return this.specialityOptions.filter(
+      s => !this.selectedSpecialities.includes(s) && s.toLowerCase().includes(q)
+    );
+  }
+
+  toggleSpecialityDropdown(): void {
+    this.specialityDropdownOpen = !this.specialityDropdownOpen;
+    if (this.specialityDropdownOpen) {
+      this.specialitySearch = '';
+    }
+  }
+
+  selectSpeciality(spec: string): void {
+    if (!this.selectedSpecialities.includes(spec)) {
+      this.selectedSpecialities.push(spec);
+      this.syncSpecialitiesToForm();
+    }
+    this.specialitySearch = '';
+  }
+
+  removeSpeciality(spec: string): void {
+    this.selectedSpecialities = this.selectedSpecialities.filter(s => s !== spec);
+    this.syncSpecialitiesToForm();
+  }
+
+  addCustomSpeciality(): void {
+    const val = this.customSpecialityInput.trim();
+    if (val && !this.selectedSpecialities.includes(val)) {
+      this.selectedSpecialities.push(val);
+      this.syncSpecialitiesToForm();
+    }
+    this.customSpecialityInput = '';
+  }
+
+  onCustomSpecialityKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.addCustomSpeciality();
+    }
+  }
+
+  private syncSpecialitiesToForm(): void {
+    this.missionForm.patchValue({
+      speciality: this.selectedSpecialities.join(', ')
+    });
+  }
+
+  // ── Submit ──
 
   onSubmit(): void {
     this.missionForm.markAllAsTouched();

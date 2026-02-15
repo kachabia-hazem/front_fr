@@ -1,0 +1,117 @@
+<div class="customize-card-page">
+  <div class="page-header">
+    <h1>Customize My Card</h1>
+    <p>Personalize how your freelancer card appears to clients on the Freelancers page.</p>
+  </div>
+
+  @if (message(); as msg) {
+    <div class="alert" [class.alert-success]="msg.type === 'success'" [class.alert-error]="msg.type === 'error'">
+      {{ msg.text }}
+    </div>
+  }
+
+  <div class="customize-layout">
+    <!-- Left: Upload Controls -->
+    <div class="controls-section">
+      <!-- Card Background -->
+      <div class="upload-section">
+        <h3>Card Background</h3>
+        <p class="section-desc">This image appears behind your card when no portfolio images are set.</p>
+        @if (cardBackground()) {
+          <div class="uploaded-preview">
+            <img [src]="getFileUrl(cardBackground())" alt="Card background" />
+            <button class="btn-remove" (click)="removeBackground()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Remove
+            </button>
+          </div>
+        } @else {
+          <label class="upload-area" [class.disabled]="uploading()">
+            <input type="file" accept="image/*" (change)="onBackgroundUpload($event)" hidden />
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>Click to upload background</span>
+            <span class="upload-hint">JPG, PNG, WebP - Max 5MB</span>
+          </label>
+        }
+      </div>
+
+      <!-- Portfolio Images -->
+      <div class="upload-section">
+        <h3>Portfolio Images</h3>
+        <p class="section-desc">Upload up to {{ maxPortfolioImages }} project screenshots. The first image will be your card's main visual.</p>
+
+        <div class="portfolio-grid">
+          @for (img of portfolioImages(); track img; let i = $index) {
+            <div class="portfolio-item">
+              <img [src]="getFileUrl(img)" alt="Portfolio image {{ i + 1 }}" />
+              <div class="portfolio-item-actions">
+                <button class="btn-icon" (click)="moveImage(i, -1)" [disabled]="i === 0" title="Move left">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <button class="btn-icon btn-icon-danger" (click)="removePortfolioImage(i)" title="Remove">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+                <button class="btn-icon" (click)="moveImage(i, 1)" [disabled]="i === portfolioImages().length - 1" title="Move right">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+              </div>
+            </div>
+          }
+
+          @if (portfolioImages().length < maxPortfolioImages) {
+            <label class="upload-area upload-area-small" [class.disabled]="uploading()">
+              <input type="file" accept="image/*" (change)="onPortfolioUpload($event)" hidden />
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Add Image</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <button class="btn-save" (click)="save()" [disabled]="saving() || uploading()">
+        @if (saving()) {
+          Saving...
+        } @else {
+          Save Changes
+        }
+      </button>
+    </div>
+
+    <!-- Right: Live Card Preview -->
+    <div class="preview-section">
+      <h3>Live Preview</h3>
+      <div class="card-preview">
+        <div class="card-image-area" [style.backgroundImage]="cardPreviewImage ? 'url(' + cardPreviewImage + ')' : ''">
+          @if (!cardPreviewImage) {
+            <div class="card-gradient-placeholder"></div>
+          }
+        </div>
+        <div class="card-body">
+          <div class="card-avatar-wrapper">
+            @if (freelancer()?.profilePicture) {
+              <img [src]="getFileUrl(freelancer()!.profilePicture!)" alt="Avatar" class="card-avatar" />
+            } @else {
+              <div class="card-avatar card-avatar-initials">
+                {{ (freelancer()?.firstName?.charAt(0) || '') + (freelancer()?.lastName?.charAt(0) || '') }}
+              </div>
+            }
+          </div>
+          <h4 class="card-name">{{ freelancer()?.firstName || 'First' }} {{ freelancer()?.lastName || 'Last' }}</h4>
+          <p class="card-position">{{ freelancer()?.currentPosition || 'Your Position' }}</p>
+          <div class="card-skills">
+            @for (skill of (freelancer()?.skills || []).slice(0, 3); track skill) {
+              <span class="skill-tag">{{ skill }}</span>
+            }
+          </div>
+          <div class="card-footer">
+            <div class="card-rating">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span>{{ freelancer()?.rating || 0 | number:'1.1-1' }}</span>
+            </div>
+            <span class="card-tjm">{{ freelancer()?.tjm || 0 }} DT/day</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

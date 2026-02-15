@@ -14,6 +14,7 @@ export interface Mission {
   tjm: number;
   applicationDeadline?: string;
   missionBusinessSector?: string;
+  speciality?: string;
   status?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -40,4 +41,5 @@ export interface CreateMissionRequest {
   tjm: number;
   applicationDeadline?: string;
   missionBusinessSector?: string;
+  speciality?: string;
 }

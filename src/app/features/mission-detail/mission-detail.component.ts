@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MissionService } from '../../core/services/mission.service';
+import { ApplicationService } from '../../core/services/application.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { ToastService } from '../../core/services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -20,12 +21,15 @@ export class MissionDetailComponent implements OnInit {
   mission = signal<Mission | null>(null);
   loading = signal(true);
   error = signal('');
+  hasApplied = signal(false);
+  withdrawing = signal(false);
   private profileCompletion: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private missionService: MissionService,
+    private applicationService: ApplicationService,
     private freelancerService: FreelancerService,
     private toastService: ToastService,
     private authService: AuthService,
@@ -55,11 +59,20 @@ export class MissionDetailComponent implements OnInit {
       next: (mission) => {
         this.mission.set(mission);
         this.loading.set(false);
+        if (this.isFreelancer) {
+          this.checkApplicationStatus(id);
+        }
       },
       error: () => {
         this.error.set('Mission not found');
         this.loading.set(false);
       },
+    });
+  }
+
+  private checkApplicationStatus(missionId: string): void {
+    this.applicationService.checkIfApplied(missionId).subscribe({
+      next: (applied) => this.hasApplied.set(applied),
     });
   }
 
@@ -124,5 +137,22 @@ export class MissionDetailComponent implements OnInit {
     if (id) {
       this.router.navigate(['/apply', id]);
     }
+  }
+
+  withdrawApplication(): void {
+    const id = this.mission()?.id;
+    if (!id) return;
+    this.withdrawing.set(true);
+    this.applicationService.withdrawApplication(id).subscribe({
+      next: () => {
+        this.hasApplied.set(false);
+        this.withdrawing.set(false);
+        this.toastService.show('Your application has been withdrawn successfully.', 'success');
+      },
+      error: () => {
+        this.withdrawing.set(false);
+        this.toastService.show('Failed to withdraw application.', 'error');
+      },
+    });
   }
 }
