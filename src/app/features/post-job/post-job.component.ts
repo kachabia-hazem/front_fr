@@ -1,4 +1,4 @@
-import { Component, HostListener, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, ElementRef, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -19,6 +19,8 @@ export class PostJobComponent implements OnInit {
   loading = false;
   errorMessage = '';
   successMessage = '';
+  showToast = false;
+  toastMessage = '';
 
   // Sector multi-select
   selectedSectors: string[] = [];
@@ -50,6 +52,7 @@ export class PostJobComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private elRef: ElementRef,
+    private cdr: ChangeDetectorRef,
   ) {
     this.missionForm = this.fb.group({
       jobTitle: ['', [Validators.required]],
@@ -332,8 +335,7 @@ export class PostJobComponent implements OnInit {
       this.missionService.updateMission(this.missionId, request).subscribe({
         next: () => {
           this.loading = false;
-          this.successMessage = 'Mission updated successfully!';
-          setTimeout(() => this.router.navigate(['/missions']), 1500);
+          this.showSuccessToast('Mission updated successfully!');
         },
         error: (err) => {
           this.loading = false;
@@ -344,8 +346,7 @@ export class PostJobComponent implements OnInit {
       this.missionService.createMission(request).subscribe({
         next: () => {
           this.loading = false;
-          this.successMessage = 'Mission posted successfully!';
-          setTimeout(() => this.router.navigate(['/missions']), 1500);
+          this.showSuccessToast('Mission posted successfully!');
         },
         error: (err) => {
           this.loading = false;
@@ -353,5 +354,14 @@ export class PostJobComponent implements OnInit {
         },
       });
     }
+  }
+
+  private showSuccessToast(message: string): void {
+    this.toastMessage = message;
+    this.showToast = true;
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.router.navigate(['/missions']);
+    }, 2500);
   }
 }

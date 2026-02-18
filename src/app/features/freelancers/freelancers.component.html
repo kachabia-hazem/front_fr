@@ -268,18 +268,22 @@
 
           <!-- Card Body -->
           <div class="card-body">
-            <div class="avatar-wrapper">
-              @if (f.profilePicture) {
-                <img [src]="getFileUrl(f.profilePicture)" [alt]="f.firstName" class="avatar" />
-              } @else {
-                <div class="avatar avatar-initials">{{ getInitials(f) }}</div>
-              }
+            <div class="card-top-row">
+              <div class="avatar-wrapper">
+                @if (f.profilePicture) {
+                  <img [src]="getFileUrl(f.profilePicture)" [alt]="f.firstName" class="avatar" />
+                } @else {
+                  <div class="avatar avatar-initials">{{ getInitials(f) }}</div>
+                }
+                <span class="availability-dot" title="Available"></span>
+              </div>
+              <div class="card-identity">
+                <h3 class="card-name">{{ f.firstName }} {{ f.lastName }}</h3>
+                @if (f.currentPosition) {
+                  <p class="card-position">{{ f.currentPosition }}</p>
+                }
+              </div>
             </div>
-
-            <h3 class="card-name">{{ f.firstName }} {{ f.lastName }}</h3>
-            @if (f.currentPosition) {
-              <p class="card-position">{{ f.currentPosition }}</p>
-            }
 
             @if (f.skills && f.skills.length) {
               <div class="card-skills">
@@ -292,20 +296,35 @@
               </div>
             }
 
-            <div class="card-footer">
-              <div class="card-meta">
-                <div class="card-rating">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  <span>{{ f.rating || 0 | number:'1.1-1' }}</span>
+            <div class="card-stats">
+              <div class="stat-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span class="stat-value">{{ f.rating || 0 | number:'1.1-1' }}</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <span class="stat-value">{{ f.completedProjects || 0 }} projects</span>
+              </div>
+              @if (f.yearsOfExperience) {
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span class="stat-value">{{ f.yearsOfExperience }}y exp</span>
                 </div>
-                <span class="card-projects">{{ f.completedProjects || 0 }} projects</span>
-              </div>
-              <div class="card-actions">
-                @if (f.tjm) {
-                  <span class="card-tjm">{{ f.tjm }} DT/day</span>
-                }
-                <a [routerLink]="['/profile', f.id]" class="btn-view">View Profile</a>
-              </div>
+              }
+            </div>
+
+            <div class="card-footer">
+              @if (f.tjm) {
+                <span class="card-tjm">{{ f.tjm }} <small>DT/day</small></span>
+              } @else {
+                <span></span>
+              }
+              <a [routerLink]="['/profile', f.id]" class="btn-view-profile">
+                View Profile
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
             </div>
           </div>
         </div>

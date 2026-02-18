@@ -1,5 +1,6 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { CvService } from '../../core/services/cv.service';
 import { Freelancer } from '../../core/models';
@@ -19,12 +20,16 @@ export class CustomizeCardComponent implements OnInit {
   saving = signal(false);
   uploading = signal(false);
   message = signal<{ type: 'success' | 'error'; text: string } | null>(null);
+  showToast = signal(false);
+  toastMessage = signal('');
 
   readonly maxPortfolioImages = 5;
 
   constructor(
     private freelancerService: FreelancerService,
     private cvService: CvService,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -117,7 +122,7 @@ export class CustomizeCardComponent implements OnInit {
       next: (updated) => {
         this.freelancer.set(updated);
         this.saving.set(false);
-        this.showMessage('success', 'Card customization saved successfully!');
+        this.showSuccessToast('Card customization saved successfully!');
       },
       error: () => {
         this.saving.set(false);
@@ -129,5 +134,14 @@ export class CustomizeCardComponent implements OnInit {
   private showMessage(type: 'success' | 'error', text: string): void {
     this.message.set({ type, text });
     setTimeout(() => this.message.set(null), 4000);
+  }
+
+  private showSuccessToast(message: string): void {
+    this.toastMessage.set(message);
+    this.showToast.set(true);
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.router.navigate(['/freelancers']);
+    }, 2500);
   }
 }
