@@ -1,0 +1,239 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed()">
+    <div class="sidebar-top">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="assets/images/logo.png" alt="WorkLink" class="sidebar-logo-img" />
+          <span class="sidebar-logo-text">WorkLink</span>
+        </div>
+        <button class="sidebar-toggle" (click)="toggleSidebar()" [title]="sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a routerLink="/freelancer-dashboard" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a routerLink="/freelancer-applications" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Applications
+        </a>
+        <a class="sidebar-link disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          Missions
+          <span class="badge-soon">Soon</span>
+        </a>
+        <a class="sidebar-link disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Messaging
+          <span class="badge-soon">Soon</span>
+        </a>
+        <a routerLink="/freelancer-balance" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          My Balance
+        </a>
+        <a class="sidebar-link disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Notifications
+          <span class="badge-soon">Soon</span>
+        </a>
+        <a routerLink="/edit-profile" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+      </nav>
+    </div>
+
+    <!-- User info at bottom -->
+    <div class="sidebar-bottom-section">
+      <div class="sidebar-user">
+        @if (profilePicture) {
+          <img [src]="getFileUrl(profilePicture)" alt="Profile" class="sidebar-user-avatar" />
+        } @else {
+          <div class="sidebar-user-avatar sidebar-user-initials">{{ initials() }}</div>
+        }
+        <div class="sidebar-user-info">
+          <span class="sidebar-user-name">{{ displayName() }}</span>
+          <span class="sidebar-user-role">{{ currentPosition() }}</span>
+        </div>
+      </div>
+      <button class="sidebar-back-btn" (click)="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Retour
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="applications-main">
+    @if (loading()) {
+      <div class="page-loading">
+        <div class="spinner"></div>
+        <p>Loading applications...</p>
+      </div>
+    } @else {
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">Applications</h1>
+          <p class="page-subtitle">Track and manage all your mission applications.</p>
+        </div>
+      </div>
+
+      <!-- Stats Summary -->
+      <div class="stats-row">
+        <div class="mini-stat" (click)="filterByStatus('ALL')" [class.active]="statusFilter() === 'ALL'">
+          <span class="mini-stat-value">{{ totalCount() }}</span>
+          <span class="mini-stat-label">All</span>
+        </div>
+        <div class="mini-stat stat-accepted" (click)="filterByStatus('ACCEPTED')" [class.active]="statusFilter() === 'ACCEPTED'">
+          <span class="mini-stat-value">{{ acceptedCount() }}</span>
+          <span class="mini-stat-label">Accepted</span>
+        </div>
+        <div class="mini-stat stat-pending" (click)="filterByStatus('PENDING')" [class.active]="statusFilter() === 'PENDING'">
+          <span class="mini-stat-value">{{ pendingCount() }}</span>
+          <span class="mini-stat-label">Pending</span>
+        </div>
+        <div class="mini-stat stat-rejected" (click)="filterByStatus('REJECTED')" [class.active]="statusFilter() === 'REJECTED'">
+          <span class="mini-stat-value">{{ rejectedCount() }}</span>
+          <span class="mini-stat-label">Rejected</span>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+
+        <!-- Row 1 : search + sort + reset -->
+        <div class="filter-row">
+          <div class="search-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search by mission, company or name…" (input)="onSearch($event)" [value]="searchQuery()" />
+          </div>
+
+          <button class="sort-btn" (click)="toggleSortDirection()" title="Toggle sort direction">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            {{ sortDirection() === 'desc' ? 'Newest First' : 'Oldest First' }}
+            @if (sortDirection() === 'desc') {
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+            }
+          </button>
+
+          @if (hasActiveFilters()) {
+            <button class="reset-btn" (click)="resetFilters()" title="Clear all filters">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Reset
+            </button>
+          }
+        </div>
+
+        <!-- Row 2 : status chips + mission select -->
+        <div class="filter-row filter-row-chips">
+          <div class="filter-tags">
+            <button class="filter-tag" [class.active]="statusFilter() === 'ALL'"      (click)="filterByStatus('ALL')">All</button>
+            <button class="filter-tag" [class.active]="statusFilter() === 'PENDING'"  (click)="filterByStatus('PENDING')">Pending</button>
+            <button class="filter-tag" [class.active]="statusFilter() === 'ACCEPTED'" (click)="filterByStatus('ACCEPTED')">Accepted</button>
+            <button class="filter-tag" [class.active]="statusFilter() === 'REJECTED'" (click)="filterByStatus('REJECTED')">Rejected</button>
+            <button class="filter-tag" [class.active]="statusFilter() === 'WITHDRAWN'" (click)="filterByStatus('WITHDRAWN')">Withdrawn</button>
+          </div>
+
+          @if (uniqueMissions().length > 0) {
+            <select class="mission-select" (change)="filterByMission($event)" [value]="missionFilter()">
+              <option value="ALL">All Missions</option>
+              @for (m of uniqueMissions(); track m.id) {
+                <option [value]="m.id">{{ m.title }}</option>
+              }
+            </select>
+          }
+        </div>
+
+      </div>
+
+      <!-- Applications Table -->
+      <div class="table-card">
+        @if (filteredApplications().length === 0) {
+          <div class="table-empty">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <p class="table-empty-title">No applications found</p>
+            <p class="table-empty-sub">Try adjusting your search or filter criteria.</p>
+          </div>
+        } @else {
+          <div class="table-wrapper">
+            <table class="app-table">
+              <thead>
+                <tr>
+                  <th class="th-company">Company</th>
+                  <th class="th-mission">Mission Name</th>
+                  <th class="th-date">Application Date</th>
+                  <th class="th-status">Status</th>
+                  <th class="th-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (app of paginatedApplications(); track app.id) {
+                  <tr>
+                    <td class="td-company">
+                      <div class="company-cell">
+                        <div class="company-logo-wrapper">
+                          @if (app.companyLogo) {
+                            <img [src]="getFileUrl(app.companyLogo)" alt="" class="company-logo-img" />
+                          } @else {
+                            <div class="company-logo">{{ getCompanyInitials(app.companyName) }}</div>
+                          }
+                        </div>
+                        <span class="company-name">{{ app.companyName || 'N/A' }}</span>
+                      </div>
+                    </td>
+                    <td class="td-mission">{{ app.missionTitle || 'N/A' }}</td>
+                    <td class="td-date">{{ formatDate(app.submittedAt) }}</td>
+                    <td class="td-status">
+                      <span class="status-badge"
+                        [class.status-pending]="app.status === 'PENDING'"
+                        [class.status-accepted]="app.status === 'ACCEPTED'"
+                        [class.status-rejected]="app.status === 'REJECTED'"
+                        [class.status-withdrawn]="app.status === 'WITHDRAWN'">
+                        {{ app.status }}
+                      </span>
+                    </td>
+                    <td class="td-actions">
+                      <button class="action-btn action-view" title="View Mission" (click)="viewMission(app)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      </button>
+                      @if (app.status === 'PENDING') {
+                        <button class="action-btn action-withdraw" title="Withdraw Application" (click)="withdrawApp(app)">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <span class="pagination-info">
+              Showing {{ (currentPage() - 1) * pageSize + 1 }}–{{ Math.min(currentPage() * pageSize, filteredApplications().length) }} of {{ filteredApplications().length }}
+            </span>
+            <div class="pagination-controls">
+              <button class="pagination-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                Previous
+              </button>
+              <span class="pagination-page">Page {{ currentPage() }} of {{ totalPages() }}</span>
+              <button class="pagination-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

@@ -38,4 +38,8 @@ export interface Application {
   updatedAt: string;
   missionTitle?: string;
   companyName?: string;
+  companyLogo?: string;
+  freelancerSkills?: string[];
+  freelancerProfilePicture?: string;
+  freelancerCurrentPosition?: string;
 }

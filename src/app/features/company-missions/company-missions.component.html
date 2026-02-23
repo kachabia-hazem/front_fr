@@ -1,0 +1,198 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed()">
+    <div class="sidebar-top">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          @if (companyLogo) {
+            <img [src]="getFileUrl(companyLogo)" alt="Company Logo" class="sidebar-logo-img" />
+          } @else {
+            <div class="sidebar-logo-initials">{{ companyInitials() }}</div>
+          }
+          <span class="sidebar-logo-text">{{ companyName() }}</span>
+        </div>
+        <button class="sidebar-toggle" (click)="toggleSidebar()" [title]="sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a routerLink="/company-dashboard" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a routerLink="/company-missions" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          My Missions
+        </a>
+        <a routerLink="/company-applications" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Applications
+        </a>
+        <a class="sidebar-link disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Messaging
+          <span class="badge-soon">Soon</span>
+        </a>
+        <a class="sidebar-link disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Notifications
+          <span class="badge-soon">Soon</span>
+        </a>
+        <a routerLink="/edit-company-profile" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+      </nav>
+    </div>
+
+    <!-- User info at bottom -->
+    <div class="sidebar-bottom-section">
+      <div class="sidebar-user">
+        @if (companyLogo) {
+          <img [src]="getFileUrl(companyLogo)" alt="Company" class="sidebar-user-avatar" />
+        } @else {
+          <div class="sidebar-user-avatar sidebar-user-initials">{{ managerInitials() }}</div>
+        }
+        <div class="sidebar-user-info">
+          <span class="sidebar-user-name">{{ managerName() }}</span>
+          <span class="sidebar-user-role">{{ managerPosition() }}</span>
+        </div>
+      </div>
+      <button class="sidebar-back-btn" (click)="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    @if (loading()) {
+      <div class="dashboard-loading">
+        <div class="spinner"></div>
+        <p>Loading missions...</p>
+      </div>
+    } @else {
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <h1 class="dashboard-title">My Missions</h1>
+          <p class="dashboard-subtitle">{{ countByStatus()['ALL'] }} mission(s) posted in total</p>
+        </div>
+        <a routerLink="/post-job" class="btn-post-job">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Post a Mission
+        </a>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="filter-chips">
+          <button class="filter-chip" [class.active]="filterStatus() === 'ALL'" (click)="setFilter('ALL')">
+            All <span class="chip-count">{{ countByStatus()['ALL'] || 0 }}</span>
+          </button>
+          <button class="filter-chip" [class.active]="filterStatus() === 'OPEN'" (click)="setFilter('OPEN')">
+            Open <span class="chip-count">{{ countByStatus()['OPEN'] || 0 }}</span>
+          </button>
+          <button class="filter-chip" [class.active]="filterStatus() === 'CLOSED'" (click)="setFilter('CLOSED')">
+            Closed <span class="chip-count">{{ countByStatus()['CLOSED'] || 0 }}</span>
+          </button>
+          <button class="filter-chip" [class.active]="filterStatus() === 'IN_PROGRESS'" (click)="setFilter('IN_PROGRESS')">
+            In Progress <span class="chip-count">{{ countByStatus()['IN_PROGRESS'] || 0 }}</span>
+          </button>
+          <button class="filter-chip" [class.active]="filterStatus() === 'COMPLETED'" (click)="setFilter('COMPLETED')">
+            Completed <span class="chip-count">{{ countByStatus()['COMPLETED'] || 0 }}</span>
+          </button>
+        </div>
+        <div class="search-wrapper">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" placeholder="Search missions..." (input)="onSearch($event)" />
+        </div>
+      </div>
+
+      <!-- Missions List -->
+      @if (filteredMissions().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <p class="empty-title">No missions found</p>
+          <p class="empty-sub">
+            @if (filterStatus() !== 'ALL' || searchQuery()) {
+              Try adjusting your filters or search query.
+            } @else {
+              Post your first mission to get started.
+            }
+          </p>
+          @if (filterStatus() === 'ALL' && !searchQuery()) {
+            <a routerLink="/post-job" class="btn-post-job">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Post a Mission
+            </a>
+          }
+        </div>
+      } @else {
+        <div class="missions-table-card">
+          <table class="missions-table">
+            <thead>
+              <tr>
+                <th class="col-mission">Mission</th>
+                <th class="col-date">Published</th>
+                <th class="col-count">Applications</th>
+                <th class="col-status">Status</th>
+                <th class="col-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (mission of filteredMissions(); track mission.id) {
+                <tr class="mission-row" (click)="viewMission(mission.id)">
+                  <td class="col-mission">
+                    <div class="mission-info">
+                      <span class="mission-title">{{ mission.jobTitle }}</span>
+                      <span class="mission-meta">{{ mission.field }} · {{ mission.missionType }}</span>
+                    </div>
+                  </td>
+                  <td class="col-date">
+                    <span class="date-text">{{ formatDate(mission.createdAt) }}</span>
+                  </td>
+                  <td class="col-count">
+                    <div class="count-wrapper">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                      <span class="count-value">{{ getApplicationCount(mission.id) }}</span>
+                    </div>
+                  </td>
+                  <td class="col-status">
+                    <span class="status-badge status-{{ (mission.status || 'unknown').toLowerCase() }}">
+                      {{ getStatusLabel(mission.status) }}
+                    </span>
+                  </td>
+                  <td class="col-actions">
+                    <div class="actions-group">
+                      <button
+                        class="btn-see-apps"
+                        (click)="viewApplications($event, mission.id)"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        See Applications
+                      </button>
+                      <button
+                        class="action-btn"
+                        (click)="editMission($event, mission.id)"
+                        title="Edit mission"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+    }
+  </main>
+</div>

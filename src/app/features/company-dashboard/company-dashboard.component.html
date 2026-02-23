@@ -1,0 +1,249 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed()">
+    <div class="sidebar-top">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          @if (companyLogo) {
+            <img [src]="getFileUrl(companyLogo)" alt="Company Logo" class="sidebar-logo-img" />
+          } @else {
+            <div class="sidebar-logo-initials">{{ companyInitials() }}</div>
+          }
+          <span class="sidebar-logo-text">{{ companyName() }}</span>
+        </div>
+        <button class="sidebar-toggle" (click)="toggleSidebar()" [title]="sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a routerLink="/company-dashboard" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a routerLink="/company-missions" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          Mes Missions
+        </a>
+        <a routerLink="/company-applications" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Applications
+        </a>
+        <a class="sidebar-link disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Messaging
+          <span class="badge-soon">Soon</span>
+        </a>
+        <a class="sidebar-link disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Notifications
+          <span class="badge-soon">Soon</span>
+        </a>
+        <a routerLink="/edit-company-profile" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+      </nav>
+    </div>
+
+    <!-- User info at bottom -->
+    <div class="sidebar-bottom-section">
+      <div class="sidebar-user">
+        @if (companyLogo) {
+          <img [src]="getFileUrl(companyLogo)" alt="Company" class="sidebar-user-avatar" />
+        } @else {
+          <div class="sidebar-user-avatar sidebar-user-initials">{{ managerInitials() }}</div>
+        }
+        <div class="sidebar-user-info">
+          <span class="sidebar-user-name">{{ managerName() }}</span>
+          <span class="sidebar-user-role">{{ managerPosition() }}</span>
+        </div>
+      </div>
+      <button class="sidebar-back-btn" (click)="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Retour
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    @if (loading()) {
+      <div class="dashboard-loading">
+        <div class="spinner"></div>
+        <p>Loading dashboard...</p>
+      </div>
+    } @else {
+      <!-- Header -->
+      <div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">Welcome back, {{ companyName() }}</h1>
+          <p class="dashboard-subtitle">Manage your projects and team.</p>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-teal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Total Missions</span>
+            <span class="stat-value">{{ stats()?.totalMissions || 0 }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-blue">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Total Applications</span>
+            <span class="stat-value">{{ stats()?.totalApplications || 0 }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-green">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Active Missions</span>
+            <span class="stat-value">{{ stats()?.activeMissions || 0 }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="charts-grid">
+        <!-- Line Chart: Mission Posting Activity -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Mission Posting Activity</h2>
+            <span class="chart-card-period">Last 6 months</span>
+          </div>
+          <div class="chart-card-body">
+            <svg class="curve-svg" viewBox="0 0 400 160" preserveAspectRatio="none">
+              <line x1="20" y1="35" x2="380" y2="35" class="grid-line" />
+              <line x1="20" y1="70" x2="380" y2="70" class="grid-line" />
+              <line x1="20" y1="105" x2="380" y2="105" class="grid-line" />
+              <line x1="20" y1="140" x2="380" y2="140" class="grid-line" />
+              <path [attr.d]="missionsPerMonthArea()" class="curve-area curve-area-teal" />
+              <path [attr.d]="missionsPerMonthCurve()" class="curve-line curve-line-teal" />
+              @for (value of stats()?.missionsPerMonth || []; track $index) {
+                <circle
+                  [attr.cx]="20 + ($index / ((stats()?.missionsPerMonth?.length || 2) - 1 || 1)) * 360"
+                  [attr.cy]="20 + 120 - (value / maxMissionsPerMonth() * 120)"
+                  r="4"
+                  class="curve-dot curve-dot-teal" />
+              }
+            </svg>
+            <div class="curve-x-labels">
+              @for (label of stats()?.monthLabels || []; track $index) {
+                <span>{{ label }}</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Line Chart: Applications per Mission -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Applications per Mission</h2>
+            <span class="chart-card-period">Top missions</span>
+          </div>
+          <div class="chart-card-body">
+            @if ((stats()?.applicationsPerMission?.length || 0) >= 2) {
+              <svg class="curve-svg" viewBox="0 0 400 160" preserveAspectRatio="none">
+                <line x1="20" y1="35" x2="380" y2="35" class="grid-line" />
+                <line x1="20" y1="70" x2="380" y2="70" class="grid-line" />
+                <line x1="20" y1="105" x2="380" y2="105" class="grid-line" />
+                <line x1="20" y1="140" x2="380" y2="140" class="grid-line" />
+                <path [attr.d]="appsPerMissionArea()" class="curve-area curve-area-blue" />
+                <path [attr.d]="appsPerMissionCurve()" class="curve-line curve-line-blue" />
+                @for (item of stats()?.applicationsPerMission || []; track $index) {
+                  <circle
+                    [attr.cx]="20 + ($index / ((stats()?.applicationsPerMission?.length || 2) - 1 || 1)) * 360"
+                    [attr.cy]="20 + 120 - (item.count / maxAppsPerMission() * 120)"
+                    r="4"
+                    class="curve-dot curve-dot-blue" />
+                }
+              </svg>
+              <div class="curve-x-labels">
+                @for (item of stats()?.applicationsPerMission || []; track $index) {
+                  <span>{{ truncateTitle(item.title) }}</span>
+                }
+              </div>
+            } @else {
+              <div class="chart-empty">
+                <p>Not enough data to display chart.</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Donut Chart: Missions by Status -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Missions by Status</h2>
+          </div>
+          <div class="donut-chart-body">
+            <div class="donut-svg-wrapper">
+              <svg viewBox="0 0 120 120" class="donut-svg">
+                @for (seg of donutSegments(); track seg.status) {
+                  <circle
+                    cx="60" cy="60" r="45"
+                    fill="none"
+                    [attr.stroke]="seg.color"
+                    stroke-width="10"
+                    [attr.stroke-dasharray]="seg.dashArray"
+                    [attr.stroke-dashoffset]="seg.dashOffset"
+                    class="donut-segment" />
+                }
+              </svg>
+              <div class="donut-center">
+                <span class="donut-center-value">{{ stats()?.totalMissions || 0 }}</span>
+                <span class="donut-center-label">Total</span>
+              </div>
+            </div>
+            <div class="donut-legend">
+              @for (seg of donutSegments(); track seg.status) {
+                <div class="donut-legend-item">
+                  <span class="donut-legend-color" [style.background]="seg.color"></span>
+                  <span class="donut-legend-label">{{ seg.label }}</span>
+                  <span class="donut-legend-value">{{ seg.count }} ({{ seg.pct }}%)</span>
+                </div>
+              }
+              @if (donutSegments().length === 0) {
+                <p class="chart-empty-text">No missions yet.</p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Stacked Bar Chart: Monthly Spending -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Monthly Spending (TJM)</h2>
+            <span class="chart-card-period">Last 6 months</span>
+          </div>
+          <div class="chart-card-body">
+            <div class="chart-bars">
+              @for (value of stats()?.monthlySpending || []; track $index) {
+                <div class="chart-bar-wrapper">
+                  <div class="chart-bar" [style.height.%]="getBarHeight(value)">
+                    @if (value > 0) {
+                      <span class="chart-bar-tooltip">${{ formatCurrency(value) }}</span>
+                    }
+                  </div>
+                  <span class="chart-label">{{ stats()?.monthLabels?.[$index] || '' }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </main>
+</div>

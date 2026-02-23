@@ -25,4 +25,18 @@ export class ApplicationService {
   withdrawApplication(missionId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/withdraw/${missionId}`);
   }
+
+  getCompanyApplications(): Observable<Application[]> {
+    return this.http.get<Application[]>(`${this.apiUrl}/company`);
+  }
+
+  getMissionApplications(missionId: string): Observable<Application[]> {
+    return this.http.get<Application[]>(`${this.apiUrl}/mission/${missionId}`);
+  }
+
+  updateApplicationStatus(applicationId: string, status: 'ACCEPTED' | 'REJECTED'): Observable<Application> {
+    return this.http.patch<Application>(`${this.apiUrl}/${applicationId}/status`, null, {
+      params: { status },
+    });
+  }
 }

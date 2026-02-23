@@ -22,6 +22,76 @@ export const routes: Routes = [
       import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
 
+  // Freelancer dashboard — standalone (no navbar/footer)
+  {
+    path: 'freelancer-dashboard',
+    loadComponent: () =>
+      import('./features/freelancer-dashboard/freelancer-dashboard.component').then(
+        (m) => m.FreelancerDashboardComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Freelancer applications — standalone (no navbar/footer)
+  {
+    path: 'freelancer-applications',
+    loadComponent: () =>
+      import('./features/freelancer-applications/freelancer-applications.component').then(
+        (m) => m.FreelancerApplicationsComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Freelancer balance — standalone (no navbar/footer)
+  {
+    path: 'freelancer-balance',
+    loadComponent: () =>
+      import('./features/freelancer-balance/freelancer-balance.component').then(
+        (m) => m.FreelancerBalanceComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Company dashboard — standalone (no navbar/footer)
+  {
+    path: 'company-dashboard',
+    loadComponent: () =>
+      import('./features/company-dashboard/company-dashboard.component').then(
+        (m) => m.CompanyDashboardComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Company missions list — standalone (no navbar/footer)
+  {
+    path: 'company-missions',
+    loadComponent: () =>
+      import('./features/company-missions/company-missions.component').then(
+        (m) => m.CompanyMissionsComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Company all applications — standalone (no navbar/footer)
+  {
+    path: 'company-applications',
+    loadComponent: () =>
+      import('./features/company-applications/company-applications.component').then(
+        (m) => m.CompanyApplicationsComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Mission applications — standalone (no navbar/footer)
+  {
+    path: 'mission-applications/:missionId',
+    loadComponent: () =>
+      import('./features/mission-applications/mission-applications.component').then(
+        (m) => m.MissionApplicationsComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
   // Protected routes — main layout (navbar + footer)
   {
     path: '',
