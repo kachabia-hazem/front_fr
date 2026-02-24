@@ -46,6 +46,8 @@ body:not(.dark-theme) {
   --toggle-color: #6b7280;
   --toggle-hover-bg: #e8e8e8;
   --toggle-hover-border: #c0c0c0;
+  --input-bg: #ffffff;
+  --profile-hover-bg: #f3f4f6;
 
   background: var(--bg-page);
   color: var(--text-primary);
@@ -71,6 +73,8 @@ body.dark-theme {
   --toggle-color: #d1d5db;
   --toggle-hover-bg: #4b5563;
   --toggle-hover-border: #6b7280;
+  --input-bg: #253347;
+  --profile-hover-bg: #2d3748;
 
   background: var(--bg-page);
   color: var(--text-primary);

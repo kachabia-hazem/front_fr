@@ -386,3 +386,37 @@
   color: #fff;
   border-radius: 0.4rem;
 }
+
+/* ══════════════════════════════════════
+   DARK THEME
+   ══════════════════════════════════════ */
+
+/* Danger item hover */
+:host-context(body.dark-theme) .dropdown-item-danger:hover {
+  background: rgba(220, 38, 38, 0.12);
+}
+
+/* Role badges hover in dark */
+:host-context(body.dark-theme) .profile-section:hover .role-freelancer {
+  background: linear-gradient(135deg, #1a3a35 0%, #1e3d38 100%);
+  color: #6dc4b8;
+  border-color: #2d6b63;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.15);
+}
+
+:host-context(body.dark-theme) .profile-section:hover .role-company {
+  background: linear-gradient(135deg, rgba(124,58,237,0.2) 0%, rgba(124,58,237,0.15) 100%);
+  color: #a78bfa;
+  border-color: #6d5aac;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+}
+
+/* Avatar initials border */
+:host-context(body.dark-theme) .avatar-initials {
+  border-color: #1f2937;
+}
+
+/* Dropdown shadow */
+:host-context(body.dark-theme) .dropdown-menu {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}

@@ -659,3 +659,212 @@
     padding: 0.22rem 0.6rem;
   }
 }
+
+/* ══════════════════════════════════════
+   DARK THEME
+   ══════════════════════════════════════ */
+
+:host-context(body.dark-theme) {
+  background: #111827;
+}
+
+/* Loading / Error */
+:host-context(body.dark-theme) .spinner {
+  border-color: #374151;
+  border-top-color: #5aaa9e;
+}
+
+/* Back button */
+:host-context(body.dark-theme) .btn-back {
+  color: #9ca3af;
+}
+
+:host-context(body.dark-theme) .btn-back:hover {
+  color: #6dc4b8;
+  background: rgba(90, 170, 158, 0.08);
+}
+
+/* Main card */
+:host-context(body.dark-theme) .detail-container {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Mission Header */
+:host-context(body.dark-theme) .mission-header {
+  background: linear-gradient(135deg, #1f2937 0%, #1a3035 100%);
+  border-bottom-color: #374151;
+}
+
+:host-context(body.dark-theme) .mission-title {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .meta-date {
+  color: #6b7280;
+}
+
+/* Badges */
+:host-context(body.dark-theme) .badge-status {
+  background: rgba(5, 150, 105, 0.15);
+  color: #34d399;
+}
+
+:host-context(body.dark-theme) .badge-status-closed {
+  background: rgba(220, 38, 38, 0.15);
+  color: #f87171;
+}
+
+:host-context(body.dark-theme) .badge-location {
+  background: #252a3a;
+  color: #9ca3b0;
+}
+
+:host-context(body.dark-theme) .badge-type {
+  background: rgba(124, 58, 237, 0.15);
+  color: #a78bfa;
+}
+
+:host-context(body.dark-theme) .badge-field {
+  background: rgba(180, 83, 9, 0.15);
+  color: #fbbf24;
+}
+
+:host-context(body.dark-theme) .badge-exp {
+  background: rgba(3, 105, 161, 0.15);
+  color: #60a5fa;
+}
+
+/* Info Cards Row */
+:host-context(body.dark-theme) .info-cards-row {
+  border-bottom-color: #374151;
+}
+
+:host-context(body.dark-theme) .info-card {
+  background: #253347;
+  border-color: #374151;
+}
+
+:host-context(body.dark-theme) .info-card-tjm {
+  background: #1a3035;
+  border-color: #2d6b63;
+}
+
+:host-context(body.dark-theme) .info-card-icon {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+:host-context(body.dark-theme) .info-card-value {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .tjm-value {
+  color: #6dc4b8;
+}
+
+/* Sections */
+:host-context(body.dark-theme) .section {
+  border-bottom-color: #374151;
+}
+
+:host-context(body.dark-theme) .section-title {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .description-text {
+  color: #d1d5db;
+}
+
+:host-context(body.dark-theme) .section-text {
+  color: #d1d5db;
+}
+
+/* Skills */
+:host-context(body.dark-theme) .skill-tag {
+  background: #1a3035;
+  color: #6dc4b8;
+  border-color: #2d6b63;
+}
+
+/* Sector / Field badges */
+:host-context(body.dark-theme) .badge-sector {
+  background: #252a3a;
+  color: #d1d5db;
+}
+
+:host-context(body.dark-theme) .badge-field-lg {
+  background: rgba(180, 83, 9, 0.15);
+  color: #fbbf24;
+}
+
+/* Deadline */
+:host-context(body.dark-theme) .deadline-text {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+/* Action buttons bar */
+:host-context(body.dark-theme) .detail-actions {
+  background: #1a2535;
+  border-top-color: #374151;
+}
+
+:host-context(body.dark-theme) .btn-matching-lg {
+  background: #1f2937;
+  color: #a78bfa;
+  border-color: #6d5aac;
+}
+
+:host-context(body.dark-theme) .btn-matching-lg:hover {
+  background: rgba(124, 58, 237, 0.12);
+  border-color: #a78bfa;
+}
+
+/* Company section */
+:host-context(body.dark-theme) .company-section-title {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .company-card {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(body.dark-theme) .company-avatar {
+  background: #253347;
+  border-color: #374151;
+}
+
+:host-context(body.dark-theme) .avatar-letter {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .company-name {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .company-description {
+  color: #9ca3b0;
+}
+
+:host-context(body.dark-theme) .company-stat {
+  background: #253347;
+  border-color: #374151;
+  color: #9ca3b0;
+}
+
+:host-context(body.dark-theme) .btn-view-company {
+  background: #1f2937;
+  color: #6dc4b8;
+  border-color: #6dc4b8;
+}
+
+:host-context(body.dark-theme) .btn-view-company:hover {
+  background: rgba(90, 170, 158, 0.08);
+  color: #5aaa9e;
+  border-color: #5aaa9e;
+}

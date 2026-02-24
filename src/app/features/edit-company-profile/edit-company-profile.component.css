@@ -414,3 +414,61 @@
     font-size: 1.35rem;
   }
 }
+
+/* ══════════════════════════════════════
+   DARK THEME
+   ══════════════════════════════════════ */
+
+/* Autofill fix for form-group inputs */
+:host-context(body.dark-theme) .form-group input:-webkit-autofill,
+:host-context(body.dark-theme) .form-group input:-webkit-autofill:hover,
+:host-context(body.dark-theme) .form-group input:-webkit-autofill:focus,
+:host-context(body.dark-theme) .form-group input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #253347 inset !important;
+  -webkit-text-fill-color: #e4e4ef !important;
+  caret-color: #e4e4ef;
+}
+
+/* Autofill fix for sidebar inputs */
+:host-context(body.dark-theme) .sidebar-input:-webkit-autofill,
+:host-context(body.dark-theme) .sidebar-input:-webkit-autofill:hover,
+:host-context(body.dark-theme) .sidebar-input:-webkit-autofill:focus,
+:host-context(body.dark-theme) .sidebar-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #253347 inset !important;
+  -webkit-text-fill-color: #e4e4ef !important;
+  caret-color: #e4e4ef;
+}
+
+/* Disabled input */
+:host-context(body.dark-theme) .form-group input:disabled {
+  background: #374151;
+  color: #6b7280;
+  opacity: 0.7;
+}
+
+/* Sidebar avatar border */
+:host-context(body.dark-theme) .sidebar-avatar {
+  background: #1f2937;
+}
+
+:host-context(body.dark-theme) .sidebar-avatar.avatar-initials {
+  border-color: #374151;
+}
+
+/* Alerts */
+:host-context(body.dark-theme) .alert-success {
+  background: #1a3a25;
+  color: #4ade80;
+  border-color: #2d6b3a;
+}
+
+:host-context(body.dark-theme) .alert-error {
+  background: #2a1515;
+  color: #f87171;
+  border-color: #7f1d1d;
+}
+
+/* date input calendar icon */
+:host-context(body.dark-theme) .form-group input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}

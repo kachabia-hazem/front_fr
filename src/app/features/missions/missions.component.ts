@@ -71,8 +71,8 @@ export class MissionsComponent implements OnInit {
   // Card menu
   openMenuId: string | null = null;
 
-  // Track which missions the freelancer has already applied to
-  appliedMissionIds = new Set<string>();
+  // Track which missions the freelancer has already applied to, with their status
+  applicationStatusMap = new Map<string, 'PENDING' | 'ACCEPTED' | 'REJECTED'>();
   cancellingMissionIds = new Set<string>();
 
   private profileCompletion: number | null = null;
@@ -335,10 +335,10 @@ export class MissionsComponent implements OnInit {
   loadMyApplications(): void {
     this.applicationService.getMyApplications().subscribe({
       next: (applications) => {
-        this.appliedMissionIds.clear();
+        this.applicationStatusMap.clear();
         for (const app of applications) {
           if (app.status !== 'WITHDRAWN') {
-            this.appliedMissionIds.add(app.missionId);
+            this.applicationStatusMap.set(app.missionId, app.status as 'PENDING' | 'ACCEPTED' | 'REJECTED');
           }
         }
       },
@@ -346,7 +346,11 @@ export class MissionsComponent implements OnInit {
   }
 
   hasApplied(mission: Mission): boolean {
-    return this.appliedMissionIds.has(mission.id!);
+    return this.applicationStatusMap.has(mission.id!);
+  }
+
+  getApplicationStatus(mission: Mission): 'PENDING' | 'ACCEPTED' | 'REJECTED' | null {
+    return this.applicationStatusMap.get(mission.id!) ?? null;
   }
 
   cancelApplication(event: Event, mission: Mission): void {
@@ -356,7 +360,7 @@ export class MissionsComponent implements OnInit {
     this.cancellingMissionIds.add(mission.id!);
     this.applicationService.withdrawApplication(mission.id!).subscribe({
       next: () => {
-        this.appliedMissionIds.delete(mission.id!);
+        this.applicationStatusMap.delete(mission.id!);
         this.cancellingMissionIds.delete(mission.id!);
         this.toastService.show('Your application has been cancelled.', 'success');
       },

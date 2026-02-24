@@ -505,7 +505,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.submitting.set(false);
-        const message = err.error?.message || 'Failed to submit application. Please try again.';
+        const message = err.error?.message || err.error?.error || 'Failed to submit application. Please try again.';
         this.submitError.set(message);
       },
     });

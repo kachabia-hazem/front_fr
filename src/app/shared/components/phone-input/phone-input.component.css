@@ -217,3 +217,110 @@
     font-size: 0.8rem;
   }
 }
+
+/* ══════════════════════════════════════
+   DARK THEME
+   ══════════════════════════════════════ */
+
+:host-context(body.dark-theme) .phone-input-container {
+  background: #1f2937;
+  border-color: #4b5563;
+}
+
+:host-context(body.dark-theme) .phone-input-container:focus-within {
+  background: #253347;
+  border-color: #5aaa9e;
+  box-shadow: 0 0 0 4px rgba(90, 170, 158, 0.15);
+}
+
+:host-context(body.dark-theme) .country-selector {
+  border-right-color: #4b5563;
+}
+
+:host-context(body.dark-theme) .country-selector:hover {
+  background: rgba(90, 170, 158, 0.08);
+}
+
+:host-context(body.dark-theme) .country-dial-code {
+  color: #d1d5db;
+}
+
+:host-context(body.dark-theme) .dropdown-arrow {
+  color: #6b7280;
+}
+
+:host-context(body.dark-theme) .phone-number-input {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .phone-number-input::placeholder {
+  color: #6b7280;
+}
+
+/* Fix autofill dans le phone input */
+:host-context(body.dark-theme) .phone-number-input:-webkit-autofill,
+:host-context(body.dark-theme) .phone-number-input:-webkit-autofill:hover,
+:host-context(body.dark-theme) .phone-number-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px #253347 inset !important;
+  -webkit-text-fill-color: #e4e4ef !important;
+}
+
+:host-context(body.dark-theme) .dropdown-menu {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+:host-context(body.dark-theme) .search-container {
+  background: #253347;
+  border-bottom-color: #374151;
+}
+
+:host-context(body.dark-theme) .search-container svg {
+  color: #6b7280;
+}
+
+:host-context(body.dark-theme) .search-input {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .search-input::placeholder {
+  color: #6b7280;
+}
+
+:host-context(body.dark-theme) .countries-list::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+:host-context(body.dark-theme) .countries-list::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+:host-context(body.dark-theme) .countries-list::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+:host-context(body.dark-theme) .country-item:hover {
+  background: #374151;
+}
+
+:host-context(body.dark-theme) .country-item.selected {
+  background: #1a3a35;
+}
+
+:host-context(body.dark-theme) .country-item .country-name {
+  color: #d1d5db;
+}
+
+:host-context(body.dark-theme) .country-item .country-dial {
+  color: #9ca3b0;
+}
+
+:host-context(body.dark-theme) .country-item.selected .country-name,
+:host-context(body.dark-theme) .country-item.selected .country-dial {
+  color: #6dc4b8;
+}
+
+:host-context(body.dark-theme) .no-results {
+  color: #6b7280;
+}

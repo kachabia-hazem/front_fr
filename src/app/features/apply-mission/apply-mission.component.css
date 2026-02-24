@@ -1161,3 +1161,150 @@
     padding: 0.75rem 1.5rem;
   }
 }
+
+/* ══════════════════════════════════════
+   DARK THEME
+   ══════════════════════════════════════ */
+
+/* Fix autofill override — navigateur force fond blanc quand on remplit les champs */
+:host-context(body.dark-theme) .form-input:-webkit-autofill,
+:host-context(body.dark-theme) .form-input:-webkit-autofill:hover,
+:host-context(body.dark-theme) .form-input:-webkit-autofill:focus,
+:host-context(body.dark-theme) .form-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #1f2937 inset !important;
+  -webkit-text-fill-color: #e4e4ef !important;
+  caret-color: #e4e4ef;
+}
+
+/* Input date picker icon color */
+:host-context(body.dark-theme) .form-input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+/* CV option cards */
+:host-context(body.dark-theme) .cv-option-card {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+:host-context(body.dark-theme) .cv-option-card:hover {
+  border-color: #4b5563;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(body.dark-theme) .cv-option-selected {
+  border-color: #5aaa9e;
+  background: #1a3a35;
+  box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.2);
+}
+
+:host-context(body.dark-theme) .cv-option-icon {
+  background: #1a3a35;
+}
+
+:host-context(body.dark-theme) .cv-option-icon-muted {
+  background: #374151;
+  color: #6b7280;
+}
+
+:host-context(body.dark-theme) .cv-upload-area {
+  border-top-color: #374151;
+}
+
+:host-context(body.dark-theme) .cv-browse-btn {
+  background: #253347;
+}
+
+:host-context(body.dark-theme) .cv-browse-btn:hover {
+  background: #1a3a35;
+}
+
+:host-context(body.dark-theme) .cv-file-preview,
+:host-context(body.dark-theme) .cv-profile-preview,
+:host-context(body.dark-theme) .cv-selected-bar {
+  background: #1a3a35;
+  border-color: #2d6b63;
+}
+
+:host-context(body.dark-theme) .cv-file-remove:hover {
+  background: #3b1515;
+  color: #f87171;
+}
+
+/* PDF preview */
+:host-context(body.dark-theme) .pdf-canvas-wrapper {
+  background: #253347;
+  border-color: #374151;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(body.dark-theme) .pdf-nav-arrow {
+  background: rgba(31, 41, 55, 0.9);
+  border-color: #374151;
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .pdf-nav-arrow:hover:not(:disabled) {
+  background: #1f2937;
+}
+
+:host-context(body.dark-theme) .pdf-page-input {
+  background: #1f2937;
+  border-color: #374151;
+  color: #e4e4ef;
+}
+
+/* Radio buttons */
+:host-context(body.dark-theme) .radio-option {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+:host-context(body.dark-theme) .radio-option:hover {
+  border-color: #4b5563;
+  background: #253347;
+}
+
+:host-context(body.dark-theme) .radio-option.radio-selected {
+  border-color: #5aaa9e;
+  background: #1a3a35;
+}
+
+:host-context(body.dark-theme) .radio-circle {
+  border-color: #4b5563;
+}
+
+:host-context(body.dark-theme) .radio-label {
+  color: #e4e4ef;
+}
+
+/* Review fields */
+:host-context(body.dark-theme) .review-fields {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+:host-context(body.dark-theme) .review-field-divider {
+  background: #374151;
+}
+
+:host-context(body.dark-theme) .review-section-title {
+  color: #9ca3b0;
+}
+
+/* Mission summary card */
+:host-context(body.dark-theme) .mission-summary-card {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(body.dark-theme) .summary-divider {
+  background: #374151;
+}
+
+/* Previous button hover */
+:host-context(body.dark-theme) .btn-previous:hover {
+  background: #253347;
+  border-color: #4b5563;
+}

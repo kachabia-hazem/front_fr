@@ -418,3 +418,103 @@
     order: -1;
   }
 }
+
+/* ══════════════════════════════════════
+   DARK THEME
+   ══════════════════════════════════════ */
+
+/* Alerts */
+:host-context(body.dark-theme) .alert-success {
+  background: #1a3a25;
+  color: #4ade80;
+  border-color: #2d6b3a;
+}
+
+:host-context(body.dark-theme) .alert-error {
+  background: #2a1515;
+  color: #f87171;
+  border-color: #7f1d1d;
+}
+
+/* Upload area */
+:host-context(body.dark-theme) .upload-area {
+  background: #1f2937;
+  border-color: #4b5563;
+  color: #9ca3b0;
+}
+
+:host-context(body.dark-theme) .upload-area:hover {
+  border-color: #818cf8;
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.08);
+}
+
+/* Uploaded image preview */
+:host-context(body.dark-theme) .uploaded-preview {
+  border-color: #374151;
+}
+
+/* Portfolio items */
+:host-context(body.dark-theme) .portfolio-item {
+  border-color: #374151;
+}
+
+:host-context(body.dark-theme) .portfolio-item-actions {
+  background: #1f2937;
+}
+
+/* Icon buttons */
+:host-context(body.dark-theme) .btn-icon {
+  background: #253347;
+  border-color: #4b5563;
+  color: #9ca3b0;
+}
+
+:host-context(body.dark-theme) .btn-icon:hover:not(:disabled) {
+  border-color: #818cf8;
+  color: #a5b4fc;
+}
+
+:host-context(body.dark-theme) .btn-icon-danger:hover:not(:disabled) {
+  border-color: #ef4444;
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Card preview */
+:host-context(body.dark-theme) .card-preview {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+:host-context(body.dark-theme) .card-avatar {
+  border-color: #1f2937;
+}
+
+:host-context(body.dark-theme) .card-footer {
+  border-top-color: #374151;
+}
+
+:host-context(body.dark-theme) .skill-tag {
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+}
+
+/* Toast */
+:host-context(body.dark-theme) .toast-success {
+  background: #1f2937;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+:host-context(body.dark-theme) .toast-icon {
+  background: #1a3a25;
+}
+
+:host-context(body.dark-theme) .toast-title {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .toast-msg {
+  color: #9ca3af;
+}

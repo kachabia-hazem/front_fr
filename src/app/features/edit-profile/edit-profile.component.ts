@@ -266,7 +266,11 @@ export class EditProfileComponent implements OnInit {
       lastName: formValue.lastName || undefined,
       gender: formValue.gender || undefined,
       dateOfBirth: formValue.dateOfBirth || undefined,
-      phoneNumber: formValue.phoneNumber || undefined,
+      phoneNumber: formValue.phoneNumber
+        ? (formValue.phoneNumber.startsWith('+')
+            ? '+' + formValue.phoneNumber.slice(1).replace(/\D/g, '')
+            : formValue.phoneNumber.replace(/\D/g, ''))
+        : undefined,
       currentPosition: formValue.currentPosition || undefined,
       location: formValue.location || undefined,
       yearsOfExperience: formValue.yearsOfExperience ?? undefined,

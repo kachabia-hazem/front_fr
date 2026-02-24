@@ -226,7 +226,7 @@
           @if (isDeadlineUrgent(mission)) {
             <div class="urgent-banner">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Dernier jour pour postuler !
+              Last Day to Apply !
             </div>
           }
           <!-- Company Header -->
@@ -349,15 +349,27 @@
             </button>
             <div class="card-actions">
               @if (isFreelancer) {
-                <button class="btn-matching">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/></svg>
-                  Matching
-                </button>
-                @if (hasApplied(mission)) {
+                @if (!hasApplied(mission)) {
+                  <button class="btn-matching">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/></svg>
+                    Matching
+                  </button>
+                }
+                @if (getApplicationStatus(mission) === 'PENDING') {
                   <button class="btn-cancel-application" (click)="cancelApplication($event, mission)" [disabled]="cancellingMissionIds.has(mission.id!)">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     {{ cancellingMissionIds.has(mission.id!) ? 'Cancelling...' : 'Cancel Application' }}
                   </button>
+                } @else if (getApplicationStatus(mission) === 'ACCEPTED') {
+                  <span class="application-status-badge status-accepted">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Accepted
+                  </span>
+                } @else if (getApplicationStatus(mission) === 'REJECTED') {
+                  <span class="application-status-badge status-rejected">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    Rejected
+                  </span>
                 } @else {
                   <button class="btn-postuler" (click)="applyToMission($event, mission)">Apply</button>
                 }
@@ -653,21 +665,33 @@
       <!-- Modal Footer Actions -->
       @if (isFreelancer) {
         <div class="modal-footer">
-          @if (hasApplied(selectedMission!)) {
+          @if (getApplicationStatus(selectedMission!) === 'PENDING') {
             <button class="btn-cancel-application-modal" (click)="cancelApplication($event, selectedMission!)" [disabled]="cancellingMissionIds.has(selectedMission!.id!)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               {{ cancellingMissionIds.has(selectedMission!.id!) ? 'Cancelling...' : 'Cancel Application' }}
             </button>
+          } @else if (getApplicationStatus(selectedMission!) === 'ACCEPTED') {
+            <span class="application-status-badge-modal status-accepted-modal">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Your application has been Accepted
+            </span>
+          } @else if (getApplicationStatus(selectedMission!) === 'REJECTED') {
+            <span class="application-status-badge-modal status-rejected-modal">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Your application has been Rejected
+            </span>
           } @else {
             <button class="btn-postuler-modal" (click)="applyToMission($event, selectedMission!)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
               Apply
             </button>
           }
-          <button class="btn-matching-modal">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/></svg>
-            Matching
-          </button>
+          @if (!hasApplied(selectedMission!)) {
+            <button class="btn-matching-modal">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/></svg>
+              Matching
+            </button>
+          }
         </div>
       }
     </div>

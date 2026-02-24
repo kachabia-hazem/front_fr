@@ -180,6 +180,12 @@ export class PhoneInputComponent implements ControlValueAccessor {
         this.selectedCountry = country;
         const rawDigits = value.substring(country.dialCode.length).replace(/\D/g, '');
         this.phoneNumber = this.formatDigits(rawDigits);
+        // If the stored value has non-digit characters (spaces, dashes, etc.),
+        // emit the normalized clean value back so the form control passes validation.
+        const normalizedValue = country.dialCode + rawDigits;
+        if (normalizedValue !== value) {
+          Promise.resolve().then(() => this.onChange(normalizedValue));
+        }
       } else {
         this.phoneNumber = value;
       }
