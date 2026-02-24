@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApplicationService } from '../../core/services/application.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { Freelancer } from '../../core/models';
@@ -22,6 +23,7 @@ export class FreelancerApplicationsComponent implements OnInit {
   allApplications = signal<Application[]>([]);
   loading = signal(true);
   sidebarCollapsed = signal(false);
+  unreadNotifCount = signal(0);
 
   searchQuery = signal('');
   statusFilter = signal<string>('ALL');
@@ -100,6 +102,7 @@ export class FreelancerApplicationsComponent implements OnInit {
   constructor(
     private applicationService: ApplicationService,
     private freelancerService: FreelancerService,
+    private notificationService: NotificationService,
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
@@ -116,6 +119,10 @@ export class FreelancerApplicationsComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
+    });
+
+    this.notificationService.getUnreadCount().subscribe({
+      next: (res) => this.unreadNotifCount.set(res.count),
     });
   }
 

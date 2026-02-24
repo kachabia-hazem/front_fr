@@ -420,3 +420,25 @@
 :host-context(body.dark-theme) .dropdown-menu {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
+
+/* Notification badge on Dashboard item */
+.dropdown-notif-badge {
+  margin-left: auto;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  animation: pulseNotifBadge 2s ease-in-out infinite;
+}
+
+@keyframes pulseNotifBadge {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.15); }
+}

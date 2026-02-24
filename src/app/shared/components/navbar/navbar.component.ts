@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { FreelancerService } from '../../../core/services/freelancer.service';
 import { CompanyService } from '../../../core/services/company.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { Freelancer, Company } from '../../../core/models';
 import { environment } from '../../../../environments/environment';
 
@@ -19,6 +20,7 @@ export class NavbarComponent implements OnInit {
   freelancer = signal<Freelancer | null>(null);
   company = signal<Company | null>(null);
   showDropdown = false;
+  unreadNotifCount = signal(0);
 
   // Profile completion percentage
   get profileCompletion(): number {
@@ -112,6 +114,7 @@ export class NavbarComponent implements OnInit {
     public themeService: ThemeService,
     private freelancerService: FreelancerService,
     private companyService: CompanyService,
+    private notificationService: NotificationService,
   ) {}
 
   ngOnInit(): void {
@@ -121,6 +124,10 @@ export class NavbarComponent implements OnInit {
       if (role === 'FREELANCER') {
         this.freelancerService.getMyProfile().subscribe({
           next: (profile) => this.freelancer.set(profile),
+          error: () => {},
+        });
+        this.notificationService.getUnreadCount().subscribe({
+          next: (res) => this.unreadNotifCount.set(res.count),
           error: () => {},
         });
       } else if (role === 'COMPANY') {

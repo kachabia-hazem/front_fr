@@ -4,10 +4,12 @@ import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { DashboardService, DashboardStats } from '../../core/services/dashboard.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { ApplicationService } from '../../core/services/application.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { Freelancer } from '../../core/models';
 import { Application } from '../../core/models/application.model';
+import { Notification as AppNotification, NotificationType } from '../../core/models/notification.model';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -22,8 +24,11 @@ export class FreelancerDashboardComponent implements OnInit {
   stats = signal<DashboardStats | null>(null);
   applications = signal<Application[]>([]);
   loading = signal(true);
+  unreadNotifCount = signal(0);
 
   sidebarCollapsed = signal(false);
+  notifPanelOpen = signal(false);
+  recentNotifications = signal<AppNotification[]>([]);
 
   // Which card's chart is expanded: null, 'turnover', or 'visibility'
   expandedCard = signal<'turnover' | 'visibility' | null>(null);
@@ -81,6 +86,7 @@ export class FreelancerDashboardComponent implements OnInit {
     private dashboardService: DashboardService,
     private freelancerService: FreelancerService,
     private applicationService: ApplicationService,
+    private notificationService: NotificationService,
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
@@ -102,10 +108,78 @@ export class FreelancerDashboardComponent implements OnInit {
       },
       error: () => this.loading.set(false),
     });
+
+    this.notificationService.getUnreadCount().subscribe({
+      next: (res) => this.unreadNotifCount.set(res.count),
+    });
+
+    this.notificationService.getMyNotifications().subscribe({
+      next: (list) => this.recentNotifications.set(list.slice(0, 8)),
+    });
   }
 
   toggleSidebar(): void {
     this.sidebarCollapsed.update(v => !v);
+  }
+
+  toggleNotifPanel(): void {
+    this.notifPanelOpen.update(v => !v);
+  }
+
+  closeNotifPanel(): void {
+    this.notifPanelOpen.set(false);
+  }
+
+  openNotifDetail(notif: AppNotification): void {
+    if (!notif.isRead) {
+      this.notificationService.markAsRead(notif.id).subscribe({
+        next: () => {
+          this.recentNotifications.update(list =>
+            list.map(n => n.id === notif.id ? { ...n, isRead: true } : n),
+          );
+          this.unreadNotifCount.update(c => Math.max(0, c - 1));
+        },
+      });
+    }
+    this.notifPanelOpen.set(false);
+    this.router.navigate(['/freelancer-notifications'], { queryParams: { id: notif.id } });
+  }
+
+  markAllNotifsAsRead(): void {
+    this.notificationService.markAllAsRead().subscribe({
+      next: () => {
+        this.recentNotifications.update(list => list.map(n => ({ ...n, isRead: true })));
+        this.unreadNotifCount.set(0);
+      },
+    });
+  }
+
+  getNotifTypeIcon(type: NotificationType | string): string {
+    const icons: Record<string, string> = {
+      WELCOME: '👋',
+      APPLICATION_SUBMITTED: '📤',
+      APPLICATION_ACCEPTED: '✅',
+      APPLICATION_REJECTED: '❌',
+      APPLICATION_WITHDRAWN: '↩️',
+      NEW_MISSION_MATCH: '🎯',
+      MISSION_DEADLINE_SOON: '⏰',
+      PROFILE_INCOMPLETE: '⚠️',
+    };
+    return icons[type] || '🔔';
+  }
+
+  formatNotifTime(dateStr: string): string {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMin / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffMin < 1) return 'Just now';
+    if (diffMin < 60) return `${diffMin}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
   toggleChart(card: 'turnover' | 'visibility'): void {

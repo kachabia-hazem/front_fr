@@ -82,6 +82,16 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
+  // Freelancer notifications — standalone (no navbar/footer)
+  {
+    path: 'freelancer-notifications',
+    loadComponent: () =>
+      import('./features/freelancer-notifications/freelancer-notifications.component').then(
+        (m) => m.FreelancerNotificationsComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
   // Mission applications — standalone (no navbar/footer)
   {
     path: 'mission-applications/:missionId',

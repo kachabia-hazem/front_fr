@@ -2,6 +2,7 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { FreelancerService } from '../../core/services/freelancer.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { Freelancer } from '../../core/models';
@@ -34,6 +35,7 @@ export class FreelancerBalanceComponent implements OnInit {
   freelancer = signal<Freelancer | null>(null);
   loading = signal(true);
   sidebarCollapsed = signal(false);
+  unreadNotifCount = signal(0);
 
   initials = computed(() => {
     const f = this.freelancer();
@@ -107,6 +109,7 @@ export class FreelancerBalanceComponent implements OnInit {
 
   constructor(
     private freelancerService: FreelancerService,
+    private notificationService: NotificationService,
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
@@ -119,6 +122,10 @@ export class FreelancerBalanceComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
+    });
+
+    this.notificationService.getUnreadCount().subscribe({
+      next: (res) => this.unreadNotifCount.set(res.count),
     });
   }
 
