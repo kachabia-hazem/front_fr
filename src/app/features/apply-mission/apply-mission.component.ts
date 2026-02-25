@@ -43,6 +43,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
   editingCountry = false;
 
   // Step 3 — CV
+  cvError = false;
   cvOption: 'upload' | 'profile' | null = null;
   uploadedCvFile: File | null = null;
   uploadedCvName = '';
@@ -85,7 +86,6 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
       country: ['', Validators.required],
       postalCode: [''],
       city: [''],
-      postalAddress: [''],
     });
 
     this.questionsForm = this.fb.group({
@@ -158,7 +158,6 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
       country: freelancer.country || 'Tunisia',
       postalCode: freelancer.postalCode || '',
       city: freelancer.city || '',
-      postalAddress: freelancer.postalAddress || '',
     });
 
     if (freelancer.cvUrl) {
@@ -200,6 +199,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
   selectCvOption(option: 'upload' | 'profile'): void {
     if (this.cvOption === option) return;
     this.cvOption = option;
+    this.cvError = false;
     this.closePdfPreview();
 
     if (option === 'profile') {
@@ -224,6 +224,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
     this.uploadedCvFile = file;
     this.uploadedCvName = file.name;
     this.cvOption = 'upload';
+    this.cvError = false;
     this.closePdfPreview();
 
     if (ext === '.pdf') {
@@ -318,6 +319,11 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
     // If editing from review, save and go back to review
     if (this.editingFromReview) {
       if (this.currentStep === 3) {
+        if (!this.cvOption) {
+          this.cvError = true;
+          return;
+        }
+        this.cvError = false;
         this.editingFromReview = false;
         this.closePdfPreview();
         this.currentStep = 6;
@@ -333,6 +339,11 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
     }
 
     if (this.currentStep === 3) {
+      if (!this.cvOption) {
+        this.cvError = true;
+        return;
+      }
+      this.cvError = false;
       if (this.currentStep < this.totalSteps) {
         this.currentStep++;
       }
@@ -489,7 +500,6 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
       country: this.locationForm.get('country')?.value,
       postalCode: this.locationForm.get('postalCode')?.value,
       city: this.locationForm.get('city')?.value,
-      postalAddress: this.locationForm.get('postalAddress')?.value,
       cvUrl,
       salaryExpectations: this.questionsForm.get('salaryExpectations')?.value,
       currentSalaryAndNotice: this.questionsForm.get('currentSalaryAndNotice')?.value,

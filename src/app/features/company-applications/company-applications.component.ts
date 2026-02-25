@@ -5,6 +5,7 @@ import { CompanyService } from '../../core/services/company.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { ApplicationService } from '../../core/services/application.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { Application } from '../../core/models/application.model';
 import { Company } from '../../core/models/user.model';
 import { environment } from '../../../environments/environment';
@@ -21,6 +22,7 @@ export class CompanyApplicationsComponent implements OnInit {
   allApplications = signal<Application[]>([]);
   loading = signal(true);
   sidebarCollapsed = signal(false);
+  unreadCount = computed(() => this.notificationService.unreadCount());
   updatingId = signal<string | null>(null);
 
   // Filters
@@ -104,6 +106,7 @@ export class CompanyApplicationsComponent implements OnInit {
   constructor(
     private companyService: CompanyService,
     private applicationService: ApplicationService,
+    private notificationService: NotificationService,
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,

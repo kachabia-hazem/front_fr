@@ -142,13 +142,15 @@
                 (click)="openNotifDetail(notif)">
                 <div class="notif-panel-icon">{{ getNotifTypeIcon(notif.type) }}</div>
                 <div class="notif-panel-content">
-                  <p class="notif-panel-item-title">{{ notif.title }}</p>
+                  <div class="notif-title-row">
+                    @if (!notif.isRead) {
+                      <span class="notif-panel-dot"></span>
+                    }
+                    <p class="notif-panel-item-title">{{ notif.title }}</p>
+                  </div>
                   <p class="notif-panel-item-msg">{{ notif.message }}</p>
                   <span class="notif-panel-time">{{ formatNotifTime(notif.createdAt) }}</span>
                 </div>
-                @if (!notif.isRead) {
-                  <span class="notif-panel-dot"></span>
-                }
               </div>
             }
           }

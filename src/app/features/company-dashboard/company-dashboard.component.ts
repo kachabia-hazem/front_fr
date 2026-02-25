@@ -5,7 +5,9 @@ import { CompanyService } from '../../core/services/company.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { CompanyDashboardService, CompanyDashboardStats } from '../../core/services/company-dashboard.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { Company } from '../../core/models/user.model';
+import { Notification as AppNotification, NotificationType } from '../../core/models/notification.model';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -20,6 +22,9 @@ export class CompanyDashboardComponent implements OnInit {
   stats = signal<CompanyDashboardStats | null>(null);
   loading = signal(true);
   sidebarCollapsed = signal(false);
+  notifPanelOpen = signal(false);
+  recentNotifications = computed(() => this.notificationService.notifications().slice(0, 8));
+  unreadNotifCount = computed(() => this.notificationService.unreadCount());
 
   companyName = computed(() => this.company()?.companyName || 'Company');
   managerName = computed(() => {
@@ -126,6 +131,7 @@ export class CompanyDashboardComponent implements OnInit {
   constructor(
     private companyService: CompanyService,
     private companyDashboardService: CompanyDashboardService,
+    private notificationService: NotificationService,
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
@@ -143,10 +149,66 @@ export class CompanyDashboardComponent implements OnInit {
       },
       error: () => this.loading.set(false),
     });
+
+    this.notificationService.getUnreadCount().subscribe();
+    this.notificationService.getMyNotifications().subscribe();
   }
 
   toggleSidebar(): void {
     this.sidebarCollapsed.update(v => !v);
+  }
+
+  toggleNotifPanel(): void {
+    this.notifPanelOpen.update(v => !v);
+  }
+
+  closeNotifPanel(): void {
+    this.notifPanelOpen.set(false);
+  }
+
+  openNotifDetail(notif: AppNotification): void {
+    if (!notif.isRead) {
+      this.notificationService.markAsRead(notif.id).subscribe();
+    }
+    this.notifPanelOpen.set(false);
+    this.router.navigate(['/company-notifications'], { queryParams: { id: notif.id } });
+  }
+
+  markAllNotifsAsRead(): void {
+    this.notificationService.markAllAsRead().subscribe();
+  }
+
+  getNotifTypeIcon(type: NotificationType | string): string {
+    const icons: Record<string, string> = {
+      COMPANY_WELCOME: '🏢',
+      MISSION_PUBLISHED: '📋',
+      APPLICATION_RECEIVED: '📥',
+      PENDING_APPLICATIONS_REMINDER: '⏰',
+      MISSION_CLOSED: '🔒',
+      WELCOME: '👋',
+      APPLICATION_SUBMITTED: '📤',
+      APPLICATION_ACCEPTED: '✅',
+      APPLICATION_REJECTED: '❌',
+      APPLICATION_WITHDRAWN: '↩️',
+      NEW_MISSION_MATCH: '🎯',
+      MISSION_DEADLINE_SOON: '⚠️',
+      PROFILE_INCOMPLETE: '⚠️',
+    };
+    return icons[type] || '🔔';
+  }
+
+  formatNotifTime(dateStr: string): string {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMin / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffMin < 1) return 'Just now';
+    if (diffMin < 60) return `${diffMin}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
   goBack(): void {

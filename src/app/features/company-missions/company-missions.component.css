@@ -137,6 +137,35 @@
 .sidebar-link.disabled { opacity: 0.45; cursor: not-allowed; }
 .sidebar-link svg { flex-shrink: 0; }
 
+.notif-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.sidebar-notif-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid #f8f9fb;
+}
+
+:host-context(body.dark-theme) .sidebar-notif-badge {
+  border-color: #1a1f2e;
+}
+
 .badge-soon {
   margin-left: auto;
   font-size: 0.65rem;

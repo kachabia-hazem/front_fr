@@ -10,13 +10,15 @@ export class HighlightPipe implements PipeTransform {
 
   transform(text: string | undefined | null, query: string): SafeHtml {
     if (!text) return '';
-    if (!query || !query.trim()) return text;
 
-    // Escape HTML special chars in source text first
+    // Escape HTML special chars, then convert newlines to <br>
     const safe = text
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+      .replace(/>/g, '&gt;')
+      .replace(/\n/g, '<br>');
+
+    if (!query || !query.trim()) return this.sanitizer.bypassSecurityTrustHtml(safe);
 
     // Escape regex special chars in the query
     const escaped = query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

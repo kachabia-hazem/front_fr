@@ -23,7 +23,7 @@ export class FreelancerApplicationsComponent implements OnInit {
   allApplications = signal<Application[]>([]);
   loading = signal(true);
   sidebarCollapsed = signal(false);
-  unreadNotifCount = signal(0);
+  unreadNotifCount = computed(() => this.notificationService.unreadCount());
 
   searchQuery = signal('');
   statusFilter = signal<string>('ALL');
@@ -121,9 +121,7 @@ export class FreelancerApplicationsComponent implements OnInit {
       error: () => this.loading.set(false),
     });
 
-    this.notificationService.getUnreadCount().subscribe({
-      next: (res) => this.unreadNotifCount.set(res.count),
-    });
+    this.notificationService.getUnreadCount().subscribe();
   }
 
   toggleSidebar(): void {

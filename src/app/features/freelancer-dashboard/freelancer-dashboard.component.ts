@@ -24,11 +24,12 @@ export class FreelancerDashboardComponent implements OnInit {
   stats = signal<DashboardStats | null>(null);
   applications = signal<Application[]>([]);
   loading = signal(true);
-  unreadNotifCount = signal(0);
+
+  unreadNotifCount = computed(() => this.notificationService.unreadCount());
 
   sidebarCollapsed = signal(false);
   notifPanelOpen = signal(false);
-  recentNotifications = signal<AppNotification[]>([]);
+  recentNotifications = computed(() => this.notificationService.notifications().slice(0, 8));
 
   // Which card's chart is expanded: null, 'turnover', or 'visibility'
   expandedCard = signal<'turnover' | 'visibility' | null>(null);
@@ -109,13 +110,9 @@ export class FreelancerDashboardComponent implements OnInit {
       error: () => this.loading.set(false),
     });
 
-    this.notificationService.getUnreadCount().subscribe({
-      next: (res) => this.unreadNotifCount.set(res.count),
-    });
+    this.notificationService.getUnreadCount().subscribe();
 
-    this.notificationService.getMyNotifications().subscribe({
-      next: (list) => this.recentNotifications.set(list.slice(0, 8)),
-    });
+    this.notificationService.getMyNotifications().subscribe();
   }
 
   toggleSidebar(): void {
@@ -132,26 +129,14 @@ export class FreelancerDashboardComponent implements OnInit {
 
   openNotifDetail(notif: AppNotification): void {
     if (!notif.isRead) {
-      this.notificationService.markAsRead(notif.id).subscribe({
-        next: () => {
-          this.recentNotifications.update(list =>
-            list.map(n => n.id === notif.id ? { ...n, isRead: true } : n),
-          );
-          this.unreadNotifCount.update(c => Math.max(0, c - 1));
-        },
-      });
+      this.notificationService.markAsRead(notif.id).subscribe();
     }
     this.notifPanelOpen.set(false);
     this.router.navigate(['/freelancer-notifications'], { queryParams: { id: notif.id } });
   }
 
   markAllNotifsAsRead(): void {
-    this.notificationService.markAllAsRead().subscribe({
-      next: () => {
-        this.recentNotifications.update(list => list.map(n => ({ ...n, isRead: true })));
-        this.unreadNotifCount.set(0);
-      },
-    });
+    this.notificationService.markAllAsRead().subscribe();
   }
 
   getNotifTypeIcon(type: NotificationType | string): string {

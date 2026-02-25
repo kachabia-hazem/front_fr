@@ -1,0 +1,261 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed()">
+    <div class="sidebar-top">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          @if (companyLogo) {
+            <img [src]="getFileUrl(companyLogo)" alt="Company Logo" class="sidebar-logo-img" />
+          } @else {
+            <div class="sidebar-logo-initials">{{ companyInitials() }}</div>
+          }
+          <span class="sidebar-logo-text">{{ companyName() }}</span>
+        </div>
+        <button class="sidebar-toggle" (click)="toggleSidebar()"
+          [title]="sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a routerLink="/company-dashboard" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          Dashboard
+        </a>
+        <a routerLink="/company-missions" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+          Mes Missions
+        </a>
+        <a routerLink="/company-applications" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+          </svg>
+          Applications
+        </a>
+        <a class="sidebar-link disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Messaging
+          <span class="badge-soon">Soon</span>
+        </a>
+        <a routerLink="/company-notifications" routerLinkActive="active" class="sidebar-link">
+          <span class="notif-icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            @if (unreadCount() > 0) {
+              <span class="sidebar-notif-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+            }
+          </span>
+          Notifications
+        </a>
+        <a routerLink="/edit-company-profile" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65
+              1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0
+              9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0
+              4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65
+              0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65
+              0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33
+              l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0
+              1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          Settings
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom-section">
+      <div class="sidebar-user">
+        @if (companyLogo) {
+          <img [src]="getFileUrl(companyLogo)" alt="Company" class="sidebar-user-avatar" />
+        } @else {
+          <div class="sidebar-user-avatar sidebar-user-initials">{{ managerInitials() }}</div>
+        }
+        <div class="sidebar-user-info">
+          <span class="sidebar-user-name">{{ managerName() }}</span>
+          <span class="sidebar-user-role">{{ managerPosition() }}</span>
+        </div>
+      </div>
+      <button class="sidebar-back-btn" (click)="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Back
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+
+    <!-- Page Header -->
+    <div class="notif-page-header">
+      <div class="notif-page-title-row">
+        <div>
+          <h1 class="notif-page-title">Notifications</h1>
+          <p class="notif-page-subtitle">
+            @if (unreadCount() > 0) {
+              You have <strong>{{ unreadCount() }}</strong> unread notification{{ unreadCount() > 1 ? 's' : '' }}.
+            } @else {
+              All notifications are read.
+            }
+          </p>
+        </div>
+        @if (unreadCount() > 0) {
+          <button class="btn-mark-all" (click)="markAllAsRead()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Mark all as read
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="notif-filters-bar">
+      <div class="notif-search-wrapper">
+        <svg class="notif-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input class="notif-search-input" type="text" placeholder="Search notifications..."
+          [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)" />
+        @if (searchQuery()) {
+          <button class="notif-search-clear" (click)="onSearchChange('')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        }
+      </div>
+
+      <div class="notif-filter-chips">
+        <button class="chip" [class.chip-active]="filterType() === 'all'" (click)="setFilterType('all')">All</button>
+        <button class="chip" [class.chip-active]="filterType() === 'unread'" (click)="setFilterType('unread')">Unread</button>
+        <button class="chip" [class.chip-active]="filterType() === 'read'" (click)="setFilterType('read')">Read</button>
+      </div>
+
+      <select class="notif-select" [value]="selectedSender()" (change)="onSenderChange($any($event.target).value)">
+        <option value="">All senders</option>
+        @for (s of senders(); track s) {
+          <option [value]="s">{{ s }}</option>
+        }
+      </select>
+
+      <input class="notif-date-input" type="date" [value]="selectedDate()"
+        (change)="onDateChange($any($event.target).value)" />
+
+      @if (searchQuery() || filterType() !== 'all' || selectedSender() || selectedDate()) {
+        <button class="btn-clear-filters" (click)="clearFilters()">Clear filters</button>
+      }
+    </div>
+
+    <!-- Content -->
+    @if (loading()) {
+      <div class="notif-loading">
+        <div class="spinner"></div>
+        <p>Loading notifications...</p>
+      </div>
+    } @else if (filtered().length === 0) {
+      <div class="notif-empty">
+        <div class="notif-empty-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </div>
+        <p class="notif-empty-title">No notifications found</p>
+        <p class="notif-empty-sub">
+          @if (searchQuery() || filterType() !== 'all' || selectedSender() || selectedDate()) {
+            Try adjusting your filters.
+          } @else {
+            You're all caught up! Notifications will appear here when there are updates.
+          }
+        </p>
+        @if (searchQuery() || filterType() !== 'all' || selectedSender() || selectedDate()) {
+          <button class="btn-clear-filters" (click)="clearFilters()">Clear filters</button>
+        }
+      </div>
+    } @else {
+      <div class="notif-list">
+        @for (notif of filtered(); track notif.id) {
+          <div class="notif-item" [id]="'notif-' + notif.id" [class.notif-unread]="!notif.isRead"
+            (click)="handleNotificationClick(notif)">
+
+            <div class="notif-type-icon" [ngClass]="getTypeClass(notif.type)">
+              <span class="notif-emoji">{{ getTypeIcon(notif.type) }}</span>
+            </div>
+
+            <div class="notif-content">
+              <div class="notif-content-header">
+                <span class="notif-title" [innerHTML]="notif.title | highlight: searchQuery()"></span>
+                <div class="notif-meta">
+                  @if (!notif.isRead) {
+                    <span class="notif-unread-dot"></span>
+                  }
+                  <span class="notif-time">{{ formatDate(notif.createdAt) }}</span>
+                </div>
+              </div>
+              <p class="notif-message" [class.notif-message-expanded]="isExpanded(notif.id)"
+                [innerHTML]="notif.message | highlight: searchQuery()"></p>
+              <div class="notif-footer">
+                <span class="notif-sender">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                  </svg>
+                  {{ notif.senderName }}
+                </span>
+                <span class="notif-action-hint">
+                  {{ isExpanded(notif.id) ? 'Show less ↑' : 'Show more ↓' }}
+                </span>
+              </div>
+            </div>
+
+            @if (!notif.isRead) {
+              <button class="notif-mark-read-btn" (click)="$event.stopPropagation(); markAsRead(notif)"
+                title="Mark as read">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <p class="notif-count-info">
+        Showing {{ filtered().length }} of {{ notifications().length }} notifications
+      </p>
+    }
+  </main>
+</div>

@@ -35,7 +35,7 @@ export class FreelancerBalanceComponent implements OnInit {
   freelancer = signal<Freelancer | null>(null);
   loading = signal(true);
   sidebarCollapsed = signal(false);
-  unreadNotifCount = signal(0);
+  unreadNotifCount = computed(() => this.notificationService.unreadCount());
 
   initials = computed(() => {
     const f = this.freelancer();
@@ -124,9 +124,7 @@ export class FreelancerBalanceComponent implements OnInit {
       error: () => this.loading.set(false),
     });
 
-    this.notificationService.getUnreadCount().subscribe({
-      next: (res) => this.unreadNotifCount.set(res.count),
-    });
+    this.notificationService.getUnreadCount().subscribe();
   }
 
   toggleSidebar(): void {

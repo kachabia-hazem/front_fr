@@ -213,25 +213,6 @@
               />
             </div>
 
-            <!-- Postal Address -->
-            <div class="form-group">
-              <label class="form-label" for="postalAddress">Postal Address</label>
-              <p class="field-hint">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-                Employers will not see this information.
-              </p>
-              <input
-                id="postalAddress"
-                type="text"
-                class="form-input"
-                formControlName="postalAddress"
-                placeholder="Enter your postal address"
-              />
-            </div>
-
             <!-- Buttons -->
             <div class="form-buttons">
               <button type="button" class="btn-previous" (click)="onPrevious()">
@@ -253,10 +234,11 @@
         <!-- ══════ STEP 3: CV Upload ══════ -->
         @if (currentStep === 3) {
           <div class="step-header">
-            <h1 class="step-title">Upload Your CV</h1>
+            <h1 class="step-title">Upload Your CV <span class="required-star">*</span></h1>
             <p class="step-description">
               Please upload your CV so we can review your qualifications.
             </p>
+            <p class="step-subtitle">Fields marked with an asterisk (<span class="required-star">*</span>) are required.</p>
           </div>
 
           <!-- Hidden file input -->
@@ -317,6 +299,11 @@
               </div>
             }
           </div>
+
+          <!-- CV Required Error -->
+          @if (cvError) {
+            <span class="field-error" style="display:block; margin-top: 0.5rem;">A CV is required to submit your application</span>
+          }
 
           <!-- CV Selected Info + Clear -->
           @if (cvOption) {
@@ -636,13 +623,6 @@
                   <div class="review-field">
                     <span class="review-field-label">City</span>
                     <span class="review-field-value">{{ locationForm.get('city')?.value }}</span>
-                  </div>
-                }
-                @if (locationForm.get('postalAddress')?.value) {
-                  <div class="review-field-divider"></div>
-                  <div class="review-field">
-                    <span class="review-field-label">Postal Address</span>
-                    <span class="review-field-value">{{ locationForm.get('postalAddress')?.value }}</span>
                   </div>
                 }
               </div>

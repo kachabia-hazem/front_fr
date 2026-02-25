@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, signal } from '@angular/core';
+import { Component, OnInit, HostListener, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -20,7 +20,7 @@ export class NavbarComponent implements OnInit {
   freelancer = signal<Freelancer | null>(null);
   company = signal<Company | null>(null);
   showDropdown = false;
-  unreadNotifCount = signal(0);
+  unreadNotifCount = computed(() => this.notificationService.unreadCount());
 
   // Profile completion percentage
   get profileCompletion(): number {
@@ -126,15 +126,13 @@ export class NavbarComponent implements OnInit {
           next: (profile) => this.freelancer.set(profile),
           error: () => {},
         });
-        this.notificationService.getUnreadCount().subscribe({
-          next: (res) => this.unreadNotifCount.set(res.count),
-          error: () => {},
-        });
+        this.notificationService.getUnreadCount().subscribe();
       } else if (role === 'COMPANY') {
         this.companyService.getMyProfile().subscribe({
           next: (profile) => this.company.set(profile),
           error: () => {},
         });
+        this.notificationService.getUnreadCount().subscribe();
       }
     }
   }
@@ -212,6 +210,9 @@ export class NavbarComponent implements OnInit {
   toggleDropdown(event: Event): void {
     event.stopPropagation();
     this.showDropdown = !this.showDropdown;
+    if (this.showDropdown && (this.isFreelancer || this.isCompany)) {
+      this.notificationService.getUnreadCount().subscribe();
+    }
   }
 
   @HostListener('document:click')

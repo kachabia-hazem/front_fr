@@ -92,6 +92,16 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
+  // Company notifications — standalone (no navbar/footer)
+  {
+    path: 'company-notifications',
+    loadComponent: () =>
+      import('./features/company-notifications/company-notifications.component').then(
+        (m) => m.CompanyNotificationsComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
   // Mission applications — standalone (no navbar/footer)
   {
     path: 'mission-applications/:missionId',

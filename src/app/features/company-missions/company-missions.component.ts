@@ -6,6 +6,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { MissionService } from '../../core/services/mission.service';
 import { ApplicationService } from '../../core/services/application.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { Mission } from '../../core/models/mission.model';
 import { Company } from '../../core/models/user.model';
 import { environment } from '../../../environments/environment';
@@ -24,6 +25,7 @@ export class CompanyMissionsComponent implements OnInit {
   applicationCounts = signal<Record<string, number>>({});
   loading = signal(true);
   sidebarCollapsed = signal(false);
+  unreadCount = computed(() => this.notificationService.unreadCount());
   filterStatus = signal<string>('ALL');
   searchQuery = signal<string>('');
 
@@ -79,6 +81,7 @@ export class CompanyMissionsComponent implements OnInit {
     private companyService: CompanyService,
     private missionService: MissionService,
     private applicationService: ApplicationService,
+    private notificationService: NotificationService,
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
