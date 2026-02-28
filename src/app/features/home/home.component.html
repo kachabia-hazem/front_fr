@@ -1,0 +1,451 @@
+<app-navbar />
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-inner">
+  <div class="hero-content">
+    <h1 class="hero-title">
+      Bringing <span class="hero-highlight">Freelancers</span> and <span class="hero-highlight">Companies</span> Together
+    </h1>
+    @if (authService.isAuthenticated() && authService.userRole() === 'FREELANCER') {
+      <!-- Freelancer authenticated: advanced search widget -->
+      <div class="search-widget">
+        <div class="search-tabs">
+          <button class="search-tab" [class.active]="activeSearchTab === 'keyword'" (click)="activeSearchTab = 'keyword'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Search by keyword
+          </button>
+          <button class="search-tab" [class.active]="activeSearchTab === 'ai'" (click)="activeSearchTab = 'ai'">
+            <span class="ai-star">✦</span> AI Search <span class="beta-badge">Beta</span>
+          </button>
+        </div>
+
+        <form class="search-bar" (ngSubmit)="onHeroSearch()">
+          <input
+            type="text"
+            class="search-input"
+            placeholder='Try "AI Engineer", "n8n", "SEO GEO"...'
+            [(ngModel)]="heroSearch"
+            name="heroSearch"
+            autocomplete="off"
+          />
+          <div class="search-sep"></div>
+          <div class="search-location-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Mission location (e.g. Paris, Lyon...)"
+              [(ngModel)]="heroLocation"
+              name="heroLocation"
+              autocomplete="off"
+            />
+          </div>
+          <button type="submit" class="search-btn">
+            Search
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </form>
+      </div>
+    } @else if (isCompany) {
+      <!-- Company authenticated: advanced search widget for finding freelancers -->
+      <div class="search-widget">
+        <div class="search-tabs">
+          <button class="search-tab" [class.active]="activeSearchTab === 'keyword'" (click)="activeSearchTab = 'keyword'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Search by keyword
+          </button>
+          <button class="search-tab" [class.active]="activeSearchTab === 'ai'" (click)="activeSearchTab = 'ai'">
+            <span class="ai-star">✦</span> AI Search <span class="beta-badge">Beta</span>
+          </button>
+        </div>
+
+        <form class="search-bar" (ngSubmit)="onCompanyHeroSearch()">
+          <input
+            type="text"
+            class="search-input"
+            placeholder='Try "React Developer", "Python", "UI/UX Designer"...'
+            [(ngModel)]="heroSearch"
+            name="heroSearch"
+            autocomplete="off"
+          />
+          <button type="submit" class="search-btn">
+            Search
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </form>
+      </div>
+    } @else if (!authService.isAuthenticated()) {
+      <!-- Guest: classic search bar + Get Started button -->
+      <form class="hero-search" (ngSubmit)="onHeroSearch()">
+        <input
+          type="text"
+          class="hero-search-input"
+          placeholder="What are you looking for? E.g. Full-Stack Developer"
+          [(ngModel)]="heroSearch"
+          name="heroSearch"
+          autocomplete="off"
+        />
+        <button type="submit" class="hero-search-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </form>
+      <a routerLink="/auth/register" class="btn-get-started">Get Started</a>
+    }
+  </div>
+  </div>
+</section>
+
+<!-- Why WorkLink Section -->
+<section class="why-section">
+<div class="why-inner">
+  <div class="why-header">
+    <h2 class="why-title">Why WorkLink?</h2>
+    <p class="why-subtitle">
+      WorkLink stands out with a professional, innovative approach, constantly
+      adapting to the latest technological trends, offering a complete range of
+      tailored digital services for freelancers and companies alike.
+    </p>
+  </div>
+
+  <div class="why-timeline">
+    <div class="why-tl-line"></div>
+
+    <!-- Step 1 – left -->
+    <div class="why-tl-step why-tl-left">
+      <div class="why-tl-content">
+        <span class="why-tl-number">01</span>
+        <h3 class="why-tl-title">AI-Powered Talent Matching</h3>
+        <p class="why-tl-desc">Our intelligent system analyzes skills, experience, and project needs to connect you with the most suitable professionals in seconds.</p>
+      </div>
+      <div class="why-tl-dot-col"><span class="why-tl-dot"></span></div>
+      <div class="why-tl-empty"></div>
+    </div>
+
+    <!-- Step 2 – right -->
+    <div class="why-tl-step why-tl-right">
+      <div class="why-tl-empty"></div>
+      <div class="why-tl-dot-col"><span class="why-tl-dot"></span></div>
+      <div class="why-tl-content">
+        <span class="why-tl-number">02</span>
+        <h3 class="why-tl-title">Instant Project Connections</h3>
+        <p class="why-tl-desc">Post a project and start receiving qualified matches immediately — no long waiting times, no unnecessary steps, and no friction.</p>
+      </div>
+    </div>
+
+    <!-- Step 3 – left -->
+    <div class="why-tl-step why-tl-left">
+      <div class="why-tl-content">
+        <span class="why-tl-number">03</span>
+        <h3 class="why-tl-title">Advanced Search Filters</h3>
+        <p class="why-tl-desc">Narrow down results by skills, experience level, budget, location and availability. You stay informed and in control at every step.</p>
+      </div>
+      <div class="why-tl-dot-col"><span class="why-tl-dot"></span></div>
+      <div class="why-tl-empty"></div>
+    </div>
+
+    <!-- Step 4 – right -->
+    <div class="why-tl-step why-tl-right">
+      <div class="why-tl-empty"></div>
+      <div class="why-tl-dot-col"><span class="why-tl-dot"></span></div>
+      <div class="why-tl-content">
+        <span class="why-tl-number">04</span>
+        <h3 class="why-tl-title">Ratings &amp; Reviews System</h3>
+        <p class="why-tl-desc">We are constantly exploring new technologies to offer innovative, forward-thinking solutions so you stay competitive in a fast-evolving digital landscape.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+  <div class="stats-inner">
+    @for (stat of stats; track stat.label) {
+      <div class="stat-item">
+        <span class="stat-number">{{ formatNumber(stat.current) }}{{ stat.suffix }}</span>
+        <span class="stat-label">{{ stat.label }}</span>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- How it Works Section -->
+<section class="how-section" id="how-it-works">
+<div class="how-inner">
+  <div class="how-header">
+    <h2 class="how-title">How it works</h2>
+    <div class="how-toggle">
+      <button class="toggle-btn" [class.active]="activeTab === 'freelancers'" (click)="activeTab = 'freelancers'">
+        👤 For Freelancers
+      </button>
+      <button class="toggle-btn" [class.active]="activeTab === 'companies'" (click)="activeTab = 'companies'">
+        🏢 For Companies
+      </button>
+    </div>
+  </div>
+
+  @if (activeTab === 'freelancers') {
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-visual">
+          <img src="assets/images/image1.png" alt="Create your profile" />
+        </div>
+        <div class="how-step-body">
+          <span class="how-step-num">01</span>
+          @if (isFreelancer) {
+            <h3>Complete your profile</h3>
+            <p>Showcase your skills, experience, and availability to attract the best companies.</p>
+            <a routerLink="/edit-profile" class="how-card-btn">Complete your profile</a>
+          } @else if (isCompany) {
+            <h3>Create your profile</h3>
+            <p>Showcase your skills, experience, and availability to attract the best companies.</p>
+            <a routerLink="/auth/register" class="how-card-btn">Register as Freelancer</a>
+          } @else {
+            <h3>Create your profile</h3>
+            <p>Showcase your skills, experience, and availability to attract the best companies.</p>
+            <a routerLink="/auth/register" class="how-card-btn">Get Started</a>
+          }
+        </div>
+      </div>
+
+      <div class="how-step">
+        <div class="how-step-visual">
+          <img src="assets/images/image2.png" alt="Browse missions" />
+        </div>
+        <div class="how-step-body">
+          <span class="how-step-num">02</span>
+          <h3>Browse and apply to missions</h3>
+          <p>Explore missions published by companies and apply to the ones that match your profile.</p>
+          <a routerLink="/missions" class="how-card-btn">Browse Missions</a>
+        </div>
+      </div>
+
+      <div class="how-step">
+        <div class="how-step-visual">
+          <img src="assets/images/image3.png" alt="Track your work" />
+        </div>
+        <div class="how-step-body">
+          <span class="how-step-num">03</span>
+          <h3>Collaborate and track your work</h3>
+          <p>Manage your applications, active missions, and payments from your dashboard.</p>
+          @if (isFreelancer) {
+            <a routerLink="/freelancer-dashboard" class="how-card-btn">Go to Dashboard</a>
+          } @else if (isCompany) {
+            <button class="how-card-btn" (click)="openRestricted('freelancer')">Go to Dashboard</button>
+          } @else {
+            <a routerLink="/auth/login" class="how-card-btn">Go to Dashboard</a>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (activeTab === 'companies') {
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-visual">
+          <img src="assets/images/image4.png" alt="Create company account" />
+        </div>
+        <div class="how-step-body">
+          <span class="how-step-num">01</span>
+          @if (isCompany) {
+            <h3>Complete your company profile</h3>
+            <p>Present your business and define your needs to attract the right freelancers.</p>
+            <a routerLink="/edit-company-profile" class="how-card-btn">Complete your profile</a>
+          } @else {
+            <h3>Create a company account</h3>
+            <p>Present your business and define your needs to attract the right freelancers.</p>
+            <a routerLink="/auth/register" class="how-card-btn">Register as Company</a>
+          }
+        </div>
+      </div>
+
+      <div class="how-step">
+        <div class="how-step-visual">
+          <img src="assets/images/image5.png" alt="Publish missions" />
+        </div>
+        <div class="how-step-body">
+          <span class="how-step-num">02</span>
+          <h3>Publish missions</h3>
+          <p>Receive applications from qualified freelancers and find the right talent for your project.</p>
+          @if (isCompany) {
+            <a routerLink="/post-job" class="how-card-btn">Post a Mission</a>
+          } @else if (isFreelancer) {
+            <button class="how-card-btn" (click)="openRestricted('company')">Post a Mission</button>
+          } @else {
+            <a routerLink="/auth/login" class="how-card-btn">Post a Mission</a>
+          }
+        </div>
+      </div>
+
+      <div class="how-step">
+        <div class="how-step-visual">
+          <img src="assets/images/image6.png" alt="Manage collaborations" />
+        </div>
+        <div class="how-step-body">
+          <span class="how-step-num">03</span>
+          <h3>Manage your collaborations</h3>
+          <p>Track applications, ongoing missions, and payments from your company dashboard.</p>
+          @if (isCompany) {
+            <a routerLink="/company-dashboard" class="how-card-btn">Go to Dashboard</a>
+          } @else if (isFreelancer) {
+            <button class="how-card-btn" (click)="openRestricted('company')">Go to Dashboard</button>
+          } @else {
+            <a routerLink="/auth/login" class="how-card-btn">Go to Dashboard</a>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+</div>
+</section>
+
+<!-- Pricing Section -->
+<section class="pricing-section" id="pricing">
+  <h2 class="pricing-title">Upgrade to unlock the full potential of Worklink.</h2>
+
+  <div class="pricing-grid">
+    <!-- Basic -->
+    <div class="pricing-card">
+      <div class="pricing-card-top">
+        <span class="pricing-plan-name">Basic</span>
+        <span class="pricing-plan-sub">For starting out</span>
+      </div>
+      <p class="pricing-fee">5% Service fee after hiring</p>
+      <p class="pricing-includes-label">Basic plan includes:</p>
+      <ul class="pricing-features">
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          AI-powered features
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Collaboration and project tracking tools
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Pay as work is completed
+        </li>
+      </ul>
+      <a routerLink="/auth/register" class="pricing-btn pricing-btn-outline">Get started for free</a>
+    </div>
+
+    <!-- Business Plus -->
+    <div class="pricing-card pricing-card-popular">
+      <span class="popular-badge">POPULAR</span>
+      <div class="pricing-card-top">
+        <span class="pricing-plan-name">Business Plus</span>
+        <span class="pricing-plan-sub">For growing</span>
+      </div>
+      <p class="pricing-fee">10% Service fee after hiring</p>
+      <p class="pricing-includes-label">Everything in Basic, plus:</p>
+      <ul class="pricing-features">
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Instant access to pre-vetted top 1% of talent
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          WorkLink Recruiter
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Teams controls
+        </li>
+      </ul>
+      <a routerLink="/auth/register" class="pricing-btn pricing-btn-filled">Get started for free</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+  <div class="faq-inner">
+    <h2 class="faq-title">FAQ</h2>
+    <div class="faq-list">
+      @for (faq of faqs; track faq.q; let i = $index) {
+        <div class="faq-item" [class.faq-open]="openFaqIndex === i">
+          <button class="faq-question" (click)="toggleFaq(i)">
+            <span>{{ faq.q }}</span>
+            <svg
+              class="faq-chevron"
+              [class.rotated]="openFaqIndex === i"
+              xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          @if (openFaqIndex === i) {
+            <p class="faq-answer">{{ faq.a }}</p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- CTA Company — company users only -->
+@if (isCompany) {
+  <section class="cta-company-section">
+    <div class="cta-company-card">
+      <div class="cta-company-left">
+        <h2 class="cta-company-title">
+          Turn ideas into action.
+          <span class="cta-company-subtitle">Post a mission now and make progress today.</span>
+        </h2>
+        <a routerLink="/post-job" class="cta-company-btn">Post a Mission</a>
+      </div>
+      <div class="cta-company-right">
+        <img src="assets/images/img.jpg" alt="Post a mission" class="cta-company-img" />
+      </div>
+    </div>
+  </section>
+}
+
+<!-- CTA Banner — guests only -->
+@if (!authService.isAuthenticated()) {
+  <section class="cta-banner-section">
+    <div class="cta-banner">
+      <h2 class="cta-banner-title">
+        <span class="cta-banner-highlight">Qualified</span> freelancers seeking work,<br>and companies looking to hire
+      </h2>
+      <a routerLink="/auth/register" class="cta-banner-btn">Register Now</a>
+    </div>
+  </section>
+}
+
+<!-- Access Restricted Modal -->
+@if (restrictedModal) {
+  <div class="modal-backdrop" (click)="closeRestricted()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2 class="modal-title">Access Restricted</h2>
+      @if (restrictedFor === 'company') {
+        <p class="modal-desc">This interface is intended for business use only.</p>
+        <p class="modal-desc">Access is limited to verified companies.<br>Please log in with a business account to continue.</p>
+      } @else {
+        <p class="modal-desc">This interface is intended for freelance professionals only.</p>
+        <p class="modal-desc">Access is limited to verified freelancers.<br>Please log in with a freelancer account to continue.</p>
+      }
+      <button class="modal-close-btn" (click)="closeRestricted()">Got it</button>
+    </div>
+  </div>
+}
+
+<app-footer />
+
+<!-- Scroll to top -->
+@if (showScrollTop) {
+  <button class="scroll-top-btn" (click)="scrollToTop()" aria-label="Back to top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"/>
+    </svg>
+  </button>
+}

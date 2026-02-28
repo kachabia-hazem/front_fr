@@ -1,13 +1,230 @@
-.footer {
-  text-align: center;
-  padding: 1rem 2rem;
-  background: var(--nav-bg, #fff);
-  border-top: 1px solid var(--nav-border, #e5e7eb);
-  transition: background 0.3s, border-color 0.3s;
+.home-footer {
+  background: #ffffff;
+  color: #374151;
+  border-top: 1px solid #e5e7eb;
+  padding: 72px 0 0;
+  margin-top: 0;
 }
 
-.footer p {
+.home-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px 56px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Brand column */
+.hf-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hf-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hf-logo-img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.hf-logo-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.3px;
+}
+
+.hf-desc {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: #6b7280;
   margin: 0;
-  font-size: 0.82rem;
-  color: var(--text-secondary, #6b7280);
+  max-width: 300px;
+}
+
+.hf-copy {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.hf-socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.hf-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.hf-social-link:hover {
+  background: #3793B0;
+  color: #fff;
+  border-color: #3793B0;
+}
+
+/* Nav columns */
+.hf-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hf-col-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+.hf-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hf-links a,
+.hf-link-btn {
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.2s;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+}
+
+.hf-links a:hover,
+.hf-link-btn:hover {
+  color: #3793B0;
+}
+
+/* Contact column */
+.hf-contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hf-contact-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.hf-contact-list li svg {
+  flex-shrink: 0;
+  color: #3793B0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .home-footer-inner {
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 36px;
+  }
+  .hf-brand {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .hf-desc { max-width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .home-footer { padding: 48px 0 0; }
+  .home-footer-inner {
+    grid-template-columns: 1fr 1fr;
+    padding: 0 24px 40px;
+    gap: 32px;
+  }
+  .hf-brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 480px) {
+  .home-footer-inner {
+    grid-template-columns: 1fr;
+    padding: 0 20px 36px;
+  }
+}
+
+/* ══════════════════════════════
+   DARK THEME
+   ══════════════════════════════ */
+:host-context(body.dark-theme) .home-footer {
+  background: #0f172a;
+  border-top-color: #1e293b;
+}
+
+:host-context(body.dark-theme) .home-footer-inner {
+  border-bottom-color: #1e293b;
+}
+
+:host-context(body.dark-theme) .hf-logo-name {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .hf-desc {
+  color: #94a3b8;
+}
+
+:host-context(body.dark-theme) .hf-copy {
+  color: #64748b;
+}
+
+:host-context(body.dark-theme) .hf-social-link {
+  background: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+:host-context(body.dark-theme) .hf-col-title {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .hf-links a,
+:host-context(body.dark-theme) .hf-link-btn {
+  color: #94a3b8;
+}
+
+:host-context(body.dark-theme) .hf-links a:hover,
+:host-context(body.dark-theme) .hf-link-btn:hover {
+  color: #3793B0;
+}
+
+:host-context(body.dark-theme) .hf-contact-list li {
+  color: #94a3b8;
 }

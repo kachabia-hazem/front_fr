@@ -84,9 +84,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
           sessionStorage.setItem('oauth_profile', JSON.stringify(authResponse.oauthProfile));
           this.router.navigate(['/auth/oauth/role-selection']);
         } else {
-          // Existing user - save auth and go to dashboard
+          // Existing user - save auth and go to home
           this.authService.setAuthenticated(authResponse);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/']);
         }
       },
       error: (err) => {
@@ -135,7 +135,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     this.authService.login({ email, password }).subscribe({
       next: () => {
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         this.loading = false;

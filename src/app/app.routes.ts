@@ -2,6 +2,14 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
+  // Public landing page — shown when app opens without auth
+  {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./features/home/home.component').then((m) => m.HomeComponent),
+  },
+
   // LinkedIn OAuth callback — MUST be before 'auth' to take priority
   {
     path: 'auth/linkedin/callback',
@@ -110,6 +118,38 @@ export const routes: Routes = [
         (m) => m.MissionApplicationsComponent,
       ),
     canActivate: [authGuard],
+  },
+
+  // Public routes — main layout (navbar + footer), no auth required
+  {
+    path: '',
+    loadComponent: () =>
+      import('./shared/layouts/main-layout/main-layout.component').then(
+        (m) => m.MainLayoutComponent,
+      ),
+    children: [
+      {
+        path: 'missions',
+        loadComponent: () =>
+          import('./features/missions/missions.component').then(
+            (m) => m.MissionsComponent,
+          ),
+      },
+      {
+        path: 'missions/:id',
+        loadComponent: () =>
+          import('./features/mission-detail/mission-detail.component').then(
+            (m) => m.MissionDetailComponent,
+          ),
+      },
+      {
+        path: 'freelancers',
+        loadComponent: () =>
+          import('./features/freelancers/freelancers.component').then(
+            (m) => m.FreelancersComponent,
+          ),
+      },
+    ],
   },
 
   // Protected routes — main layout (navbar + footer)
@@ -228,10 +268,9 @@ export const routes: Routes = [
             (m) => m.MissionsComponent,
           ),
       },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
 
   // Fallback
-  { path: '**', redirectTo: 'auth/login' },
+  { path: '**', redirectTo: '' },
 ];

@@ -51,7 +51,7 @@ export class FreelancerBalanceComponent implements OnInit {
 
   // Mock packages
   packages = signal<PointsPackage[]>([
-    { id: 1, name: 'Starter Pack', totalPoints: 100, remainingPoints: 45, purchasedAt: '2026-02-01', color: '#5aaa9e' },
+    { id: 1, name: 'Starter Pack', totalPoints: 100, remainingPoints: 45, purchasedAt: '2026-02-01', color: '#3793B0' },
     { id: 2, name: 'Boost Pack', totalPoints: 50, remainingPoints: 28, purchasedAt: '2026-02-10', color: '#3b82f6' },
   ]);
 

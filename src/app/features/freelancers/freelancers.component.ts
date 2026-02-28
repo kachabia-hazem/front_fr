@@ -1,8 +1,9 @@
 import { Component, OnInit, signal, computed, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FreelancerService } from '../../core/services/freelancer.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Freelancer } from '../../core/models';
 import { environment } from '../../../environments/environment';
 
@@ -24,23 +25,23 @@ const PROFILE_TYPE_LABELS: Record<string, string> = {
 };
 
 const LANGUAGE_LABELS: Record<string, string> = {
-  FRENCH: 'Francais',
+  FRENCH: 'French',
   ENGLISH: 'English',
-  ARABIC: 'Arabe',
-  SPANISH: 'Espagnol',
-  GERMAN: 'Allemand',
-  ITALIAN: 'Italien',
-  PORTUGUESE: 'Portugais',
-  CHINESE: 'Chinois',
-  JAPANESE: 'Japonais',
-  OTHER: 'Autre',
+  ARABIC: 'Arabic',
+  SPANISH: 'Spanish',
+  GERMAN: 'German',
+  ITALIAN: 'Italian',
+  PORTUGUESE: 'Portuguese',
+  CHINESE: 'Chinese',
+  JAPANESE: 'Japanese',
+  OTHER: 'Other',
 };
 
 const EXPERIENCE_RANGES = [
-  { label: '0 - 2 ans', min: 0, max: 2 },
-  { label: '3 - 5 ans', min: 3, max: 5 },
-  { label: '6 - 10 ans', min: 6, max: 10 },
-  { label: '10+ ans', min: 10, max: 99 },
+  { label: '0 - 2 years', min: 0, max: 2 },
+  { label: '3 - 5 years', min: 3, max: 5 },
+  { label: '6 - 10 years', min: 6, max: 10 },
+  { label: '10+ years', min: 10, max: 99 },
 ];
 
 @Component({
@@ -68,6 +69,8 @@ export class FreelancersComponent implements OnInit {
   // Dropdown open state
   openDropdown = signal<FilterDropdown>(null);
 
+  showLoginPrompt = false;
+
   // Carousel
   cardImageIndex = signal<Record<string, number>>({});
   private imageCache = new Map<string, string[]>();
@@ -79,12 +82,14 @@ export class FreelancersComponent implements OnInit {
   readonly languageLabels = LANGUAGE_LABELS;
   readonly experienceRanges = EXPERIENCE_RANGES;
   readonly sortOptions: { value: SortOption; label: string }[] = [
-    { value: 'rating', label: 'Meilleure note' },
-    { value: 'tjm_desc', label: 'TJM: Plus cher' },
-    { value: 'tjm_asc', label: 'TJM: Moins cher' },
-    { value: 'experience', label: 'Plus experimenté' },
-    { value: 'projects', label: 'Plus de projets' },
+    { value: 'rating',     label: 'Best Rated' },
+    { value: 'tjm_desc',   label: 'Rate: Highest' },
+    { value: 'tjm_asc',    label: 'Rate: Lowest' },
+    { value: 'experience', label: 'Most Experienced' },
+    { value: 'projects',   label: 'Most Projects' },
   ];
+
+  readonly quickTags = ['React', 'Python', 'UI/UX', 'Node.js', 'Flutter', 'DevOps'];
 
   allSkills = computed(() => {
     const skills = new Set<string>();
@@ -189,9 +194,29 @@ export class FreelancersComponent implements OnInit {
     return list;
   });
 
-  constructor(private freelancerService: FreelancerService) {}
+  constructor(
+    private freelancerService: FreelancerService,
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
+
+  viewProfile(id: string): void {
+    if (!this.authService.isAuthenticated()) {
+      this.showLoginPrompt = true;
+      return;
+    }
+    this.router.navigate(['/profile', id]);
+  }
 
   ngOnInit(): void {
+    const params = this.route.snapshot.queryParamMap;
+    const q = params.get('q') || '';
+    const skill = params.get('skill') || '';
+    if (q) this.searchQuery.set(q);
+    if (skill) this.searchQuery.set(skill);
+    if (q && skill) this.searchQuery.set(`${q} ${skill}`.trim());
+
     this.freelancerService.getAllFreelancers().subscribe({
       next: (data) => {
         this.freelancers.set(data);
@@ -268,32 +293,32 @@ export class FreelancersComponent implements OnInit {
   // ─── Filter dropdown labels with count ───
   profileTypeLabel(): string {
     const count = this.selectedProfileTypes().size;
-    return count > 0 ? `Type de profil (${count})` : 'Type de profil';
+    return count > 0 ? `Profile Type (${count})` : 'Profile Type';
   }
 
   skillsLabel(): string {
     const count = this.selectedSkills().size;
-    return count > 0 ? `Compétences (${count})` : 'Compétences';
+    return count > 0 ? `Skills (${count})` : 'Skills';
   }
 
   languageLabel(): string {
     const count = this.selectedLanguages().size;
-    return count > 0 ? `Langue (${count})` : 'Langue';
+    return count > 0 ? `Language (${count})` : 'Language';
   }
 
   budgetLabel(): string {
     const min = this.budgetMin();
     const max = this.budgetMax();
-    if (min !== null && max !== null) return `Budget: ${min} - ${max} DT`;
-    if (min !== null) return `Budget: ${min}+ DT`;
-    if (max !== null) return `Budget: ≤${max} DT`;
-    return 'Budget (TJM)';
+    if (min !== null && max !== null) return `Rate: ${min} – ${max} DT`;
+    if (min !== null) return `Rate: ${min}+ DT`;
+    if (max !== null) return `Rate: ≤${max} DT`;
+    return 'Daily Rate';
   }
 
   experienceLabel(): string {
     const idx = this.selectedExperience();
-    if (idx !== null) return `Expérience: ${EXPERIENCE_RANGES[idx].label}`;
-    return 'Expérience';
+    if (idx !== null) return `Experience: ${EXPERIENCE_RANGES[idx].label}`;
+    return 'Experience';
   }
 
   clearAllFilters(): void {

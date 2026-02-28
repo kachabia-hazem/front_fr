@@ -1,3 +1,39 @@
+<!-- ═══ Login Prompt Modal (unauthenticated users) ═══ -->
+@if (showLoginPrompt) {
+  <div class="login-prompt-overlay" (click)="showLoginPrompt = false">
+    <div class="login-prompt-modal" (click)="$event.stopPropagation()">
+      <button class="login-prompt-close" (click)="showLoginPrompt = false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="login-prompt-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"
+          fill="none" stroke="#3793B0" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+          <polyline points="10 17 15 12 10 7"/>
+          <line x1="15" y1="12" x2="3" y2="12"/>
+        </svg>
+      </div>
+
+      <h2 class="login-prompt-title">Log in to continue</h2>
+      <p class="login-prompt-msg">
+        Please log in to view mission details<br/>
+        You need an active account on <strong>WorkLink</strong> to submit an application.
+      </p>
+
+      <div class="login-prompt-actions">
+        <a routerLink="/auth/login" class="btn-login-prompt">Log In</a>
+        <a routerLink="/auth/register" class="btn-register-prompt">Create an Account</a>
+      </div>
+    </div>
+  </div>
+}
+
 <!-- Page content wrapper (blurs when modal open) -->
 <div class="page-content" [class.blurred]="selectedMission && !modalClosing">
 

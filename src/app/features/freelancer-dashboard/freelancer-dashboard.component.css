@@ -56,7 +56,7 @@
 .sidebar-logo-text {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #5aaa9e;
+  color: #3793B0;
   letter-spacing: -0.02em;
 }
 
@@ -98,7 +98,7 @@
 }
 
 .sidebar-link.active {
-  color: #5aaa9e;
+  color: #3793B0;
   background: rgba(90, 170, 158, 0.08);
   font-weight: 600;
 }
@@ -116,7 +116,7 @@
   transform: translateY(-50%);
   width: 3px;
   height: 60%;
-  background: #5aaa9e;
+  background: #3793B0;
   border-radius: 0 3px 3px 0;
 }
 
@@ -311,7 +311,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(90, 170, 158, 0.15);
-  color: #5aaa9e;
+  color: #3793B0;
   font-weight: 700;
   font-size: 0.85rem;
 }
@@ -405,7 +405,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid rgba(90, 170, 158, 0.2);
-  border-top-color: #5aaa9e;
+  border-top-color: #3793B0;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -448,9 +448,9 @@
 
 .header-notif-btn:hover,
 .header-notif-btn.panel-active {
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   background: rgba(90, 170, 158, 0.08);
-  color: #5aaa9e;
+  color: #3793B0;
 }
 
 :host-context(body.dark-theme) .header-notif-btn {
@@ -570,7 +570,7 @@
 }
 
 .notif-panel-count {
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
   font-size: 0.72rem;
   font-weight: 700;
@@ -592,7 +592,7 @@
 .notif-panel-mark-all {
   background: none;
   border: none;
-  color: #5aaa9e;
+  color: #3793B0;
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
@@ -822,7 +822,7 @@
   background: rgba(90, 170, 158, 0.08);
   border: 1px solid rgba(90, 170, 158, 0.25);
   border-radius: 10px;
-  color: #5aaa9e;
+  color: #3793B0;
   font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
@@ -831,7 +831,7 @@
 
 .notif-panel-view-all:hover {
   background: rgba(90, 170, 158, 0.14);
-  border-color: #5aaa9e;
+  border-color: #3793B0;
 }
 
 :host-context(body.dark-theme) .notif-panel-view-all {
@@ -903,7 +903,7 @@
 
 .stat-icon-teal {
   background: rgba(90, 170, 158, 0.1);
-  color: #5aaa9e;
+  color: #3793B0;
 }
 
 :host-context(body.dark-theme) .stat-icon-teal {
@@ -1004,14 +1004,14 @@
 
 .btn-see-stats:hover {
   background: rgba(90, 170, 158, 0.06);
-  border-color: #5aaa9e;
-  color: #5aaa9e;
+  border-color: #3793B0;
+  color: #3793B0;
 }
 
 .btn-see-stats.active {
   background: rgba(90, 170, 158, 0.1);
-  border-color: #5aaa9e;
-  color: #5aaa9e;
+  border-color: #3793B0;
+  color: #3793B0;
 }
 
 :host-context(body.dark-theme) .btn-see-stats {
@@ -1095,7 +1095,7 @@
   border-radius: 8px;
   font-size: 0.8rem;
   color: var(--text-secondary, #6b7280);
-  border-left: 3px solid #5aaa9e;
+  border-left: 3px solid #3793B0;
 }
 
 :host-context(body.dark-theme) .visibility-note {
@@ -1194,7 +1194,7 @@
 }
 
 .curve-line-teal {
-  stroke: #5aaa9e;
+  stroke: #3793B0;
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
   transition: stroke-dashoffset 0s;
@@ -1230,7 +1230,7 @@
 
 /* ── Data dots (hidden by default, animated via class) ── */
 .curve-dot {
-  fill: #5aaa9e;
+  fill: #3793B0;
   stroke: var(--card-bg, #ffffff);
   stroke-width: 2;
   opacity: 0;
@@ -1374,7 +1374,7 @@
 .chart-bar {
   width: 100%;
   max-width: 48px;
-  background: linear-gradient(180deg, #5aaa9e 0%, #478f85 100%);
+  background: linear-gradient(180deg, #3793B0 0%, #2a7a96 100%);
   border-radius: 6px 6px 2px 2px;
   min-height: 4px;
   transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1383,7 +1383,7 @@
 }
 
 :host-context(body.dark-theme) .chart-bar {
-  background: linear-gradient(180deg, #6dc4b8 0%, #5aaa9e 100%);
+  background: linear-gradient(180deg, #6dc4b8 0%, #3793B0 100%);
 }
 
 .chart-bar:hover {
@@ -1445,7 +1445,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(90, 170, 158, 0.1);
-  color: #5aaa9e;
+  color: #3793B0;
   flex-shrink: 0;
   transition: all 0.3s ease;
 }
@@ -1481,7 +1481,7 @@
   border-radius: 8px;
   font-size: 0.8rem;
   color: var(--text-secondary, #6b7280);
-  border-left: 3px solid #5aaa9e;
+  border-left: 3px solid #3793B0;
 }
 
 :host-context(body.dark-theme) .visibility-note {
@@ -1529,7 +1529,7 @@
   align-items: center;
   gap: 6px;
   padding: 8px 20px;
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
   border-radius: 8px;
   font-size: 0.85rem;
@@ -1539,7 +1539,7 @@
 }
 
 .btn-browse:hover {
-  background: #478f85;
+  background: #2a7a96;
 }
 
 /* ── Applications Table ── */

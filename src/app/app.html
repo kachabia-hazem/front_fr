@@ -1,2 +1,33 @@
 <router-outlet />
 <app-toast />
+
+@if (showGuestModal) {
+  <div class="guest-modal-backdrop">
+    <div class="guest-modal-card">
+
+      <!-- Icon -->
+      <div class="guest-modal-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+
+      <!-- Text -->
+      <h2 class="guest-modal-title">Access Restricted</h2>
+      <p class="guest-modal-msg">
+        To continue exploring the platform, you must be logged in.<br/>
+        Please log in or register to access all features and opportunities.
+      </p>
+
+      <!-- Actions -->
+      <div class="guest-modal-actions">
+        <a routerLink="/auth/login" class="guest-btn-login" (click)="dismissGuestModal()">Log In</a>
+        <a routerLink="/auth/register" class="guest-btn-register" (click)="dismissGuestModal()">Register</a>
+      </div>
+
+    </div>
+  </div>
+}

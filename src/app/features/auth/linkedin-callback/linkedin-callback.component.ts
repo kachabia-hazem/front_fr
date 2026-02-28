@@ -75,7 +75,7 @@ import { AuthService } from '../../../core/services/auth.service';
       cursor: pointer;
       font-size: 0.9rem;
     }
-    .btn-back:hover { background: #3d8b80; }
+    .btn-back:hover { background: #3793B0; }
   `],
 })
 export class LinkedInCallbackComponent implements OnInit {
@@ -125,7 +125,7 @@ export class LinkedInCallbackComponent implements OnInit {
           this.router.navigate(['/auth/oauth/role-selection']);
         } else {
           this.authService.setAuthenticated(response);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/']);
         }
       },
       error: (err) => {

@@ -30,7 +30,7 @@
   justify-content: space-between;
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--nav-border, #e5e7eb);
-  background: linear-gradient(135deg, #5aaa9e 0%, #3d8b80 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
 }
 
@@ -93,7 +93,7 @@
 }
 
 .btn-primary {
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
   border: none;
 }

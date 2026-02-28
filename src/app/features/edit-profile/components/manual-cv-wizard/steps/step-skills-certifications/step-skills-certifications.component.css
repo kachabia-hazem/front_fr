@@ -64,7 +64,7 @@
 
 .skills-input input:focus {
   outline: none;
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   box-shadow: 0 0 0 2px rgba(90, 170, 158, 0.15);
 }
 
@@ -72,16 +72,16 @@
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
   font-weight: 500;
-  color: #5aaa9e;
+  color: #3793B0;
   background: rgba(90, 170, 158, 0.1);
-  border: 1px solid #5aaa9e;
+  border: 1px solid #3793B0;
   border-radius: 0.375rem;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .btn-add-skill:hover:not(:disabled) {
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
 }
 
@@ -101,7 +101,7 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.35rem 0.65rem;
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
   border-radius: 2rem;
   font-size: 0.8rem;
@@ -140,16 +140,16 @@
   padding: 0.4rem 0.75rem;
   font-size: 0.8rem;
   font-weight: 500;
-  color: #5aaa9e;
+  color: #3793B0;
   background: rgba(90, 170, 158, 0.1);
-  border: 1px solid #5aaa9e;
+  border: 1px solid #3793B0;
   border-radius: 0.375rem;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .btn-add:hover {
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
 }
 
@@ -231,14 +231,14 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   box-shadow: 0 0 0 2px rgba(90, 170, 158, 0.15);
 }
 
 .uploading-text {
   margin: 0.25rem 0 0;
   font-size: 0.75rem;
-  color: #5aaa9e;
+  color: #3793B0;
 }
 
 @media (max-width: 600px) {

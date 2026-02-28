@@ -8,7 +8,7 @@
 /* ── Left Panel ── */
 .left-panel {
   flex: 0 0 38%;
-  background: linear-gradient(170deg, #478f85 0%, #5aaa9e 40%, #65b5a8 100%);
+  background: linear-gradient(160deg, #2271a3 0%, #3793B0 50%, #4aaece 100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -111,17 +111,17 @@
 }
 
 .role-btn.active {
-  background: linear-gradient(135deg, #5aaa9e 0%, #478f85 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   box-shadow: 0 4px 12px rgba(90, 170, 158, 0.35);
   transform: translateY(-1px);
 }
 
 .role-btn:not(.active):hover {
-  border-color: #5aaa9e;
-  background: #f0faf8;
-  color: #5aaa9e;
+  border-color: #3793B0;
+  background: #eef6fb;
+  color: #3793B0;
 }
 
 .check-icon {
@@ -145,7 +145,7 @@
 }
 
 .form-field:focus-within label {
-  color: #5aaa9e;
+  color: #3793B0;
 }
 
 .form-field input,
@@ -170,7 +170,7 @@
 
 .form-field input:focus,
 .form-field select:focus {
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   background: #fff;
   box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.15);
 }
@@ -201,12 +201,12 @@
   position: absolute;
   left: 0.5rem;
   pointer-events: none;
-  color: #5aaa9e;
+  color: #3793B0;
   transition: color 0.2s ease;
 }
 
 .icon-field:focus-within .field-icon {
-  color: #478f85;
+  color: #3793B0;
 }
 
 .icon-field .icon-input input {
@@ -247,7 +247,7 @@
   color: #1a1a2e;
   margin: 1.5rem 0 1rem;
   padding: 0.8rem 0;
-  border-top: 2px solid #5aaa9e;
+  border-top: 2px solid #3793B0;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -257,7 +257,7 @@
   content: '';
   width: 4px;
   height: 18px;
-  background: #5aaa9e;
+  background: #3793B0;
   border-radius: 2px;
 }
 
@@ -307,7 +307,7 @@
 .btn-submit {
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, #5aaa9e 0%, #478f85 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
   border: none;
   border-radius: 0.75rem;
@@ -338,7 +338,7 @@
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #478f85 0%, #3a7d72 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #2271a3 100%);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(90, 170, 158, 0.45);
 }
@@ -374,8 +374,8 @@
 }
 
 .step-dot.active {
-  background: #5aaa9e;
-  border-color: #5aaa9e;
+  background: #3793B0;
+  border-color: #3793B0;
   box-shadow: 0 0 0 4px rgba(90, 170, 158, 0.2);
 }
 
@@ -406,7 +406,7 @@
 }
 
 .step-label.active {
-  color: #5aaa9e;
+  color: #3793B0;
   font-weight: 600;
 }
 
@@ -419,7 +419,7 @@
 }
 
 .login-link a {
-  color: #5aaa9e;
+  color: #3793B0;
   text-decoration: none;
   font-weight: 600;
 }

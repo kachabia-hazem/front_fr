@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CompanyService } from '../../core/services/company.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -13,7 +14,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-company-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive],
   templateUrl: './company-dashboard.component.html',
   styleUrl: './company-dashboard.component.css',
 })
@@ -21,6 +22,8 @@ export class CompanyDashboardComponent implements OnInit {
   company = signal<Company | null>(null);
   stats = signal<CompanyDashboardStats | null>(null);
   loading = signal(true);
+  heroSearch = '';
+  heroSkill = '';
   sidebarCollapsed = signal(false);
   notifPanelOpen = signal(false);
   recentNotifications = computed(() => this.notificationService.notifications().slice(0, 8));
@@ -87,7 +90,7 @@ export class CompanyDashboardComponent implements OnInit {
     if (!s) return [];
     const total = s.totalMissions || 1;
     const colors: { [key: string]: string } = {
-      OPEN: '#5aaa9e',
+      OPEN: '#3793B0',
       IN_PROGRESS: '#3b82f6',
       COMPLETED: '#10b981',
       CANCELLED: '#ef4444',
@@ -211,8 +214,17 @@ export class CompanyDashboardComponent implements OnInit {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
+  onFreelancerSearch(): void {
+    const q = this.heroSearch.trim();
+    const skill = this.heroSkill.trim();
+    const queryParams: Record<string, string> = {};
+    if (q) queryParams['q'] = q;
+    if (skill) queryParams['skill'] = skill;
+    this.router.navigate(['/freelancers'], Object.keys(queryParams).length ? { queryParams } : {});
+  }
+
   goBack(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/']);
   }
 
   getFileUrl(relativePath: string | undefined): string {

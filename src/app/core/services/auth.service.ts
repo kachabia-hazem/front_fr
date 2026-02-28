@@ -91,7 +91,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('auth');
     this.currentUserSignal.set(null);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/']);
   }
 
   getToken(): string | null {

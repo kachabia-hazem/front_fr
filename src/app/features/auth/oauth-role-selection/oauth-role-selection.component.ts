@@ -235,7 +235,7 @@ export class OAuthRoleSelectionComponent implements OnInit {
     this.authService.oauthCompleteRegistration(request).subscribe({
       next: () => {
         sessionStorage.removeItem('oauth_profile');
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         this.loading = false;

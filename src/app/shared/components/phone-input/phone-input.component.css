@@ -169,7 +169,7 @@
 }
 
 .country-item.selected {
-  background: #e0f7f4;
+  background: #e8f3f8;
 }
 
 .country-item .country-flag {
@@ -229,7 +229,7 @@
 
 :host-context(body.dark-theme) .phone-input-container:focus-within {
   background: #253347;
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   box-shadow: 0 0 0 4px rgba(90, 170, 158, 0.15);
 }
 

@@ -2,7 +2,7 @@
 .login-page {
   display: flex;
   min-height: 100vh;
-  background: #dce8ec;
+  background: #e8f3f8;
   position: relative;
   overflow: hidden;
 }
@@ -30,7 +30,7 @@
 /* ── Left Panel ── */
 .left-panel {
   flex: 0 0 42%;
-  background: linear-gradient(160deg, #3a8a7e 0%, #4e9e92 50%, #5aab9f 100%);
+  background: linear-gradient(160deg, #2271a3 0%, #3793B0 50%, #4aaece 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,7 +131,7 @@
 }
 
 .form-group input:focus {
-  border-color: #4e9e92;
+  border-color: #3793B0;
   background: #fff;
 }
 
@@ -165,7 +165,7 @@
   display: block;
   text-align: right;
   font-size: 0.78rem;
-  color: #4e9e92;
+  color: #3793B0;
   text-decoration: none;
   margin-top: 0.4rem;
 }
@@ -191,11 +191,11 @@
 
 .checkbox-label input[type='checkbox'] {
   margin-top: 2px;
-  accent-color: #4e9e92;
+  accent-color: #3793B0;
 }
 
 .checkbox-label a {
-  color: #4e9e92;
+  color: #3793B0;
   text-decoration: none;
   font-weight: 500;
 }
@@ -230,7 +230,7 @@
 .btn-login {
   width: 100%;
   padding: 0.75rem;
-  background: #4e9e92;
+  background: #3793B0;
   color: #fff;
   border: none;
   border-radius: 0.5rem;
@@ -241,7 +241,7 @@
 }
 
 .btn-login:hover:not(:disabled) {
-  background: #3d8b80;
+  background: #2a7a96;
 }
 
 .btn-login:disabled {
@@ -315,7 +315,7 @@
 }
 
 .register-link a {
-  color: #4e9e92;
+  color: #3793B0;
   text-decoration: none;
   font-weight: 600;
 }

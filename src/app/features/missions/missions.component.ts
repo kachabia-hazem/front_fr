@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { MissionService } from '../../core/services/mission.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { ApplicationService } from '../../core/services/application.service';
@@ -64,6 +64,9 @@ export class MissionsComponent implements OnInit {
     { label: '8-15 years', min: 8, max: 15, checked: false },
   ];
 
+  // Login prompt modal (for unauthenticated users)
+  showLoginPrompt = false;
+
   // Modal detail
   selectedMission: Mission | null = null;
   modalClosing = false;
@@ -84,6 +87,7 @@ export class MissionsComponent implements OnInit {
     private applicationService: ApplicationService,
     private toastService: ToastService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   @HostListener('document:click')
@@ -94,6 +98,10 @@ export class MissionsComponent implements OnInit {
   similarMissions: Mission[] = [];
 
   openDetail(mission: Mission): void {
+    if (!this.authService.isAuthenticated()) {
+      this.showLoginPrompt = true;
+      return;
+    }
     this.selectedMission = mission;
     this.modalClosing = false;
     this.similarMissions = this.computeSimilarMissions(mission);
@@ -323,6 +331,10 @@ export class MissionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Read search query from home page search bar
+    const q = this.route.snapshot.queryParamMap.get('q');
+    if (q) this.searchQuery = q;
+
     this.loadMissions();
     if (this.isFreelancer) {
       this.freelancerService.getMyProfile().subscribe({
@@ -668,6 +680,10 @@ export class MissionsComponent implements OnInit {
 
   applyToMission(event: Event, mission: Mission): void {
     event.stopPropagation();
+    if (!this.authService.isAuthenticated()) {
+      this.showLoginPrompt = true;
+      return;
+    }
     if (this.profileCompletion !== null && this.profileCompletion < 80) {
       this.toastService.show(
         `Your profile is ${this.profileCompletion}% complete. Please complete at least 80% of your profile before applying.`,

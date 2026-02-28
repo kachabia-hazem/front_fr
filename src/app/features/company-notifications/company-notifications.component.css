@@ -59,7 +59,7 @@
   height: 32px;
   border-radius: 8px;
   background: rgba(90, 170, 158, 0.15);
-  color: #5aaa9e;
+  color: #3793B0;
   font-weight: 700;
   font-size: 0.85rem;
   display: flex;
@@ -71,7 +71,7 @@
 .sidebar-logo-text {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #5aaa9e;
+  color: #3793B0;
   letter-spacing: -0.02em;
 }
 
@@ -113,7 +113,7 @@
 }
 
 .sidebar-link.active {
-  color: #5aaa9e;
+  color: #3793B0;
   background: rgba(90, 170, 158, 0.08);
   font-weight: 600;
 }
@@ -131,7 +131,7 @@
   transform: translateY(-50%);
   width: 3px;
   height: 60%;
-  background: #5aaa9e;
+  background: #3793B0;
   border-radius: 0 3px 3px 0;
 }
 
@@ -320,7 +320,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(90, 170, 158, 0.15);
-  color: #5aaa9e;
+  color: #3793B0;
   font-weight: 700;
   font-size: 0.85rem;
 }
@@ -414,7 +414,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid rgba(90, 170, 158, 0.2);
-  border-top-color: #5aaa9e;
+  border-top-color: #3793B0;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -460,7 +460,7 @@
   padding: 8px 16px;
   border: 1px solid rgba(90, 170, 158, 0.4);
   background: rgba(90, 170, 158, 0.08);
-  color: #5aaa9e;
+  color: #3793B0;
   border-radius: 8px;
   font-size: 0.82rem;
   font-weight: 600;
@@ -472,7 +472,7 @@
 
 .btn-mark-all:hover {
   background: rgba(90, 170, 158, 0.14);
-  border-color: #5aaa9e;
+  border-color: #3793B0;
 }
 
 :host-context(body.dark-theme) .btn-mark-all {
@@ -527,7 +527,7 @@
 }
 
 .notif-search-input:focus {
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.12);
   background: #fff;
 }
@@ -582,15 +582,15 @@
 }
 
 .chip:hover {
-  border-color: #5aaa9e;
-  color: #5aaa9e;
+  border-color: #3793B0;
+  color: #3793B0;
   background: rgba(90, 170, 158, 0.04);
 }
 
 .chip.chip-active {
   background: rgba(90, 170, 158, 0.1);
-  border-color: #5aaa9e;
-  color: #5aaa9e;
+  border-color: #3793B0;
+  color: #3793B0;
   font-weight: 600;
 }
 
@@ -622,7 +622,7 @@
 
 .notif-select:focus,
 .notif-date-input:focus {
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.12);
 }
 
@@ -748,7 +748,7 @@
 }
 
 .notif-item.notif-unread {
-  border-left: 3px solid #5aaa9e;
+  border-left: 3px solid #3793B0;
 }
 
 :host-context(body.dark-theme) .notif-item.notif-unread {
@@ -824,7 +824,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #5aaa9e;
+  background: #3793B0;
   flex-shrink: 0;
   animation: pulseDot 2s ease-in-out infinite;
 }
@@ -903,7 +903,7 @@
 
 .notif-action-hint {
   font-size: 0.75rem;
-  color: #5aaa9e;
+  color: #3793B0;
   font-weight: 500;
 }
 
@@ -938,8 +938,8 @@
 
 .notif-mark-read-btn:hover {
   background: rgba(90, 170, 158, 0.1);
-  color: #5aaa9e;
-  border-color: #5aaa9e;
+  color: #3793B0;
+  border-color: #3793B0;
 }
 
 :host-context(body.dark-theme) .notif-mark-read-btn:hover {

@@ -30,8 +30,8 @@
 }
 
 .btn-upload:hover:not(:disabled) {
-  border-color: #5aaa9e;
-  color: #5aaa9e;
+  border-color: #3793B0;
+  color: #3793B0;
   background: rgba(90, 170, 158, 0.05);
 }
 
@@ -53,7 +53,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #5aaa9e;
+  color: #3793B0;
   overflow: hidden;
 }
 

@@ -155,7 +155,7 @@ export class RegisterVerifyComponent implements OnInit {
       this.authService.registerFreelancer(request).subscribe({
         next: () => {
           this.clearSessionData();
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/']);
         },
         error: (err) => {
           this.loading = false;
@@ -171,7 +171,7 @@ export class RegisterVerifyComponent implements OnInit {
       this.authService.registerCompany(request).subscribe({
         next: () => {
           this.clearSessionData();
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/']);
         },
         error: (err) => {
           this.loading = false;

@@ -21,7 +21,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid var(--nav-border, #e5e7eb);
-  border-top-color: #5aaa9e;
+  border-top-color: #3793B0;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -56,7 +56,7 @@
 
 .btn-back-error {
   padding: 0.6rem 1.5rem;
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
   border: none;
   border-radius: 0.5rem;
@@ -67,7 +67,7 @@
 }
 
 .btn-back-error:hover {
-  background: #478f85;
+  background: #2a7a96;
 }
 
 /* ══════════════════════════════════════
@@ -103,7 +103,7 @@
   gap: 0.3rem;
   background: none;
   border: none;
-  color: #5aaa9e;
+  color: #3793B0;
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
@@ -113,7 +113,7 @@
 }
 
 .btn-save-close:hover {
-  color: #3a7d72;
+  color: #2271a3;
 }
 
 /* Progress Bar */
@@ -135,7 +135,7 @@
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #5aaa9e 0%, #3d8b80 100%);
+  background: linear-gradient(90deg, #3793B0 0%, #3793B0 100%);
   border-radius: 3px;
   transition: width 0.5s ease;
 }
@@ -211,7 +211,7 @@
 }
 
 .form-input:focus {
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.12);
 }
 
@@ -258,7 +258,7 @@
 .email-info-icon {
   display: flex;
   align-items: center;
-  color: #5aaa9e;
+  color: #3793B0;
   cursor: help;
 }
 
@@ -325,7 +325,7 @@
 .btn-edit-inline {
   background: none;
   border: none;
-  color: #5aaa9e;
+  color: #3793B0;
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
@@ -334,7 +334,7 @@
 }
 
 .btn-edit-inline:hover {
-  color: #3a7d72;
+  color: #2271a3;
 }
 
 /* Field Hint */
@@ -378,7 +378,7 @@
 }
 
 .cv-option-selected {
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.12);
   background: #f8fcfb;
 }
@@ -396,8 +396,8 @@
   width: 40px;
   height: 40px;
   border-radius: 0.5rem;
-  background: #f0faf8;
-  color: #5aaa9e;
+  background: #eef6fb;
+  color: #3793B0;
   flex-shrink: 0;
 }
 
@@ -443,8 +443,8 @@
   gap: 0.45rem;
   padding: 0.6rem 1.25rem;
   background: var(--card-bg, #fff);
-  color: #5aaa9e;
-  border: 1.5px solid #5aaa9e;
+  color: #3793B0;
+  border: 1.5px solid #3793B0;
   border-radius: 0.45rem;
   font-size: 0.85rem;
   font-weight: 600;
@@ -454,7 +454,7 @@
 }
 
 .cv-browse-btn:hover {
-  background: #f0faf8;
+  background: #eef6fb;
 }
 
 .cv-upload-hint {
@@ -471,7 +471,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.65rem 0.85rem;
-  background: #f0faf8;
+  background: #eef6fb;
   border: 1px solid #d1ede8;
   border-radius: 0.45rem;
   margin-top: 1rem;
@@ -494,7 +494,7 @@
 }
 
 .cv-file-info svg {
-  color: #5aaa9e;
+  color: #3793B0;
   flex-shrink: 0;
 }
 
@@ -546,7 +546,7 @@
   justify-content: space-between;
   padding: 0.7rem 1rem;
   margin-top: 1rem;
-  background: #f0faf8;
+  background: #eef6fb;
   border: 1px solid #d1ede8;
   border-radius: 0.5rem;
 }
@@ -674,7 +674,7 @@
 }
 
 .pdf-page-input:focus {
-  border-color: #5aaa9e;
+  border-color: #3793B0;
 }
 
 .pdf-page-total {
@@ -725,7 +725,7 @@
   gap: 0.5rem;
   flex: 1;
   padding: 0.85rem 2rem;
-  background: linear-gradient(135deg, #5aaa9e 0%, #3d8b80 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
   border: none;
   border-radius: 0.5rem;
@@ -738,7 +738,7 @@
 }
 
 .btn-continue:hover {
-  background: linear-gradient(135deg, #478f85 0%, #356e65 100%);
+  background: linear-gradient(135deg, #2a7a96 0%, #2271a3 100%);
   transform: translateY(-1px);
   box-shadow: 0 5px 18px rgba(90, 170, 158, 0.35);
 }
@@ -809,7 +809,7 @@
   gap: 0.3rem;
   background: none;
   border: none;
-  color: #5aaa9e;
+  color: #3793B0;
   font-size: 0.84rem;
   font-weight: 600;
   cursor: pointer;
@@ -818,7 +818,7 @@
 }
 
 .btn-toggle-desc:hover {
-  color: #3a7d72;
+  color: #2271a3;
 }
 
 /* Quick Info */
@@ -838,7 +838,7 @@
 }
 
 .quick-info-item svg {
-  color: #5aaa9e;
+  color: #3793B0;
   flex-shrink: 0;
 }
 
@@ -871,8 +871,8 @@
 }
 
 .radio-option.radio-selected {
-  border-color: #5aaa9e;
-  background: #f0faf8;
+  border-color: #3793B0;
+  background: #eef6fb;
   box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.12);
 }
 
@@ -891,7 +891,7 @@
 }
 
 .radio-selected .radio-circle {
-  border-color: #5aaa9e;
+  border-color: #3793B0;
 }
 
 .radio-selected .radio-circle::after {
@@ -901,7 +901,7 @@
   left: 3px;
   width: 8px;
   height: 8px;
-  background: #5aaa9e;
+  background: #3793B0;
   border-radius: 50%;
 }
 
@@ -961,7 +961,7 @@
 
 .preparation-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #5aaa9e 0%, #3d8b80 100%);
+  background: linear-gradient(90deg, #3793B0 0%, #3793B0 100%);
   border-radius: 4px;
   transition: width 0.08s linear;
 }
@@ -997,7 +997,7 @@
 .btn-review-edit {
   background: none;
   border: none;
-  color: #5aaa9e;
+  color: #3793B0;
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
@@ -1006,7 +1006,7 @@
 }
 
 .btn-review-edit:hover {
-  color: #3a7d72;
+  color: #2271a3;
 }
 
 .review-cv-actions {
@@ -1021,7 +1021,7 @@
   gap: 0.35rem;
   background: none;
   border: none;
-  color: #5aaa9e;
+  color: #3793B0;
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
@@ -1030,7 +1030,7 @@
 }
 
 .btn-review-download:hover {
-  color: #3a7d72;
+  color: #2271a3;
 }
 
 .review-fields {
@@ -1096,7 +1096,7 @@
   gap: 0.5rem;
   width: 100%;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #5aaa9e 0%, #3d8b80 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
   border: none;
   border-radius: 0.5rem;
@@ -1109,7 +1109,7 @@
 }
 
 .btn-submit-application:hover {
-  background: linear-gradient(135deg, #478f85 0%, #356e65 100%);
+  background: linear-gradient(135deg, #2a7a96 0%, #2271a3 100%);
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(90, 170, 158, 0.35);
 }
@@ -1193,7 +1193,7 @@
 }
 
 :host-context(body.dark-theme) .cv-option-selected {
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   background: #1a3a35;
   box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.2);
 }
@@ -1266,7 +1266,7 @@
 }
 
 :host-context(body.dark-theme) .radio-option.radio-selected {
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   background: #1a3a35;
 }
 

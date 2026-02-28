@@ -53,16 +53,16 @@
   padding: 0.4rem 0.75rem;
   font-size: 0.8rem;
   font-weight: 500;
-  color: #5aaa9e;
+  color: #3793B0;
   background: rgba(90, 170, 158, 0.1);
-  border: 1px solid #5aaa9e;
+  border: 1px solid #3793B0;
   border-radius: 0.375rem;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .btn-add:hover {
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
 }
 
@@ -155,7 +155,7 @@
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   box-shadow: 0 0 0 2px rgba(90, 170, 158, 0.15);
 }
 

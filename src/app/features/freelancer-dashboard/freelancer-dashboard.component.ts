@@ -172,7 +172,7 @@ export class FreelancerDashboardComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/']);
   }
 
   getFileUrl(relativePath: string | undefined): string {

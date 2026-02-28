@@ -1,7 +1,7 @@
 /* ── Hero Banner ── */
 
 .hero-banner {
-  background: linear-gradient(135deg, #5aaa9e 0%, #3d8b80 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
   padding: 2.5rem 2rem;
   text-align: center;
@@ -95,7 +95,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid var(--nav-border, #e5e7eb);
-  border-top-color: #5aaa9e;
+  border-top-color: #3793B0;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
   margin-bottom: 1rem;
@@ -191,7 +191,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #5aaa9e 0%, #3d8b80 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
   font-weight: 700;
   font-size: 2.5rem;
@@ -216,7 +216,7 @@
 
 .btn-upload:hover {
   background: #e8e8e8;
-  border-color: #5aaa9e;
+  border-color: #3793B0;
 }
 
 .btn-upload:disabled {
@@ -230,7 +230,7 @@
   gap: 0.5rem;
   padding: 0.5rem;
   font-size: 0.82rem;
-  color: #5aaa9e;
+  color: #3793B0;
 }
 
 .sidebar-section {
@@ -258,7 +258,7 @@
 
 .sidebar-input:focus {
   outline: none;
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   box-shadow: 0 0 0 2px rgba(90, 170, 158, 0.15);
 }
 
@@ -266,7 +266,7 @@
   display: block;
   margin-top: 0.4rem;
   font-size: 0.78rem;
-  color: #5aaa9e;
+  color: #3793B0;
   text-decoration: none;
 }
 
@@ -284,7 +284,7 @@
   padding: 0.6rem 1rem;
   font-size: 0.85rem;
   font-weight: 600;
-  background: linear-gradient(135deg, #5aaa9e 0%, #3d8b80 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
   border: none;
   border-radius: 0.5rem;
@@ -375,7 +375,7 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #5aaa9e;
+  border-color: #3793B0;
   box-shadow: 0 0 0 2px rgba(90, 170, 158, 0.15);
 }
 
@@ -410,7 +410,7 @@
 
 .radio-item input,
 .checkbox-item input {
-  accent-color: #5aaa9e;
+  accent-color: #3793B0;
 }
 
 .checkbox-group {
@@ -458,7 +458,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 2rem;
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
   border: none;
   border-radius: 0.5rem;

@@ -60,7 +60,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(90, 170, 158, 0.15);
-  color: #5aaa9e;
+  color: #3793B0;
   font-weight: 700;
   font-size: 0.8rem;
   flex-shrink: 0;
@@ -69,7 +69,7 @@
 .sidebar-logo-text {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #5aaa9e;
+  color: #3793B0;
   letter-spacing: -0.02em;
   white-space: nowrap;
   overflow: hidden;
@@ -112,7 +112,7 @@
 }
 
 .sidebar-link.active {
-  color: #5aaa9e;
+  color: #3793B0;
   background: rgba(90, 170, 158, 0.08);
   font-weight: 600;
 }
@@ -130,7 +130,7 @@
   transform: translateY(-50%);
   width: 3px;
   height: 60%;
-  background: #5aaa9e;
+  background: #3793B0;
   border-radius: 0 3px 3px 0;
 }
 
@@ -247,7 +247,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(90, 170, 158, 0.15);
-  color: #5aaa9e;
+  color: #3793B0;
   font-weight: 700;
   font-size: 0.85rem;
 }
@@ -316,7 +316,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid rgba(90, 170, 158, 0.2);
-  border-top-color: #5aaa9e;
+  border-top-color: #3793B0;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -350,7 +350,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
   font-size: 0.875rem;
   font-weight: 600;
@@ -361,7 +361,7 @@
   cursor: pointer;
 }
 
-.btn-post-job:hover { background: #478f85; transform: translateY(-1px); }
+.btn-post-job:hover { background: #2a7a96; transform: translateY(-1px); }
 :host-context(body.dark-theme) .btn-post-job { background: #6dc4b8; color: #1a1a2e; }
 
 /* Filter Bar */
@@ -391,10 +391,10 @@
   transition: all 0.18s ease;
 }
 
-.filter-chip:hover { border-color: #5aaa9e; color: #5aaa9e; }
-.filter-chip.active { background: #5aaa9e; border-color: #5aaa9e; color: #fff; font-weight: 600; }
+.filter-chip:hover { border-color: #3793B0; color: #3793B0; }
+.filter-chip.active { background: #3793B0; border-color: #3793B0; color: #fff; font-weight: 600; }
 :host-context(body.dark-theme) .filter-chip { background: #252a3a; border-color: #3a4050; color: #9ca3b0; }
-:host-context(body.dark-theme) .filter-chip.active { background: #5aaa9e; border-color: #5aaa9e; color: #fff; }
+:host-context(body.dark-theme) .filter-chip.active { background: #3793B0; border-color: #3793B0; color: #fff; }
 
 .chip-count {
   background: rgba(255, 255, 255, 0.3);
@@ -423,7 +423,7 @@
 }
 
 .search-input::placeholder { color: #9ca3af; }
-.search-input:focus { border-color: #5aaa9e; box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.12); }
+.search-input:focus { border-color: #3793B0; box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.12); }
 :host-context(body.dark-theme) .search-input { background: #252a3a; border-color: #3a4050; color: #e4e4ef; }
 
 /* ── Missions Table ── */
@@ -483,7 +483,7 @@
   align-items: center;
   gap: 6px;
   background: rgba(90, 170, 158, 0.08);
-  color: #5aaa9e;
+  color: #3793B0;
   padding: 5px 12px;
   border-radius: 20px;
   font-size: 0.82rem;
@@ -504,7 +504,7 @@
   white-space: nowrap;
 }
 
-.status-badge.status-open { background: rgba(90, 170, 158, 0.12); color: #5aaa9e; }
+.status-badge.status-open { background: rgba(90, 170, 158, 0.12); color: #3793B0; }
 .status-badge.status-closed { background: rgba(107, 114, 128, 0.1); color: #6b7280; }
 .status-badge.status-in_progress { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
 .status-badge.status-completed { background: rgba(16, 185, 129, 0.1); color: #10b981; }
@@ -530,7 +530,7 @@
   gap: 5px;
   padding: 6px 12px;
   background: rgba(90, 170, 158, 0.1);
-  color: #5aaa9e;
+  color: #3793B0;
   border: none;
   border-radius: 8px;
   font-size: 0.78rem;
@@ -559,7 +559,7 @@
   transition: all 0.18s ease;
 }
 
-.action-btn:hover { background: rgba(90, 170, 158, 0.1); color: #5aaa9e; }
+.action-btn:hover { background: rgba(90, 170, 158, 0.1); color: #3793B0; }
 :host-context(body.dark-theme) .action-btn:hover { background: rgba(90, 170, 158, 0.15); color: #6dc4b8; }
 
 /* ── Empty State ── */
@@ -584,7 +584,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #5aaa9e;
+  color: #3793B0;
   margin-bottom: 4px;
 }
 

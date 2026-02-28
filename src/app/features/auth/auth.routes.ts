@@ -18,13 +18,11 @@ export const AUTH_ROUTES: Routes = [
   },
   {
     path: 'register',
-    canActivate: [guestGuard],
     loadComponent: () =>
       import('./register/register.component').then((m) => m.RegisterComponent),
   },
   {
     path: 'register/verify',
-    canActivate: [guestGuard],
     loadComponent: () =>
       import('./register/register-verify/register-verify.component').then(
         (m) => m.RegisterVerifyComponent,

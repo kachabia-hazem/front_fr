@@ -1,11 +1,22 @@
+:host {
+  display: block;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 2rem;
+  width: 100%;
+  height: 88px;
+  padding: 0 3rem;
   background: var(--nav-bg, #fff);
   border-bottom: 1px solid var(--nav-border, #e5e7eb);
   transition: background 0.3s, border-color 0.3s;
+  box-sizing: border-box;
 }
 
 .nav-left {
@@ -19,14 +30,14 @@
   align-items: center;
   gap: 0.5rem;
   text-decoration: none;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--logo-color, #1f2937);
 }
 
 .logo-img {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   object-fit: contain;
 }
 
@@ -38,7 +49,7 @@
 
 .nav-menu-link {
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--text-secondary, #6b7280);
   padding: 0.4rem 0;
@@ -51,8 +62,8 @@
 }
 
 .nav-menu-link.active-link {
-  color: var(--logo-color, #5aaa9e);
-  border-bottom-color: var(--logo-color, #5aaa9e);
+  color: var(--logo-color, #3793B0);
+  border-bottom-color: var(--logo-color, #3793B0);
 }
 
 /* ── Post a Job Button ── */
@@ -62,7 +73,7 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #5aaa9e 0%, #478f85 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #2a7a96 100%);
   color: #fff;
   border: none;
   border-radius: 0.5rem;
@@ -75,7 +86,7 @@
 }
 
 .btn-post-job:hover {
-  background: linear-gradient(135deg, #478f85 0%, #3a7d72 100%);
+  background: linear-gradient(135deg, #2a7a96 0%, #2271a3 100%);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(90, 170, 158, 0.4);
   color: #fff;
@@ -195,7 +206,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #5aaa9e 0%, #3d8b80 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
   font-weight: 600;
   font-size: 0.85rem;
@@ -246,13 +257,13 @@
 
 /* Freelancer - Teal/Cyan theme */
 .role-freelancer {
-  background: linear-gradient(135deg, #e0f7f4 0%, #ccefea 100%);
+  background: linear-gradient(135deg, #e8f3f8 0%, #d0e8f5 100%);
   color: #0d9488;
   border: 1px solid #99e0d6;
 }
 
 .profile-section:hover .role-freelancer {
-  background: linear-gradient(135deg, #ccefea 0%, #b3e6df 100%);
+  background: linear-gradient(135deg, #d0e8f5 0%, #b3e6df 100%);
   box-shadow: 0 2px 8px rgba(13, 148, 136, 0.2);
 }
 
@@ -373,18 +384,77 @@
 
 /* ── Guest Links ── */
 
+.nav-guest {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  height: 55px;
+}
+
+.theme-toggle-guest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid #e5e7eb;
+  background: transparent;
+  color: var(--text-primary, #374151);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.theme-toggle-guest:hover {
+  background: #3793B0;
+  color: #fff;
+  border-color: #3793B0;
+}
+
+:host-context(body.dark-theme) .theme-toggle-guest {
+  border-color: #374151;
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .theme-toggle-guest:hover {
+  background: #3793B0;
+  border-color: #3793B0;
+  color: #fff;
+}
+
 .nav-link {
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--text-primary, #374151);
   font-weight: 500;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.nav-link:hover {
+  color: #3793B0;
 }
 
 .btn-register {
-  padding: 0.45rem 1rem;
-  background: #5aaa9e;
+  display: flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 1.3rem;
+  background: #000;
   color: #fff;
   border-radius: 0.4rem;
+  border: 1.5px solid #000;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-register:hover {
+  background: #fff;
+  color: #000;
 }
 
 /* ══════════════════════════════════════
@@ -398,10 +468,10 @@
 
 /* Role badges hover in dark */
 :host-context(body.dark-theme) .profile-section:hover .role-freelancer {
-  background: linear-gradient(135deg, #1a3a35 0%, #1e3d38 100%);
-  color: #6dc4b8;
-  border-color: #2d6b63;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.15);
+  background: linear-gradient(135deg, #1a3558 0%, #1e3d5e 100%);
+  color: #3793B0;
+  border-color: #2d5a80;
+  box-shadow: 0 2px 8px rgba(55, 147, 176, 0.15);
 }
 
 :host-context(body.dark-theme) .profile-section:hover .role-company {

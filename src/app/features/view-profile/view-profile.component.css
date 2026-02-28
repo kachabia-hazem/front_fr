@@ -1,7 +1,7 @@
 /* ── Hero Banner ── */
 
 .hero-banner {
-  background: linear-gradient(135deg, #5aaa9e 0%, #3d8b80 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
   padding: 2.5rem 2rem;
   text-align: center;
@@ -30,7 +30,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid var(--nav-border, #e5e7eb);
-  border-top-color: #5aaa9e;
+  border-top-color: #3793B0;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
   margin-bottom: 1rem;
@@ -69,7 +69,7 @@
   height: 140px;
   border-radius: 0.75rem;
   object-fit: cover;
-  border: 3px solid #5aaa9e;
+  border: 3px solid #3793B0;
   box-shadow: 0 4px 12px rgba(90, 170, 158, 0.2);
 }
 
@@ -77,7 +77,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #5aaa9e 0%, #3d8b80 100%);
+  background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
   font-weight: 700;
   font-size: 3rem;
@@ -118,7 +118,7 @@
 
 .profile-position svg,
 .profile-location svg {
-  color: #5aaa9e;
+  color: #3793B0;
 }
 
 .header-actions {
@@ -133,7 +133,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.6rem 1.2rem;
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
   border: none;
   border-radius: 0.5rem;
@@ -222,7 +222,7 @@
 
 .portfolio-link {
   font-size: 0.85rem;
-  color: #5aaa9e;
+  color: #3793B0;
   text-decoration: none;
   word-break: break-all;
 }
@@ -272,7 +272,7 @@
   justify-content: center;
   background: linear-gradient(135deg, rgba(90, 170, 158, 0.1) 0%, rgba(90, 170, 158, 0.2) 100%);
   border-radius: 50%;
-  color: #5aaa9e;
+  color: #3793B0;
 }
 
 .info-card h4 {
@@ -372,10 +372,10 @@
   top: 0.25rem;
   width: 12px;
   height: 12px;
-  background: #5aaa9e;
+  background: #3793B0;
   border: 2px solid #fff;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px #5aaa9e;
+  box-shadow: 0 0 0 2px #3793B0;
 }
 
 .timeline-content {
@@ -386,7 +386,7 @@
   margin: 0 0 0.25rem;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #5aaa9e;
+  color: #3793B0;
 }
 
 .exp-company {
@@ -444,7 +444,7 @@
 
 .cert-link {
   font-size: 0.8rem;
-  color: #5aaa9e;
+  color: #3793B0;
   text-decoration: none;
 }
 
@@ -505,7 +505,7 @@
   border: 1px solid rgba(90, 170, 158, 0.3);
   border-radius: 1rem;
   font-size: 0.8rem;
-  color: #3d8b80;
+  color: #3793B0;
 }
 
 /* ── Languages ── */

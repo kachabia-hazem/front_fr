@@ -38,16 +38,16 @@
 }
 
 .step.active .step-indicator {
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
-  border: 2px solid #5aaa9e;
+  border: 2px solid #3793B0;
   box-shadow: 0 0 0 4px rgba(90, 170, 158, 0.2);
 }
 
 .step.completed .step-indicator {
-  background: #5aaa9e;
+  background: #3793B0;
   color: #fff;
-  border: 2px solid #5aaa9e;
+  border: 2px solid #3793B0;
 }
 
 .step-label {
@@ -62,7 +62,7 @@
 }
 
 .step.active .step-label {
-  color: #5aaa9e;
+  color: #3793B0;
   font-weight: 600;
 }
 
@@ -82,7 +82,7 @@
 }
 
 .step-connector.completed {
-  background: #5aaa9e;
+  background: #3793B0;
 }
 
 @media (max-width: 600px) {

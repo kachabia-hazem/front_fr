@@ -35,7 +35,7 @@ body:not(.dark-theme) {
   --bg-page: #f5f7fa;
   --nav-bg: #ffffff;
   --nav-border: #e5e7eb;
-  --logo-color: #5aaa9e;
+  --logo-color: #3793B0;
   --card-bg: #ffffff;
   --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
   --dash-bg: #f5f7fa;
@@ -62,12 +62,12 @@ body.dark-theme {
   --bg-page: #111827;
   --nav-bg: #1f2937;
   --nav-border: #374151;
-  --logo-color: #6dc4b8;
+  --logo-color: #3793B0;
   --card-bg: #1f2937;
   --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
   --dash-bg: #111827;
-  --role-bg: #1a3a35;
-  --role-color: #6dc4b8;
+  --role-bg: #1a3558;
+  --role-color: #3793B0;
   --toggle-border: #4b5563;
   --toggle-bg: #374151;
   --toggle-color: #d1d5db;
