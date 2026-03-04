@@ -110,6 +110,26 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
+  // Freelancer contracts — standalone (no navbar/footer)
+  {
+    path: 'freelancer-contracts',
+    loadComponent: () =>
+      import('./features/freelancer-contracts/freelancer-contracts.component').then(
+        (m) => m.FreelancerContractsComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Company contracts — standalone (no navbar/footer)
+  {
+    path: 'company-contracts',
+    loadComponent: () =>
+      import('./features/company-contracts/company-contracts.component').then(
+        (m) => m.CompanyContractsComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
   // Mission applications — standalone (no navbar/footer)
   {
     path: 'mission-applications/:missionId',

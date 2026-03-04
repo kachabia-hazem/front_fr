@@ -1,0 +1,285 @@
+<div class="dashboard-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed()">
+    <div class="sidebar-top">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img src="assets/images/logo.png" alt="WorkLink" class="sidebar-logo-img" />
+          <span class="sidebar-logo-text">WorkLink</span>
+        </div>
+        <button class="sidebar-toggle" (click)="toggleSidebar()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a routerLink="/company-dashboard" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a routerLink="/company-missions" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          My Missions
+        </a>
+        <a routerLink="/company-applications" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Applications
+        </a>
+        <a routerLink="/company-contracts" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Contracts
+          @if (signedCount() > 0) {
+            <span class="badge-count signed">{{ signedCount() }}</span>
+          }
+        </a>
+        <a class="sidebar-link disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Messaging <span class="badge-soon">Soon</span>
+        </a>
+        <a routerLink="/company-notifications" routerLinkActive="active" class="sidebar-link">
+          <span class="notif-icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            @if (unreadCount() > 0) {
+              <span class="sidebar-notif-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+            }
+          </span>
+          Notifications
+        </a>
+        <a routerLink="/edit-company-profile" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom-section">
+      <div class="sidebar-user">
+        @if (companyLogo()) {
+          <img [src]="getFileUrl(companyLogo())" alt="Logo" class="sidebar-user-avatar" />
+        } @else {
+          <div class="sidebar-user-avatar sidebar-user-initials">{{ companyInitials() }}</div>
+        }
+        <div class="sidebar-user-info">
+          <span class="sidebar-user-name">{{ companyName() }}</span>
+          <span class="sidebar-user-role">Company</span>
+        </div>
+      </div>
+      <button class="sidebar-back-btn" (click)="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <!-- Header -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Contracts</h1>
+        <p class="page-subtitle">Track all signed contracts with your freelancers</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat-pill total">
+          <span>{{ contracts().length }}</span> Total
+        </div>
+        <div class="stat-pill pending">
+          <span>{{ pendingCount() }}</span> Pending
+        </div>
+        <div class="stat-pill signed">
+          <span>{{ signedCount() }}</span> Signed
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    @if (!loading() && contracts().length > 0) {
+      <div class="filters-bar">
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Search by freelancer or mission..."
+          (input)="onSearch($event)" />
+
+        <div class="status-tabs">
+          <button [class.active]="statusFilter() === 'ALL'"               (click)="setStatusFilter('ALL')">All</button>
+          <button [class.active]="statusFilter() === 'PENDING_SIGNATURE'" (click)="setStatusFilter('PENDING_SIGNATURE')">Pending</button>
+          <button [class.active]="statusFilter() === 'SIGNED'"            (click)="setStatusFilter('SIGNED')">Signed</button>
+        </div>
+      </div>
+    }
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading contracts...</p>
+      </div>
+    }
+
+    <!-- Empty -->
+    @if (!loading() && contracts().length === 0) {
+      <div class="empty-state">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <h3>No contracts yet</h3>
+        <p>Contracts are generated automatically when you accept a freelancer's application.</p>
+        <a routerLink="/company-applications" class="btn-primary">Review Applications</a>
+      </div>
+    }
+
+    <!-- Contracts table -->
+    @if (!loading() && filteredContracts().length > 0) {
+      <div class="table-wrapper">
+        <table class="contracts-table">
+          <thead>
+            <tr>
+              <th>Freelancer</th>
+              <th>Mission</th>
+              <th>Daily Rate</th>
+              <th>Period</th>
+              <th>Status</th>
+              <th>Signed On</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (contract of filteredContracts(); track contract.id) {
+              <tr (click)="openContract(contract)" class="table-row">
+                <td>
+                  <div class="freelancer-cell">
+                    <div class="avatar">{{ contract.freelancerName.charAt(0) }}</div>
+                    <div>
+                      <p class="fl-name">{{ contract.freelancerName }}</p>
+                      <p class="fl-email">{{ contract.freelancerEmail }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <p class="mission-title">{{ contract.missionTitle }}</p>
+                </td>
+                <td>
+                  <span class="salary-value">{{ contract.salary | number:'1.0-0' }} TND</span>
+                </td>
+                <td>
+                  <span class="date-range">
+                    {{ formatDate(contract.startDate) }}<br/>
+                    <span class="arrow">→</span> {{ formatDate(contract.endDate) }}
+                  </span>
+                </td>
+                <td>
+                  <span class="status-badge" [class]="'badge-' + contract.status.toLowerCase()">
+                    {{ statusLabel(contract.status) }}
+                  </span>
+                </td>
+                <td>
+                  <span class="date-text">{{ contract.signedAt ? formatDate(contract.signedAt) : '—' }}</span>
+                </td>
+                <td>
+                  <div class="action-btns" (click)="$event.stopPropagation()">
+                    <button class="btn-icon view" title="View" (click)="openContract(contract)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                    @if (contract.pdfUrl || contract.signedPdfUrl) {
+                      <button class="btn-icon download" title="Download PDF" (click)="downloadPdf(contract)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    @if (!loading() && contracts().length > 0 && filteredContracts().length === 0) {
+      <div class="empty-state">
+        <p>No contracts match your search.</p>
+      </div>
+    }
+  </main>
+</div>
+
+<!-- Contract detail modal -->
+@if (showModal() && selectedContract(); as contract) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <h2 class="modal-title">{{ contract.missionTitle }}</h2>
+          <span class="status-badge modal-badge" [class]="'badge-' + contract.status.toLowerCase()">
+            {{ statusLabel(contract.status) }}
+          </span>
+        </div>
+        <button class="modal-close" (click)="closeModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="contract-info-grid">
+          <div class="info-block">
+            <span class="info-label">Freelancer</span>
+            <span class="info-value">{{ contract.freelancerName }}</span>
+            <span class="info-sub">{{ contract.freelancerEmail }}</span>
+          </div>
+          <div class="info-block">
+            <span class="info-label">Employer</span>
+            <span class="info-value">{{ contract.companyName }}</span>
+            <span class="info-sub">{{ contract.companyEmail }}</span>
+          </div>
+          <div class="info-block">
+            <span class="info-label">Daily Rate</span>
+            <span class="info-value salary">{{ contract.salary | number:'1.0-2' }} TND</span>
+          </div>
+          <div class="info-block">
+            <span class="info-label">Period</span>
+            <span class="info-value">{{ formatDate(contract.startDate) }} → {{ formatDate(contract.endDate) }}</span>
+          </div>
+          <div class="info-block">
+            <span class="info-label">Created</span>
+            <span class="info-value">{{ formatDate(contract.createdAt) }}</span>
+          </div>
+          @if (contract.signedAt) {
+            <div class="info-block">
+              <span class="info-label">Signed On</span>
+              <span class="info-value signed-on">{{ formatDate(contract.signedAt) }}</span>
+            </div>
+          }
+        </div>
+
+        <!-- Download actions -->
+        <div class="modal-actions">
+          @if (contract.signedPdfUrl) {
+            <button class="btn-download-full" (click)="downloadPdf(contract)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Signed Contract
+            </button>
+          } @else if (contract.pdfUrl) {
+            <button class="btn-download-outline" (click)="downloadPdf(contract)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Contract (Unsigned)
+            </button>
+          }
+        </div>
+
+        <!-- PDF viewer -->
+        @if (contract.pdfUrl) {
+          <div class="pdf-section">
+            <h3 class="pdf-title">
+              {{ contract.signedPdfUrl ? 'Signed Contract' : 'Contract Document' }}
+            </h3>
+            <div class="pdf-actions">
+              <button class="btn-pdf-open" (click)="downloadPdf(contract)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Open PDF in Browser
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

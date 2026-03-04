@@ -84,9 +84,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
           sessionStorage.setItem('oauth_profile', JSON.stringify(authResponse.oauthProfile));
           this.router.navigate(['/auth/oauth/role-selection']);
         } else {
-          // Existing user - save auth and go to home
+          // Existing user - save auth and redirect
           this.authService.setAuthenticated(authResponse);
-          this.router.navigate(['/']);
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+          this.router.navigateByUrl(returnUrl);
         }
       },
       error: (err) => {
@@ -135,7 +136,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     this.authService.login({ email, password }).subscribe({
       next: () => {
-        this.router.navigate(['/']);
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+        this.router.navigateByUrl(returnUrl);
       },
       error: (err) => {
         this.loading = false;
