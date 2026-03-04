@@ -28,6 +28,7 @@ export class CompanyMissionsComponent implements OnInit {
   unreadCount = computed(() => this.notificationService.unreadCount());
   filterStatus = signal<string>('ALL');
   searchQuery = signal<string>('');
+  searchFocused = false;
 
   companyName = computed(() => this.company()?.companyName || 'Company');
   managerName = computed(() => this.company()?.managerName || '');
@@ -120,6 +121,10 @@ export class CompanyMissionsComponent implements OnInit {
 
   onSearch(event: Event): void {
     this.searchQuery.set((event.target as HTMLInputElement).value);
+  }
+
+  clearSearch(): void {
+    this.searchQuery.set('');
   }
 
   toggleSidebar(): void {

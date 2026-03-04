@@ -164,6 +164,11 @@ export class CompanyApplicationsComponent implements OnInit {
     this.currentPage.set(1);
   }
 
+  clearSearch(): void {
+    this.searchQuery.set('');
+    this.currentPage.set(1);
+  }
+
   onMissionChange(event: Event): void {
     this.missionFilter.set((event.target as HTMLSelectElement).value);
     this.currentPage.set(1);

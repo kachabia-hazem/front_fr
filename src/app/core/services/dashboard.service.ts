@@ -119,8 +119,8 @@ export class DashboardService {
       monthlyRevenue,
       monthLabels,
       visibility: {
-        appearances: 0,
-        views: 0,
+        appearances: profile?.searchAppearances || 0,
+        views: profile?.profileViews || 0,
         favorites: 0,
       },
     };

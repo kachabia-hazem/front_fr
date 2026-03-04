@@ -106,8 +106,11 @@
 
       <!-- Notification Panel -->
       <div class="notif-panel" [class.notif-panel-open]="notifPanelOpen()">
+
+        <!-- Header -->
         <div class="notif-panel-header">
           <div class="notif-panel-title-row">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="notif-panel-title-icon"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             <span class="notif-panel-title">Notifications</span>
             @if (unreadNotifCount() > 0) {
               <span class="notif-panel-count">{{ unreadNotifCount() }}</span>
@@ -115,52 +118,61 @@
           </div>
           <div class="notif-panel-header-actions">
             @if (unreadNotifCount() > 0) {
-              <button class="notif-panel-mark-all" (click)="markAllNotifsAsRead()">Mark all read</button>
+              <button class="notif-panel-mark-all" (click)="markAllNotifsAsRead()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Mark all read
+              </button>
             }
             <button class="notif-panel-close-btn" (click)="closeNotifPanel()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
           </div>
         </div>
 
+        <!-- Body -->
         <div class="notif-panel-body">
           @if (recentNotifications().length === 0) {
-            <div class="notif-panel-empty">
-              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-              </svg>
-              <p>No notifications yet</p>
+            <div class="notif-empty-state">
+              <div class="notif-empty-icon-wrap">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </div>
+              <p class="notif-empty-title">All caught up!</p>
+              <p class="notif-empty-sub">No notifications yet</p>
             </div>
           } @else {
-            @for (notif of recentNotifications(); track notif.id) {
-              <div class="notif-panel-item" [class.notif-panel-unread]="!notif.isRead"
-                (click)="openNotifDetail(notif)">
-                <div class="notif-panel-icon">{{ getNotifTypeIcon(notif.type) }}</div>
-                <div class="notif-panel-content">
-                  <div class="notif-title-row">
-                    @if (!notif.isRead) {
-                      <span class="notif-panel-dot"></span>
-                    }
-                    <p class="notif-panel-item-title">{{ notif.title }}</p>
+            <div class="notif-list">
+              @for (notif of recentNotifications(); track notif.id) {
+                <div class="notif-item" [class.notif-item--unread]="!notif.isRead"
+                  (click)="openNotifDetail(notif)">
+                  <div class="notif-item-icon notif-icon--{{ getNotifTypeColor(notif.type) }}">
+                    {{ getNotifTypeIcon(notif.type) }}
                   </div>
-                  <p class="notif-panel-item-msg">{{ notif.message }}</p>
-                  <span class="notif-panel-time">{{ formatNotifTime(notif.createdAt) }}</span>
+                  <div class="notif-item-body">
+                    <div class="notif-item-header">
+                      <span class="notif-item-title">{{ notif.title }}</span>
+                      <span class="notif-item-time">{{ formatNotifTime(notif.createdAt) }}</span>
+                    </div>
+                    <p class="notif-item-msg">{{ notif.message }}</p>
+                  </div>
+                  @if (!notif.isRead) {
+                    <div class="notif-item-unread-dot"></div>
+                  }
                 </div>
-              </div>
-            }
+              }
+            </div>
           }
         </div>
 
+        <!-- Footer -->
         <div class="notif-panel-footer">
           <a routerLink="/freelancer-notifications" (click)="closeNotifPanel()" class="notif-panel-view-all">
             View all notifications
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"/>
             </svg>
           </a>
@@ -328,7 +340,6 @@
             </div>
           </div>
 
-          <p class="visibility-note" [class.note-hidden]="expandedCard() === 'turnover'">Visibility tracking will be available soon.</p>
         </div>
 
         <!-- Visibility Curve Chart Panel (always in DOM) -->
@@ -338,21 +349,36 @@
               <h3 class="curve-chart-title">Visibility Evolution</h3>
               <span class="curve-chart-period">Last 6 months</span>
             </div>
-            <div class="curve-chart-body">
-              <svg class="curve-svg" viewBox="0 0 400 160" preserveAspectRatio="none">
-                <line x1="20" y1="35" x2="380" y2="35" class="grid-line" />
-                <line x1="20" y1="70" x2="380" y2="70" class="grid-line" />
-                <line x1="20" y1="105" x2="380" y2="105" class="grid-line" />
-                <line x1="20" y1="140" x2="380" y2="140" class="grid-line" />
-                <line x1="20" y1="140" x2="380" y2="140" class="curve-line curve-line-blue" style="stroke-dasharray: none;" />
-              </svg>
-              <div class="curve-x-labels">
+            <div class="curve-chart-body curve-chart-body--yaxis">
+              <div class="curve-with-yaxis">
+                <div class="y-axis-labels">
+                  @for (label of visibilityYLabels(); track $index) {
+                    <span [style.top.%]="label.topPct">{{ label.value }}</span>
+                  }
+                </div>
+                <svg class="curve-svg" viewBox="0 0 400 160" preserveAspectRatio="none">
+                  <line x1="20" y1="35" x2="380" y2="35" class="grid-line" />
+                  <line x1="20" y1="70" x2="380" y2="70" class="grid-line" />
+                  <line x1="20" y1="105" x2="380" y2="105" class="grid-line" />
+                  <line x1="20" y1="140" x2="380" y2="140" class="grid-line" />
+                  <path [attr.d]="visibilityAreaPath()" class="curve-area curve-area-blue" [class.curve-animate]="expandedCard() === 'visibility'" />
+                  <path [attr.d]="visibilityCurvePath()" class="curve-line curve-line-blue" [class.curve-animate]="expandedCard() === 'visibility'" />
+                  @for (value of visibilityData(); track $index) {
+                    <circle
+                      [attr.cx]="20 + ($index / 5) * 360"
+                      [attr.cy]="20 + 120 - (value / maxVisibility() * 120)"
+                      r="4"
+                      class="curve-dot curve-dot-blue"
+                      [class.dot-animate]="expandedCard() === 'visibility'" />
+                  }
+                </svg>
+              </div>
+              <div class="curve-x-labels curve-x-labels--offset">
                 @for (label of stats()?.monthLabels || []; track $index) {
                   <span>{{ label }}</span>
                 }
               </div>
             </div>
-            <p class="curve-empty-note">No visibility data yet. Data will appear as your profile gets viewed.</p>
           </div>
         </div>
       </div>
