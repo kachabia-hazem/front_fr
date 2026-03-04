@@ -231,6 +231,16 @@ export class CompanyDashboardComponent implements OnInit {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
+  heroSearch = '';
+  heroSkill = '';
+
+  onFreelancerSearch(): void {
+    const queryParams: Record<string, string> = {};
+    if (this.heroSearch.trim()) queryParams['search'] = this.heroSearch.trim();
+    if (this.heroSkill.trim()) queryParams['skill'] = this.heroSkill.trim();
+    this.router.navigate(['/company/freelancers'], { queryParams });
+  }
+
   goBack(): void {
     this.router.navigate(['/']);
   }
