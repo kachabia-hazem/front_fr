@@ -46,4 +46,12 @@ export class FreelancerService {
   getAllFreelancers(): Observable<Freelancer[]> {
     return this.http.get<Freelancer[]>(`${this.apiUrl}/public/all`);
   }
+
+  recordProfileView(freelancerId: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/public/${freelancerId}/view`, null);
+  }
+
+  recordSearchAppearances(ids: string[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/public/batch-appearances`, ids);
+  }
 }

@@ -109,8 +109,11 @@
 
       <!-- Notification Panel -->
       <div class="notif-panel" [class.notif-panel-open]="notifPanelOpen()">
+
+        <!-- Header -->
         <div class="notif-panel-header">
           <div class="notif-panel-title-row">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="notif-panel-title-icon"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             <span class="notif-panel-title">Notifications</span>
             @if (unreadNotifCount() > 0) {
               <span class="notif-panel-count">{{ unreadNotifCount() }}</span>
@@ -118,53 +121,101 @@
           </div>
           <div class="notif-panel-header-actions">
             @if (unreadNotifCount() > 0) {
-              <button class="notif-panel-mark-all" (click)="markAllNotifsAsRead()">Mark all read</button>
+              <button class="notif-panel-mark-all" (click)="markAllNotifsAsRead()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Mark all read
+              </button>
             }
             <button class="notif-panel-close-btn" (click)="closeNotifPanel()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
           </div>
         </div>
 
+        <!-- Body -->
         <div class="notif-panel-body">
           @if (recentNotifications().length === 0) {
-            <div class="notif-panel-empty">
-              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-              </svg>
-              <p>No notifications yet</p>
+            <div class="notif-empty-state">
+              <div class="notif-empty-icon-wrap">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </div>
+              <p class="notif-empty-title">All caught up!</p>
+              <p class="notif-empty-sub">No notifications yet</p>
             </div>
           } @else {
-            @for (notif of recentNotifications(); track notif.id) {
-              <div class="notif-panel-item" [class.notif-panel-unread]="!notif.isRead"
-                (click)="openNotifDetail(notif)">
-                <div class="notif-panel-icon">{{ getNotifTypeIcon(notif.type) }}</div>
-                <div class="notif-panel-content">
-                  <div class="notif-title-row">
-                    @if (!notif.isRead) {
-                      <span class="notif-panel-dot"></span>
-                    }
-                    <p class="notif-panel-item-title">{{ notif.title }}</p>
+            <div class="notif-list">
+              @for (notif of recentNotifications(); track notif.id) {
+                <div class="notif-item" [class.notif-item--unread]="!notif.isRead"
+                  (click)="openNotifDetail(notif)">
+                  <div class="notif-item-icon notif-icon--{{ getNotifTypeColor(notif.type) }}">
+                    {{ getNotifTypeIcon(notif.type) }}
                   </div>
-                  <p class="notif-panel-item-msg">{{ notif.message }}</p>
-                  <span class="notif-panel-time">{{ formatNotifTime(notif.createdAt) }}</span>
+                  <div class="notif-item-body">
+                    <div class="notif-item-header">
+                      <span class="notif-item-title">{{ notif.title }}</span>
+                      <span class="notif-item-time">{{ formatNotifTime(notif.createdAt) }}</span>
+                    </div>
+                    <p class="notif-item-msg">{{ notif.message }}</p>
+                  </div>
+                  @if (!notif.isRead) {
+                    <div class="notif-item-unread-dot"></div>
+                  }
                 </div>
-              </div>
-            }
+              }
+            </div>
           }
         </div>
 
+        <!-- Footer -->
         <div class="notif-panel-footer">
           <span class="notif-panel-view-all-text">All notifications are shown here</span>
         </div>
       </div>
 
-     
+      <!-- Freelancer Search Widget -->
+      <div class="freelancer-search-section">
+        <div class="freelancer-search-widget">
+          <div class="freelancer-search-tabs">
+            <button class="freelancer-search-tab active">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Trouver un freelancer
+            </button>
+          </div>
+          <form class="freelancer-search-bar" (ngSubmit)="onFreelancerSearch()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="freelancer-search-icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input
+              type="text"
+              class="freelancer-search-input"
+              placeholder='Ex : "Développeur React", "Chef de projet", "Data Scientist"...'
+              [(ngModel)]="heroSearch"
+              name="heroSearch"
+              autocomplete="off"
+            />
+            <div class="freelancer-search-sep"></div>
+            <div class="freelancer-search-skill-wrap">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <input
+                type="text"
+                class="freelancer-search-input"
+                placeholder="Compétence (ex : Angular, Python, AWS...)"
+                [(ngModel)]="heroSkill"
+                name="heroSkill"
+                autocomplete="off"
+              />
+            </div>
+            <button type="submit" class="freelancer-search-btn">
+              Rechercher
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
       <!-- Stats Cards -->
       <div class="stats-grid">
         <div class="stat-card">

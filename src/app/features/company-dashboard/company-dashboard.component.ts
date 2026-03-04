@@ -22,8 +22,6 @@ export class CompanyDashboardComponent implements OnInit {
   company = signal<Company | null>(null);
   stats = signal<CompanyDashboardStats | null>(null);
   loading = signal(true);
-  heroSearch = '';
-  heroSkill = '';
   sidebarCollapsed = signal(false);
   notifPanelOpen = signal(false);
   recentNotifications = computed(() => this.notificationService.notifications().slice(0, 8));
@@ -200,6 +198,25 @@ export class CompanyDashboardComponent implements OnInit {
     return icons[type] || '🔔';
   }
 
+  getNotifTypeColor(type: NotificationType | string): string {
+    const colors: Record<string, string> = {
+      COMPANY_WELCOME: 'green',
+      MISSION_PUBLISHED: 'blue',
+      APPLICATION_RECEIVED: 'purple',
+      PENDING_APPLICATIONS_REMINDER: 'amber',
+      MISSION_CLOSED: 'gray',
+      WELCOME: 'green',
+      APPLICATION_SUBMITTED: 'blue',
+      APPLICATION_ACCEPTED: 'emerald',
+      APPLICATION_REJECTED: 'red',
+      APPLICATION_WITHDRAWN: 'orange',
+      NEW_MISSION_MATCH: 'purple',
+      MISSION_DEADLINE_SOON: 'amber',
+      PROFILE_INCOMPLETE: 'yellow',
+    };
+    return colors[type] || 'gray';
+  }
+
   formatNotifTime(dateStr: string): string {
     const date = new Date(dateStr);
     const now = new Date();
@@ -212,15 +229,6 @@ export class CompanyDashboardComponent implements OnInit {
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  }
-
-  onFreelancerSearch(): void {
-    const q = this.heroSearch.trim();
-    const skill = this.heroSkill.trim();
-    const queryParams: Record<string, string> = {};
-    if (q) queryParams['q'] = q;
-    if (skill) queryParams['skill'] = skill;
-    this.router.navigate(['/freelancers'], Object.keys(queryParams).length ? { queryParams } : {});
   }
 
   goBack(): void {

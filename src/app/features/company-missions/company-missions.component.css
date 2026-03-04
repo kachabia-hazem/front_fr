@@ -407,24 +407,86 @@
 .filter-chip:not(.active) .chip-count { background: #e8eaed; color: #6b7280; }
 :host-context(body.dark-theme) .filter-chip:not(.active) .chip-count { background: rgba(255,255,255,0.08); color: #9ca3b0; }
 
-.search-wrapper { position: relative; flex-shrink: 0; }
-.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary, #9ca3af); pointer-events: none; }
-
-.search-input {
-  padding: 9px 14px 9px 36px;
-  border: 1.5px solid #e0e2e6;
-  border-radius: 10px;
+.search-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
   background: var(--card-bg, #fff);
-  color: var(--text-primary, #1a1a2e);
-  font-size: 0.85rem;
-  width: 240px;
+  border: 1.5px solid #e0e2e6;
+  border-radius: 50px;
+  padding: 0 6px 0 14px;
+  width: 280px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  outline: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
-.search-input::placeholder { color: #9ca3af; }
-.search-input:focus { border-color: #3793B0; box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.12); }
-:host-context(body.dark-theme) .search-input { background: #252a3a; border-color: #3a4050; color: #e4e4ef; }
+.search-wrapper.search-focused {
+  border-color: #3793B0;
+  box-shadow: 0 0 0 3px rgba(55, 147, 176, 0.14), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+:host-context(body.dark-theme) .search-wrapper {
+  background: #252a3a;
+  border-color: #3a4050;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+:host-context(body.dark-theme) .search-wrapper.search-focused {
+  border-color: #3793B0;
+  box-shadow: 0 0 0 3px rgba(55, 147, 176, 0.18), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.search-icon {
+  flex-shrink: 0;
+  color: #9ca3af;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.search-wrapper.search-focused .search-icon { color: #3793B0; }
+
+.search-input {
+  flex: 1;
+  padding: 10px 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-primary, #1a1a2e);
+  font-size: 0.875rem;
+  outline: none;
+  min-width: 0;
+}
+
+.search-input::placeholder { color: #b0b7c3; }
+
+:host-context(body.dark-theme) .search-input { color: #e4e4ef; }
+:host-context(body.dark-theme) .search-input::placeholder { color: #5a6070; }
+
+.search-clear-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: #e8eaed;
+  color: #6b7280;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.18s ease, color 0.18s ease;
+  animation: fadeInScale 0.15s ease;
+}
+
+.search-clear-btn:hover { background: #d0d3d8; color: #1a1a2e; }
+
+:host-context(body.dark-theme) .search-clear-btn { background: #3a4050; color: #9ca3b0; }
+:host-context(body.dark-theme) .search-clear-btn:hover { background: #4a5060; color: #e4e4ef; }
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
 
 /* ── Missions Table ── */
 .missions-table-card {
@@ -595,7 +657,6 @@
 @media (max-width: 1024px) {
   .filter-bar { flex-direction: column; align-items: flex-start; }
   .search-wrapper { width: 100%; }
-  .search-input { width: 100%; }
 }
 
 @media (max-width: 768px) {

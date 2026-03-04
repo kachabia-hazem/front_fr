@@ -72,16 +72,28 @@ export class FreelancerDashboardComponent implements OnInit {
     return this.buildSmoothArea(s.monthlyRevenue, 400, 160);
   });
 
-  // SVG curve path for visibility (mock data for now)
-  visibilityCurvePath = computed(() => {
-    const mockData = [0, 0, 0, 0, 0, 0];
-    return this.buildSmoothCurve(mockData, 400, 160);
+  // SVG curve path for visibility (real data)
+  visibilityData = computed(() => {
+    const s = this.stats();
+    const total = (s?.visibility?.views || 0) + (s?.visibility?.appearances || 0);
+    return [0, 0, 0, 0, 0, total];
   });
 
-  visibilityAreaPath = computed(() => {
-    const mockData = [0, 0, 0, 0, 0, 0];
-    return this.buildSmoothArea(mockData, 400, 160);
+  maxVisibility = computed(() => Math.max(...this.visibilityData(), 1));
+
+  visibilityYLabels = computed(() => {
+    const max = this.maxVisibility();
+    return [
+      { value: Math.round(max * 0.875), topPct: 21.875 },
+      { value: Math.round(max * 0.583), topPct: 43.75 },
+      { value: Math.round(max * 0.292), topPct: 65.625 },
+      { value: 0, topPct: 87.5 },
+    ];
   });
+
+  visibilityCurvePath = computed(() => this.buildSmoothCurve(this.visibilityData(), 400, 160));
+
+  visibilityAreaPath = computed(() => this.buildSmoothArea(this.visibilityData(), 400, 160));
 
   constructor(
     private dashboardService: DashboardService,
@@ -151,6 +163,20 @@ export class FreelancerDashboardComponent implements OnInit {
       PROFILE_INCOMPLETE: '⚠️',
     };
     return icons[type] || '🔔';
+  }
+
+  getNotifTypeColor(type: NotificationType | string): string {
+    const colors: Record<string, string> = {
+      WELCOME: 'green',
+      APPLICATION_SUBMITTED: 'blue',
+      APPLICATION_ACCEPTED: 'emerald',
+      APPLICATION_REJECTED: 'red',
+      APPLICATION_WITHDRAWN: 'orange',
+      NEW_MISSION_MATCH: 'purple',
+      MISSION_DEADLINE_SOON: 'amber',
+      PROFILE_INCOMPLETE: 'yellow',
+    };
+    return colors[type] || 'gray';
   }
 
   formatNotifTime(dateStr: string): string {

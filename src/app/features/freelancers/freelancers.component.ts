@@ -1,7 +1,9 @@
-import { Component, OnInit, signal, computed, HostListener } from '@angular/core';
+import { Component, OnInit, signal, computed, HostListener, effect, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Freelancer } from '../../core/models';
@@ -199,7 +201,21 @@ export class FreelancersComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
-  ) {}
+  ) {
+    const destroyRef = inject(DestroyRef);
+
+    const sub = toObservable(this.filteredFreelancers).pipe(
+      map(list => list.map(f => f.id)),
+      debounceTime(1500),
+      distinctUntilChanged((a, b) => a.join(',') === b.join(',')),
+    ).subscribe(ids => {
+      if (ids.length > 0 && this.activeFilterCount() > 0 && this.authService.isAuthenticated()) {
+        this.freelancerService.recordSearchAppearances(ids).subscribe();
+      }
+    });
+
+    destroyRef.onDestroy(() => sub.unsubscribe());
+  }
 
   viewProfile(id: string): void {
     if (!this.authService.isAuthenticated()) {

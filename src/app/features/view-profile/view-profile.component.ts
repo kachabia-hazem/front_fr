@@ -47,6 +47,9 @@ export class ViewProfileComponent implements OnInit {
       next: (freelancer) => {
         this.freelancer.set(freelancer);
         this.checkIfOwnProfile(freelancer);
+        if (!this.isOwnProfile()) {
+          this.freelancerService.recordProfileView(id).subscribe();
+        }
         this.loading.set(false);
       },
       error: () => {
