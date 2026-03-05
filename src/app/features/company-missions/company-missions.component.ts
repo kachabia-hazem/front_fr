@@ -30,6 +30,16 @@ export class CompanyMissionsComponent implements OnInit {
   searchQuery = signal<string>('');
   searchFocused = false;
 
+  // Pagination
+  readonly PAGE_SIZE = 7;
+  readonly Math = Math;
+  missionPage = signal(0);
+  totalMissionPages = computed(() => Math.max(1, Math.ceil(this.filteredMissions().length / this.PAGE_SIZE)));
+  pagedMissions = computed(() => {
+    const start = this.missionPage() * this.PAGE_SIZE;
+    return this.filteredMissions().slice(start, start + this.PAGE_SIZE);
+  });
+
   companyName = computed(() => this.company()?.companyName || 'Company');
   managerName = computed(() => this.company()?.managerName || '');
   managerPosition = computed(() => this.company()?.managerPosition || 'Manager');
@@ -117,15 +127,21 @@ export class CompanyMissionsComponent implements OnInit {
 
   setFilter(status: string): void {
     this.filterStatus.set(status);
+    this.missionPage.set(0);
   }
 
   onSearch(event: Event): void {
     this.searchQuery.set((event.target as HTMLInputElement).value);
+    this.missionPage.set(0);
   }
 
   clearSearch(): void {
     this.searchQuery.set('');
+    this.missionPage.set(0);
   }
+
+  missionPrevPage(): void { this.missionPage.update(p => Math.max(0, p - 1)); }
+  missionNextPage(): void { this.missionPage.update(p => Math.min(this.totalMissionPages() - 1, p + 1)); }
 
   toggleSidebar(): void {
     this.sidebarCollapsed.update(v => !v);

@@ -7,7 +7,9 @@ import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { CompanyDashboardService, CompanyDashboardStats } from '../../core/services/company-dashboard.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { ContractService } from '../../core/services/contract.service';
 import { Company } from '../../core/models/user.model';
+import { Contract } from '../../core/models/contract.model';
 import { Notification as AppNotification, NotificationType } from '../../core/models/notification.model';
 import { environment } from '../../../environments/environment';
 
@@ -19,8 +21,11 @@ import { environment } from '../../../environments/environment';
   styleUrl: './company-dashboard.component.css',
 })
 export class CompanyDashboardComponent implements OnInit {
-  company = signal<Company | null>(null);
-  stats = signal<CompanyDashboardStats | null>(null);
+  company   = signal<Company | null>(null);
+  stats     = signal<CompanyDashboardStats | null>(null);
+  contracts = signal<Contract[]>([]);
+
+  activeContractsCount = computed(() => this.contracts().filter(c => c.status === 'SIGNED').length);
   loading = signal(true);
   sidebarCollapsed = signal(false);
   notifPanelOpen = signal(false);
@@ -133,6 +138,7 @@ export class CompanyDashboardComponent implements OnInit {
     private companyService: CompanyService,
     private companyDashboardService: CompanyDashboardService,
     private notificationService: NotificationService,
+    private contractService: ContractService,
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
@@ -151,6 +157,9 @@ export class CompanyDashboardComponent implements OnInit {
       error: () => this.loading.set(false),
     });
 
+    this.contractService.getCompanyContracts().subscribe({
+      next: list => this.contracts.set(list),
+    });
     this.notificationService.getUnreadCount().subscribe();
     this.notificationService.getMyNotifications().subscribe();
   }

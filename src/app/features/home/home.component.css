@@ -281,6 +281,56 @@
 
 .search-btn:hover { background: #d1d5db; }
 
+/* ── Search — dark mode ── */
+:host-context(body.dark-theme) .hero-search {
+  background: #1a1f2e;
+  border-color: #2a3040;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+}
+:host-context(body.dark-theme) .hero-search-input {
+  color: #e4e4ef;
+}
+:host-context(body.dark-theme) .hero-search-input::placeholder { color: #4b5563; }
+
+:host-context(body.dark-theme) .search-tab {
+  background: #141824;
+  border-color: #2a3040;
+  color: #6b7280;
+}
+:host-context(body.dark-theme) .search-tab.active {
+  background: #1a1f2e;
+  border-color: #2a3040;
+  color: #e4e4ef;
+}
+:host-context(body.dark-theme) .search-tab:not(.active):hover {
+  background: #1e2436;
+  color: #9ca3af;
+}
+
+:host-context(body.dark-theme) .search-bar {
+  background: #1a1f2e;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+:host-context(body.dark-theme) .search-input {
+  color: #e4e4ef;
+}
+:host-context(body.dark-theme) .search-input::placeholder { color: #4b5563; }
+
+:host-context(body.dark-theme) .search-sep {
+  background: #2a3040;
+}
+:host-context(body.dark-theme) .search-location-wrap {
+  color: #9ca3af;
+}
+:host-context(body.dark-theme) .search-btn {
+  background: #252a3a;
+  color: #9ca3af;
+}
+:host-context(body.dark-theme) .search-btn:hover {
+  background: #2f3545;
+  color: #e4e4ef;
+}
+
 /* ══════════════════════════════
    WHY WORKLINK
    ══════════════════════════════ */

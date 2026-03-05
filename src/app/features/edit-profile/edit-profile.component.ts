@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { FreelancerService, UpdateFreelancerRequest } from '../../core/services/freelancer.service';
 import { CvService } from '../../core/services/cv.service';
 import { Freelancer, Gender, ProfileType, Language } from '../../core/models';
@@ -34,6 +35,7 @@ export class EditProfileComponent implements OnInit {
     private fb: FormBuilder,
     private freelancerService: FreelancerService,
     private cvService: CvService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -287,6 +289,7 @@ export class EditProfileComponent implements OnInit {
         this.freelancer.set(updated);
         this.successMessage.set('Profile updated successfully!');
         this.saving.set(false);
+        setTimeout(() => this.router.navigate(['/profile']), 1500);
       },
       error: () => {
         this.errorMessage.set('Failed to update profile. Please try again.');

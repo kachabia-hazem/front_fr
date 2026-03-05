@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CompanyService, UpdateCompanyRequest } from '../../core/services/company.service';
 import { Company, LegalForm } from '../../core/models';
 import { FileUploadComponent } from '../../shared/components/file-upload/file-upload.component';
@@ -27,6 +28,7 @@ export class EditCompanyProfileComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private companyService: CompanyService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -200,6 +202,7 @@ export class EditCompanyProfileComponent implements OnInit {
         this.company.set(updated);
         this.successMessage.set('Profile updated successfully!');
         this.saving.set(false);
+        setTimeout(() => this.router.navigate(['/company-profile']), 1500);
       },
       error: () => {
         this.errorMessage.set('Failed to update profile. Please try again.');

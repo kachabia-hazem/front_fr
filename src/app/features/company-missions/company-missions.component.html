@@ -167,7 +167,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (mission of filteredMissions(); track mission.id) {
+              @for (mission of pagedMissions(); track mission.id) {
                 <tr class="mission-row" (click)="viewMission(mission.id)">
                   <td class="col-mission">
                     <div class="mission-info">
@@ -191,18 +191,11 @@
                   </td>
                   <td class="col-actions">
                     <div class="actions-group">
-                      <button
-                        class="btn-see-apps"
-                        (click)="viewApplications($event, mission.id)"
-                      >
+                      <button class="btn-see-apps" (click)="viewApplications($event, mission.id)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         See Applications
                       </button>
-                      <button
-                        class="action-btn"
-                        (click)="editMission($event, mission.id)"
-                        title="Edit mission"
-                      >
+                      <button class="action-btn" (click)="editMission($event, mission.id)" title="Edit mission">
                         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                       </button>
                     </div>
@@ -211,6 +204,25 @@
               }
             </tbody>
           </table>
+
+          @if (totalMissionPages() > 1) {
+            <div class="missions-pagination">
+              <span class="pag-info">
+                Showing {{ missionPage() * PAGE_SIZE + 1 }}–{{ Math.min((missionPage() + 1) * PAGE_SIZE, filteredMissions().length) }} of {{ filteredMissions().length }}
+              </span>
+              <div class="pag-controls">
+                <button class="pag-btn" [disabled]="missionPage() === 0" (click)="missionPrevPage()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  Previous
+                </button>
+                <span class="pag-pages">Page {{ missionPage() + 1 }} / {{ totalMissionPages() }}</span>
+                <button class="pag-btn" [disabled]="missionPage() === totalMissionPages() - 1" (click)="missionNextPage()">
+                  Next
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+              </div>
+            </div>
+          }
         </div>
       }
 

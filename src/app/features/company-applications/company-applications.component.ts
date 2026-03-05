@@ -33,7 +33,7 @@ export class CompanyApplicationsComponent implements OnInit {
 
   // Pagination
   currentPage = signal(1);
-  readonly pageSize = 8;
+  readonly pageSize = 5;
   Math = Math;
 
   // Computed sidebar info

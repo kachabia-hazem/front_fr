@@ -496,6 +496,83 @@
   overflow: hidden;
 }
 
+/* ── Pagination ── */
+.missions-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-top: 1px solid #f0f1f3;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+:host-context(body.dark-theme) .missions-pagination {
+  border-top-color: #222838;
+}
+
+.pag-info {
+  font-size: 0.82rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+:host-context(body.dark-theme) .pag-info { color: #9ca3af; }
+
+.pag-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pag-pages {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+}
+
+:host-context(body.dark-theme) .pag-pages { color: #c8cfe0; }
+
+.pag-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #374151;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.pag-btn:hover:not(:disabled) {
+  border-color: #3793B0;
+  background: rgba(55, 147, 176, 0.06);
+  color: #3793B0;
+}
+
+.pag-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+:host-context(body.dark-theme) .pag-btn {
+  background: #1e2433;
+  border-color: #2a3040;
+  color: #9ca3af;
+}
+
+:host-context(body.dark-theme) .pag-btn:hover:not(:disabled) {
+  border-color: #6dc4b8;
+  background: rgba(109, 196, 184, 0.08);
+  color: #6dc4b8;
+}
+
 .missions-table { width: 100%; border-collapse: collapse; }
 
 .missions-table thead tr {

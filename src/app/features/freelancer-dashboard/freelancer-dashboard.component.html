@@ -90,6 +90,29 @@
           <p class="dashboard-subtitle">Track, manage and forecast your missions and revenue.</p>
         </div>
         <div class="header-actions">
+          <button class="header-theme-btn" (click)="themeService.toggle()" [title]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
+            @if (themeService.isDark()) {
+              <!-- Sun icon — switch to light -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1"  x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22"  x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1"  y1="12" x2="3"  y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            } @else {
+              <!-- Moon icon — switch to dark -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            }
+          </button>
           <button class="header-notif-btn" (click)="toggleNotifPanel()" [class.panel-active]="notifPanelOpen()" title="Notifications">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -218,6 +241,15 @@
               }
               <span>{{ stats()?.missionsTrend || 0 }}% vs last month</span>
             </div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-green">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Active Contracts</span>
+            <span class="stat-value">{{ activeContractsCount() }}</span>
           </div>
         </div>
       </div>
@@ -387,6 +419,205 @@
         </div>
       </div>
 
+      <!-- ── Payment Schedule Section ── -->
+      <div class="payment-schedule-section">
+        <div class="payment-card">
+
+          <!-- Card header -->
+          <div class="payment-card-header">
+            <div>
+              <h2 class="section-title" style="margin:0">Payment Schedule</h2>
+              <p class="payment-subtitle">Upcoming weekly earnings from your signed contracts</p>
+            </div>
+            <div class="payment-header-right">
+              <span class="payment-period-badge">Next 8 weeks</span>
+              @if (hasPaymentData()) {
+                <button class="btn-see-stats" (click)="togglePaymentChart()" [class.active]="expandedPaymentChart()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  {{ expandedPaymentChart() ? 'Hide chart' : 'Show chart' }}
+                </button>
+              }
+            </div>
+          </div>
+
+          @if (!hasPaymentData()) {
+            <!-- Empty state -->
+            <div class="payment-empty">
+              <div class="payment-empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
+              <p class="payment-empty-title">No payment data available</p>
+              <p class="payment-empty-sub">Sign a contract with a defined salary and period to see your payment schedule.</p>
+              <a routerLink="/freelancer-contracts" class="btn-browse">View Contracts</a>
+            </div>
+          } @else {
+
+            <!-- Summary stats -->
+            <div class="payment-stats-row">
+              <div class="payment-stat-item">
+                <span class="payment-stat-label">This Week</span>
+                <span class="payment-stat-value payment-stat-value--this">{{ formatCurrency(thisWeekPayment()) }} <span class="payment-currency">DT</span></span>
+              </div>
+              <div class="payment-stat-divider"></div>
+              <div class="payment-stat-item">
+                <span class="payment-stat-label">Next Week</span>
+                <span class="payment-stat-value">{{ formatCurrency(nextWeekPayment()) }} <span class="payment-currency">DT</span></span>
+              </div>
+              <div class="payment-stat-divider"></div>
+              <div class="payment-stat-item">
+                <span class="payment-stat-label">Total Remaining Value</span>
+                <span class="payment-stat-value payment-stat-value--total">{{ formatCurrency(totalRemainingValue()) }} <span class="payment-currency">DT</span></span>
+              </div>
+            </div>
+
+            <!-- Chart (collapsible) -->
+            <div class="payment-chart-wrap" [class.payment-chart-visible]="expandedPaymentChart()">
+              <div class="payment-chart-inner">
+
+                <div class="payment-axis-container">
+
+                  <!-- Y-axis title (rotated) -->
+                  <div class="payment-yaxis-title-wrap">
+                    <span class="payment-yaxis-title">Earnings (DT)</span>
+                  </div>
+
+                  <!-- Y labels + SVG block -->
+                  <div class="payment-chart-body">
+
+                    <!-- Y-axis labels -->
+                    <div class="payment-y-axis">
+                      @for (lbl of paymentYLabels(); track $index) {
+                        <div class="payment-y-tick-row" [style.top.%]="lbl.topPct">
+                          <span class="payment-y-value">{{ lbl.label }}</span>
+                          <span class="payment-y-unit">DT</span>
+                          <div class="payment-y-tick-mark"></div>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- SVG chart -->
+                    <div class="payment-svg-wrap">
+                      <svg class="curve-svg" viewBox="0 0 400 175" preserveAspectRatio="none">
+                        <!-- Horizontal grid lines -->
+                        <line x1="0" y1="20"  x2="400" y2="20"  class="grid-line"/>
+                        <line x1="0" y1="60"  x2="400" y2="60"  class="grid-line"/>
+                        <line x1="0" y1="100" x2="400" y2="100" class="grid-line"/>
+                        <line x1="0" y1="140" x2="400" y2="140" class="grid-line"/>
+
+                        <!-- Left axis line -->
+                        <line x1="0" y1="0" x2="0" y2="148" class="payment-axis-border"/>
+                        <!-- Bottom axis line -->
+                        <line x1="0" y1="148" x2="400" y2="148" class="payment-axis-border"/>
+
+                        <!-- Vertical grid lines at each data point -->
+                        @for (val of paymentChartData(); track $index) {
+                          <line
+                            [attr.x1]="($index / (paymentChartData().length - 1)) * 400"
+                            [attr.x2]="($index / (paymentChartData().length - 1)) * 400"
+                            y1="0" y2="148"
+                            class="payment-vgrid"/>
+                          <!-- X tick mark on bottom axis -->
+                          <line
+                            [attr.x1]="($index / (paymentChartData().length - 1)) * 400"
+                            [attr.x2]="($index / (paymentChartData().length - 1)) * 400"
+                            y1="148" y2="154"
+                            class="payment-axis-border"/>
+                        }
+
+                        <!-- Area & curve -->
+                        <path [attr.d]="paymentAreaPath()"  class="curve-area curve-area-green"  [class.curve-animate]="expandedPaymentChart()"/>
+                        <path [attr.d]="paymentCurvePath()" class="curve-line curve-line-green"  [class.curve-animate]="expandedPaymentChart()"/>
+
+                        <!-- Dots + value labels above each point -->
+                        @for (val of paymentChartData(); track $index) {
+                          <circle
+                            [attr.cx]="($index / (paymentChartData().length - 1)) * 400"
+                            [attr.cy]="20 + 120 - (val / maxWeekPayment() * 120)"
+                            [attr.r]="$index === 0 ? 6 : 4"
+                            class="curve-dot curve-dot-green"
+                            [class.dot-animate]="expandedPaymentChart()"
+                            [class.dot-current-week]="$index === 0">
+                            <title>{{ paymentChartLabels()[$index] }}: {{ formatCurrency(val) }} DT</title>
+                          </circle>
+                          @if (val > 0) {
+                            <text
+                              [attr.x]="($index / (paymentChartData().length - 1)) * 400"
+                              [attr.y]="20 + 120 - (val / maxWeekPayment() * 120) - 9"
+                              class="payment-dot-label"
+                              [class.dot-label-current]="$index === 0"
+                              [class.dot-label-animate]="expandedPaymentChart()">
+                              {{ val | number:'1.0-0' }}
+                            </text>
+                          }
+                        }
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- X-axis labels row -->
+                  <div class="payment-x-axis-row">
+                    <div class="payment-y-axis-spacer"></div>
+                    <div class="payment-x-labels">
+                      @for (lbl of paymentChartLabels(); track $index) {
+                        <span class="payment-x-label"
+                          [class.payment-x-label--current]="$index === 0"
+                          [class.payment-x-label--next]="$index === 1">
+                          {{ lbl }}
+                        </span>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- X-axis title -->
+                  <div class="payment-xaxis-title-row">
+                    <div class="payment-y-axis-spacer"></div>
+                    <span class="payment-xaxis-title">Week →</span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Contract breakdown -->
+            <div class="payment-contracts">
+              <p class="payment-contracts-title">Active Contracts</p>
+              <div class="payment-contracts-list">
+                @for (c of pagedContracts(); track c.id) {
+                  <div class="payment-contract-row">
+                    <div class="payment-contract-info">
+                      <span class="payment-contract-mission">{{ c.missionTitle }}</span>
+                      <span class="payment-contract-company">{{ c.companyName }}</span>
+                    </div>
+                    <div class="payment-contract-meta">
+                      <span class="payment-contract-rate">{{ formatCurrency(c.salary!) }} DT/day</span>
+                      <span class="payment-contract-period">
+                        {{ formatDate(c.startDate!) }} → {{ formatDate(c.endDate!) }}
+                      </span>
+                    </div>
+                    <span class="payment-contract-badge">Active</span>
+                  </div>
+                }
+              </div>
+
+              @if (contractTotalPages() > 1) {
+                <div class="pagination pagination--compact">
+                  <button class="pagination-btn" (click)="contractPrevPage()" [disabled]="contractPage() === 0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  </button>
+                  <span class="pagination-info">{{ contractPage() + 1 }} / {{ contractTotalPages() }}</span>
+                  <button class="pagination-btn" (click)="contractNextPage()" [disabled]="contractPage() === contractTotalPages() - 1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+                </div>
+              }
+            </div>
+
+          }
+        </div>
+      </div>
+
       <!-- Recent Applications Section -->
       <div class="applications-section">
         <div class="applications-card">
@@ -394,7 +625,7 @@
             <h2 class="section-title">Recent Applications</h2>
           </div>
 
-          @if (recentApplications().length === 0) {
+          @if (sortedApplications().length === 0) {
             <div class="applications-empty">
               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               <p>No applications yet.</p>
@@ -412,7 +643,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @for (app of recentApplications(); track app.id) {
+                  @for (app of pagedApplications(); track app.id) {
                     <tr>
                       <td class="cell-mission">{{ app.missionTitle || 'N/A' }}</td>
                       <td class="cell-company">{{ app.companyName || 'N/A' }}</td>
@@ -430,6 +661,18 @@
                   }
                 </tbody>
               </table>
+
+              @if (appTotalPages() > 1) {
+                <div class="pagination">
+                  <button class="pagination-btn" (click)="appPrevPage()" [disabled]="appPage() === 0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  </button>
+                  <span class="pagination-info">{{ appPage() + 1 }} / {{ appTotalPages() }}</span>
+                  <button class="pagination-btn" (click)="appNextPage()" [disabled]="appPage() === appTotalPages() - 1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+                </div>
+              }
             </div>
           }
         </div>

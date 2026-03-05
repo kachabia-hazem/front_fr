@@ -1,10 +1,12 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { DashboardService, DashboardStats } from '../../core/services/dashboard.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { ApplicationService } from '../../core/services/application.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { ContractService } from '../../core/services/contract.service';
+import { Contract } from '../../core/models/contract.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { Freelancer } from '../../core/models';
@@ -15,14 +17,17 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-freelancer-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, DecimalPipe, RouterLink, RouterLinkActive],
   templateUrl: './freelancer-dashboard.component.html',
   styleUrl: './freelancer-dashboard.component.css',
 })
 export class FreelancerDashboardComponent implements OnInit {
-  freelancer = signal<Freelancer | null>(null);
-  stats = signal<DashboardStats | null>(null);
+  freelancer  = signal<Freelancer | null>(null);
+  stats       = signal<DashboardStats | null>(null);
   applications = signal<Application[]>([]);
+  contracts   = signal<Contract[]>([]);
+
+  activeContractsCount = computed(() => this.contracts().filter(c => c.status === 'SIGNED').length);
   loading = signal(true);
 
   unreadNotifCount = computed(() => this.notificationService.unreadCount());
@@ -53,11 +58,37 @@ export class FreelancerDashboardComponent implements OnInit {
     return Math.max(...s.monthlyRevenue, 1);
   });
 
-  recentApplications = computed(() => {
-    return this.applications()
+  readonly PAGE_SIZE = 5;
+
+  // All applications sorted by date (no slice — pagination handles display)
+  sortedApplications = computed(() =>
+    this.applications()
+      .slice()
       .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
-      .slice(0, 5);
+  );
+
+  // Applications pagination
+  appPage = signal(0);
+  appTotalPages = computed(() => Math.max(1, Math.ceil(this.sortedApplications().length / this.PAGE_SIZE)));
+  pagedApplications = computed(() => {
+    const start = this.appPage() * this.PAGE_SIZE;
+    return this.sortedApplications().slice(start, start + this.PAGE_SIZE);
   });
+
+  // Contracts pagination (payment section)
+  signedContracts = computed(() =>
+    this.contracts().filter(c => c.status === 'SIGNED' && c.salary != null && c.startDate && c.endDate)
+  );
+  contractPage = signal(0);
+  contractTotalPages = computed(() => Math.max(1, Math.ceil(this.signedContracts().length / this.PAGE_SIZE)));
+  pagedContracts = computed(() => {
+    const start = this.contractPage() * this.PAGE_SIZE;
+    return this.signedContracts().slice(start, start + this.PAGE_SIZE);
+  });
+
+  // Keep alias for backward-compat with any template reference
+  recentApplications = this.sortedApplications;
+
 
   // SVG curve path for turnover chart
   turnoverCurvePath = computed(() => {
@@ -95,11 +126,110 @@ export class FreelancerDashboardComponent implements OnInit {
 
   visibilityAreaPath = computed(() => this.buildSmoothArea(this.visibilityData(), 400, 160));
 
+  // ─── Payment Schedule Chart ───────────────────────────────────────────────
+
+  paymentScheduleWeeks = computed(() => {
+    const signedContracts = this.signedContracts();
+    if (signedContracts.length === 0) return [];
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Monday of current week
+    const currentMonday = new Date(today);
+    const dow = today.getDay();
+    currentMonday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1));
+
+    const weeks: { label: string; amount: number }[] = [];
+
+    for (let w = 0; w < 8; w++) {
+      const weekStart = new Date(currentMonday);
+      weekStart.setDate(currentMonday.getDate() + w * 7);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 4); // Friday
+
+      let weekAmount = 0;
+
+      for (const contract of signedContracts) {
+        const cStart = new Date(contract.startDate!);
+        const cEnd   = new Date(contract.endDate!);
+        cStart.setHours(0, 0, 0, 0);
+        cEnd.setHours(0, 0, 0, 0);
+
+        const overlapStart = weekStart > cStart ? weekStart : cStart;
+        const overlapEnd   = weekEnd   < cEnd   ? weekEnd   : cEnd;
+
+        if (overlapStart <= overlapEnd) {
+          weekAmount += contract.salary! * this.countWorkdays(overlapStart, overlapEnd);
+        }
+      }
+
+      let label: string;
+      if (w === 0)      label = 'This week';
+      else if (w === 1) label = 'Next week';
+      else {
+        const m = weekStart.toLocaleDateString('en-US', { month: 'short' });
+        label = `${m} ${weekStart.getDate()}`;
+      }
+      weeks.push({ label, amount: weekAmount });
+    }
+    return weeks;
+  });
+
+  paymentChartData   = computed(() => this.paymentScheduleWeeks().map(w => w.amount));
+  paymentChartLabels = computed(() => this.paymentScheduleWeeks().map(w => w.label));
+  maxWeekPayment     = computed(() => Math.max(...this.paymentChartData(), 1));
+
+  paymentYLabels = computed(() => {
+    const max = this.maxWeekPayment();
+    return [
+      { label: this.formatCompact(max),        topPct: 12.5 },
+      { label: this.formatCompact(max * 0.67), topPct: 37.5 },
+      { label: this.formatCompact(max * 0.33), topPct: 62.5 },
+      { label: '0',                            topPct: 87.5 },
+    ];
+  });
+
+  paymentCurvePath = computed(() => {
+    const d = this.paymentChartData();
+    return d.length >= 2 ? this.buildSmoothCurve(d, 400, 160) : '';
+  });
+
+  paymentAreaPath = computed(() => {
+    const d = this.paymentChartData();
+    return d.length >= 2 ? this.buildSmoothArea(d, 400, 160) : '';
+  });
+
+  thisWeekPayment    = computed(() => this.paymentScheduleWeeks()[0]?.amount ?? 0);
+  nextWeekPayment    = computed(() => this.paymentScheduleWeeks()[1]?.amount ?? 0);
+
+  totalRemainingValue = computed(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return this.contracts()
+      .filter(c => c.status === 'SIGNED' && c.salary != null && c.endDate)
+      .reduce((sum, c) => {
+        const cEnd   = new Date(c.endDate!);
+        const cStart = c.startDate ? new Date(c.startDate) : today;
+        const effectiveStart = cStart > today ? cStart : today;
+        cEnd.setHours(0, 0, 0, 0);
+        effectiveStart.setHours(0, 0, 0, 0);
+        if (effectiveStart > cEnd) return sum;
+        return sum + c.salary! * this.countWorkdays(effectiveStart, cEnd);
+      }, 0);
+  });
+
+  hasPaymentData = computed(() => this.paymentChartData().some(v => v > 0));
+
+  expandedPaymentChart = signal(false);
+  togglePaymentChart(): void { this.expandedPaymentChart.update(v => !v); }
+
   constructor(
     private dashboardService: DashboardService,
     private freelancerService: FreelancerService,
     private applicationService: ApplicationService,
     private notificationService: NotificationService,
+    private contractService: ContractService,
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
@@ -112,6 +242,10 @@ export class FreelancerDashboardComponent implements OnInit {
 
     this.applicationService.getMyApplications().subscribe({
       next: (apps) => this.applications.set(apps),
+    });
+
+    this.contractService.getFreelancerContracts().subscribe({
+      next: (list) => this.contracts.set(list),
     });
 
     this.dashboardService.getDashboardStats().subscribe({
@@ -223,6 +357,27 @@ export class FreelancerDashboardComponent implements OnInit {
 
   get profilePicture(): string | undefined {
     return this.freelancer()?.profilePicture;
+  }
+
+  appPrevPage(): void      { this.appPage.update(p => Math.max(0, p - 1)); }
+  appNextPage(): void      { this.appPage.update(p => Math.min(this.appTotalPages() - 1, p + 1)); }
+  contractPrevPage(): void { this.contractPage.update(p => Math.max(0, p - 1)); }
+  contractNextPage(): void { this.contractPage.update(p => Math.min(this.contractTotalPages() - 1, p + 1)); }
+
+  private formatCompact(value: number): string {
+    if (value >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return Math.round(value).toString();
+  }
+
+  private countWorkdays(start: Date, end: Date): number {
+    let count = 0;
+    const cur = new Date(start);
+    while (cur <= end) {
+      const d = cur.getDay();
+      if (d !== 0 && d !== 6) count++;
+      cur.setDate(cur.getDate() + 1);
+    }
+    return count;
   }
 
   // Build a smooth cubic bezier curve SVG path

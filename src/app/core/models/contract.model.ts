@@ -18,5 +18,6 @@ export interface Contract {
   pdfUrl: string | null;
   signedPdfUrl: string | null;
   signedAt: string | null;
+  companySignedAt: string | null;
   createdAt: string;
 }

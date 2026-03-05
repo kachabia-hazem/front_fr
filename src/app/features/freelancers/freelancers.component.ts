@@ -125,14 +125,27 @@ export class FreelancersComponent implements OnInit {
     const expIdx = this.selectedExperience();
     const sort = this.sortBy();
 
-    // Search
+    // Smart search — split into tokens so "Doe John" finds "John Doe"
     if (query) {
-      list = list.filter(
-        (f) =>
-          (f.firstName + ' ' + f.lastName).toLowerCase().includes(query) ||
-          (f.currentPosition || '').toLowerCase().includes(query) ||
-          (f.skills || []).some((s) => s.toLowerCase().includes(query)),
-      );
+      const tokens = query.split(/\s+/).filter(t => t.length > 0);
+      list = list.filter(f => {
+        const firstName  = (f.firstName  || '').toLowerCase();
+        const lastName   = (f.lastName   || '').toLowerCase();
+        const fullName   = firstName + ' ' + lastName;
+        const reverseName = lastName + ' ' + firstName;
+        const position   = (f.currentPosition || '').toLowerCase();
+        const skills     = (f.skills || []).map(s => s.toLowerCase());
+
+        // Every token must match at least one field (AND logic across tokens)
+        return tokens.every(token =>
+          firstName.includes(token)   ||
+          lastName.includes(token)    ||
+          fullName.includes(token)    ||
+          reverseName.includes(token) ||
+          position.includes(token)    ||
+          skills.some(s => s.includes(token))
+        );
+      });
     }
 
     // Profile type

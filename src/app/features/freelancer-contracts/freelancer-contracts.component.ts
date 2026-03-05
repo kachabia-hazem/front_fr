@@ -4,6 +4,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 
+import { SafeUrlPipe } from '../../shared/pipes/safe-url.pipe';
 import { ContractService } from '../../core/services/contract.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -14,7 +15,7 @@ import { Freelancer } from '../../core/models';
 @Component({
   selector: 'app-freelancer-contracts',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, SafeUrlPipe],
   templateUrl: './freelancer-contracts.component.html',
   styleUrl: './freelancer-contracts.component.css',
 })
@@ -28,11 +29,14 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
   unreadNotifCount = computed(() => this.notificationService.unreadCount());
 
   // Detail / sign modal
-  selectedContract = signal<Contract | null>(null);
-  showModal        = signal(false);
-  signing          = signal(false);
-  signError        = signal('');
-  signSuccess      = signal(false);
+  selectedContract  = signal<Contract | null>(null);
+  showModal         = signal(false);
+  showSignaturePad  = signal(false);
+  signing           = signal(false);
+  signError         = signal('');
+  signSuccess       = signal(false);
+  pdfBlobUrl        = signal<string | null>(null);
+  pdfLoading        = signal(false);
 
   // Signature pad state
   private ctx: CanvasRenderingContext2D | null = null;
@@ -53,6 +57,22 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
 
   pendingCount = computed(() => this.contracts().filter(c => c.status === 'PENDING_SIGNATURE').length);
   signedCount  = computed(() => this.contracts().filter(c => c.status === 'SIGNED').length);
+
+  readonly PAGE_SIZE = 7;
+  contractPage = signal(0);
+
+  sortedContracts = computed(() =>
+    [...this.contracts()].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  );
+
+  totalContractPages = computed(() => Math.max(1, Math.ceil(this.sortedContracts().length / this.PAGE_SIZE)));
+  pagedContracts = computed(() => {
+    const start = this.contractPage() * this.PAGE_SIZE;
+    return this.sortedContracts().slice(start, start + this.PAGE_SIZE);
+  });
+
+  contractPrevPage(): void { this.contractPage.update(p => Math.max(0, p - 1)); }
+  contractNextPage(): void { this.contractPage.update(p => Math.min(this.totalContractPages() - 1, p + 1)); }
 
   constructor(
     private contractService: ContractService,
@@ -82,17 +102,35 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
   openContract(contract: Contract): void {
     this.selectedContract.set(contract);
     this.showModal.set(true);
+    this.showSignaturePad.set(false);
     this.signError.set('');
     this.signSuccess.set(false);
     this.hasDrawn = false;
-    // Init canvas after modal renders
+    this.pdfBlobUrl.set(null);
+    if (contract.pdfUrl) {
+      this.pdfLoading.set(true);
+      fetch(this.getFileUrl(contract.pdfUrl))
+        .then(res => res.blob())
+        .then(blob => {
+          this.pdfBlobUrl.set(URL.createObjectURL(blob) + '#toolbar=0&navpanes=0&scrollbar=0');
+          this.pdfLoading.set(false);
+        })
+        .catch(() => this.pdfLoading.set(false));
+    }
+  }
+
+  startSigning(): void {
+    this.showSignaturePad.set(true);
     setTimeout(() => this.initCanvas(), 100);
   }
 
   closeModal(): void {
     this.showModal.set(false);
     this.selectedContract.set(null);
+    this.showSignaturePad.set(false);
     this.clearSignature();
+    const blob = this.pdfBlobUrl();
+    if (blob) { URL.revokeObjectURL(blob); this.pdfBlobUrl.set(null); }
   }
 
   // ── Signature pad ─────────────────────────────────────────────────────────
@@ -186,7 +224,7 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
       next: (updated) => {
         this.signing.set(false);
         this.signSuccess.set(true);
-        // Update in list
+        this.showSignaturePad.set(false);
         this.contracts.update(list => list.map(c => c.id === updated.id ? updated : c));
         this.selectedContract.set(updated);
       },
@@ -218,9 +256,26 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
     return status;
   }
 
-  downloadPdf(contract: Contract): void {
+  viewPdf(contract: Contract): void {
     const url = contract.signedPdfUrl || contract.pdfUrl;
     if (url) window.open(this.getFileUrl(url), '_blank');
+  }
+
+  downloadPdf(contract: Contract): void {
+    const url = contract.signedPdfUrl || contract.pdfUrl;
+    if (!url) return;
+    fetch(this.getFileUrl(url))
+      .then(res => res.blob())
+      .then(blob => {
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = `contract-${contract.missionTitle.replace(/\s+/g, '-')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+      });
   }
 
   logout(): void { this.authService.logout(); this.router.navigate(['/auth/login']); }
