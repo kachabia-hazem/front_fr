@@ -130,6 +130,46 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
+  // Freelancer missions list — standalone (no navbar/footer)
+  {
+    path: 'freelancer-missions',
+    loadComponent: () =>
+      import('./features/freelancer-missions/freelancer-missions.component').then(
+        (m) => m.FreelancerMissionsComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Company mission control list — standalone (no navbar/footer)
+  {
+    path: 'company-mission-control',
+    loadComponent: () =>
+      import('./features/company-mission-control/company-mission-control.component').then(
+        (m) => m.CompanyMissionControlComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Company mission view (read-only workspace) — standalone (no navbar/footer)
+  {
+    path: 'company-mission-view/:id',
+    loadComponent: () =>
+      import('./features/company-mission-view/company-mission-view.component').then(
+        (m) => m.CompanyMissionViewComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Active mission workspace — standalone (no navbar/footer)
+  {
+    path: 'active-mission/:id',
+    loadComponent: () =>
+      import('./features/active-mission/active-mission.component').then(
+        (m) => m.ActiveMissionComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
   // Mission applications — standalone (no navbar/footer)
   {
     path: 'mission-applications/:missionId',

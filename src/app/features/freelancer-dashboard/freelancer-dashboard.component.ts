@@ -6,7 +6,9 @@ import { FreelancerService } from '../../core/services/freelancer.service';
 import { ApplicationService } from '../../core/services/application.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ContractService } from '../../core/services/contract.service';
+import { ActiveMissionService } from '../../core/services/active-mission.service';
 import { Contract } from '../../core/models/contract.model';
+import { ActiveMission } from '../../core/models/active-mission.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { Freelancer } from '../../core/models';
@@ -26,8 +28,10 @@ export class FreelancerDashboardComponent implements OnInit {
   stats       = signal<DashboardStats | null>(null);
   applications = signal<Application[]>([]);
   contracts   = signal<Contract[]>([]);
+  activeMissions = signal<ActiveMission[]>([]);
 
   activeContractsCount = computed(() => this.contracts().filter(c => c.status === 'SIGNED').length);
+  activeMissionsCount = computed(() => this.activeMissions().filter(m => m.status === 'ACTIVE').length);
   loading = signal(true);
 
   unreadNotifCount = computed(() => this.notificationService.unreadCount());
@@ -230,6 +234,7 @@ export class FreelancerDashboardComponent implements OnInit {
     private applicationService: ApplicationService,
     private notificationService: NotificationService,
     private contractService: ContractService,
+    private activeMissionService: ActiveMissionService,
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
@@ -254,6 +259,10 @@ export class FreelancerDashboardComponent implements OnInit {
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
+    });
+
+    this.activeMissionService.getFreelancerMissions().subscribe({
+      next: (missions) => this.activeMissions.set(missions),
     });
 
     this.notificationService.getUnreadCount().subscribe();

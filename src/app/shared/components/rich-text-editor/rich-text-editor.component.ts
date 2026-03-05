@@ -73,8 +73,8 @@ export class RichTextEditorComponent implements ControlValueAccessor, AfterViewI
     this.charCount = text.length;
   }
 
-  execCommand(command: string, value = ''): void {
-    document.execCommand(command, false, value || undefined);
+  execCommand(command: string, value: string | null = ''): void {
+    document.execCommand(command, false, value ?? undefined);
     this.editorRef.nativeElement.focus();
     this.onInput();
   }
