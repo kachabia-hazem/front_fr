@@ -157,9 +157,36 @@ export class PostJobComponent implements OnInit {
     if (!control || !control.errors) return '';
 
     if (control.errors['required']) return 'This field is required';
+    if (control.errors['endBeforeStart']) return 'End date must be after the start date';
     if (control.errors['min']) return `Minimum value is ${control.errors['min'].min}`;
     if (control.errors['minlength']) return `Minimum ${control.errors['minlength'].requiredLength} characters`;
     return 'Invalid value';
+  }
+
+  onStartDateChange(): void {
+    this.missionForm.get('endDate')?.updateValueAndValidity();
+    this.validateEndDate();
+  }
+
+  onEndDateChange(): void {
+    this.validateEndDate();
+  }
+
+  private validateEndDate(): void {
+    const startVal = this.missionForm.get('startDate')?.value;
+    const endControl = this.missionForm.get('endDate');
+    const endVal = endControl?.value;
+
+    if (startVal && endVal && new Date(endVal) <= new Date(startVal)) {
+      endControl?.setErrors({ ...(endControl.errors || {}), endBeforeStart: true });
+      endControl?.markAsTouched();
+    } else {
+      if (endControl?.errors?.['endBeforeStart']) {
+        const errors = { ...endControl.errors };
+        delete errors['endBeforeStart'];
+        endControl.setErrors(Object.keys(errors).length ? errors : null);
+      }
+    }
   }
 
   @HostListener('document:click', ['$event'])

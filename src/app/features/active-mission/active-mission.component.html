@@ -64,10 +64,10 @@
           <span class="sidebar-user-role">{{ currentPosition() }}</span>
         </div>
       </div>
-      <button class="sidebar-back-btn" (click)="goBack()">
+      <a class="sidebar-back-btn" (click)="goBack()">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        Retour
-      </button>
+        Back
+      </a>
     </div>
   </aside>
 
@@ -307,6 +307,12 @@
           </h2>
           <div class="section-actions">
             @if (mission()?.gitRepositoryUrl && isFreelancer()) {
+              @if (lastGitRefresh()) {
+                <span class="git-auto-refresh-badge">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Auto • {{ lastGitRefresh() | date:'HH:mm:ss' }}
+                </span>
+              }
               <button class="btn-secondary" (click)="refreshGit()" [disabled]="refreshingGit()">
                 @if (refreshingGit()) {
                   <span class="btn-spinner"></span>

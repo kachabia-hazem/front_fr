@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApplicationService } from '../../core/services/application.service';
@@ -106,6 +106,7 @@ export class FreelancerApplicationsComponent implements OnInit {
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -170,7 +171,7 @@ export class FreelancerApplicationsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/']);
   }
 
   goToDashboard(): void {

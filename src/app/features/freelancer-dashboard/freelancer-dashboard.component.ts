@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule, DecimalPipe, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { DashboardService, DashboardStats } from '../../core/services/dashboard.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
@@ -238,7 +238,10 @@ export class FreelancerDashboardComponent implements OnInit {
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
+    private location: Location,
   ) {}
+
+  goBack(): void { this.router.navigate(['/']); }
 
   ngOnInit(): void {
     this.freelancerService.getMyProfile().subscribe({
@@ -338,10 +341,6 @@ export class FreelancerDashboardComponent implements OnInit {
 
   toggleChart(card: 'turnover' | 'visibility'): void {
     this.expandedCard.update(current => current === card ? null : card);
-  }
-
-  goBack(): void {
-    this.router.navigate(['/']);
   }
 
   getFileUrl(relativePath: string | undefined): string {

@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CompanyService } from '../../core/services/company.service';
@@ -142,7 +142,10 @@ export class CompanyDashboardComponent implements OnInit {
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
+    private location: Location,
   ) {}
+
+  goBack(): void { this.router.navigate(['/']); }
 
   ngOnInit(): void {
     this.companyService.getMyProfile().subscribe({
@@ -248,10 +251,6 @@ export class CompanyDashboardComponent implements OnInit {
     if (this.heroSearch.trim()) queryParams['search'] = this.heroSearch.trim();
     if (this.heroSkill.trim()) queryParams['skill'] = this.heroSkill.trim();
     this.router.navigate(['/company/freelancers'], { queryParams });
-  }
-
-  goBack(): void {
-    this.router.navigate(['/']);
   }
 
   getFileUrl(relativePath: string | undefined): string {

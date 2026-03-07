@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { CompanyService } from '../../core/services/company.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -63,6 +63,7 @@ export class MissionApplicationsComponent implements OnInit {
     public themeService: ThemeService,
     private router: Router,
     private route: ActivatedRoute,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -90,7 +91,7 @@ export class MissionApplicationsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/company-missions']);
+    this.router.navigate(['/']);
   }
 
   accept(event: Event, app: Application): void {

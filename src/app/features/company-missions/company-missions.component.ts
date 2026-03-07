@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CompanyService } from '../../core/services/company.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -96,6 +96,7 @@ export class CompanyMissionsComponent implements OnInit {
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -148,7 +149,7 @@ export class CompanyMissionsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/company-dashboard']);
+    this.router.navigate(['/']);
   }
 
   viewMission(id: string | undefined): void {

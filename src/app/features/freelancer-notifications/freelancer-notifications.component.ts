@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NotificationService } from '../../core/services/notification.service';
@@ -102,6 +102,7 @@ export class FreelancerNotificationsComponent implements OnInit {
     public themeService: ThemeService,
     private router: Router,
     private route: ActivatedRoute,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -187,7 +188,7 @@ export class FreelancerNotificationsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/']);
   }
 
   getFileUrl(relativePath: string | undefined): string {

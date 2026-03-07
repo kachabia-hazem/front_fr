@@ -1,7 +1,7 @@
 import {
   Component, OnInit, signal, computed, ViewChild, ElementRef, AfterViewInit
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 
 import { SafeUrlPipe } from '../../shared/pipes/safe-url.pipe';
@@ -81,6 +81,7 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -95,7 +96,7 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {}
 
   toggleSidebar(): void { this.sidebarCollapsed.update(v => !v); }
-  goBack(): void { this.router.navigate(['/freelancer-dashboard']); }
+  goBack(): void { this.router.navigate(['/']); }
 
   // ── Open / close modal ────────────────────────────────────────────────────
 
@@ -107,9 +108,11 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
     this.signSuccess.set(false);
     this.hasDrawn = false;
     this.pdfBlobUrl.set(null);
-    if (contract.pdfUrl) {
+    // Load signed PDF if freelancer already signed, otherwise load the contract PDF (has company auto-sig)
+    const pdfPath = contract.signedAt ? (contract.signedPdfUrl || contract.pdfUrl) : contract.pdfUrl;
+    if (pdfPath) {
       this.pdfLoading.set(true);
-      fetch(this.getFileUrl(contract.pdfUrl))
+      fetch(this.getFileUrl(pdfPath))
         .then(res => res.blob())
         .then(blob => {
           this.pdfBlobUrl.set(URL.createObjectURL(blob) + '#toolbar=0&navpanes=0&scrollbar=0');

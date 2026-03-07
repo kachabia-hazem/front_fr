@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NotificationService } from '../../core/services/notification.service';
@@ -92,6 +92,7 @@ export class CompanyNotificationsComponent implements OnInit {
     public themeService: ThemeService,
     private router: Router,
     private route: ActivatedRoute,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -159,7 +160,7 @@ export class CompanyNotificationsComponent implements OnInit {
 
   toggleSidebar(): void { this.sidebarCollapsed.update(v => !v); }
 
-  goBack(): void { this.router.navigate(['/company-dashboard']); }
+  goBack(): void { this.router.navigate(['/']); }
 
   getFileUrl(relativePath: string | undefined): string {
     if (!relativePath) return '';

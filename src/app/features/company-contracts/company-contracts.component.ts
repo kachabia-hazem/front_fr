@@ -1,7 +1,7 @@
 import {
   Component, OnInit, AfterViewInit, signal, computed, ViewChild, ElementRef
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 
 import { SafeUrlPipe } from '../../shared/pipes/safe-url.pipe';
@@ -38,6 +38,17 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
   signSuccess      = signal(false);
   pdfBlobUrl       = signal<string | null>(null);
   pdfLoading       = signal(false);
+
+  // Dropdown menu
+  openMenuId = signal<string | null>(null);
+
+  toggleMenu(id: string): void {
+    this.openMenuId.update(cur => cur === id ? null : id);
+  }
+
+  closeMenu(): void {
+    this.openMenuId.set(null);
+  }
 
   // Toast
   toastVisible = signal(false);
@@ -99,6 +110,7 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -113,7 +125,7 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {}
 
   toggleSidebar(): void { this.sidebarCollapsed.update(v => !v); }
-  goBack(): void { this.router.navigate(['/company-dashboard']); }
+  goBack(): void { this.router.navigate(['/']); }
 
   // ── Modal ──────────────────────────────────────────────────────────────────
 

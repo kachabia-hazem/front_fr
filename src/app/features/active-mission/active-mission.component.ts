@@ -1,8 +1,10 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal, computed, DestroyRef, inject } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { interval } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActiveMissionService } from '../../core/services/active-mission.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -50,6 +52,10 @@ export class ActiveMissionComponent implements OnInit {
   newGitUrl = '';
   refreshingGit = signal(false);
   gitError = signal('');
+  lastGitRefresh = signal<Date | null>(null);
+
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly GIT_POLL_INTERVAL_MS = 60_000; // 60 secondes
 
   // Deliverables
   selectedFile = signal<File | null>(null);
@@ -76,6 +82,7 @@ export class ActiveMissionComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
     private activeMissionService: ActiveMissionService,
     private freelancerService: FreelancerService,
     private notificationService: NotificationService,
@@ -97,6 +104,17 @@ export class ActiveMissionComponent implements OnInit {
 
     this.loadMission();
     this.notificationService.getUnreadCount().subscribe();
+    this.startGitAutoRefresh();
+  }
+
+  private startGitAutoRefresh(): void {
+    interval(this.GIT_POLL_INTERVAL_MS)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (this.mission()?.gitRepositoryUrl) {
+          this.refreshGit(true);
+        }
+      });
   }
 
   loadMission(): void {
@@ -230,20 +248,21 @@ export class ActiveMissionComponent implements OnInit {
     });
   }
 
-  refreshGit(): void {
-    this.refreshingGit.set(true);
+  refreshGit(silent = false): void {
+    if (!silent) this.refreshingGit.set(true);
     this.gitError.set('');
     this.activeMissionService.refreshGitActivity(this.missionId).subscribe({
       next: () => {
         this.activeMissionService.getMission(this.missionId).subscribe({
           next: (m) => {
             this.mission.set(m);
+            this.lastGitRefresh.set(new Date());
             this.refreshingGit.set(false);
           },
         });
       },
       error: (err) => {
-        this.gitError.set(err?.error?.message || 'Failed to fetch GitHub data.');
+        if (!silent) this.gitError.set(err?.error?.message || 'Failed to fetch GitHub data.');
         this.refreshingGit.set(false);
       },
     });
@@ -280,7 +299,7 @@ export class ActiveMissionComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/freelancer-missions']);
+    this.router.navigate(['/']);
   }
 
   getFileUrl(relativePath: string | null | undefined): string {

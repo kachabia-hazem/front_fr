@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { ActiveMissionService } from '../../core/services/active-mission.service';
 import { CompanyService } from '../../core/services/company.service';
@@ -46,6 +46,7 @@ export class CompanyMissionViewComponent implements OnInit {
     private companyService: CompanyService,
     private notificationService: NotificationService,
     public themeService: ThemeService,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -79,7 +80,7 @@ export class CompanyMissionViewComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/company-mission-control']);
+    this.router.navigate(['/']);
   }
 
   getFileUrl(relativePath: string | null | undefined): string {
