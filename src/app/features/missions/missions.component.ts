@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
-import { MissionService } from '../../core/services/mission.service';
+import { MissionService, AiSearchResult } from '../../core/services/mission.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { ApplicationService } from '../../core/services/application.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -63,6 +63,12 @@ export class MissionsComponent implements OnInit {
     { label: '3-7 years', min: 3, max: 7, checked: false },
     { label: '8-15 years', min: 8, max: 15, checked: false },
   ];
+
+  // ── AI Search ─────────────────────────────────────────────────────────────
+  aiSearchMode = false;
+  aiSearchLoading = false;
+  aiResults: AiSearchResult[] = [];
+  aiSearchPrompt = '';
 
   // Login prompt modal (for unauthenticated users)
   showLoginPrompt = false;
@@ -335,6 +341,14 @@ export class MissionsComponent implements OnInit {
     const q = this.route.snapshot.queryParamMap.get('q');
     if (q) this.searchQuery = q;
 
+    // Détecter si on vient de la home en mode AI
+    const aiMode = this.route.snapshot.queryParamMap.get('ai');
+    const prompt = this.route.snapshot.queryParamMap.get('prompt');
+    if (aiMode === 'true' && prompt) {
+      this.aiSearchMode = true;
+      this.aiSearchPrompt = prompt;
+    }
+
     this.loadMissions();
     if (this.isFreelancer) {
       this.freelancerService.getMyProfile().subscribe({
@@ -388,7 +402,6 @@ export class MissionsComponent implements OnInit {
     this.loading = true;
     this.missionService.getAllMissions().subscribe({
       next: (missions) => {
-        // Sort by newest first
         this.missions = missions.sort((a, b) => {
           const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
           const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -398,6 +411,11 @@ export class MissionsComponent implements OnInit {
         this.computeTjmBounds();
         this.buildHistogram();
         this.applyFilters();
+
+        // Si on vient de la home avec mode AI, déclencher la recherche
+        if (this.aiSearchMode && this.aiSearchPrompt) {
+          this.triggerAiSearch();
+        }
       },
       error: () => {
         this.loading = false;
@@ -407,6 +425,64 @@ export class MissionsComponent implements OnInit {
 
   onSearch(): void {
     this.applyFilters();
+  }
+
+  // ── AI Search ─────────────────────────────────────────────────────────────
+
+  // Map missionId → score pour afficher le badge sur chaque carte
+  aiScoreMap = new Map<string, number>();
+
+  toggleAiMode(): void {
+    this.aiSearchMode = !this.aiSearchMode;
+    if (!this.aiSearchMode) {
+      // Retour mode normal : réafficher toutes les missions
+      this.aiResults = [];
+      this.aiSearchPrompt = '';
+      this.aiScoreMap.clear();
+      this.applyFilters();
+    }
+  }
+
+  triggerAiSearch(): void {
+    const prompt = this.aiSearchPrompt.trim();
+    if (!prompt) return;
+
+    this.aiSearchLoading = true;
+    this.aiResults = [];
+    this.aiScoreMap.clear();
+
+    this.missionService.aiSearch(prompt, 10).subscribe({
+      next: (results) => {
+        this.aiResults = results;
+        this.aiSearchLoading = false;
+
+        // Construire la map id → score
+        results.forEach(r => this.aiScoreMap.set(r.mission.id!, r.score));
+
+        // Remplacer filteredMissions par les résultats AI dans le bon ordre
+        this.filteredMissions = results.map(r => r.mission);
+      },
+      error: () => {
+        this.aiSearchLoading = false;
+        this.filteredMissions = [];
+      },
+    });
+  }
+
+  onAiSearchKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      this.triggerAiSearch();
+    }
+  }
+
+  getScoreColor(score: number): string {
+    if (score >= 75) return '#22c55e';  // vert
+    if (score >= 50) return '#f59e0b';  // orange
+    return '#94a3b8';                   // gris
+  }
+
+  getAiScore(missionId: string): number | null {
+    return this.aiScoreMap.get(missionId) ?? null;
   }
 
   applyFilters(): void {

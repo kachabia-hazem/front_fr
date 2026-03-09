@@ -38,37 +38,76 @@
     <div class="search-hero-inner">
       <h1 class="search-hero-title">Find Your Next <span class="search-hero-accent">Freelancer</span></h1>
       <p class="search-hero-sub">Browse talented professionals ready to bring your projects to life.</p>
-      <div class="search-hero-bar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input
-          type="text"
-          class="search-hero-input"
-          placeholder="Search by name, skill, or position..."
-          [ngModel]="searchQuery()"
-          (ngModelChange)="onSearchChange($event)"
-          autocomplete="off"
-        />
-        @if (searchQuery()) {
-          <button class="search-clear-btn" (click)="onSearchChange('')" type="button" aria-label="Clear">
+
+      @if (!aiSearchMode()) {
+        <div class="search-hero-bar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            type="text"
+            class="search-hero-input"
+            placeholder="Search by name, skill, or position..."
+            [ngModel]="searchQuery()"
+            (ngModelChange)="onSearchChange($event)"
+            autocomplete="off"
+          />
+          @if (searchQuery()) {
+            <button class="search-clear-btn" (click)="onSearchChange('')" type="button" aria-label="Clear">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          }
+          <div class="search-hero-sep"></div>
+          <button class="btn-ai-search" (click)="toggleAiMode()" type="button">
+            <span class="ai-star">✦</span> AI Search <span class="beta-badge">Beta</span>
+          </button>
+        </div>
+        <div class="search-quick-tags">
+          <span class="quick-tag-label">Popular:</span>
+          @for (tag of quickTags; track tag) {
+            <button class="quick-tag" (click)="onSearchChange(tag)" type="button">{{ tag }}</button>
+          }
+        </div>
+      }
+
+      @if (aiSearchMode()) {
+        <div class="search-hero-bar ai-hero-bar">
+          <span class="ai-hero-badge">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+            AI
+          </span>
+          <input
+            type="text"
+            class="search-hero-input"
+            placeholder='Ex: "développeur Angular senior", "data scientist Python", "designer UI/UX"'
+            [(ngModel)]="aiSearchPrompt"
+            (keydown)="onAiKeyDown($event)"
+            [disabled]="aiSearchLoading()"
+            autocomplete="off"
+          />
+          <button class="search-hero-btn" (click)="triggerAiSearch()" type="button"
+                  [disabled]="aiSearchLoading() || !aiSearchPrompt.trim()">
+            @if (aiSearchLoading()) {
+              <span class="ai-spinner"></span>
+            } @else {
+              Search
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            }
+          </button>
+          <button class="search-clear-btn" (click)="toggleAiMode()" type="button" title="Exit AI Search">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
+        </div>
+        @if (aiSearchMode() && !aiSearchLoading() && aiResults().length > 0) {
+          <div class="ai-results-info">
+            <span class="ai-star">✦</span>
+            <span>{{ aiResults().length }} result(s) for: <em>"{{ aiSearchPrompt }}"</em></span>
+          </div>
         }
-        <div class="search-hero-sep"></div>
-        <button class="search-hero-btn" type="button">
-          Search
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </button>
-      </div>
-      <div class="search-quick-tags">
-        <span class="quick-tag-label">Popular:</span>
-        @for (tag of quickTags; track tag) {
-          <button class="quick-tag" (click)="onSearchChange(tag)" type="button">{{ tag }}</button>
-        }
-      </div>
+      }
     </div>
   </div>
 
-  <!-- Fiverr-style Filter Bar -->
+  <!-- Fiverr-style Filter Bar (masqué en mode AI) -->
+  @if (!aiSearchMode()) {
   <div class="filter-bar">
     <div class="filter-buttons">
       <!-- Profile Type -->
@@ -264,18 +303,23 @@
       </div>
     </div>
   </div>
+  } <!-- end @if (!aiSearchMode()) -->
 
   <!-- Loading State -->
-  @if (loading()) {
+  @if (loading() || aiSearchLoading()) {
     <div class="loading-state">
       <div class="spinner"></div>
-      <p>Loading freelancers...</p>
+      <p>{{ aiSearchLoading() ? "L'IA analyse votre demande..." : 'Loading freelancers...' }}</p>
     </div>
   } @else if (filteredFreelancers().length === 0) {
     <div class="empty-state">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <h3>No freelancers found</h3>
-      <p>Try adjusting your search criteria.</p>
+      @if (aiSearchMode() && aiSearchPrompt) {
+        <p>No results for "<em>{{ aiSearchPrompt }}</em>". Try rephrasing your search.</p>
+      } @else {
+        <p>Try adjusting your search criteria.</p>
+      }
     </div>
   } @else {
     <!-- Freelancer Cards Grid -->
@@ -313,6 +357,14 @@
               <div class="card-gradient"></div>
             }
           </div>
+
+          <!-- AI Score Badge -->
+          @if (aiSearchMode() && getAiScore(f.id)) {
+            <div class="ai-score-badge">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+              {{ getAiScore(f.id) }}% match
+            </div>
+          }
 
           <!-- Card Body -->
           <div class="card-body">

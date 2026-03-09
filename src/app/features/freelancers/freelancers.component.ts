@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
-import { FreelancerService } from '../../core/services/freelancer.service';
+import { FreelancerService, AiFreelancerSearchResult } from '../../core/services/freelancer.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Freelancer } from '../../core/models';
 import { environment } from '../../../environments/environment';
@@ -73,6 +73,13 @@ export class FreelancersComponent implements OnInit {
 
   showLoginPrompt = false;
 
+  // ── AI Search ─────────────────────────────────────────────────────────────
+  aiSearchMode = signal(false);
+  aiSearchLoading = signal(false);
+  aiResults = signal<AiFreelancerSearchResult[]>([]);
+  aiSearchPrompt = '';
+  aiScoreMap = new Map<string, number>();
+
   // Carousel
   cardImageIndex = signal<Record<string, number>>({});
   private imageCache = new Map<string, string[]>();
@@ -115,6 +122,11 @@ export class FreelancersComponent implements OnInit {
   });
 
   filteredFreelancers = computed(() => {
+    // En mode AI : afficher UNIQUEMENT les résultats AI (jamais la liste complète)
+    if (this.aiSearchMode()) {
+      return this.aiResults().map(r => r.freelancer);
+    }
+
     let list = this.freelancers();
     const query = this.searchQuery().toLowerCase().trim();
     const profileTypes = this.selectedProfileTypes();
@@ -242,18 +254,69 @@ export class FreelancersComponent implements OnInit {
     const params = this.route.snapshot.queryParamMap;
     const q = params.get('q') || '';
     const skill = params.get('skill') || '';
+    const aiMode = params.get('ai');
+    const prompt = params.get('prompt') || '';
+
     if (q) this.searchQuery.set(q);
     if (skill) this.searchQuery.set(skill);
     if (q && skill) this.searchQuery.set(`${q} ${skill}`.trim());
+
+    if (aiMode === 'true' && prompt) {
+      this.aiSearchMode.set(true);
+      this.aiSearchPrompt = prompt;
+    }
 
     this.freelancerService.getAllFreelancers().subscribe({
       next: (data) => {
         this.freelancers.set(data);
         this.buildImageCache(data);
         this.loading.set(false);
+        if (this.aiSearchMode() && this.aiSearchPrompt) {
+          this.triggerAiSearch();
+        }
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  // ── AI Search Methods ─────────────────────────────────────────────────────
+  toggleAiMode(): void {
+    const current = this.aiSearchMode();
+    this.aiSearchMode.set(!current);
+    if (current) {
+      this.aiResults.set([]);
+      this.aiSearchPrompt = '';
+      this.aiScoreMap.clear();
+    }
+  }
+
+  triggerAiSearch(): void {
+    const prompt = this.aiSearchPrompt.trim();
+    if (!prompt) return;
+    this.aiSearchLoading.set(true);
+    this.aiScoreMap.clear();
+
+    this.freelancerService.aiSearch(prompt).subscribe({
+      next: (results) => {
+        this.aiSearchLoading.set(false);
+        this.aiResults.set(results);
+        this.buildImageCache(results.map(r => r.freelancer));
+        results.forEach(r => this.aiScoreMap.set(r.freelancer.id!, r.score));
+      },
+      error: () => {
+        this.aiSearchLoading.set(false);
+      },
+    });
+  }
+
+  onAiKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      this.triggerAiSearch();
+    }
+  }
+
+  getAiScore(freelancerId: string): number | null {
+    return this.aiScoreMap.get(freelancerId) ?? null;
   }
 
   // ─── Dropdown logic ───

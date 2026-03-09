@@ -189,6 +189,93 @@
   box-shadow: 0 3px 10px rgba(55, 147, 176, 0.3);
 }
 
+/* ── AI Search ───────────────────────────────────────────── */
+.btn-ai-search {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.2rem;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: white;
+  border: none;
+  border-radius: 40px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.3);
+}
+.btn-ai-search:hover {
+  background: linear-gradient(135deg, #6d28d9, #4c1d95);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+}
+.ai-star { font-size: 0.9rem; }
+.beta-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: rgba(255,255,255,0.25);
+  border-radius: 6px;
+  padding: 1px 5px;
+  letter-spacing: 0.04em;
+}
+.ai-hero-bar {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12) !important;
+}
+.ai-hero-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.3rem 0.6rem;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ai-results-info {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: #7c3aed;
+  font-weight: 500;
+  justify-content: center;
+}
+.ai-results-info em { font-style: italic; color: #6d28d9; }
+.ai-score-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.25rem 0.6rem;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
+}
+.ai-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
 /* ═══════════════════════════════════
    FIVERR-STYLE FILTER BAR
    ═══════════════════════════════════ */
@@ -618,6 +705,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: block;
+  position: relative;
 }
 
 .freelancer-card:hover {

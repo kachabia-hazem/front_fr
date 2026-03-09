@@ -202,6 +202,27 @@
   color: #f59e0b;
 }
 
+/* Barre AI dans la home */
+.search-bar.ai-hero-bar {
+  background: linear-gradient(135deg, #eef2ff, #f5f0ff);
+  border: 2px solid #a5b4fc;
+}
+
+.ai-hero-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
 .search-tab.active .ai-star { color: #f59e0b; }
 
 .beta-badge {

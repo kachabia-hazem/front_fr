@@ -39,22 +39,67 @@
 
 <!-- ═══ Search Bar ═══ -->
 <div class="search-bar-wrapper">
-  <div class="search-bar">
-    <div class="search-input-group">
-      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" [(ngModel)]="searchQuery" placeholder="Search for missions,companies" (keyup.enter)="onSearch()" />
+
+  <!-- Mode normal -->
+  @if (!aiSearchMode) {
+    <div class="search-bar">
+      <div class="search-input-group">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" [(ngModel)]="searchQuery" placeholder="Search for missions, companies..." (keyup.enter)="onSearch()" />
+      </div>
+      <div class="search-input-group location-group">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <input type="text" [(ngModel)]="locationQuery" placeholder="Lieu de la mission..." (keyup.enter)="onSearch()" />
+      </div>
+      <button class="btn-search" (click)="onSearch()">Rechercher</button>
+      <span class="search-divider">ou</span>
+      <button class="btn-ai-search" (click)="toggleAiMode()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+        </svg>
+        AI Search
+      </button>
     </div>
-    <div class="search-input-group location-group">
-      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      <input type="text" [(ngModel)]="locationQuery" placeholder="Lieu du mission" (keyup.enter)="onSearch()" />
+  }
+
+  <!-- Mode AI -->
+  @if (aiSearchMode) {
+    <div class="search-bar ai-mode">
+      <div class="ai-mode-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+        </svg>
+        AI Search
+      </div>
+      <input
+        type="text"
+        class="ai-prompt-input"
+        [(ngModel)]="aiSearchPrompt"
+        (keydown)="onAiSearchKeydown($event)"
+        placeholder="Décrivez la mission que vous cherchez... ex: développeur Spring Boot senior en remote"
+        [disabled]="aiSearchLoading"
+        autofocus
+      />
+      <button class="btn-ai-go" (click)="triggerAiSearch()" [disabled]="aiSearchLoading || !aiSearchPrompt.trim()">
+        @if (aiSearchLoading) {
+          <span class="ai-spinner"></span>
+        } @else {
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        }
+      </button>
+      <button class="btn-ai-close" (click)="toggleAiMode()" title="Retour à la recherche normale">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
     </div>
-    <button class="btn-search" (click)="onSearch()">Recherche par mot cl&eacute;</button>
-    <span class="search-divider">ou</span>
-    <button class="btn-ai-search" disabled>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/><circle cx="12" cy="6" r="1.5" fill="currentColor"/></svg>
-      AI Search
-    </button>
-  </div>
+  }
+
 </div>
 
 <!-- ═══ Main Content ═══ -->
@@ -236,28 +281,55 @@
       </div>
     </div>
 
-    <!-- Loading -->
-    @if (loading) {
+    <!-- ══ Header résultats AI ══ -->
+    @if (aiSearchMode && !aiSearchLoading && aiResults.length > 0) {
+      <div class="ai-results-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#6366f1">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+        </svg>
+        <span>{{ aiResults.length }} résultat(s) pour : <em>"{{ aiSearchPrompt }}"</em></span>
+      </div>
+    }
+
+    <!-- Loading (normal ou AI) -->
+    @if (loading || aiSearchLoading) {
       <div class="loading-state">
         <div class="spinner"></div>
-        <p>Loading missions...</p>
+        <p>{{ aiSearchLoading ? "L'IA analyse votre demande..." : 'Loading missions...' }}</p>
       </div>
     }
 
     <!-- Empty State -->
-    @if (!loading && filteredMissions.length === 0) {
+    @if (!loading && !aiSearchLoading && filteredMissions.length === 0) {
       <div class="empty-state">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c0c0c0" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <h3>No missions found</h3>
-        <p>Try adjusting your search or filters</p>
-        <button class="btn-reset-empty" (click)="resetFilters()">Reset all filters</button>
+        @if (aiSearchMode && aiSearchPrompt) {
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c0c0c0" stroke-width="1.5">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+          </svg>
+          <h3>Aucun résultat AI</h3>
+          <p>Reformulez votre demande ou utilisez des termes plus généraux</p>
+        } @else {
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c0c0c0" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <h3>No missions found</h3>
+          <p>Try adjusting your search or filters</p>
+          <button class="btn-reset-empty" (click)="resetFilters()">Reset all filters</button>
+        }
       </div>
     }
 
-    <!-- Mission Cards -->
+    <!-- ══ Liste unifiée (normale + AI) ══ -->
     <div class="missions-list" [class.grid-view]="viewMode === 'grid'">
       @for (mission of filteredMissions; track mission.id) {
         <div class="mission-card" [class.deadline-urgent]="isDeadlineUrgent(mission)">
+
+          <!-- Badge score AI -->
+          @if (aiSearchMode && getAiScore(mission.id!)) {
+            <div class="ai-score-badge" [style.background-color]="getScoreColor(getAiScore(mission.id!)!)">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+              {{ getAiScore(mission.id!) }}% match
+            </div>
+          }
+
           <!-- Urgent deadline banner -->
           @if (isDeadlineUrgent(mission)) {
             <div class="urgent-banner">
@@ -417,9 +489,14 @@
     </div>
 
     <!-- Results count -->
-    @if (!loading && filteredMissions.length > 0) {
+    @if (!loading && !aiSearchLoading && filteredMissions.length > 0) {
       <div class="results-count">
-        {{ filteredMissions.length }} mission{{ filteredMissions.length > 1 ? 's' : '' }} found
+        @if (aiSearchMode) {
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#6366f1"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+          {{ filteredMissions.length }} résultat(s) AI
+        } @else {
+          {{ filteredMissions.length }} mission{{ filteredMissions.length > 1 ? 's' : '' }} found
+        }
       </div>
     }
   </main>

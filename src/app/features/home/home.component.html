@@ -20,32 +20,57 @@
           </button>
         </div>
 
-        <form class="search-bar" (ngSubmit)="onHeroSearch()">
-          <input
-            type="text"
-            class="search-input"
-            placeholder='Try "AI Engineer", "n8n", "SEO GEO"...'
-            [(ngModel)]="heroSearch"
-            name="heroSearch"
-            autocomplete="off"
-          />
-          <div class="search-sep"></div>
-          <div class="search-location-wrap">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <!-- Keyword form -->
+        @if (activeSearchTab === 'keyword') {
+          <form class="search-bar" (ngSubmit)="onHeroSearch()">
             <input
               type="text"
               class="search-input"
-              placeholder="Mission location (e.g. Paris, Lyon...)"
-              [(ngModel)]="heroLocation"
-              name="heroLocation"
+              placeholder='Try "AI Engineer", "n8n", "SEO GEO"...'
+              [(ngModel)]="heroSearch"
+              name="heroSearch"
               autocomplete="off"
             />
-          </div>
-          <button type="submit" class="search-btn">
-            Search
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          </button>
-        </form>
+            <div class="search-sep"></div>
+            <div class="search-location-wrap">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <input
+                type="text"
+                class="search-input"
+                placeholder="Mission location (e.g. Paris, Lyon...)"
+                [(ngModel)]="heroLocation"
+                name="heroLocation"
+                autocomplete="off"
+              />
+            </div>
+            <button type="submit" class="search-btn">
+              Search
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+          </form>
+        }
+
+        <!-- AI form -->
+        @if (activeSearchTab === 'ai') {
+          <form class="search-bar ai-hero-bar" (ngSubmit)="onHeroAiSearch()">
+            <span class="ai-hero-badge">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+              AI
+            </span>
+            <input
+              type="text"
+              class="search-input"
+              placeholder='Ex: "développeur Spring Boot senior en remote, 400€/j"'
+              [(ngModel)]="heroAiPrompt"
+              name="heroAiPrompt"
+              autocomplete="off"
+            />
+            <button type="submit" class="search-btn" [disabled]="!heroAiPrompt.trim()">
+              Search
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </form>
+        }
       </div>
     } @else if (isCompany) {
       <!-- Company authenticated: advanced search widget for finding freelancers -->
@@ -60,20 +85,45 @@
           </button>
         </div>
 
-        <form class="search-bar" (ngSubmit)="onCompanyHeroSearch()">
-          <input
-            type="text"
-            class="search-input"
-            placeholder='Try "React Developer", "Python", "UI/UX Designer"...'
-            [(ngModel)]="heroSearch"
-            name="heroSearch"
-            autocomplete="off"
-          />
-          <button type="submit" class="search-btn">
-            Search
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          </button>
-        </form>
+        <!-- Keyword form -->
+        @if (activeSearchTab === 'keyword') {
+          <form class="search-bar" (ngSubmit)="onCompanyHeroSearch()">
+            <input
+              type="text"
+              class="search-input"
+              placeholder='Try "React Developer", "Python", "UI/UX Designer"...'
+              [(ngModel)]="heroSearch"
+              name="heroSearch"
+              autocomplete="off"
+            />
+            <button type="submit" class="search-btn">
+              Search
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+          </form>
+        }
+
+        <!-- AI form -->
+        @if (activeSearchTab === 'ai') {
+          <form class="search-bar ai-hero-bar" (ngSubmit)="onCompanyHeroAiSearch()">
+            <span class="ai-hero-badge">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+              AI
+            </span>
+            <input
+              type="text"
+              class="search-input"
+              placeholder='Ex: "développeur Angular senior", "data scientist Python 3 ans exp"'
+              [(ngModel)]="heroCompanyAiPrompt"
+              name="heroCompanyAiPrompt"
+              autocomplete="off"
+            />
+            <button type="submit" class="search-btn" [disabled]="!heroCompanyAiPrompt.trim()">
+              Search
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </form>
+        }
       </div>
     } @else if (!authService.isAuthenticated()) {
       <!-- Guest: classic search bar + Get Started button -->

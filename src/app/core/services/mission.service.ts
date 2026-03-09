@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Mission, CreateMissionRequest } from '../models/mission.model';
+
+export interface AiSearchResult {
+  mission: Mission;
+  score: number;
+}
 
 @Injectable({ providedIn: 'root' })
 export class MissionService {
@@ -32,5 +37,15 @@ export class MissionService {
 
   deleteMission(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  /**
+   * Recherche sémantique par AI — retourne les missions triées par pertinence avec score
+   */
+  aiSearch(prompt: string, topK: number = 10): Observable<AiSearchResult[]> {
+    const params = new HttpParams()
+      .set('prompt', prompt)
+      .set('topK', topK.toString());
+    return this.http.get<AiSearchResult[]>(`${this.apiUrl}/public/ai-search`, { params });
   }
 }

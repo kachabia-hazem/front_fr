@@ -51,6 +51,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   activeSearchTab: 'keyword' | 'ai' = 'keyword';
   heroSearch = '';
   heroLocation = '';
+  heroAiPrompt = '';
+  heroCompanyAiPrompt = '';
   restrictedModal = false;
   restrictedFor: 'company' | 'freelancer' = 'company';
 
@@ -106,6 +108,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onHeroSearch(): void {
+    if (this.activeSearchTab === 'ai') {
+      this.onHeroAiSearch();
+      return;
+    }
     const q = this.heroSearch.trim();
     const location = this.heroLocation.trim();
     const queryParams: Record<string, string> = {};
@@ -114,9 +120,21 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate(['/missions'], Object.keys(queryParams).length ? { queryParams } : {});
   }
 
+  onHeroAiSearch(): void {
+    const prompt = this.heroAiPrompt.trim();
+    if (!prompt) return;
+    this.router.navigate(['/missions'], { queryParams: { ai: 'true', prompt } });
+  }
+
   onCompanyHeroSearch(): void {
     const q = this.heroSearch.trim();
     this.router.navigate(['/freelancers'], q ? { queryParams: { q } } : {});
+  }
+
+  onCompanyHeroAiSearch(): void {
+    const prompt = this.heroCompanyAiPrompt.trim();
+    if (!prompt) return;
+    this.router.navigate(['/freelancers'], { queryParams: { ai: 'true', prompt } });
   }
 
   stats: StatItem[] = [
