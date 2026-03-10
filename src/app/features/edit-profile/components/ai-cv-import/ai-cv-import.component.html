@@ -1,0 +1,182 @@
+<div class="ai-import-overlay" (click)="close()"></div>
+
+<div class="ai-import-modal">
+  <!-- Header -->
+  <div class="ai-modal-header">
+    <div class="ai-modal-title">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path>
+        <path d="M12 8v4l3 3"></path>
+      </svg>
+      <span>Import CV with AI</span>
+    </div>
+    <button type="button" class="ai-modal-close" (click)="close()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="ai-modal-body">
+
+    <!-- Step 1: Upload -->
+    @if (!result()) {
+      <div class="upload-section">
+        <p class="upload-desc">
+          Upload your PDF CV and our AI will automatically extract your work experience, education, certifications, skills, and languages.
+        </p>
+
+        <label class="file-drop-zone" [class.has-file]="selectedFile()">
+          <input type="file" accept=".pdf" (change)="onFileChange($event)" hidden />
+          @if (!selectedFile()) {
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span class="drop-label">Click to select your CV (PDF)</span>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <span class="drop-label selected">{{ selectedFile()!.name }}</span>
+            <span class="drop-hint">Click to change file</span>
+          }
+        </label>
+
+        @if (errorMessage()) {
+          <p class="ai-error">{{ errorMessage() }}</p>
+        }
+
+        <button
+          type="button"
+          class="btn-extract"
+          [disabled]="!selectedFile() || loading()"
+          (click)="extract()">
+          @if (loading()) {
+            <span class="btn-spinner"></span>
+            Extracting with AI...
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            Extract with AI
+          }
+        </button>
+      </div>
+    }
+
+    <!-- Step 2: Preview results -->
+    @if (result()) {
+      <div class="result-section">
+        <div class="result-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>Extraction complete!</span>
+        </div>
+
+        <p class="result-desc">The following data was extracted from your CV. Click "Apply to Wizard" to pre-fill your CV sections.</p>
+
+        <div class="result-grid">
+          <div class="result-item">
+            <span class="result-icon work">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+            </span>
+            <div>
+              <div class="result-label">Work Experience</div>
+              <div class="result-value">{{ workExpCount }} position(s)</div>
+            </div>
+          </div>
+
+          <div class="result-item">
+            <span class="result-icon edu">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+              </svg>
+            </span>
+            <div>
+              <div class="result-label">Education</div>
+              <div class="result-value">{{ educationCount }} degree(s)</div>
+            </div>
+          </div>
+
+          <div class="result-item">
+            <span class="result-icon certif">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="6"></circle>
+                <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"></path>
+              </svg>
+            </span>
+            <div>
+              <div class="result-label">Certifications</div>
+              <div class="result-value">{{ certifCount }} certification(s)</div>
+            </div>
+          </div>
+
+          <div class="result-item">
+            <span class="result-icon skills">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+            </span>
+            <div>
+              <div class="result-label">Skills</div>
+              <div class="result-value">{{ skillsCount }} skill(s)</div>
+            </div>
+          </div>
+
+          <div class="result-item full-width">
+            <span class="result-icon lang">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+            </span>
+            <div>
+              <div class="result-label">Languages</div>
+              <div class="result-value">{{ languagesList }}</div>
+            </div>
+          </div>
+
+          @if (hasBio) {
+            <div class="result-item full-width">
+              <span class="result-icon bio">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </span>
+              <div>
+                <div class="result-label">Bio</div>
+                <div class="result-value">Detected</div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="result-actions">
+          <button type="button" class="btn-retry" (click)="result.set(null)">
+            Try another file
+          </button>
+          <button type="button" class="btn-apply" (click)="apply()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Apply to Wizard
+          </button>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

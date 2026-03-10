@@ -8,6 +8,7 @@ import { Freelancer, Gender, ProfileType, Language } from '../../core/models';
 import { ManualCvWizardComponent } from './components/manual-cv-wizard/manual-cv-wizard.component';
 import { FileUploadComponent } from '../../shared/components/file-upload/file-upload.component';
 import { environment } from '../../../environments/environment';
+import { ExtractedCvData } from '../../core/services/cv.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -24,8 +25,10 @@ export class EditProfileComponent implements OnInit {
   successMessage = signal('');
   errorMessage = signal('');
   showCvWizard = signal(false);
+  prefillData = signal<ExtractedCvData | null>(null);
   uploadingPhoto = signal(false);
   uploadingCv = signal(false);
+  extractingCv = signal(false);
 
   genderOptions = Object.values(Gender);
   profileTypeOptions = Object.values(ProfileType);
@@ -191,17 +194,70 @@ export class EditProfileComponent implements OnInit {
   }
 
   openCvWizard(): void {
+    this.prefillData.set(null);
     this.showCvWizard.set(true);
   }
 
   closeCvWizard(): void {
     this.showCvWizard.set(false);
+    this.prefillData.set(null);
   }
 
   onCvSaved(freelancer: Freelancer): void {
     this.freelancer.set(freelancer);
     this.showCvWizard.set(false);
+    this.prefillData.set(null);
     this.successMessage.set('CV updated successfully!');
+  }
+
+  onIntelligentUpload(file: File): void {
+    this.uploadingCv.set(true);
+    this.errorMessage.set('');
+
+    // Étape 1 : sauvegarder le fichier CV
+    this.cvService.uploadCv(file).subscribe({
+      next: (response) => {
+        this.cvService.updateCvUrl(response.url).subscribe({
+          next: (freelancer) => {
+            this.freelancer.set(freelancer);
+            this.uploadingCv.set(false);
+
+            // Étape 2 : extraction AI
+            this.extractingCv.set(true);
+            this.cvService.extractCvFromFile(file).subscribe({
+              next: (data) => {
+                this.extractingCv.set(false);
+                this.prefillData.set(data);
+
+                // Sauvegarder les langues immédiatement
+                if (data.languages && data.languages.length > 0) {
+                  this.profileForm.get('languages')!.setValue(data.languages);
+                  this.freelancerService.updateMyProfile({ languages: data.languages }).subscribe({
+                    next: (updated) => this.freelancer.set(updated),
+                    error: () => {}
+                  });
+                }
+
+                // Ouvrir le wizard pré-rempli
+                this.showCvWizard.set(true);
+              },
+              error: () => {
+                this.extractingCv.set(false);
+                this.errorMessage.set('CV saved. AI extraction failed — fill manually or try again.');
+              }
+            });
+          },
+          error: () => {
+            this.uploadingCv.set(false);
+            this.errorMessage.set('Error saving CV URL.');
+          }
+        });
+      },
+      error: () => {
+        this.uploadingCv.set(false);
+        this.errorMessage.set('Error uploading CV file.');
+      }
+    });
   }
 
   onProfilePictureSelected(file: File): void {

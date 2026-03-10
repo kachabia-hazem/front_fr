@@ -4,6 +4,10 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Freelancer, CvData } from '../models';
 
+export interface ExtractedCvData extends Partial<CvData> {
+  languages?: string[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class CvService {
   private readonly apiUrl = `${environment.apiUrl}/freelancer`;
@@ -13,6 +17,12 @@ export class CvService {
 
   updateCvData(cvData: CvData): Observable<Freelancer> {
     return this.http.put<Freelancer>(`${this.apiUrl}/me/cv`, cvData);
+  }
+
+  extractCvFromFile(file: File): Observable<ExtractedCvData> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<ExtractedCvData>(`${this.apiUrl}/me/extract-cv`, formData);
   }
 
   uploadCertificate(file: File): Observable<{ url: string }> {

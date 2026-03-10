@@ -1,3 +1,112 @@
+/* ── AI Extraction Overlay ── */
+.ai-extraction-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-extraction-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 48px 40px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+}
+
+.ai-extraction-spinner {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  animation: ai-spin linear infinite;
+}
+
+.ai-ring-1 {
+  inset: 0;
+  border-top-color: #4f46e5;
+  animation-duration: 1s;
+}
+
+.ai-ring-2 {
+  inset: 8px;
+  border-top-color: #7c3aed;
+  animation-duration: 1.4s;
+  animation-direction: reverse;
+}
+
+.ai-ring-3 {
+  inset: 16px;
+  border-top-color: #a78bfa;
+  animation-duration: 1.8s;
+}
+
+.ai-bolt {
+  position: relative;
+  z-index: 1;
+  animation: ai-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes ai-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ai-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.85); }
+}
+
+.ai-extraction-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 10px;
+}
+
+.ai-extraction-subtitle {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.ai-extraction-warning {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #f59e0b;
+  background: #fefce8;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin: 0;
+}
+
+/* ── Upload description text ── */
+.cv-upload-desc {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 6px 0 0;
+  line-height: 1.4;
+  text-align: center;
+}
+
 /* ── Hero Banner ── */
 
 .hero-banner {
@@ -272,6 +381,13 @@
 
 .cv-link:hover {
   text-decoration: underline;
+}
+
+.ai-extracting {
+  background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+  border-radius: 0.5rem;
+  color: #4f46e5;
+  font-weight: 600;
 }
 
 /* Manual CV Button */

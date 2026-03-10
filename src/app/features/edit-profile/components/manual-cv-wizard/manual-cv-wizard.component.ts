@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { StepperComponent, Step } from '../../../../shared/components/stepper/stepper.component';
@@ -8,6 +8,7 @@ import { StepSkillsCertificationsComponent } from './steps/step-skills-certifica
 import { StepWorkExperienceComponent } from './steps/step-work-experience/step-work-experience.component';
 import { CvService } from '../../../../core/services/cv.service';
 import { Freelancer, CvData } from '../../../../core/models';
+import { ExtractedCvData } from '../../../../core/services/cv.service';
 
 @Component({
   selector: 'app-manual-cv-wizard',
@@ -26,6 +27,7 @@ import { Freelancer, CvData } from '../../../../core/models';
 })
 export class ManualCvWizardComponent implements OnInit {
   @Input() freelancer: Freelancer | null = null;
+  @Input() prefillData: ExtractedCvData | null = null;
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<Freelancer>();
 
@@ -44,12 +46,18 @@ export class ManualCvWizardComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private cvService: CvService
+    private cvService: CvService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.initForm();
-    this.loadExistingData();
+    // setTimeout defer le chargement au prochain tick pour éviter NG0100
+    // sur les RichTextEditor (compteur de caractères change après check)
+    setTimeout(() => {
+      this.loadExistingData();
+      this.cdr.detectChanges();
+    }, 0);
   }
 
   private initForm(): void {
@@ -64,44 +72,39 @@ export class ManualCvWizardComponent implements OnInit {
   }
 
   private loadExistingData(): void {
-    if (!this.freelancer) return;
-
-    // Load bio
-    if (this.freelancer.bio) {
-      this.cvForm.patchValue({ bio: this.freelancer.bio });
+    // prefillData (from AI extraction) takes priority over freelancer data
+    const bio = this.prefillData?.bio ?? this.freelancer?.bio;
+    if (bio) {
+      this.cvForm.patchValue({ bio });
     }
 
-    // Load skills
-    if (this.freelancer.skills) {
-      this.cvForm.patchValue({ skills: this.freelancer.skills });
+    const skills = this.prefillData?.skills ?? this.freelancer?.skills;
+    if (skills) {
+      this.cvForm.patchValue({ skills });
     }
 
-    // Load education
-    if (this.freelancer.education) {
-      this.freelancer.education.forEach(edu => {
-        this.educationArray.push(this.createEducationGroup(edu));
-      });
+    const education = this.prefillData?.education ?? this.freelancer?.education;
+    if (education) {
+      this.educationArray.clear();
+      education.forEach(edu => this.educationArray.push(this.createEducationGroup(edu)));
     }
 
-    // Load projects
-    if (this.freelancer.projects) {
-      this.freelancer.projects.forEach(proj => {
-        this.projectsArray.push(this.createProjectGroup(proj));
-      });
+    const projects = this.prefillData?.projects ?? this.freelancer?.projects;
+    if (projects) {
+      this.projectsArray.clear();
+      projects.forEach(proj => this.projectsArray.push(this.createProjectGroup(proj)));
     }
 
-    // Load certifications
-    if (this.freelancer.certifications) {
-      this.freelancer.certifications.forEach(cert => {
-        this.certificationsArray.push(this.createCertificationGroup(cert));
-      });
+    const certifications = this.prefillData?.certifications ?? this.freelancer?.certifications;
+    if (certifications) {
+      this.certificationsArray.clear();
+      certifications.forEach(cert => this.certificationsArray.push(this.createCertificationGroup(cert)));
     }
 
-    // Load work experience
-    if (this.freelancer.workExperience) {
-      this.freelancer.workExperience.forEach(exp => {
-        this.workExperienceArray.push(this.createWorkExperienceGroup(exp));
-      });
+    const workExperience = this.prefillData?.workExperience ?? this.freelancer?.workExperience;
+    if (workExperience) {
+      this.workExperienceArray.clear();
+      workExperience.forEach(exp => this.workExperienceArray.push(this.createWorkExperienceGroup(exp)));
     }
   }
 

@@ -98,28 +98,37 @@
             </div>
           </div>
 
-          <!-- CV Upload -->
+          <!-- Upload Intelligent -->
           <div class="sidebar-section">
-            <label class="sidebar-label">CV / Resume</label>
+            <label class="sidebar-label">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px;vertical-align:middle;">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+              Upload Intelligent
+            </label>
+
             @if (uploadingCv()) {
               <div class="upload-loading">
                 <span class="btn-spinner"></span>
-                Uploading...
+                Saving CV...
               </div>
             } @else {
               <app-file-upload
                 label="Upload CV"
-                accept=".pdf,.doc,.docx"
+                accept=".pdf"
                 [maxSizeMB]="10"
-                (fileSelected)="onCvFileSelected($event)">
+                (fileSelected)="onIntelligentUpload($event)">
               </app-file-upload>
             }
+
+            <p class="cv-upload-desc">Uploadez votre CV PDF et l'AI remplit automatiquement votre profil</p>
+
             @if (freelancer()?.cvUrl) {
               <a [href]="getFileUrl(freelancer()!.cvUrl)" target="_blank" class="cv-link">View current CV</a>
             }
           </div>
 
-          <!-- Manual CV -->
+          <!-- CV Manuel -->
           <div class="sidebar-section">
             <label class="sidebar-label">CV Manuel</label>
             <button type="button" class="btn-cv-manual" (click)="openCvWizard()">
@@ -127,9 +136,9 @@
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
               </svg>
-              CV manuellement
+              Remplir manuellement
             </button>
-            <p class="cv-hint">Creez votre CV etape par etape</p>
+            <p class="cv-hint">Créez ou modifiez votre CV étape par étape</p>
           </div>
         </aside>
 
@@ -249,9 +258,35 @@
   </div>
 }
 
+@if (extractingCv()) {
+  <div class="ai-extraction-overlay">
+    <div class="ai-extraction-card">
+      <div class="ai-extraction-spinner">
+        <div class="ai-ring ai-ring-1"></div>
+        <div class="ai-ring ai-ring-2"></div>
+        <div class="ai-ring ai-ring-3"></div>
+        <svg class="ai-bolt" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#4f46e5">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+      </div>
+      <h3 class="ai-extraction-title">AI is analyzing your CV...</h3>
+      <p class="ai-extraction-subtitle">Extracting your experience, skills, education and languages</p>
+      <p class="ai-extraction-warning">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        Please don't navigate away or close this page
+      </p>
+    </div>
+  </div>
+}
+
 @if (showCvWizard()) {
   <app-manual-cv-wizard
     [freelancer]="freelancer()"
+    [prefillData]="prefillData()"
     (closed)="closeCvWizard()"
     (saved)="onCvSaved($event)">
   </app-manual-cv-wizard>
