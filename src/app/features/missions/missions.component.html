@@ -458,9 +458,9 @@
             <div class="card-actions">
               @if (isFreelancer) {
                 @if (!hasApplied(mission)) {
-                  <button class="btn-matching">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/></svg>
-                    Matching
+                  <button class="btn-matching" (click)="checkMatching($event, mission)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+                    Matching IA
                   </button>
                 }
                 @if (getApplicationStatus(mission) === 'PENDING') {
@@ -800,11 +800,150 @@
             </button>
           }
           @if (!hasApplied(selectedMission!)) {
-            <button class="btn-matching-modal">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M8 14s-4 2-4 6h16c0-4-4-6-4-6"/></svg>
-              Matching
+            <button class="btn-matching-modal" (click)="checkMatching($event, selectedMission!)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+              Matching IA
             </button>
           }
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<!-- ═══ Matching Modal ═══ -->
+@if (showMatchingModal) {
+  <div class="matching-overlay" (click)="closeMatchingModal()">
+    <div class="matching-modal" (click)="$event.stopPropagation()">
+
+      <!-- Header -->
+      <div class="matching-modal-header">
+        <div class="matching-modal-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          AI Compatibility Analysis
+          @if (matchingMission) {
+            <span class="matching-mission-name">— {{ matchingMission.jobTitle }}</span>
+          }
+        </div>
+        <button class="matching-close-btn" (click)="closeMatchingModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Loading -->
+      @if (matchingLoading) {
+        <div class="matching-loading">
+          <div class="matching-spinner"></div>
+          <p>Analyzing your profile...</p>
+          <span>Comparing your skills with the mission (may take ~30s)</span>
+        </div>
+      }
+
+      <!-- Error -->
+      @if (matchingError) {
+        <div class="matching-error-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <p>{{ matchingError }}</p>
+          @if (matchingMission) {
+            <button class="btn-retry" (click)="checkMatching($event, matchingMission!)">Retry</button>
+          }
+        </div>
+      }
+
+      <!-- Résultat -->
+      @if (matchingResult) {
+        <div class="matching-content">
+
+          <!-- Score + Recommandation -->
+          <div class="matching-hero">
+            <div class="score-circle-wrapper">
+              <svg class="score-ring" viewBox="0 0 120 120" width="120" height="120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#e5e7eb" stroke-width="10"/>
+                <circle cx="60" cy="60" r="50" fill="none"
+                  [attr.stroke]="getMatchScoreColor(matchingResult.score)"
+                  stroke-width="10" stroke-linecap="round"
+                  stroke-dasharray="314"
+                  [attr.stroke-dashoffset]="314 - (314 * matchingResult.score / 100)"
+                  transform="rotate(-90 60 60)"/>
+              </svg>
+              <div class="score-center">
+                <span class="score-value">{{ matchingResult.score }}%</span>
+                <span class="score-label">Match</span>
+              </div>
+            </div>
+            <div class="matching-verdict">
+              <div class="recommendation-badge" [class]="getMatchRecommendationClass(matchingResult.recommendation)">
+                @if (matchingResult.recommendation === 'APPLY') {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                } @else if (matchingResult.recommendation === 'APPLY WITH RESERVATIONS') {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                } @else {
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                }
+                {{ matchingResult.recommendation }}
+              </div>
+              <p class="matching-explanation">{{ matchingResult.explanation }}</p>
+            </div>
+          </div>
+
+          <!-- Barres -->
+          <div class="score-breakdown">
+            <div class="breakdown-item">
+              <div class="breakdown-header">
+                <span class="breakdown-label">Technical Skills</span>
+                <span class="breakdown-value">{{ matchingResult.skillScore }}%</span>
+              </div>
+              <div class="breakdown-bar"><div class="breakdown-fill skill-fill" [style.width.%]="matchingResult.skillScore"></div></div>
+            </div>
+            <div class="breakdown-item">
+              <div class="breakdown-header">
+                <span class="breakdown-label">Semantic Similarity</span>
+                <span class="breakdown-value">{{ matchingResult.semanticScore }}%</span>
+              </div>
+              <div class="breakdown-bar"><div class="breakdown-fill semantic-fill" [style.width.%]="matchingResult.semanticScore"></div></div>
+            </div>
+          </div>
+
+          <!-- Skills -->
+          <div class="skills-analysis">
+            @if (matchingResult.matchedSkills.length > 0) {
+              <div class="skills-group">
+                <div class="skills-group-title skills-matched-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Matched ({{ matchingResult.matchedSkills.length }})
+                </div>
+                <div class="skills-tags">
+                  @for (skill of matchingResult.matchedSkills; track skill) {
+                    <span class="skill-tag-matched">{{ skill }}</span>
+                  }
+                </div>
+              </div>
+            }
+            @if (matchingResult.missingSkills.length > 0) {
+              <div class="skills-group">
+                <div class="skills-group-title skills-missing-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  Missing ({{ matchingResult.missingSkills.length }})
+                </div>
+                <div class="skills-tags">
+                  @for (skill of matchingResult.missingSkills; track skill) {
+                    <span class="skill-tag-missing">{{ skill }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Action postuler -->
+          @if (matchingResult.recommendation !== 'NE PAS POSTULER' && matchingMission && !hasApplied(matchingMission)) {
+            <div class="matching-actions">
+              <button class="btn-postuler-from-match" (click)="applyToMission($event, matchingMission!); closeMatchingModal()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                Apply Now
+              </button>
+            </div>
+          }
+
         </div>
       }
     </div>

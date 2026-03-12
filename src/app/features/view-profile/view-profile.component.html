@@ -136,7 +136,10 @@
     <!-- Work Experience Section -->
     <section class="collapsible-section">
       <button class="section-header" (click)="toggleSection('workExperience')">
-        <h3>Work Experience</h3>
+        <div class="section-header-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          <h3>Work Experience</h3>
+        </div>
         <svg [class.rotated]="showWorkExperience()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       @if (showWorkExperience()) {
@@ -149,7 +152,7 @@
                   <div class="timeline-content">
                     <h4 class="exp-title">{{ exp.jobTitle }}</h4>
                     <p class="exp-company">{{ exp.company }}</p>
-                    <p class="exp-dates">{{ formatDate(exp.startDate) }} - {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate) }}</p>
+                    <p class="exp-dates">{{ formatDate(exp.startDate) }} — {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate) }}</p>
                     @if (exp.description) {
                       <p class="exp-description">{{ exp.description }}</p>
                     }
@@ -164,25 +167,79 @@
       }
     </section>
 
+    <!-- Projects Section (visible uniquement si des projets existent) -->
+    @if (freelancer()!.projects && freelancer()!.projects!.length > 0) {
+      <section class="collapsible-section">
+        <button class="section-header" (click)="toggleSection('projects')">
+          <div class="section-header-left">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <h3>Projects</h3>
+          </div>
+          <svg [class.rotated]="showProjects()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        @if (showProjects()) {
+          <div class="section-content">
+            <div class="projects-grid">
+              @for (project of freelancer()!.projects; track project.id) {
+                <div class="project-card">
+                  <div class="project-card-header">
+                    <h4 class="project-name">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                      {{ project.name }}
+                    </h4>
+                    @if (project.url) {
+                      <a [href]="project.url" target="_blank" class="project-link" title="View project">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                      </a>
+                    }
+                  </div>
+                  @if (project.description) {
+                    <p class="project-description">{{ project.description }}</p>
+                  }
+                  @if (project.technologies && project.technologies.length > 0) {
+                    <div class="project-tech-tags">
+                      @for (tech of project.technologies; track tech) {
+                        <span class="project-tech-tag">{{ tech }}</span>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </section>
+    }
+
     <!-- Certifications Section -->
     <section class="collapsible-section">
       <button class="section-header" (click)="toggleSection('certifications')">
-        <h3>Certifications</h3>
+        <div class="section-header-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+          <h3>Certifications</h3>
+        </div>
         <svg [class.rotated]="showCertifications()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       @if (showCertifications()) {
         <div class="section-content">
           @if (freelancer()!.certifications && freelancer()!.certifications!.length > 0) {
-            <div class="certifications-grid">
+            <div class="items-grid">
               @for (cert of freelancer()!.certifications; track cert.id) {
-                <div class="cert-card">
-                  <h4>{{ cert.name }}</h4>
-                  <p class="cert-issuer">{{ cert.issuer }}</p>
+                <div class="item-card">
+                  <div class="item-card-header">
+                    <h4 class="item-title">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+                      {{ cert.name }}
+                    </h4>
+                    @if (cert.certificateUrl) {
+                      <a [href]="getFileUrl(cert.certificateUrl)" target="_blank" class="item-link" title="View certificate">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                      </a>
+                    }
+                  </div>
+                  <p class="item-subtitle">{{ cert.issuer }}</p>
                   @if (cert.issueDate) {
-                    <p class="cert-date">Issued: {{ formatDate(cert.issueDate) }}</p>
-                  }
-                  @if (cert.certificateUrl) {
-                    <a [href]="getFileUrl(cert.certificateUrl)" target="_blank" class="cert-link">View Certificate</a>
+                    <p class="item-meta">Issued: {{ formatDate(cert.issueDate) }}</p>
                   }
                 </div>
               }
@@ -197,20 +254,26 @@
     <!-- Education Section -->
     <section class="collapsible-section">
       <button class="section-header" (click)="toggleSection('education')">
-        <h3>Education</h3>
+        <div class="section-header-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          <h3>Education</h3>
+        </div>
         <svg [class.rotated]="showEducation()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       @if (showEducation()) {
         <div class="section-content">
           @if (freelancer()!.education && freelancer()!.education!.length > 0) {
-            <div class="education-list">
+            <div class="items-grid">
               @for (edu of freelancer()!.education; track edu.id) {
-                <div class="edu-item">
-                  <h4>{{ edu.diploma }}</h4>
-                  <p class="edu-school">{{ edu.institution }}</p>
-                  <p class="edu-dates">{{ edu.year }}</p>
+                <div class="item-card">
+                  <h4 class="item-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                    {{ edu.diploma }}
+                  </h4>
+                  <p class="item-subtitle">{{ edu.institution }}</p>
+                  <p class="item-meta">{{ edu.year }}</p>
                   @if (edu.description) {
-                    <p class="edu-field">{{ edu.description }}</p>
+                    <p class="item-description">{{ edu.description }}</p>
                   }
                 </div>
               }
@@ -225,15 +288,18 @@
     <!-- Skills Section -->
     <section class="collapsible-section">
       <button class="section-header" (click)="toggleSection('skills')">
-        <h3>Skills</h3>
+        <div class="section-header-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <h3>Skills</h3>
+        </div>
         <svg [class.rotated]="showSkills()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       @if (showSkills()) {
         <div class="section-content">
           @if (freelancer()!.skills && freelancer()!.skills!.length > 0) {
-            <div class="skills-container">
+            <div class="item-tags-container">
               @for (skill of freelancer()!.skills; track skill) {
-                <span class="skill-tag">{{ skill }}</span>
+                <span class="item-tag">{{ skill }}</span>
               }
             </div>
           } @else {
@@ -243,15 +309,28 @@
       }
     </section>
 
-    <!-- Languages -->
+    <!-- Languages Section -->
     @if (freelancer()!.languages && freelancer()!.languages.length > 0) {
-      <section class="languages-section">
-        <h3>Languages</h3>
-        <div class="languages-list">
-          @for (lang of freelancer()!.languages; track lang) {
-            <span class="lang-tag">{{ formatEnumLabel(lang) }}</span>
-          }
-        </div>
+      <section class="collapsible-section">
+        <button class="section-header" (click)="toggleSection('languages')">
+          <div class="section-header-left">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <h3>Languages</h3>
+          </div>
+          <svg [class.rotated]="showLanguages()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        @if (showLanguages()) {
+          <div class="section-content">
+            <div class="item-tags-container">
+              @for (lang of freelancer()!.languages; track lang) {
+                <span class="item-tag item-tag-lang">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  {{ formatEnumLabel(lang) }}
+                </span>
+              }
+            </div>
+          </div>
+        }
       </section>
     }
   </div>

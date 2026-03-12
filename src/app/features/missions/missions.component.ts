@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
-import { MissionService, AiSearchResult } from '../../core/services/mission.service';
+import { MissionService, AiSearchResult, MatchMissionResult } from '../../core/services/mission.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { ApplicationService } from '../../core/services/application.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -79,6 +79,13 @@ export class MissionsComponent implements OnInit {
 
   // Card menu
   openMenuId: string | null = null;
+
+  // Matching
+  matchingLoading = false;
+  matchingResult: MatchMissionResult | null = null;
+  showMatchingModal = false;
+  matchingError = '';
+  matchingMission: Mission | null = null;
 
   // Track which missions the freelancer has already applied to, with their status
   applicationStatusMap = new Map<string, 'PENDING' | 'ACCEPTED' | 'REJECTED'>();
@@ -752,6 +759,52 @@ export class MissionsComponent implements OnInit {
     if (!relativePath) return '';
     const baseUrl = environment.apiUrl.replace(/\/api$/, '');
     return baseUrl + relativePath;
+  }
+
+  checkMatching(event: Event, mission: Mission): void {
+    event.stopPropagation();
+    if (!mission.id) return;
+    this.matchingMission = mission;
+    this.matchingLoading = true;
+    this.matchingResult = null;
+    this.matchingError = '';
+    this.showMatchingModal = true;
+    this.missionService.matchMission(mission.id).subscribe({
+      next: (result) => {
+        this.matchingResult = result;
+        this.matchingLoading = false;
+      },
+      error: (err) => {
+        this.matchingLoading = false;
+        const status = err?.status;
+        if (status === 403) {
+          this.matchingError = 'Access denied (403). Make sure you are logged in as a freelancer and the backend has been restarted.';
+        } else if (status === 500) {
+          this.matchingError = 'Server error (500). The AI service may still be starting up, please try again.';
+        } else {
+          this.matchingError = `Connection error (${status || 'network'}). Please make sure the backend is running.`;
+        }
+      },
+    });
+  }
+
+  closeMatchingModal(): void {
+    this.showMatchingModal = false;
+    this.matchingResult = null;
+    this.matchingError = '';
+    this.matchingMission = null;
+  }
+
+  getMatchRecommendationClass(recommendation: string): string {
+    if (recommendation === 'APPLY') return 'rec-positive';
+    if (recommendation === 'APPLY WITH RESERVATIONS') return 'rec-neutral';
+    return 'rec-negative';
+  }
+
+  getMatchScoreColor(score: number): string {
+    if (score >= 65) return '#22c55e';
+    if (score >= 40) return '#f59e0b';
+    return '#ef4444';
   }
 
   applyToMission(event: Event, mission: Mission): void {

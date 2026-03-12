@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { MissionService } from '../../core/services/mission.service';
+import { MissionService, MatchMissionResult } from '../../core/services/mission.service';
 import { ApplicationService } from '../../core/services/application.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -23,6 +23,10 @@ export class MissionDetailComponent implements OnInit {
   error = signal('');
   hasApplied = signal(false);
   withdrawing = signal(false);
+  matchingLoading = signal(false);
+  matchingResult = signal<MatchMissionResult | null>(null);
+  showMatchingModal = signal(false);
+  matchingError = signal('');
   private profileCompletion: number | null = null;
 
   constructor(
@@ -154,5 +158,56 @@ export class MissionDetailComponent implements OnInit {
         this.toastService.show('Failed to withdraw application.', 'error');
       },
     });
+  }
+
+  checkMatching(): void {
+    console.log('[Matching] CLICKED');
+    alert('[Debug] checkMatching appelé !');
+    const id = this.mission()?.id ?? this.route.snapshot.paramMap.get('id');
+    console.log('[Matching] checkMatching called, id=', id);
+    if (!id) {
+      this.toastService.show('ID de mission introuvable.', 'error');
+      return;
+    }
+    this.matchingLoading.set(true);
+    this.showMatchingModal.set(true);
+    console.log('[Matching] modal opened, calling API...');
+    this.matchingResult.set(null);
+    this.matchingError.set('');
+    this.missionService.matchMission(id).subscribe({
+      next: (result) => {
+        this.matchingResult.set(result);
+        this.matchingLoading.set(false);
+      },
+      error: (err) => {
+        this.matchingLoading.set(false);
+        const status = err?.status;
+        if (status === 403) {
+          this.matchingError.set('Access denied (403). Make sure you are logged in as a freelancer and the backend has been restarted.');
+        } else if (status === 500) {
+          this.matchingError.set('Server error (500). The AI service may still be starting up, please try again.');
+        } else {
+          this.matchingError.set(`Connection error (${status || 'network'}). Please make sure the backend is running.`);
+        }
+      },
+    });
+  }
+
+  closeMatchingModal(): void {
+    this.showMatchingModal.set(false);
+    this.matchingResult.set(null);
+    this.matchingError.set('');
+  }
+
+  getRecommendationClass(recommendation: string): string {
+    if (recommendation === 'APPLY') return 'rec-positive';
+    if (recommendation === 'APPLY WITH RESERVATIONS') return 'rec-neutral';
+    return 'rec-negative';
+  }
+
+  getScoreColor(score: number): string {
+    if (score >= 65) return '#22c55e';
+    if (score >= 40) return '#f59e0b';
+    return '#ef4444';
   }
 }

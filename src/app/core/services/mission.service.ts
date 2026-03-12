@@ -9,6 +9,16 @@ export interface AiSearchResult {
   score: number;
 }
 
+export interface MatchMissionResult {
+  score: number;
+  skillScore: number;
+  semanticScore: number;
+  matchedSkills: string[];
+  missingSkills: string[];
+  recommendation: string;
+  explanation: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class MissionService {
   private readonly apiUrl = `${environment.apiUrl}/missions`;
@@ -47,5 +57,12 @@ export class MissionService {
       .set('prompt', prompt)
       .set('topK', topK.toString());
     return this.http.get<AiSearchResult[]>(`${this.apiUrl}/public/ai-search`, { params });
+  }
+
+  /**
+   * Calcule la compatibilité entre le freelancer connecté et une mission
+   */
+  matchMission(missionId: string): Observable<MatchMissionResult> {
+    return this.http.get<MatchMissionResult>(`${this.apiUrl}/${missionId}/match`);
   }
 }

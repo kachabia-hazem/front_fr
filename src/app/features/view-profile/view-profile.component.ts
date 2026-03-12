@@ -21,9 +21,11 @@ export class ViewProfileComponent implements OnInit {
 
   // Sections dépliables
   showWorkExperience = signal(true);
-  showCertifications = signal(false);
-  showEducation = signal(false);
-  showSkills = signal(false);
+  showProjects = signal(true);
+  showCertifications = signal(true);
+  showEducation = signal(true);
+  showSkills = signal(true);
+  showLanguages = signal(true);
 
   constructor(
     private route: ActivatedRoute,
@@ -112,6 +114,9 @@ export class ViewProfileComponent implements OnInit {
       case 'workExperience':
         this.showWorkExperience.set(!this.showWorkExperience());
         break;
+      case 'projects':
+        this.showProjects.set(!this.showProjects());
+        break;
       case 'certifications':
         this.showCertifications.set(!this.showCertifications());
         break;
@@ -120,6 +125,9 @@ export class ViewProfileComponent implements OnInit {
         break;
       case 'skills':
         this.showSkills.set(!this.showSkills());
+        break;
+      case 'languages':
+        this.showLanguages.set(!this.showLanguages());
         break;
     }
   }

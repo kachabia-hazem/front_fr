@@ -16,7 +16,27 @@ export class CvService {
   constructor(private http: HttpClient) {}
 
   updateCvData(cvData: CvData): Observable<Freelancer> {
-    return this.http.put<Freelancer>(`${this.apiUrl}/me/cv`, cvData);
+    return this.http.put<Freelancer>(`${this.apiUrl}/me/cv`, this.sanitizeCvData(cvData));
+  }
+
+  /** Convertit les chaînes de dates vides en null pour éviter le 400 côté Spring Boot */
+  private sanitizeCvData(cvData: CvData): CvData {
+    const sanitizeDate = (d: string | null | undefined): string | null =>
+      d && d.trim() !== '' ? d.trim() : null;
+
+    return {
+      ...cvData,
+      workExperience: (cvData.workExperience || []).map(exp => ({
+        ...exp,
+        startDate: sanitizeDate(exp.startDate) as string,
+        endDate:   sanitizeDate(exp.endDate)   ?? undefined,
+      })),
+      certifications: (cvData.certifications || []).map(cert => ({
+        ...cert,
+        issueDate:  sanitizeDate(cert.issueDate)  ?? undefined,
+        expiryDate: sanitizeDate(cert.expiryDate) ?? undefined,
+      })),
+    };
   }
 
   extractCvFromFile(file: File): Observable<ExtractedCvData> {
