@@ -15,6 +15,35 @@ export interface CreateApplicationRequest {
   previousWorkExperience?: string;
 }
 
+export interface RankedApplication {
+  applicationId: string;
+  freelancerId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber?: string;
+  city?: string;
+  country?: string;
+  cvUrl?: string;
+  salaryExpectations?: string;
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'WITHDRAWN';
+  submittedAt: string;
+  freelancerCurrentPosition?: string;
+  freelancerProfilePicture?: string;
+  freelancerSkills?: string[];
+  freelancerYearsOfExperience?: number;
+  freelancerRating?: number;
+  freelancerBio?: string;
+  rank: number;
+  totalScore: number;
+  skillScore: number;
+  experienceScore: number;
+  semanticScore: number;
+  completenessScore: number;
+  matchedSkills: string[];
+  missingSkills: string[];
+}
+
 export interface Application {
   id: string;
   freelancerId: string;

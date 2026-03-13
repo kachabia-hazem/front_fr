@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Application, CreateApplicationRequest } from '../models/application.model';
+import { Application, CreateApplicationRequest, RankedApplication } from '../models/application.model';
 
 @Injectable({ providedIn: 'root' })
 export class ApplicationService {
@@ -38,5 +38,9 @@ export class ApplicationService {
     return this.http.patch<Application>(`${this.apiUrl}/${applicationId}/status`, null, {
       params: { status },
     });
+  }
+
+  getRankedApplications(missionId: string): Observable<RankedApplication[]> {
+    return this.http.get<RankedApplication[]>(`${this.apiUrl}/mission/${missionId}/ranked`);
   }
 }

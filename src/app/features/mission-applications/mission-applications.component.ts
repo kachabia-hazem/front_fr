@@ -6,7 +6,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { MissionService } from '../../core/services/mission.service';
 import { ApplicationService } from '../../core/services/application.service';
-import { Application } from '../../core/models/application.model';
+import { Application, RankedApplication } from '../../core/models/application.model';
 import { Mission } from '../../core/models/mission.model';
 import { Company } from '../../core/models/user.model';
 import { environment } from '../../../environments/environment';
@@ -25,6 +25,9 @@ export class MissionApplicationsComponent implements OnInit {
   loading = signal(true);
   sidebarCollapsed = signal(false);
   updatingId = signal<string | null>(null);
+  isRanking = signal(false);
+  rankedApplications = signal<RankedApplication[]>([]);
+  rankedView = signal(false);
 
   missionId = '';
 
@@ -130,7 +133,70 @@ export class MissionApplicationsComponent implements OnInit {
   }
 
   onAiSort(): void {
-    // AI sort feature — to be implemented
+    if (this.isRanking()) return;
+    this.isRanking.set(true);
+    this.applicationService.getRankedApplications(this.missionId).subscribe({
+      next: (results) => {
+        this.rankedApplications.set(results);
+        this.rankedView.set(true);
+        this.isRanking.set(false);
+      },
+      error: () => this.isRanking.set(false),
+    });
+  }
+
+  exitRankedView(): void {
+    this.rankedView.set(false);
+    this.rankedApplications.set([]);
+  }
+
+  acceptRanked(event: Event, applicationId: string): void {
+    event.stopPropagation();
+    if (this.updatingId()) return;
+    this.updatingId.set(applicationId);
+    this.applicationService.updateApplicationStatus(applicationId, 'ACCEPTED').subscribe({
+      next: (updated) => {
+        this.rankedApplications.update(list =>
+          list.map(r => r.applicationId === applicationId ? { ...r, status: updated.status } : r)
+        );
+        this.applications.update(list =>
+          list.map(a => a.id === applicationId ? { ...a, status: updated.status } : a)
+        );
+        this.updatingId.set(null);
+      },
+      error: () => this.updatingId.set(null),
+    });
+  }
+
+  rejectRanked(event: Event, applicationId: string): void {
+    event.stopPropagation();
+    if (this.updatingId()) return;
+    this.updatingId.set(applicationId);
+    this.applicationService.updateApplicationStatus(applicationId, 'REJECTED').subscribe({
+      next: (updated) => {
+        this.rankedApplications.update(list =>
+          list.map(r => r.applicationId === applicationId ? { ...r, status: updated.status } : r)
+        );
+        this.applications.update(list =>
+          list.map(a => a.id === applicationId ? { ...a, status: updated.status } : a)
+        );
+        this.updatingId.set(null);
+      },
+      error: () => this.updatingId.set(null),
+    });
+  }
+
+  getScoreClass(score: number): string {
+    if (score >= 70) return 'score-high';
+    if (score >= 40) return 'score-mid';
+    return 'score-low';
+  }
+
+  getRankMedal(rank: number): string {
+    if (rank === 1) return '🥇';
+    if (rank === 2) return '🥈';
+    if (rank === 3) return '🥉';
+    return '#' + rank;
   }
 
   getFileUrl(relativePath: string | undefined): string {

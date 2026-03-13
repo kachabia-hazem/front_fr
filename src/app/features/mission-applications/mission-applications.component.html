@@ -227,13 +227,119 @@
         </div>
 
         <!-- AI Sort Button -->
-        <div class="ai-sort-footer">
-          <button class="ai-sort-btn" (click)="onAiSort()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            Sort by AI
-          </button>
-          <p class="ai-sort-hint">AI will rank candidates by best match with mission requirements</p>
-        </div>
+        @if (!rankedView()) {
+          <div class="ai-sort-footer">
+            <button class="ai-sort-btn" (click)="onAiSort()" [disabled]="isRanking()">
+              @if (isRanking()) {
+                <span class="btn-spinner"></span>
+                Analysing candidates...
+              } @else {
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Sort by AI
+              }
+            </button>
+            <p class="ai-sort-hint">AI ranks candidates by skills, experience and profile match</p>
+          </div>
+        }
+
+        <!-- ── Ranked View ── -->
+        @if (rankedView()) {
+          <div class="ranked-header">
+            <div class="ranked-title-row">
+              <h2 class="ranked-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                AI Ranking — {{ rankedApplications().length }} candidates
+              </h2>
+              <button class="exit-ranked-btn" (click)="exitRankedView()">✕ Exit ranking</button>
+            </div>
+            <p class="ranked-subtitle">Sorted by: Skills (40%) · Experience (25%) · Profile match (25%) · Completeness (10%)</p>
+          </div>
+
+          <div class="ranked-cards">
+            @for (r of rankedApplications(); track r.applicationId) {
+              <div class="ranked-card" [class.top-candidate]="r.rank <= 3">
+
+                <!-- Rank badge + total score -->
+                <div class="ranked-card-left">
+                  <div class="rank-badge" [class]="getScoreClass(r.totalScore)">
+                    {{ getRankMedal(r.rank) }}
+                  </div>
+                  <div class="total-score" [class]="getScoreClass(r.totalScore)">
+                    {{ r.totalScore }}%
+                  </div>
+                </div>
+
+                <!-- Freelancer info -->
+                <div class="ranked-card-center">
+                  <div class="ranked-applicant">
+                    @if (r.freelancerProfilePicture) {
+                      <img [src]="getFileUrl(r.freelancerProfilePicture)" alt="Photo" class="applicant-avatar avatar-clickable" (click)="goToProfile($event, r.freelancerId)" />
+                    } @else {
+                      <div class="applicant-avatar applicant-initials avatar-clickable" (click)="goToProfile($event, r.freelancerId)">
+                        {{ getInitials(r.firstName, r.lastName) }}
+                      </div>
+                    }
+                    <div>
+                      <div class="applicant-name">{{ r.firstName }} {{ r.lastName }}</div>
+                      <div class="applicant-position">{{ r.freelancerCurrentPosition || r.email }}</div>
+                      @if (r.freelancerYearsOfExperience != null) {
+                        <div class="exp-badge">{{ r.freelancerYearsOfExperience }} yr(s) exp.</div>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Score bars -->
+                  <div class="score-bars">
+                    <div class="score-bar-row">
+                      <span class="score-label">Skills</span>
+                      <div class="score-bar-track"><div class="score-bar-fill" [class]="getScoreClass(r.skillScore)" [style.width.%]="r.skillScore"></div></div>
+                      <span class="score-val">{{ r.skillScore }}%</span>
+                    </div>
+                    <div class="score-bar-row">
+                      <span class="score-label">Experience</span>
+                      <div class="score-bar-track"><div class="score-bar-fill" [class]="getScoreClass(r.experienceScore)" [style.width.%]="r.experienceScore"></div></div>
+                      <span class="score-val">{{ r.experienceScore }}%</span>
+                    </div>
+                    <div class="score-bar-row">
+                      <span class="score-label">Profile</span>
+                      <div class="score-bar-track"><div class="score-bar-fill" [class]="getScoreClass(r.semanticScore)" [style.width.%]="r.semanticScore"></div></div>
+                      <span class="score-val">{{ r.semanticScore }}%</span>
+                    </div>
+                  </div>
+
+                  <!-- Matched / Missing skills -->
+                  <div class="skills-match">
+                    @for (s of r.matchedSkills; track s) {
+                      <span class="skill-match">✓ {{ s }}</span>
+                    }
+                    @for (s of r.missingSkills.slice(0, 4); track s) {
+                      <span class="skill-missing">✗ {{ s }}</span>
+                    }
+                    @if (r.missingSkills.length > 4) {
+                      <span class="skill-tag-more">+{{ r.missingSkills.length - 4 }} missing</span>
+                    }
+                  </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="ranked-card-right">
+                  <span class="status-badge" [class]="getStatusClass(r.status)">{{ r.status | titlecase }}</span>
+                  @if (r.cvUrl) {
+                    <a [href]="getFileUrl(r.cvUrl)" target="_blank" rel="noopener noreferrer" class="cv-btn" (click)="$event.stopPropagation()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      CV
+                    </a>
+                  }
+                  @if (r.status === 'PENDING') {
+                    <button class="action-btn accept-btn" [disabled]="updatingId() === r.applicationId" (click)="acceptRanked($event, r.applicationId)">Accept</button>
+                    <button class="action-btn reject-btn" [disabled]="updatingId() === r.applicationId" (click)="rejectRanked($event, r.applicationId)">Reject</button>
+                  }
+                </div>
+
+              </div>
+            }
+          </div>
+        }
       }
 
     }
