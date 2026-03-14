@@ -60,9 +60,16 @@ export class MissionService {
   }
 
   /**
-   * Calcule la compatibilité entre le freelancer connecté et une mission
+   * Calcule la compatibilité (rapide, ~2s, sans LLM)
    */
   matchMission(missionId: string): Observable<MatchMissionResult> {
     return this.http.get<MatchMissionResult>(`${this.apiUrl}/${missionId}/match`);
+  }
+
+  /**
+   * Récupère l'explication IA complète (LLM, ~30s) — appelé en arrière-plan
+   */
+  matchMissionExplain(missionId: string): Observable<MatchMissionResult> {
+    return this.http.get<MatchMissionResult>(`${this.apiUrl}/${missionId}/match/explain`);
   }
 }

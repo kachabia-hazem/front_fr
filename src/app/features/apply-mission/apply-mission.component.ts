@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, ViewChild, ElementRef, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -68,6 +68,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private ngZone: NgZone,
+    private cdr: ChangeDetectorRef,
     private missionService: MissionService,
     private freelancerService: FreelancerService,
     private cvService: CvService,
@@ -387,17 +388,32 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
 
   private startPreparation(): void {
     this.preparationProgress = 0;
-    const timer = setInterval(() => {
-      this.ngZone.run(() => {
-        this.preparationProgress += 2;
-        if (this.preparationProgress >= 100) {
-          clearInterval(timer);
-          this.preparationTimer = null;
-          this.currentStep = 6;
-        }
-      });
-    }, 40);
-    this.preparationTimer = timer;
+    this.cdr.detectChanges();
+
+    // → 33% après 0.5s
+    setTimeout(() => {
+      this.preparationProgress = 33;
+      this.cdr.detectChanges();
+    }, 500);
+
+    // → 67% après 1s
+    setTimeout(() => {
+      this.preparationProgress = 67;
+      this.cdr.detectChanges();
+    }, 1000);
+
+    // → 100% après 1.5s
+    setTimeout(() => {
+      this.preparationProgress = 100;
+      this.cdr.detectChanges();
+    }, 1500);
+
+    // Afficher le formulaire après 2s (transition 100% terminée)
+    this.preparationTimer = setTimeout(() => {
+      this.preparationTimer = null;
+      this.currentStep = 6;
+      this.cdr.detectChanges();
+    }, 2000);
   }
 
   // ── Step 6: Review helpers ──

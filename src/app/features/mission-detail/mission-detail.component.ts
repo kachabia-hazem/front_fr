@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MissionService, MatchMissionResult } from '../../core/services/mission.service';
@@ -27,6 +27,7 @@ export class MissionDetailComponent implements OnInit {
   matchingResult = signal<MatchMissionResult | null>(null);
   showMatchingModal = signal(false);
   matchingError = signal('');
+  explanationLoading = signal(false);
   private profileCompletion: number | null = null;
 
   constructor(
@@ -37,6 +38,7 @@ export class MissionDetailComponent implements OnInit {
     private freelancerService: FreelancerService,
     private toastService: ToastService,
     private authService: AuthService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   get isFreelancer(): boolean {
@@ -161,23 +163,38 @@ export class MissionDetailComponent implements OnInit {
   }
 
   checkMatching(): void {
-    console.log('[Matching] CLICKED');
-    alert('[Debug] checkMatching appelé !');
     const id = this.mission()?.id ?? this.route.snapshot.paramMap.get('id');
-    console.log('[Matching] checkMatching called, id=', id);
     if (!id) {
-      this.toastService.show('ID de mission introuvable.', 'error');
+      this.toastService.show('Mission ID not found.', 'error');
       return;
     }
     this.matchingLoading.set(true);
     this.showMatchingModal.set(true);
-    console.log('[Matching] modal opened, calling API...');
     this.matchingResult.set(null);
     this.matchingError.set('');
+    this.explanationLoading.set(false);
+
+    // Phase 1: résultats rapides (~2s, sans LLM)
     this.missionService.matchMission(id).subscribe({
       next: (result) => {
         this.matchingResult.set(result);
         this.matchingLoading.set(false);
+        this.cdr.detectChanges();
+
+        // Phase 2: explication IA en arrière-plan (~30s, avec LLM)
+        this.explanationLoading.set(true);
+        this.cdr.detectChanges();
+        this.missionService.matchMissionExplain(id).subscribe({
+          next: (fullResult) => {
+            this.matchingResult.set(fullResult);
+            this.explanationLoading.set(false);
+            this.cdr.detectChanges();
+          },
+          error: () => {
+            this.explanationLoading.set(false);
+            this.cdr.detectChanges();
+          },
+        });
       },
       error: (err) => {
         this.matchingLoading.set(false);
@@ -189,6 +206,7 @@ export class MissionDetailComponent implements OnInit {
         } else {
           this.matchingError.set(`Connection error (${status || 'network'}). Please make sure the backend is running.`);
         }
+        this.cdr.detectChanges();
       },
     });
   }
@@ -197,6 +215,7 @@ export class MissionDetailComponent implements OnInit {
     this.showMatchingModal.set(false);
     this.matchingResult.set(null);
     this.matchingError.set('');
+    this.explanationLoading.set(false);
   }
 
   getRecommendationClass(recommendation: string): string {

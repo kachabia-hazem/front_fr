@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
@@ -86,6 +86,7 @@ export class MissionsComponent implements OnInit {
   showMatchingModal = false;
   matchingError = '';
   matchingMission: Mission | null = null;
+  explanationLoading = false;
 
   // Track which missions the freelancer has already applied to, with their status
   applicationStatusMap = new Map<string, 'PENDING' | 'ACCEPTED' | 'REJECTED'>();
@@ -101,6 +102,7 @@ export class MissionsComponent implements OnInit {
     private toastService: ToastService,
     private router: Router,
     private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   @HostListener('document:click')
@@ -769,10 +771,29 @@ export class MissionsComponent implements OnInit {
     this.matchingResult = null;
     this.matchingError = '';
     this.showMatchingModal = true;
+    this.explanationLoading = false;
+
+    // Phase 1: résultats rapides (~2s, sans LLM)
     this.missionService.matchMission(mission.id).subscribe({
       next: (result) => {
         this.matchingResult = result;
         this.matchingLoading = false;
+        this.cdr.detectChanges();
+
+        // Phase 2: explication IA en arrière-plan (~30s, avec LLM)
+        this.explanationLoading = true;
+        this.cdr.detectChanges();
+        this.missionService.matchMissionExplain(mission.id!).subscribe({
+          next: (fullResult) => {
+            this.matchingResult = fullResult;
+            this.explanationLoading = false;
+            this.cdr.detectChanges();
+          },
+          error: () => {
+            this.explanationLoading = false;
+            this.cdr.detectChanges();
+          },
+        });
       },
       error: (err) => {
         this.matchingLoading = false;
@@ -784,6 +805,7 @@ export class MissionsComponent implements OnInit {
         } else {
           this.matchingError = `Connection error (${status || 'network'}). Please make sure the backend is running.`;
         }
+        this.cdr.detectChanges();
       },
     });
   }
@@ -793,6 +815,7 @@ export class MissionsComponent implements OnInit {
     this.matchingResult = null;
     this.matchingError = '';
     this.matchingMission = null;
+    this.explanationLoading = false;
   }
 
   getMatchRecommendationClass(recommendation: string): string {

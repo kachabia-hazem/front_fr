@@ -963,7 +963,7 @@
   height: 100%;
   background: linear-gradient(90deg, #3793B0 0%, #3793B0 100%);
   border-radius: 4px;
-  transition: width 0.08s linear;
+  transition: width 0.4s ease-in-out;
 }
 
 /* ══════════════════════════════════════

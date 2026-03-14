@@ -2783,6 +2783,11 @@
 .rec-neutral { background: #fef3c7; color: #d97706; }
 .rec-negative { background: #fee2e2; color: #dc2626; }
 .matching-explanation { margin: 0; font-size: 0.875rem; color: #4b5563; line-height: 1.55; }
+.explanation-skeleton { display: flex; flex-direction: column; gap: 6px; }
+.explanation-skeleton-line { height: 13px; border-radius: 6px; background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.4s infinite; width: 100%; }
+.explanation-skeleton-line.short { width: 70%; }
+.explanation-ai-label { font-size: 0.72rem; color: #9ca3af; font-style: italic; margin-top: 2px; }
+@keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 .score-breakdown {
   display: flex; flex-direction: column; gap: 0.85rem;
   padding: 1rem 1.25rem; background: #f9fafb; border-radius: 0.75rem;

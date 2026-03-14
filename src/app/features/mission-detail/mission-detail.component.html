@@ -19,7 +19,7 @@
         <div class="matching-loading">
           <div class="matching-spinner"></div>
           <p>Analyzing your profile...</p>
-          <span>Comparing your skills with the mission (may take ~30s)</span>
+          <span>Comparing your skills with the mission...</span>
         </div>
       }
 
@@ -69,7 +69,15 @@
                 }
                 {{ matchingResult()!.recommendation }}
               </div>
-              <p class="matching-explanation">{{ matchingResult()!.explanation }}</p>
+              @if (explanationLoading()) {
+                <div class="explanation-skeleton">
+                  <div class="explanation-skeleton-line"></div>
+                  <div class="explanation-skeleton-line short"></div>
+                  <span class="explanation-ai-label">AI analysis in progress...</span>
+                </div>
+              } @else {
+                <p class="matching-explanation">{{ matchingResult()!.explanation }}</p>
+              }
             </div>
           </div>
 
