@@ -1372,6 +1372,106 @@
 }
 
 /* ══════════════════════════════════════
+   SKELETON CARDS
+   ══════════════════════════════════════ */
+
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+.skeleton-card {
+  pointer-events: none;
+  cursor: default;
+  animation: none !important;
+  transform: none !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+}
+
+.skeleton-line,
+.skeleton-avatar,
+.skeleton-badge,
+.skeleton-pill,
+.skeleton-btn {
+  background: linear-gradient(90deg, #e8eaed 25%, #f4f5f7 50%, #e8eaed 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 6px;
+}
+
+.skeleton-company-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.skeleton-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.skeleton-company-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.skeleton-badge {
+  width: 60px;
+  height: 22px;
+  border-radius: 20px;
+}
+
+.skeleton-body {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 18px;
+}
+
+.skeleton-line { height: 12px; }
+.skeleton-line.tall { height: 20px; margin-bottom: 4px; }
+.skeleton-line.w40 { width: 40%; }
+.skeleton-line.w60 { width: 60%; }
+.skeleton-line.w70 { width: 70%; }
+.skeleton-line.w80 { width: 80%; }
+.skeleton-line.w90 { width: 90%; }
+.skeleton-line.w100 { width: 100%; }
+
+.skeleton-badges-row {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.skeleton-pill {
+  width: 80px;
+  height: 24px;
+  border-radius: 20px;
+}
+
+.skeleton-footer {
+  display: flex;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid #f0f2f5;
+}
+
+.skeleton-btn {
+  width: 90px;
+  height: 34px;
+  border-radius: 8px;
+}
+
+.skeleton-btn.small {
+  width: 110px;
+}
+
+/* ══════════════════════════════════════
    LOADING & EMPTY STATES
    ══════════════════════════════════════ */
 
@@ -1476,7 +1576,6 @@
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  animation: overlayFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .modal-overlay.closing {
@@ -1503,7 +1602,6 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.05);
-  animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   overflow: hidden;
 }
 

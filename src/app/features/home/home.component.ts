@@ -1,10 +1,13 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, NgZone, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, NgZone, HostListener, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
+import { MissionService, AiSearchResult } from '../../core/services/mission.service';
+import { environment } from '../../../environments/environment';
 
 interface StatItem {
   target: number;
@@ -16,7 +19,7 @@ interface StatItem {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, FormsModule, NavbarComponent, FooterComponent],
+  imports: [RouterLink, FormsModule, CommonModule, DecimalPipe, NavbarComponent, FooterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -46,6 +49,21 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {}
+
+  // ─── Recommended Missions ────────────────────────────────────────────────
+  recommendedMissions = signal<AiSearchResult[]>([]);
+  recommendedLoading = signal(false);
+
+  // Marquee uniquement si les cartes dépassent la largeur de l'écran (~5 cartes × 340px = 1700px)
+  get useMarquee(): boolean {
+    return this.recommendedMissions().length >= 5;
+  }
+
+  getFileUrl(relativePath: string | undefined): string {
+    if (!relativePath) return '';
+    const baseUrl = environment.apiUrl.replace(/\/api$/, '');
+    return baseUrl + relativePath;
+  }
 
   activeTab: 'freelancers' | 'companies' = 'freelancers';
   activeSearchTab: 'keyword' | 'ai' = 'keyword';
@@ -148,11 +166,22 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     public authService: AuthService,
     private router: Router,
     private ngZone: NgZone,
+    private missionService: MissionService,
   ) {}
 
   ngOnInit(): void {
     if (this.isCompany) {
       this.activeTab = 'companies';
+    }
+    if (this.isFreelancer) {
+      this.recommendedLoading.set(true);
+      this.missionService.getRecommendedMissions(6).subscribe({
+        next: (results) => {
+          this.recommendedMissions.set(results);
+          this.recommendedLoading.set(false);
+        },
+        error: () => this.recommendedLoading.set(false),
+      });
     }
   }
 

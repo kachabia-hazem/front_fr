@@ -1,0 +1,331 @@
+<div class="messaging-container">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────────────────────── -->
+  <aside class="sidebar" [class.hidden-mobile]="selectedConversation()">
+
+    <!-- Header -->
+    <div class="sidebar-header">
+      <div class="sidebar-title-row">
+        <button class="back-btn" (click)="goBack()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <h2 class="sidebar-title">Messages</h2>
+        @if (isCompany) {
+          <button class="new-chat-btn" (click)="showNewChat = !showNewChat" title="New conversation">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        }
+      </div>
+
+      <!-- Search -->
+      <div class="search-box">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          type="text"
+          placeholder="Search conversations..."
+          [(ngModel)]="searchQuery"
+          class="search-input"
+        />
+      </div>
+
+      <!-- New Chat Panel (Company only) — search by freelancer name -->
+      @if (showNewChat && isCompany) {
+        <div class="new-chat-panel">
+          <div class="new-chat-header">
+            <p class="new-chat-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Search a freelancer by name
+            </p>
+            <button class="new-chat-close" (click)="showNewChat = false; searchNameQuery = ''; searchResults = []">✕</button>
+          </div>
+          <input
+            type="text"
+            placeholder="e.g. Ahmed Ben Ali..."
+            [(ngModel)]="searchNameQuery"
+            (ngModelChange)="onSearchNameChange()"
+            class="new-chat-input"
+            autofocus
+          />
+
+          <!-- Results dropdown -->
+          @if (searchLoading) {
+            <div class="search-loading">
+              <div class="spinner-sm" style="border-color: rgba(55,147,176,0.3); border-top-color: #3793B0;"></div>
+              Searching...
+            </div>
+          } @else if (searchResults.length > 0) {
+            <div class="search-results">
+              @for (f of searchResults; track f.id) {
+                <button class="search-result-item" (click)="selectFreelancerFromSearch(f)" [disabled]="newChatLoading">
+                  <div class="search-avatar">
+                    @if (f.profilePicture) {
+                      <img [src]="getFileUrl(f.profilePicture)" [alt]="f.firstName" />
+                    } @else {
+                      <span>{{ getInitials(f.firstName + ' ' + f.lastName) }}</span>
+                    }
+                  </div>
+                  <div class="search-info">
+                    <span class="search-name">{{ f.firstName }} {{ f.lastName }}</span>
+                    @if (f.currentPosition) {
+                      <span class="search-position">{{ f.currentPosition }}</span>
+                    }
+                  </div>
+                  @if (newChatLoading) {
+                    <div class="spinner-sm"></div>
+                  } @else {
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  }
+                </button>
+              }
+            </div>
+          } @else if (searchNameQuery.trim() && !searchLoading) {
+            <p class="no-results">No freelancers found for "{{ searchNameQuery }}"</p>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Conversations List -->
+    <div class="conv-list">
+      @if (loadingConvs()) {
+        @for (i of [1,2,3,4]; track i) {
+          <div class="conv-skeleton">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-lines">
+              <div class="skeleton-line short"></div>
+              <div class="skeleton-line long"></div>
+            </div>
+          </div>
+        }
+      } @else if (filteredConversations.length === 0) {
+        <div class="empty-convs">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <p>No conversations yet</p>
+          @if (isCompany) {
+            <span>Click + to start a new chat</span>
+          } @else {
+            <span>Conversations with companies will appear here once you have a signed contract</span>
+          }
+        </div>
+      } @else {
+        @for (conv of filteredConversations; track conv.id) {
+          <div
+            class="conv-item"
+            [class.active]="selectedConversation()?.id === conv.id"
+            (click)="selectConversation(conv)"
+          >
+            <!-- Avatar -->
+            <div class="conv-avatar-wrap">
+              @if (getContactAvatar(conv)) {
+                <img [src]="getFileUrl(getContactAvatar(conv))" [alt]="getContactName(conv)" class="conv-avatar" />
+              } @else {
+                <div class="conv-avatar avatar-initials">{{ getInitials(getContactName(conv)) }}</div>
+              }
+              <span
+                class="conv-presence-dot"
+                [class.online]="isContactOnlineInList(conv)"
+                [class.offline]="!isContactOnlineInList(conv)"
+                [title]="isContactOnlineInList(conv) ? 'Online' : 'Offline'"
+              ></span>
+            </div>
+
+            <!-- Info -->
+            <div class="conv-info">
+              <div class="conv-top">
+                <span class="conv-name">{{ getContactName(conv) }}</span>
+                <span class="conv-time">{{ formatTime(conv.lastMessageTime) }}</span>
+              </div>
+              <div class="conv-bottom">
+                <span class="conv-last-msg">{{ conv.lastMessage || 'Start chatting...' }}</span>
+                @if (getUnreadCount(conv) > 0) {
+                  <span class="unread-badge">{{ getUnreadCount(conv) > 99 ? '99+' : getUnreadCount(conv) }}</span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </aside>
+
+  <!-- ── CHAT AREA ──────────────────────────────────────────────────────── -->
+  <main class="chat-area" [class.visible-mobile]="selectedConversation()">
+
+    @if (selectedConversation(); as conv) {
+
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <button class="back-mobile-btn" (click)="selectedConversation.set(null)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+
+        <div class="chat-header-avatar-wrap">
+          @if (getContactAvatar(conv)) {
+            <img [src]="getFileUrl(getContactAvatar(conv))" [alt]="getContactName(conv)" class="chat-header-avatar" />
+          } @else {
+            <div class="chat-header-avatar avatar-initials-lg">{{ getInitials(getContactName(conv)) }}</div>
+          }
+          <span class="presence-dot" [class.online]="contactOnline()" [class.offline]="!contactOnline()"></span>
+        </div>
+
+        <div class="chat-header-info">
+          <span class="chat-header-name">{{ getContactName(conv) }}</span>
+          <div class="chat-header-meta">
+            @if (contactIsTyping()) {
+              <span class="typing-status">
+                <span class="typing-dots"><span></span><span></span><span></span></span>
+                typing…
+              </span>
+            } @else if (contactOnline()) {
+              <span class="online-status">Online</span>
+            } @else {
+              <span class="offline-status">last seen {{ formatLastSeen(contactLastSeen()) }}</span>
+            }
+            @if (conv.hasContract) {
+              <span class="contract-badge-sm">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Signed
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Area -->
+      <div class="messages-area">
+        @if (loadingMsgs) {
+          <div class="msgs-loading">
+            <div class="spinner"></div>
+          </div>
+        } @else if (messages().length === 0) {
+          <div class="msgs-empty">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <p>No messages yet.</p>
+            <span>Say hello 👋</span>
+          </div>
+        } @else {
+          <div class="messages-list">
+            @for (item of groupedMessages; track $index) {
+              @if (item.type === 'separator') {
+                <div class="date-separator">
+                  <span>{{ item.date }}</span>
+                </div>
+              } @else if (item.type === 'message') {
+                <div class="msg-row" [class.mine]="isMine(item.msg)" [class.theirs]="!isMine(item.msg)">
+                  <!-- Avatar (only for received messages) -->
+                  @if (!isMine(item.msg)) {
+                    <div class="msg-avatar-small">
+                      @if (getContactAvatar(conv)) {
+                        <img [src]="getFileUrl(getContactAvatar(conv))" class="msg-avatar-img" />
+                      } @else {
+                        <div class="msg-avatar-initials">{{ getInitials(getContactName(conv)).charAt(0) }}</div>
+                      }
+                    </div>
+                  }
+                  <!-- Bubble -->
+                  <div class="msg-bubble-wrap">
+                    <div class="msg-bubble">{{ item.msg.content }}</div>
+                    <div class="msg-meta">
+                      <span class="msg-time">{{ formatMsgTime(item.msg.timestamp) }}</span>
+
+                      @if (isMine(item.msg) && lastSentMsgId() === item.msg.id) {
+                        @if (contactHasRead()) {
+                          <!-- Double check blue = VU -->
+                          <span class="msg-receipt seen">
+                            <svg width="19" height="11" viewBox="0 0 19 11" fill="none">
+                              <path d="M1 5.5L4.5 9L11 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M8 5.5L11.5 9L18 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span class="seen-label">Vu</span>
+                          </span>
+                        } @else {
+                          <!-- Single check gray = ENVOYÉ -->
+                          <span class="msg-receipt sent">
+                            <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+                              <path d="M1 5L4.5 8.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          </span>
+                        }
+                      }
+
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+            <!-- Typing bubble -->
+            @if (contactIsTyping()) {
+              <div class="msg-row theirs typing-row">
+                <div class="msg-avatar-small">
+                  @if (getContactAvatar(conv)) {
+                    <img [src]="getFileUrl(getContactAvatar(conv))" class="msg-avatar-img" />
+                  } @else {
+                    <div class="msg-avatar-initials">{{ getInitials(getContactName(conv)).charAt(0) }}</div>
+                  }
+                </div>
+                <div class="msg-bubble-wrap">
+                  <div class="msg-bubble typing-bubble">
+                    <span class="typing-dot-anim"><span></span><span></span><span></span></span>
+                  </div>
+                </div>
+              </div>
+            }
+            <div #messagesEnd></div>
+          </div>
+        }
+      </div>
+
+      <!-- Input Area -->
+      <div class="chat-input-area">
+        @if (!conv.hasContract && isFreelancer) {
+          <div class="locked-banner">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Messaging is locked until a contract is signed.
+          </div>
+        } @else {
+          <div class="input-row">
+            <textarea
+              class="msg-input"
+              placeholder="Write a message..."
+              [(ngModel)]="messageText"
+              (keydown)="onKeyDown($event)"
+              (input)="onMessageInput()"
+              rows="1"
+              [disabled]="sending"
+            ></textarea>
+            <button
+              class="send-btn"
+              (click)="sendMessage()"
+              [disabled]="!messageText.trim() || sending"
+            >
+              @if (sending) {
+                <div class="spinner-sm"></div>
+              } @else {
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              }
+            </button>
+          </div>
+          <p class="input-hint">Press Enter to send · Shift+Enter for new line</p>
+        }
+      </div>
+
+    } @else {
+
+      <!-- Empty state — no conversation selected -->
+      <div class="no-conv-selected">
+        <div class="no-conv-icon">
+          <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>Your Messages</h3>
+        <p>Select a conversation to start chatting</p>
+        @if (isCompany) {
+          <button class="start-chat-cta" (click)="showNewChat = true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Conversation
+          </button>
+        }
+      </div>
+    }
+
+  </main>
+</div>

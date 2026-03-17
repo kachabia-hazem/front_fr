@@ -146,6 +146,110 @@
   </div>
 </section>
 
+<!-- Recommended Missions (freelancer only) -->
+@if (isFreelancer) {
+  <section class="home-rec-section">
+    <div class="home-rec-inner">
+
+      <div class="home-rec-header">
+        <div>
+          <h2 class="home-rec-title">Recommended for You</h2>
+          <p class="home-rec-subtitle">Missions matched to your skills and profile</p>
+        </div>
+        <a routerLink="/missions" class="home-rec-see-all">View all missions</a>
+      </div>
+
+      @if (recommendedLoading()) {
+        <div class="home-rec-loading">
+          <div class="home-rec-spinner"></div>
+          <span>Analyzing your profile...</span>
+        </div>
+      } @else if (recommendedMissions().length === 0) {
+        <div class="home-rec-empty">
+          <p>Complete your profile to receive personalized recommendations.</p>
+          <a routerLink="/edit-profile" class="home-rec-btn-profile">Complete my profile</a>
+        </div>
+      } @else {
+        <div [class.home-rec-marquee-wrap]="useMarquee" [class.home-rec-static-wrap]="!useMarquee">
+          <div class="home-rec-track" [class.home-rec-track--animated]="useMarquee">
+
+            @for (item of recommendedMissions(); track 'a' + item.mission.id) {
+              <a [routerLink]="['/missions', item.mission.id]" class="home-rec-card">
+                <div class="home-rec-card-head">
+                  <div class="home-rec-logo">
+                    @if (item.mission.companyLogo) {
+                      <img [src]="getFileUrl(item.mission.companyLogo)" alt="" />
+                    } @else {
+                      <span>{{ (item.mission.companyName || 'C').charAt(0) }}</span>
+                    }
+                  </div>
+                  <span class="home-rec-badge"
+                    [class.badge-high]="item.score >= 70"
+                    [class.badge-mid]="item.score >= 50 && item.score < 70"
+                    [class.badge-low]="item.score < 50">
+                    {{ item.score | number:'1.0-0' }}% match
+                  </span>
+                </div>
+                <p class="home-rec-company-name">{{ item.mission.companyName }}</p>
+                <h3 class="home-rec-job">{{ item.mission.jobTitle }}</h3>
+                <div class="home-rec-meta">
+                  @if (item.mission.missionType) {
+                    <span class="home-rec-pill">{{ item.mission.missionType }}</span>
+                  }
+                  @if (item.mission.location) {
+                    <span class="home-rec-pill">{{ item.mission.location }}</span>
+                  }
+                  @if (item.mission.tjm) {
+                    <span class="home-rec-pill home-rec-pill-accent">{{ item.mission.tjm }} DT/j</span>
+                  }
+                </div>
+              </a>
+            }
+
+            <!-- duplicate uniquement si assez de missions pour remplir l'écran -->
+            @if (useMarquee) {
+              @for (item of recommendedMissions(); track 'b' + item.mission.id) {
+                <a [routerLink]="['/missions', item.mission.id]" class="home-rec-card" aria-hidden="true">
+                  <div class="home-rec-card-head">
+                    <div class="home-rec-logo">
+                      @if (item.mission.companyLogo) {
+                        <img [src]="getFileUrl(item.mission.companyLogo)" alt="" />
+                      } @else {
+                        <span>{{ (item.mission.companyName || 'C').charAt(0) }}</span>
+                      }
+                    </div>
+                    <span class="home-rec-badge"
+                      [class.badge-high]="item.score >= 70"
+                      [class.badge-mid]="item.score >= 50 && item.score < 70"
+                      [class.badge-low]="item.score < 50">
+                      {{ item.score | number:'1.0-0' }}% match
+                    </span>
+                  </div>
+                  <p class="home-rec-company-name">{{ item.mission.companyName }}</p>
+                  <h3 class="home-rec-job">{{ item.mission.jobTitle }}</h3>
+                  <div class="home-rec-meta">
+                    @if (item.mission.missionType) {
+                      <span class="home-rec-pill">{{ item.mission.missionType }}</span>
+                    }
+                    @if (item.mission.location) {
+                      <span class="home-rec-pill">{{ item.mission.location }}</span>
+                    }
+                    @if (item.mission.tjm) {
+                      <span class="home-rec-pill home-rec-pill-accent">{{ item.mission.tjm }} DT/j</span>
+                    }
+                  </div>
+                </a>
+              }
+            }
+
+          </div>
+        </div>
+      }
+
+    </div>
+  </section>
+}
+
 <!-- Why WorkLink Section -->
 <section class="why-section">
 <div class="why-inner">

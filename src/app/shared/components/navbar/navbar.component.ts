@@ -6,6 +6,7 @@ import { ThemeService } from '../../../core/services/theme.service';
 import { FreelancerService } from '../../../core/services/freelancer.service';
 import { CompanyService } from '../../../core/services/company.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { ChatService } from '../../../core/services/chat.service';
 import { Freelancer, Company } from '../../../core/models';
 import { environment } from '../../../../environments/environment';
 
@@ -21,6 +22,7 @@ export class NavbarComponent implements OnInit {
   company = signal<Company | null>(null);
   showDropdown = false;
   unreadNotifCount = computed(() => this.notificationService.unreadCount());
+  chatUnreadCount = computed(() => this.chatService.totalUnread());
 
   // Profile completion percentage
   get profileCompletion(): number {
@@ -115,6 +117,7 @@ export class NavbarComponent implements OnInit {
     private freelancerService: FreelancerService,
     private companyService: CompanyService,
     private notificationService: NotificationService,
+    public chatService: ChatService,
   ) {}
 
   ngOnInit(): void {
@@ -127,12 +130,14 @@ export class NavbarComponent implements OnInit {
           error: () => {},
         });
         this.notificationService.getUnreadCount().subscribe();
+        this.chatService.getConversations().subscribe({ error: () => {} });
       } else if (role === 'COMPANY') {
         this.companyService.getMyProfile().subscribe({
           next: (profile) => this.company.set(profile),
           error: () => {},
         });
         this.notificationService.getUnreadCount().subscribe();
+        this.chatService.getConversations().subscribe({ error: () => {} });
       }
     }
   }

@@ -170,6 +170,16 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
+  // Messaging — standalone (no navbar/footer)
+  {
+    path: 'messaging',
+    loadComponent: () =>
+      import('./features/messaging/messaging.component').then(
+        (m) => m.MessagingComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
   // Mission applications — standalone (no navbar/footer)
   {
     path: 'mission-applications/:missionId',

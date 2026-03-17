@@ -60,6 +60,14 @@ export class MissionService {
   }
 
   /**
+   * Recommandations de missions basées sur le profil du freelancer connecté
+   */
+  getRecommendedMissions(topK: number = 6): Observable<AiSearchResult[]> {
+    const params = new HttpParams().set('topK', topK.toString());
+    return this.http.get<AiSearchResult[]>(`${this.apiUrl}/recommended`, { params });
+  }
+
+  /**
    * Calcule la compatibilité (rapide, ~2s, sans LLM)
    */
   matchMission(missionId: string): Observable<MatchMissionResult> {
