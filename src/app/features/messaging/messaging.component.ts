@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ChatService, FreelancerSearchResult } from '../../core/services/chat.service';
 import { ChatConversation, ChatMessage, PresenceEvent, TypingEvent, ReadReceiptEvent } from '../../core/models/chat.model';
@@ -18,7 +18,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-messaging',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive],
   templateUrl: './messaging.component.html',
   styleUrl: './messaging.component.css',
 })
@@ -47,9 +47,17 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
   contactIsTyping = signal<boolean>(false);
   private typingHideTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  // Read receipts
-  contactHasRead = signal<boolean>(false);
-  lastSentMsgId = signal<string | null>(null);
+  // Read receipts (logic lives in msg.read field)
+
+  // Nav sidebar
+  sidebarCollapsed = signal<boolean>(false);
+
+  // Conversations sidebar
+  convSidebarCollapsed = signal<boolean>(false);
+
+  toggleConvSidebar(): void {
+    this.convSidebarCollapsed.update(v => !v);
+  }
 
   // New conversation search (company only)
   showNewChat = false;
@@ -79,6 +87,10 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   get isFreelancer(): boolean {
     return this.authService.currentUser()?.role === 'FREELANCER';
+  }
+
+  get companyHasStarted(): boolean {
+    return this.messages().some(m => m.senderRole === 'COMPANY');
   }
 
   get filteredConversations(): ChatConversation[] {
@@ -148,8 +160,6 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.selectedConversation.set(conv);
     this.messages.set([]);
     this.contactIsTyping.set(false);
-    this.contactHasRead.set(false);
-    this.lastSentMsgId.set(null);
     this.loadMessages(conv.id);
 
     // Fetch initial presence state for the contact
@@ -169,11 +179,7 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
       (msg: ChatMessage) => {
         this.messages.update((msgs) => [...msgs, msg]);
         this.shouldScrollToBottom = true;
-        if (msg.senderId === this.currentUserId) {
-          // My own message arrived via WebSocket — update last sent ID
-          this.lastSentMsgId.set(msg.id);
-          this.contactHasRead.set(false);
-        } else {
+        if (msg.senderId !== this.currentUserId) {
           // Message from the contact — I'm actively viewing it, so mark as read immediately
           this.chatService.markRead(conv.id).subscribe({ error: () => {} });
         }
@@ -198,7 +204,10 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
       // onRead
       (evt: ReadReceiptEvent) => {
         if (evt.readerId === contactId) {
-          this.contactHasRead.set(true);
+          // Mark all my messages in this conversation as read locally
+          this.messages.update((msgs) =>
+            msgs.map((m) => (m.senderId === this.currentUserId ? { ...m, read: true } : m))
+          );
         }
       },
       // onPresence
@@ -223,11 +232,7 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.messages.set(msgs);
         this.loadingMsgs = false;
         this.shouldScrollToBottom = true;
-        // Track the last message I sent (for read receipt indicator)
-        const myId = this.currentUserId;
-        const sent = msgs.filter((m) => m.senderId === myId);
-        this.lastSentMsgId.set(sent.length > 0 ? sent[sent.length - 1].id : null);
-        // Mark as read in local signal
+        // Mark as read locally
         this.chatService.markConversationRead(conversationId, this.currentUserId);
         this.conversations.update((convs) =>
           convs.map((c) =>
@@ -236,6 +241,8 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
               : c,
           ),
         );
+        // Explicitly send read receipt so the other party sees ✓✓ in real-time
+        this.chatService.markRead(conversationId).subscribe({ error: () => {} });
       },
       error: () => {
         this.loadingMsgs = false;
@@ -252,7 +259,6 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     this.sending = true;
     this.messageText = '';
-    this.contactHasRead.set(false);
     // Stop typing indicator when sending
     this.chatService.sendTyping(conv.id, false);
 
@@ -430,7 +436,32 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
     return environment.apiUrl.replace('/api', '') + path;
   }
 
+  toggleSidebar(): void {
+    this.sidebarCollapsed.update((v) => !v);
+  }
+
   goBack(): void {
     this.router.navigate(['/']);
+  }
+
+  get sidebarUserName(): string {
+    const convs = this.chatService.conversations();
+    if (convs.length > 0) {
+      return this.isCompany ? convs[0].companyName : convs[0].freelancerName;
+    }
+    return this.authService.currentUser()?.email?.split('@')[0] ?? '';
+  }
+
+  get sidebarUserAvatar(): string | undefined {
+    const convs = this.chatService.conversations();
+    if (convs.length > 0) {
+      const pic = this.isCompany ? convs[0].companyLogo : convs[0].freelancerPicture;
+      return pic || undefined;
+    }
+    return undefined;
+  }
+
+  get sidebarUserInitials(): string {
+    return this.getInitials(this.sidebarUserName);
   }
 }

@@ -114,6 +114,16 @@
               </svg>
             }
           </button>
+          <!-- Messaging button -->
+          <button class="header-msg-btn" (click)="toggleMsgPanel()" [class.panel-active]="msgPanelOpen()" title="Messages">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            @if (unreadMsgCount() > 0) {
+              <span class="header-msg-badge">{{ unreadMsgCount() > 99 ? '99+' : unreadMsgCount() }}</span>
+            }
+          </button>
           <button class="header-notif-btn" (click)="toggleNotifPanel()" [class.panel-active]="notifPanelOpen()" title="Notifications">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -125,6 +135,127 @@
             }
           </button>
         </div>
+      </div>
+
+      <!-- Messaging Panel Overlay -->
+      @if (msgPanelOpen()) {
+        <div class="notif-panel-overlay" (click)="closeMsgPanel()"></div>
+      }
+
+      <!-- Messaging Panel -->
+      <div class="msg-panel" [class.msg-panel-open]="msgPanelOpen()">
+        @if (selectedPanelConv() === null) {
+          <!-- Conversations list view -->
+          <div class="msg-panel-header">
+            <div class="notif-panel-title-row">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="notif-panel-title-icon"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span class="notif-panel-title">Messages</span>
+              @if (unreadMsgCount() > 0) {
+                <span class="notif-panel-count">{{ unreadMsgCount() }}</span>
+              }
+            </div>
+            <button class="notif-panel-close-btn" (click)="closeMsgPanel()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <div class="msg-panel-body">
+            @if (chatService.conversations().length === 0) {
+              <div class="notif-empty-state">
+                <div class="notif-empty-icon-wrap">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </div>
+                <p class="notif-empty-title">No conversations</p>
+                <p class="notif-empty-sub">Messages from companies will appear here</p>
+              </div>
+            } @else {
+              <div class="msg-conv-list">
+                @for (conv of chatService.conversations(); track conv.id) {
+                  <div class="msg-conv-item" (click)="openPanelConversation(conv)">
+                    <div class="msg-conv-avatar">
+                      @if (getPanelContactAvatar(conv)) {
+                        <img [src]="getFileUrlPanel(getPanelContactAvatar(conv))" [alt]="getPanelContactName(conv)" />
+                      } @else {
+                        <span>{{ getPanelContactInitials(getPanelContactName(conv)) }}</span>
+                      }
+                    </div>
+                    <div class="msg-conv-info">
+                      <div class="msg-conv-row">
+                        <span class="msg-conv-name">{{ getPanelContactName(conv) }}</span>
+                        <span class="msg-conv-time">{{ formatPanelTime(conv.lastMessageTime) }}</span>
+                      </div>
+                      <div class="msg-conv-row">
+                        <span class="msg-conv-last">{{ conv.lastMessage || 'Start a conversation' }}</span>
+                        @if (getPanelUnread(conv) > 0) {
+                          <span class="msg-conv-badge">{{ getPanelUnread(conv) > 99 ? '99+' : getPanelUnread(conv) }}</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+          <div class="notif-panel-footer">
+            <a routerLink="/messaging" (click)="closeMsgPanel()" class="notif-panel-view-all">
+              Open full messaging
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </a>
+          </div>
+        } @else {
+          <!-- Conversation messages view -->
+          <div class="msg-panel-header">
+            <div class="notif-panel-title-row">
+              <button class="msg-panel-back-btn" (click)="backToPanelList()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="msg-panel-conv-avatar-sm">
+                @if (getPanelContactAvatar(selectedPanelConv()!)) {
+                  <img [src]="getFileUrlPanel(getPanelContactAvatar(selectedPanelConv()!))" [alt]="getPanelContactName(selectedPanelConv()!)" />
+                } @else {
+                  <span>{{ getPanelContactInitials(getPanelContactName(selectedPanelConv()!)) }}</span>
+                }
+              </div>
+              <span class="notif-panel-title">{{ getPanelContactName(selectedPanelConv()!) }}</span>
+            </div>
+            <button class="notif-panel-close-btn" (click)="closeMsgPanel()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <div class="msg-panel-messages">
+            @if (panelLoading()) {
+              <div class="msg-panel-loading">
+                <div class="spinner-sm"></div>
+              </div>
+            } @else {
+              @for (msg of panelMessages(); track msg.id) {
+                <div class="msg-panel-bubble" [class.mine]="msg.senderId === (authService.currentUser()?.id ?? '')">
+                  <span class="msg-panel-bubble-text">{{ msg.content }}</span>
+                  <span class="msg-panel-bubble-time">{{ formatPanelTime(msg.timestamp) }}</span>
+                </div>
+              }
+            }
+          </div>
+          <div class="msg-panel-input-row">
+            <input
+              class="msg-panel-input"
+              type="text"
+              placeholder="Write a message..."
+              [(ngModel)]="panelMsgText"
+              (keydown)="onPanelKeyDown($event)"
+            />
+            <button class="msg-panel-send-btn" (click)="sendPanelMessage()" [disabled]="!panelMsgText.trim() || panelSending">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        }
       </div>
 
       <!-- Notification Panel Overlay -->

@@ -22,7 +22,6 @@ export class NavbarComponent implements OnInit {
   company = signal<Company | null>(null);
   showDropdown = false;
   unreadNotifCount = computed(() => this.notificationService.unreadCount());
-  chatUnreadCount = computed(() => this.chatService.totalUnread());
 
   // Profile completion percentage
   get profileCompletion(): number {
@@ -117,7 +116,7 @@ export class NavbarComponent implements OnInit {
     private freelancerService: FreelancerService,
     private companyService: CompanyService,
     private notificationService: NotificationService,
-    public chatService: ChatService,
+    private chatService: ChatService,
   ) {}
 
   ngOnInit(): void {

@@ -8,9 +8,11 @@ import { ThemeService } from '../../core/services/theme.service';
 import { CompanyDashboardService, CompanyDashboardStats } from '../../core/services/company-dashboard.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ContractService } from '../../core/services/contract.service';
+import { ChatService } from '../../core/services/chat.service';
 import { Company } from '../../core/models/user.model';
 import { Contract } from '../../core/models/contract.model';
 import { Notification as AppNotification, NotificationType } from '../../core/models/notification.model';
+import { ChatConversation, ChatMessage } from '../../core/models/chat.model';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -31,6 +33,15 @@ export class CompanyDashboardComponent implements OnInit {
   notifPanelOpen = signal(false);
   recentNotifications = computed(() => this.notificationService.notifications().slice(0, 8));
   unreadNotifCount = computed(() => this.notificationService.unreadCount());
+
+  // Messaging panel
+  msgPanelOpen = signal(false);
+  selectedPanelConv = signal<ChatConversation | null>(null);
+  panelMessages = signal<ChatMessage[]>([]);
+  panelMsgText = '';
+  panelLoading = signal(false);
+  panelSending = false;
+  unreadMsgCount = computed(() => this.chatService.totalUnread());
 
   companyName = computed(() => this.company()?.companyName || 'Company');
   managerName = computed(() => {
@@ -139,6 +150,7 @@ export class CompanyDashboardComponent implements OnInit {
     private companyDashboardService: CompanyDashboardService,
     private notificationService: NotificationService,
     private contractService: ContractService,
+    public chatService: ChatService,
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
@@ -165,6 +177,7 @@ export class CompanyDashboardComponent implements OnInit {
     });
     this.notificationService.getUnreadCount().subscribe();
     this.notificationService.getMyNotifications().subscribe();
+    this.chatService.getConversations().subscribe();
   }
 
   toggleSidebar(): void {
@@ -173,10 +186,103 @@ export class CompanyDashboardComponent implements OnInit {
 
   toggleNotifPanel(): void {
     this.notifPanelOpen.update(v => !v);
+    if (this.notifPanelOpen()) this.msgPanelOpen.set(false);
   }
 
   closeNotifPanel(): void {
     this.notifPanelOpen.set(false);
+  }
+
+  toggleMsgPanel(): void {
+    this.msgPanelOpen.update(v => !v);
+    if (this.msgPanelOpen()) {
+      this.notifPanelOpen.set(false);
+      this.selectedPanelConv.set(null);
+      this.chatService.getConversations().subscribe();
+    }
+  }
+
+  closeMsgPanel(): void {
+    this.msgPanelOpen.set(false);
+    this.selectedPanelConv.set(null);
+  }
+
+
+  openPanelConversation(conv: ChatConversation): void {
+    this.selectedPanelConv.set(conv);
+    this.panelLoading.set(true);
+    this.chatService.getMessages(conv.id).subscribe({
+      next: (msgs) => {
+        this.panelMessages.set(msgs);
+        this.panelLoading.set(false);
+        this.chatService.markRead(conv.id).subscribe({ error: () => {} });
+        this.chatService.conversations.update(convs =>
+          convs.map(c => c.id === conv.id ? { ...c, unreadCount: { ...c.unreadCount, [this.authService.currentUser()?.id ?? '']: 0 } } : c)
+        );
+      },
+      error: () => this.panelLoading.set(false),
+    });
+  }
+
+  backToPanelList(): void {
+    this.selectedPanelConv.set(null);
+  }
+
+  sendPanelMessage(): void {
+    const conv = this.selectedPanelConv();
+    const content = this.panelMsgText.trim();
+    if (!conv || !content || this.panelSending) return;
+    this.panelSending = true;
+    this.panelMsgText = '';
+    this.chatService.sendMessage(conv.id, content).subscribe({
+      next: (msg) => {
+        this.panelMessages.update(msgs => [...msgs, msg]);
+        this.panelSending = false;
+      },
+      error: () => {
+        this.panelSending = false;
+        this.panelMsgText = content;
+      },
+    });
+  }
+
+  onPanelKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      this.sendPanelMessage();
+    }
+  }
+
+  getPanelContactName(conv: ChatConversation): string {
+    return conv.freelancerName;
+  }
+
+  getPanelContactAvatar(conv: ChatConversation): string | undefined {
+    return conv.freelancerPicture;
+  }
+
+  getPanelContactInitials(name: string): string {
+    return name.split(' ').map((w: string) => w.charAt(0)).join('').substring(0, 2).toUpperCase();
+  }
+
+  getPanelUnread(conv: ChatConversation): number {
+    return conv.unreadCount[this.authService.currentUser()?.id ?? ''] ?? 0;
+  }
+
+  formatPanelTime(dateStr: string | undefined): string {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffDays === 0) return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return date.toLocaleDateString([], { weekday: 'short' });
+    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  }
+
+  getFileUrlPanel(path: string | undefined): string {
+    if (!path) return '';
+    return environment.apiUrl.replace('/api', '') + path;
   }
 
   openNotifDetail(notif: AppNotification): void {
