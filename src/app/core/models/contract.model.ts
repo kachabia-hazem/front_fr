@@ -1,4 +1,4 @@
-export type ContractStatus = 'PENDING_SIGNATURE' | 'SIGNED' | 'CANCELLED';
+export type ContractStatus = 'PENDING_SIGNATURE' | 'SIGNED' | 'CANCELLED' | 'REJECTED';
 
 export interface Contract {
   id: string;
@@ -19,5 +19,7 @@ export interface Contract {
   signedPdfUrl: string | null;
   signedAt: string | null;
   companySignedAt: string | null;
+  rejectedAt: string | null;
+  rejectionReason: string | null;
   createdAt: string;
 }

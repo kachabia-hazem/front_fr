@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ActiveMission, Task, Deliverable, GitActivityResponse } from '../models/active-mission.model';
+import { ActiveMission, ActiveMissionStatus, Task, Deliverable, GitActivityResponse } from '../models/active-mission.model';
 
 @Injectable({ providedIn: 'root' })
 export class ActiveMissionService {
@@ -57,6 +57,13 @@ export class ActiveMissionService {
 
   // ── Git Activity ──────────────────────────────────────────────────────────
 
+  validateGitUrl(missionId: string, url: string): Observable<{ valid: boolean; message: string }> {
+    return this.http.get<{ valid: boolean; message: string }>(
+      `${this.apiUrl}/${missionId}/git-validate`,
+      { params: { url } }
+    );
+  }
+
   setGitRepoUrl(missionId: string, gitRepositoryUrl: string): Observable<ActiveMission> {
     return this.http.put<ActiveMission>(`${this.apiUrl}/${missionId}/git-repo`, { gitRepositoryUrl });
   }
@@ -67,8 +74,25 @@ export class ActiveMissionService {
 
   // ── Status ────────────────────────────────────────────────────────────────
 
-  updateStatus(missionId: string, status: ActiveMission['status']): Observable<ActiveMission> {
+  updateStatus(missionId: string, status: ActiveMissionStatus): Observable<ActiveMission> {
     return this.http.patch<ActiveMission>(`${this.apiUrl}/${missionId}/status`, { status });
+  }
+
+  // ── Mission Validation ────────────────────────────────────────────────────
+
+  /** Freelancer: submit mission as done */
+  submitMission(missionId: string, note?: string): Observable<ActiveMission> {
+    return this.http.post<ActiveMission>(`${this.apiUrl}/${missionId}/submit`, { note });
+  }
+
+  /** Company: approve or request revision */
+  validateMission(missionId: string, approved: boolean, note?: string, rating?: number): Observable<ActiveMission> {
+    return this.http.post<ActiveMission>(`${this.apiUrl}/${missionId}/validate`, { approved, note, rating });
+  }
+
+  /** Company: get missions waiting for validation */
+  getPendingValidations(): Observable<ActiveMission[]> {
+    return this.http.get<ActiveMission[]>(`${this.apiUrl}/pending-validation`);
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

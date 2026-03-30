@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Freelancer } from '../models';
+import { Freelancer, Review } from '../models';
 
 export interface AiFreelancerSearchResult {
   freelancer: Freelancer;
@@ -63,5 +63,9 @@ export class FreelancerService {
   aiSearch(prompt: string, topK: number = 20): Observable<AiFreelancerSearchResult[]> {
     const params = new HttpParams().set('prompt', prompt).set('topK', topK);
     return this.http.get<AiFreelancerSearchResult[]>(`${this.apiUrl}/public/ai-search`, { params });
+  }
+
+  getFreelancerReviews(id: string): Observable<Review[]> {
+    return this.http.get<Review[]>(`${this.apiUrl}/public/${id}/reviews`);
   }
 }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { AuthService } from '../../core/services/auth.service';
-import { Freelancer } from '../../core/models';
+import { Freelancer, Review } from '../../core/models';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -18,6 +18,9 @@ export class ViewProfileComponent implements OnInit {
   loading = signal(true);
   error = signal('');
   isOwnProfile = signal(false);
+
+  reviews = signal<Review[]>([]);
+  showReviews = signal(true);
 
   // Sections dépliables
   showWorkExperience = signal(true);
@@ -53,11 +56,19 @@ export class ViewProfileComponent implements OnInit {
           this.freelancerService.recordProfileView(id).subscribe();
         }
         this.loading.set(false);
+        this.loadReviews(id);
       },
       error: () => {
         this.error.set('Freelancer not found');
         this.loading.set(false);
       },
+    });
+  }
+
+  private loadReviews(id: string): void {
+    this.freelancerService.getFreelancerReviews(id).subscribe({
+      next: (reviews) => this.reviews.set(reviews),
+      error: () => {},
     });
   }
 
@@ -67,6 +78,7 @@ export class ViewProfileComponent implements OnInit {
         this.freelancer.set(freelancer);
         this.isOwnProfile.set(true);
         this.loading.set(false);
+        this.loadReviews(freelancer.id);
       },
       error: () => {
         this.error.set('Failed to load profile');
@@ -129,7 +141,20 @@ export class ViewProfileComponent implements OnInit {
       case 'languages':
         this.showLanguages.set(!this.showLanguages());
         break;
+      case 'reviews':
+        this.showReviews.set(!this.showReviews());
+        break;
     }
+  }
+
+  getStars(rating: number): number[] {
+    return Array.from({ length: 5 }, (_, i) => i + 1);
+  }
+
+  getCompanyLogoUrl(logo: string | undefined): string {
+    if (!logo) return '';
+    const baseUrl = environment.apiUrl.replace(/\/api$/, '');
+    return baseUrl + logo;
   }
 
   formatDate(date: string | undefined): string {

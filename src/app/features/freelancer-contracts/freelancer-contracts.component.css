@@ -104,6 +104,7 @@
 }
 .stat-chip.pending { background: #fffbeb; color: #92400e; }
 .stat-chip.signed { background: #f0fdf4; color: #166534; }
+.stat-chip.rejected { background: #fef2f2; color: #991b1b; }
 .stat-chip-value { font-size: 18px; font-weight: 700; }
 
 /* ── Loading / Empty ─────────────────────────────────────────────────────── */
@@ -159,6 +160,7 @@
 .badge-pending_signature { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
 .badge-signed { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
 .badge-cancelled { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.badge-rejected { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
 
 .contract-date { font-size: 12px; color: #94a3b8; }
 .contract-mission-title { font-size: 16px; font-weight: 700; color: #1e293b; margin: 0; }
@@ -175,7 +177,7 @@
 .contract-card-footer {
   display: flex; gap: 8px; margin-top: 4px;
 }
-.btn-sign, .btn-download, .btn-view, .btn-sign-now {
+.btn-sign, .btn-download, .btn-view, .btn-sign-now, .btn-reject {
   flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
   padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 500;
   border: none; cursor: pointer; transition: all 0.15s; text-decoration: none;
@@ -188,6 +190,8 @@
 .btn-download:hover { background: #dcfce7; }
 .btn-view { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
 .btn-view:hover { background: #f1f5f9; }
+.btn-reject { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.btn-reject:hover { background: #fee2e2; }
 .waiting-company-msg {
   flex: 1; display: flex; align-items: center; gap: 5px;
   font-size: 12px; color: #b45309; font-weight: 500;
@@ -332,6 +336,83 @@
   transition: background .15s; white-space: nowrap;
 }
 .btn-sign-cta:hover { background: #1d4ed8; }
+
+.sign-cta-actions {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+
+.btn-reject-cta {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 8px;
+  background: #fef2f2; color: #dc2626;
+  border: 1px solid #fecaca; font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: background .15s; white-space: nowrap;
+}
+.btn-reject-cta:hover { background: #fee2e2; }
+
+/* Rejected state in modal */
+.rejected-banner {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 16px 20px; border-radius: 12px;
+  background: #fef2f2; border: 1px solid #fecaca;
+  margin-top: 4px;
+}
+.rejected-title {
+  font-size: 14px; font-weight: 600; color: #dc2626; margin: 0 0 4px;
+}
+.rejected-reason {
+  font-size: 13px; color: #7f1d1d; margin: 0;
+}
+
+/* Reject confirmation modal */
+.reject-modal { max-width: 480px; }
+
+.reject-warning {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 14px 16px; border-radius: 10px;
+  background: #fffbeb; border: 1px solid #fde68a;
+  font-size: 13px; color: #78350f; line-height: 1.5;
+  margin-bottom: 18px;
+}
+.reject-warning p { margin: 0; }
+
+.reject-reason-field { display: flex; flex-direction: column; gap: 6px; }
+.reject-reason-label { font-size: 13px; font-weight: 600; color: #374151; }
+.optional-label { font-weight: 400; color: #9ca3af; font-size: 12px; }
+.reject-reason-textarea {
+  width: 100%; padding: 10px 12px; border-radius: 8px;
+  border: 1px solid #d1d5db; font-size: 13px; resize: vertical;
+  font-family: inherit; outline: none; transition: border .15s;
+  box-sizing: border-box;
+}
+.reject-reason-textarea:focus { border-color: #ef4444; }
+
+.reject-error {
+  font-size: 13px; color: #dc2626; margin: 8px 0 0;
+}
+
+.reject-modal-actions {
+  display: flex; gap: 10px; justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn-cancel-reject {
+  padding: 10px 20px; border-radius: 8px;
+  background: #f1f5f9; color: #475569;
+  border: 1px solid #e2e8f0; font-size: 14px; font-weight: 500; cursor: pointer;
+  transition: background .15s;
+}
+.btn-cancel-reject:hover:not(:disabled) { background: #e2e8f0; }
+
+.btn-confirm-reject {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 20px; border-radius: 8px;
+  background: #dc2626; color: #fff;
+  border: none; font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: background .15s;
+}
+.btn-confirm-reject:hover:not(:disabled) { background: #b91c1c; }
+.btn-confirm-reject:disabled, .btn-cancel-reject:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* Awaiting company signature */
 .awaiting-badge {

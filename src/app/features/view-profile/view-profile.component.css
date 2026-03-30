@@ -607,6 +607,122 @@
 
 /* ── Responsive ── */
 
+/* ── Reviews Section ─────────────────────────────── */
+.reviews-section .section-header {
+  justify-content: space-between;
+}
+
+.reviews-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.reviews-avg {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.reviews-avg-score {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f59e0b;
+}
+
+.reviews-avg-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.reviews-count-badge {
+  background: #3793B0;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 99px;
+  margin-left: 4px;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.review-card {
+  padding: 1rem 1.1rem;
+  background: var(--toggle-bg, #f9fafb);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 10px;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.review-company {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.review-company-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 5px;
+  border: 1px solid #e5e7eb;
+}
+
+.review-company-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 5px;
+  background: #3793B0;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-company-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+}
+
+.review-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.review-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.review-date {
+  font-size: 0.72rem;
+  color: #9ca3af;
+}
+
+.review-comment {
+  font-size: 0.84rem;
+  color: var(--text-secondary, #4b5563);
+  line-height: 1.5;
+  margin: 0;
+}
+
 @media (max-width: 768px) {
   .profile-header {
     flex-direction: column;

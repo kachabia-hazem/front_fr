@@ -55,10 +55,12 @@
 .mission-meta { display: flex; align-items: center; gap: 12px; }
 .mission-status { font-size: 0.72rem; font-weight: 700; padding: 3px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; }
 .status-active { background: #dcfce7; color: #16a34a; }
+.status-submitted { background: #fef3c7; color: #d97706; }
 .status-completed { background: #e0f2fe; color: #0284c7; }
 .status-paused { background: #fef9c3; color: #ca8a04; }
 .status-dispute { background: #fee2e2; color: #dc2626; }
 :host-context(body.dark-theme) .status-active { background: rgba(22,163,74,0.15); color: #4ade80; }
+:host-context(body.dark-theme) .status-submitted { background: rgba(217,119,6,0.15); color: #fbbf24; }
 :host-context(body.dark-theme) .status-completed { background: rgba(2,132,199,0.15); color: #38bdf8; }
 :host-context(body.dark-theme) .status-paused { background: rgba(202,138,4,0.15); color: #facc15; }
 :host-context(body.dark-theme) .status-dispute { background: rgba(220,38,38,0.15); color: #f87171; }
@@ -135,3 +137,48 @@
 .deliverable-date { font-size: 0.75rem; color: #9ca3af; }
 .btn-download { display: flex; align-items: center; gap: 6px; color: #3793B0; text-decoration: none; font-size: 0.85rem; font-weight: 600; padding: 7px 14px; border-radius: 8px; background: #e8f4f8; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
 .btn-download:hover { background: #d0eaf4; }
+
+/* ── Mission Validation ── */
+.validation-section { border-top: 2px solid #e8eaed; }
+:host-context(body.dark-theme) .validation-section { border-top-color: #2a3040; }
+
+.validation-banner { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; border-radius: 12px; margin-bottom: 18px; }
+.validation-banner svg { flex-shrink: 0; margin-top: 2px; }
+.validation-banner-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+.validation-banner-sub { font-size: 0.85rem; color: #6b7280; }
+.validation-feedback { font-size: 0.85rem; color: #374151; font-style: italic; margin-top: 8px; padding: 8px 12px; background: rgba(0,0,0,0.04); border-radius: 8px; }
+:host-context(body.dark-theme) .validation-feedback { background: rgba(255,255,255,0.06); color: #d1d5db; }
+
+.validation-banner-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+:host-context(body.dark-theme) .validation-banner-success { background: rgba(22,163,74,0.08); border-color: rgba(22,163,74,0.25); color: #4ade80; }
+.validation-banner-pending { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+:host-context(body.dark-theme) .validation-banner-pending { background: rgba(217,119,6,0.08); border-color: rgba(217,119,6,0.25); color: #fbbf24; }
+.validation-banner-warning { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; }
+:host-context(body.dark-theme) .validation-banner-warning { background: rgba(234,88,12,0.08); border-color: rgba(234,88,12,0.25); color: #fb923c; }
+.validation-banner-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+:host-context(body.dark-theme) .validation-banner-info { background: rgba(29,78,216,0.08); border-color: rgba(29,78,216,0.25); color: #93c5fd; }
+
+.validation-stars { display: flex; gap: 4px; margin-top: 8px; }
+.validation-stars svg { color: #d1d5db; }
+.validation-stars svg.star-filled { color: #f59e0b; }
+
+.validate-actions { margin-top: 4px; }
+.validate-form { display: flex; flex-direction: column; gap: 14px; padding: 20px; background: #f8f9fb; border-radius: 12px; border: 1px solid #e8eaed; }
+:host-context(body.dark-theme) .validate-form { background: rgba(255,255,255,0.03); border-color: #2a3040; }
+.submit-form-label { font-size: 0.83rem; font-weight: 600; color: #374151; }
+:host-context(body.dark-theme) .submit-form-label { color: #d1d5db; }
+
+.star-picker { display: flex; gap: 4px; }
+.star-btn { background: none; border: none; cursor: pointer; padding: 2px; transition: transform 0.15s; }
+.star-btn:hover { transform: scale(1.15); }
+.star-btn svg { color: #d1d5db; transition: color 0.15s; }
+.star-btn svg.star-filled { color: #f59e0b; }
+.rating-hint { font-size: 0.78rem; color: #ef4444; margin: 0; }
+
+.validate-form-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.btn-approve { display: flex; align-items: center; gap: 8px; background: #16a34a; color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.btn-approve:hover:not(:disabled) { background: #15803d; }
+.btn-approve:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-revision { display: flex; align-items: center; gap: 8px; background: #f59e0b; color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.btn-revision:hover:not(:disabled) { background: #d97706; }
+.btn-revision:disabled { opacity: 0.6; cursor: not-allowed; }

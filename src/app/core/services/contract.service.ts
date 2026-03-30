@@ -30,6 +30,10 @@ export class ContractService {
     return this.http.post<Contract>(`${this.apiUrl}/${id}/sign-company`, { signatureBase64 });
   }
 
+  rejectContract(id: string, reason: string): Observable<Contract> {
+    return this.http.post<Contract>(`${this.apiUrl}/${id}/reject`, { reason });
+  }
+
   getFileUrl(relativePath: string | null | undefined): string {
     if (!relativePath) return '';
     const baseUrl = environment.apiUrl.replace(/\/api$/, '');

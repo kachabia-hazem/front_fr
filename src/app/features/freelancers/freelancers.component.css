@@ -946,6 +946,12 @@
   color: #4b5563;
 }
 
+.stat-reviews {
+  font-size: 0.72rem;
+  color: #9ca3af;
+  margin-left: 2px;
+}
+
 .stat-divider {
   width: 1px;
   height: 14px;

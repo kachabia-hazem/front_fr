@@ -53,6 +53,18 @@ export class ActiveMissionComponent implements OnInit {
   refreshingGit = signal(false);
   gitError = signal('');
   lastGitRefresh = signal<Date | null>(null);
+  testingGitUrl = signal(false);
+  gitUrlValidation = signal<{ valid: boolean; message: string } | null>(null);
+
+  get gitUrlFormatError(): string {
+    const url = this.newGitUrl.trim();
+    if (!url) return '';
+    const pattern = /^https?:\/\/github\.com\/[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+(\.git)?\/?$/;
+    if (!pattern.test(url)) {
+      return 'Format invalide — attendu : https://github.com/username/repository';
+    }
+    return '';
+  }
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly GIT_POLL_INTERVAL_MS = 60_000; // 60 secondes
@@ -61,6 +73,12 @@ export class ActiveMissionComponent implements OnInit {
   selectedFile = signal<File | null>(null);
   deliverableDescription = '';
   uploadingDeliverable = signal(false);
+
+  // Submission
+  showSubmitForm = signal(false);
+  submissionNote = '';
+  submitting = signal(false);
+  submitSuccess = signal(false);
 
   // User role check
   isFreelancer = signal(false);
@@ -235,6 +253,27 @@ export class ActiveMissionComponent implements OnInit {
 
   // ── Git Activity ──────────────────────────────────────────────────────────
 
+  onGitUrlChange(): void {
+    this.gitUrlValidation.set(null);
+  }
+
+  testGitUrl(): void {
+    const url = this.newGitUrl.trim();
+    if (!url || this.gitUrlFormatError) return;
+    this.testingGitUrl.set(true);
+    this.gitUrlValidation.set(null);
+    this.activeMissionService.validateGitUrl(this.missionId, url).subscribe({
+      next: (result) => {
+        this.gitUrlValidation.set(result);
+        this.testingGitUrl.set(false);
+      },
+      error: () => {
+        this.gitUrlValidation.set({ valid: false, message: 'Impossible de vérifier le dépôt.' });
+        this.testingGitUrl.set(false);
+      },
+    });
+  }
+
   saveGitUrl(): void {
     const url = this.newGitUrl.trim();
     if (!url) return;
@@ -243,6 +282,7 @@ export class ActiveMissionComponent implements OnInit {
       next: (m) => {
         this.mission.set(m);
         this.showGitUrlForm.set(false);
+        this.gitUrlValidation.set(null);
       },
       error: () => this.gitError.set('Failed to save repository URL.'),
     });
@@ -315,10 +355,39 @@ export class ActiveMissionComponent implements OnInit {
   getStatusClass(status: string): string {
     switch (status) {
       case 'ACTIVE': return 'status-active';
+      case 'SUBMITTED': return 'status-submitted';
       case 'COMPLETED': return 'status-completed';
       case 'PAUSED': return 'status-paused';
       case 'DISPUTE': return 'status-dispute';
       default: return '';
     }
+  }
+
+  isDeadlinePassed(): boolean {
+    const end = this.mission()?.endDate;
+    if (!end) return false;
+    return new Date(end) <= new Date();
+  }
+
+  // ── Submission ────────────────────────────────────────────────────────────
+
+  canSubmit(): boolean {
+    const status = this.mission()?.status;
+    return status === 'ACTIVE' || status === 'PAUSED';
+  }
+
+  submitMission(): void {
+    this.submitting.set(true);
+    this.activeMissionService.submitMission(this.missionId, this.submissionNote || undefined).subscribe({
+      next: (m) => {
+        this.mission.set(m);
+        this.showSubmitForm.set(false);
+        this.submissionNote = '';
+        this.submitting.set(false);
+        this.submitSuccess.set(true);
+        setTimeout(() => this.submitSuccess.set(false), 4000);
+      },
+      error: () => this.submitting.set(false),
+    });
   }
 }

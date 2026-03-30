@@ -32,6 +32,7 @@ export interface Freelancer extends User {
   portfolioUrl?: string;
   cvUrl?: string;
   rating: number;
+  reviewCount: number;
   completedProjects: number;
   profileViews?: number;
   searchAppearances?: number;
@@ -61,6 +62,18 @@ export interface Company extends User {
   description?: string;
   numberOfEmployees?: number;
   postedProjects: number;
+}
+
+export interface Review {
+  id: string;
+  missionId: string;
+  freelancerId: string;
+  companyId: string;
+  companyName: string;
+  companyLogo?: string;
+  rating: number;
+  comment?: string;
+  createdAt: string;
 }
 
 export interface Admin extends User {

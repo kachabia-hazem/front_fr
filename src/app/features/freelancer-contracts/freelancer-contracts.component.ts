@@ -2,6 +2,7 @@ import {
   Component, OnInit, signal, computed, ViewChild, ElementRef, AfterViewInit
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 
 import { SafeUrlPipe } from '../../shared/pipes/safe-url.pipe';
@@ -15,7 +16,7 @@ import { Freelancer } from '../../core/models';
 @Component({
   selector: 'app-freelancer-contracts',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, SafeUrlPipe],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, SafeUrlPipe],
   templateUrl: './freelancer-contracts.component.html',
   styleUrl: './freelancer-contracts.component.css',
 })
@@ -38,6 +39,13 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
   pdfBlobUrl        = signal<string | null>(null);
   pdfLoading        = signal(false);
 
+  // Reject modal
+  showRejectModal   = signal(false);
+  rejectReason      = '';
+  rejecting         = signal(false);
+  rejectError       = signal('');
+  contractToReject  = signal<Contract | null>(null);
+
   // Signature pad state
   private ctx: CanvasRenderingContext2D | null = null;
   private drawing = false;
@@ -55,8 +63,9 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
   });
   currentPosition = computed(() => this.freelancer()?.currentPosition || 'Freelancer');
 
-  pendingCount = computed(() => this.contracts().filter(c => c.status === 'PENDING_SIGNATURE').length);
-  signedCount  = computed(() => this.contracts().filter(c => c.status === 'SIGNED').length);
+  pendingCount  = computed(() => this.contracts().filter(c => c.status === 'PENDING_SIGNATURE').length);
+  signedCount   = computed(() => this.contracts().filter(c => c.status === 'SIGNED').length);
+  rejectedCount = computed(() => this.contracts().filter(c => c.status === 'REJECTED').length);
 
   readonly PAGE_SIZE = 7;
   contractPage = signal(0);
@@ -238,6 +247,47 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // ── Reject flow ───────────────────────────────────────────────────────────
+
+  openRejectModal(contract: Contract, event?: Event): void {
+    event?.stopPropagation();
+    this.contractToReject.set(contract);
+    this.rejectReason = '';
+    this.rejectError.set('');
+    this.showRejectModal.set(true);
+  }
+
+  closeRejectModal(): void {
+    this.showRejectModal.set(false);
+    this.contractToReject.set(null);
+    this.rejectReason = '';
+    this.rejectError.set('');
+  }
+
+  confirmReject(): void {
+    const contract = this.contractToReject();
+    if (!contract) return;
+
+    this.rejecting.set(true);
+    this.rejectError.set('');
+
+    this.contractService.rejectContract(contract.id, this.rejectReason).subscribe({
+      next: (updated) => {
+        this.rejecting.set(false);
+        this.contracts.update(list => list.map(c => c.id === updated.id ? updated : c));
+        this.closeRejectModal();
+        // If the main detail modal was open for this contract, close it too
+        if (this.selectedContract()?.id === contract.id) {
+          this.closeModal();
+        }
+      },
+      error: (err) => {
+        this.rejecting.set(false);
+        this.rejectError.set(err?.error?.message || 'Failed to reject contract. Please try again.');
+      },
+    });
+  }
+
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   getFileUrl(path: string | null | undefined): string {
@@ -256,6 +306,8 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
   statusLabel(status: string): string {
     if (status === 'PENDING_SIGNATURE') return 'Pending Signature';
     if (status === 'SIGNED') return 'Signed';
+    if (status === 'REJECTED') return 'Rejected';
+    if (status === 'CANCELLED') return 'Cancelled';
     return status;
   }
 

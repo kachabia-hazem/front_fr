@@ -1,3 +1,5 @@
+export type ActiveMissionStatus = 'ACTIVE' | 'SUBMITTED' | 'COMPLETED' | 'PAUSED' | 'DISPUTE';
+
 export interface ActiveMission {
   id: string;
   contractId: string;
@@ -5,7 +7,7 @@ export interface ActiveMission {
   companyId: string;
   title: string;
   description: string;
-  status: 'ACTIVE' | 'COMPLETED' | 'PAUSED' | 'DISPUTE';
+  status: ActiveMissionStatus;
   progress: number;
   startDate: string;
   endDate: string;
@@ -15,6 +17,13 @@ export interface ActiveMission {
   gitLastPushDate?: string;
   gitLastCommitMessage?: string;
   createdAt: string;
+  // Submission fields
+  submittedAt?: string;
+  submittedNote?: string;
+  // Validation fields
+  validatedAt?: string;
+  validationNote?: string;
+  validationRating?: number;
 }
 
 export interface Task {

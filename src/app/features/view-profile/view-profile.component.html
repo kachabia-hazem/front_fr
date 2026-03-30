@@ -333,5 +333,86 @@
         }
       </section>
     }
+
+    <!-- Reviews Section -->
+    <section class="collapsible-section reviews-section">
+      <button class="section-header" (click)="toggleSection('reviews')">
+        <div class="section-header-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <h3>Reviews</h3>
+          @if (reviews().length > 0) {
+            <span class="reviews-count-badge">{{ reviews().length }}</span>
+          }
+        </div>
+        <div class="reviews-header-right">
+          @if (freelancer()!.rating && reviews().length > 0) {
+            <div class="reviews-avg">
+              <span class="reviews-avg-score">{{ freelancer()!.rating | number:'1.1-1' }}</span>
+              <div class="reviews-avg-stars">
+                @for (star of getStars(5); track star) {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14" height="14"
+                    viewBox="0 0 24 24"
+                    [attr.fill]="star <= (freelancer()!.rating || 0) ? '#f59e0b' : '#e5e7eb'"
+                    [attr.stroke]="star <= (freelancer()!.rating || 0) ? '#f59e0b' : '#d1d5db'"
+                    stroke-width="1"
+                  >
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                }
+              </div>
+            </div>
+          }
+          <svg [class.rotated]="showReviews()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </button>
+
+      @if (showReviews()) {
+        <div class="section-content">
+          @if (reviews().length === 0) {
+            <p class="empty-message">No reviews yet.</p>
+          } @else {
+            <div class="reviews-list">
+              @for (review of reviews(); track review.id) {
+                <div class="review-card">
+                  <div class="review-header">
+                    <div class="review-company">
+                      @if (review.companyLogo) {
+                        <img [src]="getCompanyLogoUrl(review.companyLogo)" [alt]="review.companyName" class="review-company-logo" />
+                      } @else {
+                        <div class="review-company-avatar">{{ review.companyName.charAt(0) }}</div>
+                      }
+                      <span class="review-company-name">{{ review.companyName }}</span>
+                    </div>
+                    <div class="review-meta">
+                      <div class="review-stars">
+                        @for (star of getStars(5); track star) {
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14" height="14"
+                            viewBox="0 0 24 24"
+                            [attr.fill]="star <= review.rating ? '#f59e0b' : '#e5e7eb'"
+                            [attr.stroke]="star <= review.rating ? '#f59e0b' : '#d1d5db'"
+                            stroke-width="1"
+                          >
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                          </svg>
+                        }
+                      </div>
+                      <span class="review-date">{{ formatDate(review.createdAt) }}</span>
+                    </div>
+                  </div>
+                  @if (review.comment) {
+                    <p class="review-comment">{{ review.comment }}</p>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </section>
+
   </div>
 }

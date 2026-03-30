@@ -78,6 +78,17 @@
         <p>Loading mission workspace...</p>
       </div>
     } @else if (mission()) {
+      <!-- GitHub URL Required Banner -->
+      @if (isFreelancer() && !mission()?.gitRepositoryUrl) {
+        <div class="git-required-banner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div class="git-required-banner-text">
+            <strong>GitHub Repository URL manquant</strong>
+            <span>L'URL du dépôt GitHub est requise pour permettre à l'entreprise de valider votre mission. Veuillez la renseigner dans la section <em>Git Activity</em> ci-dessous.</span>
+          </div>
+        </div>
+      }
+
       <!-- Mission Header -->
       <div class="mission-header">
         <div class="mission-header-info">
@@ -331,14 +342,47 @@
 
         @if (!mission()?.gitRepositoryUrl || showGitUrlForm()) {
           <div class="git-url-form">
-            <label class="form-label">GitHub Repository URL</label>
+            <label class="form-label">
+              GitHub Repository URL
+              <span class="required-star">*</span>
+              <span class="required-hint">— requis pour la validation de mission par l'entreprise</span>
+            </label>
             <div class="git-url-row">
-              <input class="form-input" [(ngModel)]="newGitUrl" placeholder="https://github.com/username/repo" />
-              <button class="btn-primary" (click)="saveGitUrl()" [disabled]="!newGitUrl.trim()">Save</button>
+              <input class="form-input"
+                     [class.form-input-required]="!newGitUrl.trim()"
+                     [class.form-input-valid]="gitUrlValidation()?.valid === true"
+                     [class.form-input-invalid]="gitUrlValidation()?.valid === false || !!gitUrlFormatError"
+                     [(ngModel)]="newGitUrl"
+                     (ngModelChange)="onGitUrlChange()"
+                     placeholder="https://github.com/username/repo" />
+              <button class="btn-test" (click)="testGitUrl()" [disabled]="!newGitUrl.trim() || !!gitUrlFormatError || testingGitUrl()">
+                @if (testingGitUrl()) {
+                  <span class="btn-spinner"></span>
+                } @else {
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                }
+                Test
+              </button>
+              <button class="btn-primary" (click)="saveGitUrl()" [disabled]="!newGitUrl.trim() || !!gitUrlFormatError">Save</button>
               @if (mission()?.gitRepositoryUrl) {
                 <button class="btn-ghost" (click)="showGitUrlForm.set(false)">Cancel</button>
               }
             </div>
+            @if (gitUrlFormatError) {
+              <div class="git-validation-msg git-validation-error">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                {{ gitUrlFormatError }}
+              </div>
+            } @else if (gitUrlValidation()) {
+              <div class="git-validation-msg" [class.git-validation-success]="gitUrlValidation()!.valid" [class.git-validation-error]="!gitUrlValidation()!.valid">
+                @if (gitUrlValidation()!.valid) {
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                } @else {
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                }
+                {{ gitUrlValidation()!.message }}
+              </div>
+            }
           </div>
         } @else {
           <div class="git-info-grid">
@@ -432,6 +476,88 @@
               </div>
             }
           </div>
+        }
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <!-- SECTION D: MISSION VALIDATION (Freelancer Submission) -->
+      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      <section class="workspace-section validation-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Mission Validation
+          </h2>
+        </div>
+
+        <!-- Completed state -->
+        @if (mission()?.status === 'COMPLETED') {
+          <div class="validation-banner validation-banner-success">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <div>
+              <p class="validation-banner-title">Mission Validated ✅</p>
+              <p class="validation-banner-sub">The company has approved your work. This mission is now complete.</p>
+              @if (mission()?.validationNote) {
+                <p class="validation-feedback">"{{ mission()!.validationNote }}"</p>
+              }
+              @if (mission()?.validationRating) {
+                <div class="validation-stars">
+                  @for (s of [1,2,3,4,5]; track s) {
+                    <svg [class.star-filled]="s <= (mission()!.validationRating || 0)"
+                         xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Submitted — awaiting company review -->
+        @else if (mission()?.status === 'SUBMITTED') {
+          <div class="validation-banner validation-banner-pending">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <div>
+              <p class="validation-banner-title">Submitted — Awaiting Company Review</p>
+              <p class="validation-banner-sub">Submitted on {{ mission()!.submittedAt | date:'dd/MM/yyyy HH:mm' }}. The company will review and validate your work.</p>
+              @if (mission()?.submittedNote) {
+                <p class="validation-feedback">"{{ mission()!.submittedNote }}"</p>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Active — freelancer can submit -->
+        @else if (isFreelancer() && canSubmit()) {
+          @if (submitSuccess()) {
+            <div class="validation-banner validation-banner-pending">
+              <p>Your submission was sent. Waiting for a response...</p>
+            </div>
+          }
+          @if (!showSubmitForm()) {
+            <div class="submit-cta">
+              <p class="submit-cta-text">Finished your work? Submit the mission to notify the company for final validation.</p>
+              <button class="btn-submit-mission" (click)="showSubmitForm.set(true)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Mark as Completed
+              </button>
+            </div>
+          } @else {
+            <div class="submit-form">
+              <label class="submit-form-label">Delivery note (optional)</label>
+              <textarea class="form-input"
+                        [(ngModel)]="submissionNote"
+                        rows="3"
+                        placeholder="Describe what you completed, any notes for the company, links to demos, etc."></textarea>
+              <div class="submit-form-actions">
+                <button class="btn-submit-mission" (click)="submitMission()" [disabled]="submitting()">
+                  @if (submitting()) { Submitting... } @else { Confirm Submission }
+                </button>
+                <button class="btn-ghost" (click)="showSubmitForm.set(false)">Cancel</button>
+              </div>
+            </div>
+          }
         }
       </section>
     }

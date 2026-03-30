@@ -400,6 +400,9 @@
               <div class="stat-item">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                 <span class="stat-value">{{ f.rating || 0 | number:'1.1-1' }}</span>
+                @if (f.reviewCount) {
+                  <span class="stat-reviews">({{ f.reviewCount }})</span>
+                }
               </div>
               <div class="stat-divider"></div>
               <div class="stat-item">
