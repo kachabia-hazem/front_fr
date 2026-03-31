@@ -37,6 +37,9 @@ export class FreelancerMissionsComponent implements OnInit {
 
   activeMissionsCount = computed(() => this.missions().filter(m => m.status === 'ACTIVE').length);
 
+  confirmDeleteId = signal<string | null>(null);
+  deletingId = signal<string | null>(null);
+
   constructor(
     private freelancerService: FreelancerService,
     private notificationService: NotificationService,
@@ -68,6 +71,29 @@ export class FreelancerMissionsComponent implements OnInit {
 
   goToMission(id: string): void {
     this.router.navigate(['/active-mission', id]);
+  }
+
+  requestDelete(missionId: string, event: Event): void {
+    event.stopPropagation();
+    this.confirmDeleteId.set(missionId);
+  }
+
+  cancelDelete(event?: Event): void {
+    event?.stopPropagation();
+    this.confirmDeleteId.set(null);
+  }
+
+  confirmDelete(missionId: string, event: Event): void {
+    event.stopPropagation();
+    this.deletingId.set(missionId);
+    this.activeMissionService.deleteFromHistory(missionId).subscribe({
+      next: () => {
+        this.missions.update(list => list.filter(m => m.id !== missionId));
+        this.confirmDeleteId.set(null);
+        this.deletingId.set(null);
+      },
+      error: () => this.deletingId.set(null),
+    });
   }
 
   goBack(): void {

@@ -278,3 +278,26 @@
 .submit-form-label { font-size: 0.83rem; font-weight: 600; color: #374151; }
 :host-context(body.dark-theme) .submit-form-label { color: #d1d5db; }
 .submit-form-actions { display: flex; align-items: center; gap: 10px; }
+
+.back-to-missions-btn { display: inline-flex; align-items: center; gap: 7px; background: none; border: 1px solid #e8eaed; color: #374151; padding: 7px 14px; border-radius: 8px; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: background 0.18s, border-color 0.18s; margin-bottom: 18px; }
+.back-to-missions-btn:hover { background: #f3f4f6; border-color: #d1d5db; }
+:host-context(body.dark-theme) .back-to-missions-btn { border-color: #2a3040; color: #d1d5db; }
+:host-context(body.dark-theme) .back-to-missions-btn:hover { background: rgba(255,255,255,0.06); border-color: #374151; }
+
+.validation-banner-body { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+
+.history-actions { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(0,0,0,0.08); }
+:host-context(body.dark-theme) .history-actions { border-top-color: rgba(255,255,255,0.08); }
+
+.btn-delete-history-detail { display: flex; align-items: center; gap: 6px; background: none; border: 1px solid #fca5a5; color: #dc2626; padding: 7px 14px; border-radius: 8px; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: background 0.18s; }
+.btn-delete-history-detail:hover { background: #fee2e2; }
+:host-context(body.dark-theme) .btn-delete-history-detail { border-color: rgba(220,38,38,0.4); color: #f87171; }
+:host-context(body.dark-theme) .btn-delete-history-detail:hover { background: rgba(220,38,38,0.12); }
+
+.delete-confirm-block { display: flex; flex-direction: column; gap: 10px; }
+.delete-confirm-question { font-size: 0.85rem; color: #374151; }
+:host-context(body.dark-theme) .delete-confirm-question { color: #d1d5db; }
+.delete-confirm-btns { display: flex; align-items: center; gap: 10px; }
+.btn-delete-confirm-detail { background: #dc2626; color: #fff; border: none; padding: 8px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.18s; }
+.btn-delete-confirm-detail:hover:not(:disabled) { background: #b91c1c; }
+.btn-delete-confirm-detail:disabled { opacity: 0.6; cursor: not-allowed; }

@@ -1018,3 +1018,52 @@
     align-items: flex-start;
   }
 }
+
+/* ── Pagination ── */
+.notif-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 28px 0 8px;
+  flex-wrap: wrap;
+}
+.pag-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #e8eaed;
+  background: #fff;
+  color: #374151;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pag-btn:hover:not(:disabled):not(.pag-active) {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+.pag-btn.pag-active {
+  background: #3793B0;
+  border-color: #3793B0;
+  color: #fff;
+}
+.pag-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.pag-arrow { padding: 0 8px; }
+.pag-ellipsis {
+  font-size: 0.88rem;
+  color: #9ca3af;
+  padding: 0 4px;
+  line-height: 36px;
+}
+:host-context(body.dark-theme) .pag-btn { background: #1e2535; border-color: #2a3040; color: #d1d5db; }
+:host-context(body.dark-theme) .pag-btn:hover:not(:disabled):not(.pag-active) { background: #252d3f; }
+:host-context(body.dark-theme) .pag-btn.pag-active { background: #3793B0; border-color: #3793B0; color: #fff; }

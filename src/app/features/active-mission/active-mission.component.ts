@@ -61,7 +61,7 @@ export class ActiveMissionComponent implements OnInit {
     if (!url) return '';
     const pattern = /^https?:\/\/github\.com\/[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+(\.git)?\/?$/;
     if (!pattern.test(url)) {
-      return 'Format invalide — attendu : https://github.com/username/repository';
+      return 'Invalid format — expected: https://github.com/username/repository';
     }
     return '';
   }
@@ -79,6 +79,10 @@ export class ActiveMissionComponent implements OnInit {
   submissionNote = '';
   submitting = signal(false);
   submitSuccess = signal(false);
+
+  // History deletion
+  showDeleteConfirm = signal(false);
+  deletingFromHistory = signal(false);
 
   // User role check
   isFreelancer = signal(false);
@@ -99,7 +103,7 @@ export class ActiveMissionComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    public router: Router,
     private location: Location,
     private activeMissionService: ActiveMissionService,
     private freelancerService: FreelancerService,
@@ -268,7 +272,7 @@ export class ActiveMissionComponent implements OnInit {
         this.testingGitUrl.set(false);
       },
       error: () => {
-        this.gitUrlValidation.set({ valid: false, message: 'Impossible de vérifier le dépôt.' });
+        this.gitUrlValidation.set({ valid: false, message: 'Unable to verify the repository.' });
         this.testingGitUrl.set(false);
       },
     });
@@ -388,6 +392,16 @@ export class ActiveMissionComponent implements OnInit {
         setTimeout(() => this.submitSuccess.set(false), 4000);
       },
       error: () => this.submitting.set(false),
+    });
+  }
+
+  // ── History deletion ──────────────────────────────────────────────────────
+
+  deleteFromHistory(): void {
+    this.deletingFromHistory.set(true);
+    this.activeMissionService.deleteFromHistory(this.missionId).subscribe({
+      next: () => this.router.navigate(['/freelancer-missions']),
+      error: () => this.deletingFromHistory.set(false),
     });
   }
 }

@@ -29,6 +29,8 @@ export class CompanyMissionsComponent implements OnInit {
   filterStatus = signal<string>('ALL');
   searchQuery = signal<string>('');
   searchFocused = false;
+  selectedMission = signal<Mission | null>(null);
+  detailLoading = signal(false);
 
   // Pagination
   readonly PAGE_SIZE = 7;
@@ -95,7 +97,7 @@ export class CompanyMissionsComponent implements OnInit {
     private notificationService: NotificationService,
     public authService: AuthService,
     public themeService: ThemeService,
-    private router: Router,
+    public router: Router,
     private location: Location,
   ) {}
 
@@ -153,7 +155,44 @@ export class CompanyMissionsComponent implements OnInit {
   }
 
   viewMission(id: string | undefined): void {
-    if (id) this.router.navigate(['/missions', id]);
+    if (!id) return;
+    this.detailLoading.set(true);
+    this.selectedMission.set(null);
+    this.missionService.getMissionById(id).subscribe({
+      next: (mission) => {
+        this.selectedMission.set(mission);
+        this.detailLoading.set(false);
+      },
+      error: () => this.detailLoading.set(false),
+    });
+  }
+
+  closeMissionDetail(): void {
+    this.selectedMission.set(null);
+  }
+
+  getTimeAgo(dateStr: string): string {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    if (diffMins < 60) return `${diffMins} min ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays < 30) return `${diffDays}d ago`;
+    const diffMonths = Math.floor(diffDays / 30);
+    return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+  }
+
+  getSkillsList(skills: string): string[] {
+    return skills.split(/[,;]+/).map(s => s.trim()).filter(s => s.length > 0);
+  }
+
+  getTruncatedDescription(text: string | undefined, maxLength = 300): string {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
   }
 
   viewApplications(event: Event, missionId: string | undefined): void {

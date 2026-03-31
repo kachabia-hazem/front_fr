@@ -48,7 +48,7 @@ export class CompanyMissionViewComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    public router: Router,
     private activeMissionService: ActiveMissionService,
     private companyService: CompanyService,
     private notificationService: NotificationService,

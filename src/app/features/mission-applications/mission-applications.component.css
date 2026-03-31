@@ -4,6 +4,12 @@
   min-height: 100vh;
 }
 
+/* ── Back button ── */
+.back-to-missions-btn { display: inline-flex; align-items: center; gap: 7px; background: none; border: 1px solid #e8eaed; color: #374151; padding: 7px 14px; border-radius: 8px; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: background 0.18s, border-color 0.18s; margin-bottom: 18px; }
+.back-to-missions-btn:hover { background: #f3f4f6; border-color: #d1d5db; }
+:host-context(body.dark-theme) .back-to-missions-btn { border-color: #2a3040; color: #d1d5db; }
+:host-context(body.dark-theme) .back-to-missions-btn:hover { background: rgba(255,255,255,0.06); border-color: #374151; }
+
 /* ── Sidebar (copié depuis company-missions) ── */
 .sidebar {
   width: 260px;

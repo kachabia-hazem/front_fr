@@ -98,6 +98,19 @@ export class AuthService {
     return this.currentUserSignal()?.token ?? null;
   }
 
+  getRefreshToken(): string | null {
+    return this.currentUserSignal()?.refreshToken ?? null;
+  }
+
+  // ── Token Refresh ──
+
+  refreshAccessToken(): Observable<AuthResponse> {
+    const refreshToken = this.getRefreshToken();
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/refresh`, { refreshToken })
+      .pipe(tap((response) => this.handleAuthSuccess(response)));
+  }
+
   // ── Public helper to set auth state ──
 
   setAuthenticated(response: AuthResponse): void {

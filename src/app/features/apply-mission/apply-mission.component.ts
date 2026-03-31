@@ -268,17 +268,21 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
 
   private async loadPdf(url: string): Promise<void> {
     this.pdfLoading = true;
+    this.cdr.detectChanges();
     try {
       const doc = await pdfjsLib.getDocument(url).promise;
       this.pdfDoc = doc;
       this.pdfTotalPages = doc.numPages;
       this.pdfCurrentPage = 1;
       this.pdfLoading = false;
-      // Wait for canvas to be in DOM
-      setTimeout(() => this.renderPage(1), 0);
+      // Trigger DOM update so the canvas element is rendered before we paint on it
+      this.cdr.detectChanges();
+      // Small delay to let the browser lay out the canvas at its real width
+      setTimeout(() => this.renderPage(1), 50);
     } catch {
       this.pdfLoading = false;
       this.pdfDoc = null;
+      this.cdr.detectChanges();
     }
   }
 
@@ -289,16 +293,19 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
     const canvas = this.pdfCanvas.nativeElement;
     const ctx = canvas.getContext('2d')!;
 
-    // Scale to fit container width (~480px)
-    const containerWidth = canvas.parentElement?.clientWidth || 480;
+    // Scale to fit container width — fall back to 480 only if layout hasn't happened yet
+    const containerWidth = (canvas.parentElement?.clientWidth || 0) > 0
+      ? canvas.parentElement!.clientWidth
+      : 480;
     const viewport = page.getViewport({ scale: 1 });
-    const scale = (containerWidth - 2) / viewport.width; // -2 for border
+    const scale = (containerWidth - 2) / viewport.width;
     const scaledViewport = page.getViewport({ scale });
 
     canvas.width = scaledViewport.width;
     canvas.height = scaledViewport.height;
 
     await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
+    this.cdr.detectChanges();
   }
 
   goToPdfPage(page: number): void {

@@ -95,6 +95,17 @@ export class FreelancerNotificationsComponent implements OnInit {
 
   expandedIds = signal<Set<string>>(new Set());
 
+  // Pagination
+  readonly PAGE_SIZE = 5;
+  currentPage = signal(1);
+  totalPages = computed(() => Math.max(1, Math.ceil(this.filtered().length / this.PAGE_SIZE)));
+  paginatedNotifications = computed(() => {
+    const page = this.currentPage();
+    const start = (page - 1) * this.PAGE_SIZE;
+    return this.filtered().slice(start, start + this.PAGE_SIZE);
+  });
+  pageNumbers = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
+
   constructor(
     private notificationService: NotificationService,
     private freelancerService: FreelancerService,
@@ -129,11 +140,12 @@ export class FreelancerNotificationsComponent implements OnInit {
   }
 
   private scrollToNotification(id: string): void {
-    this.expandedIds.update(set => {
-      const next = new Set(set);
-      next.add(id);
-      return next;
-    });
+    this.expandedIds.update(set => { const next = new Set(set); next.add(id); return next; });
+    // Jump to the correct page first
+    const index = this.filtered().findIndex(n => n.id === id);
+    if (index !== -1) {
+      this.currentPage.set(Math.floor(index / this.PAGE_SIZE) + 1);
+    }
     setTimeout(() => {
       const el = document.getElementById('notif-' + id);
       if (el) {
@@ -174,6 +186,7 @@ export class FreelancerNotificationsComponent implements OnInit {
 
   setFilterType(type: FilterType): void {
     this.filterType.set(type);
+    this.currentPage.set(1);
   }
 
   clearFilters(): void {
@@ -181,6 +194,14 @@ export class FreelancerNotificationsComponent implements OnInit {
     this.filterType.set('all');
     this.selectedSender.set('');
     this.selectedDate.set('');
+    this.currentPage.set(1);
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   toggleSidebar(): void {
@@ -242,13 +263,16 @@ export class FreelancerNotificationsComponent implements OnInit {
 
   onSearchChange(value: string): void {
     this.searchQuery.set(value);
+    this.currentPage.set(1);
   }
 
   onSenderChange(value: string): void {
     this.selectedSender.set(value);
+    this.currentPage.set(1);
   }
 
   onDateChange(value: string): void {
     this.selectedDate.set(value);
+    this.currentPage.set(1);
   }
 }

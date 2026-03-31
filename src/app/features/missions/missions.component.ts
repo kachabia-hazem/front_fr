@@ -420,6 +420,7 @@ export class MissionsComponent implements OnInit {
         this.computeTjmBounds();
         this.buildHistogram();
         this.applyFilters();
+        this.cdr.detectChanges();
 
         // Si on vient de la home avec mode AI, déclencher la recherche
         if (this.aiSearchMode && this.aiSearchPrompt) {
@@ -428,6 +429,7 @@ export class MissionsComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
+        this.cdr.detectChanges();
       },
     });
   }

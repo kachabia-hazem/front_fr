@@ -95,6 +95,11 @@ export class ActiveMissionService {
     return this.http.get<ActiveMission[]>(`${this.apiUrl}/pending-validation`);
   }
 
+  /** Freelancer: remove a completed mission from history */
+  deleteFromHistory(missionId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${missionId}/history`);
+  }
+
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   getFileUrl(relativePath: string | null | undefined): string {

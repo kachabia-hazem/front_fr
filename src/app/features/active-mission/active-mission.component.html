@@ -12,6 +12,10 @@
         </button>
       </div>
       <nav class="sidebar-nav">
+        <a routerLink="/" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </a>
         <a routerLink="/freelancer-dashboard" routerLinkActive="active" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
           Dashboard
@@ -63,15 +67,17 @@
           <span class="sidebar-user-role">{{ currentPosition() }}</span>
         </div>
       </div>
-      <a class="sidebar-back-btn" (click)="goBack()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        Back
-      </a>
     </div>
   </aside>
 
   <!-- Main Content -->
   <main class="mission-main">
+    <!-- Back button -->
+    <button class="back-to-missions-btn" (click)="router.navigate(['/freelancer-missions'])">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to missions
+    </button>
+
     @if (loading()) {
       <div class="page-loading">
         <div class="spinner"></div>
@@ -83,8 +89,8 @@
         <div class="git-required-banner">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <div class="git-required-banner-text">
-            <strong>GitHub Repository URL manquant</strong>
-            <span>L'URL du dépôt GitHub est requise pour permettre à l'entreprise de valider votre mission. Veuillez la renseigner dans la section <em>Git Activity</em> ci-dessous.</span>
+            <strong>GitHub Repository URL missing</strong>
+            <span>The GitHub repository URL is required to allow the company to validate your mission. Please set it in the <em>Git Activity</em> section below.</span>
           </div>
         </div>
       }
@@ -129,7 +135,7 @@
                [cdkDropListConnectedTo]="['inprogress-list', 'done-list']"
                (cdkDropListDropped)="drop($event, 'TODO')">
             <div class="col-header col-todo">
-              <span class="col-title">À faire</span>
+              <span class="col-title">To Do</span>
               <span class="col-count">{{ todoTasks().length }}</span>
             </div>
             @for (task of todoTasks(); track task.id) {
@@ -190,7 +196,7 @@
                [cdkDropListConnectedTo]="['todo-list', 'done-list']"
                (cdkDropListDropped)="drop($event, 'IN_PROGRESS')">
             <div class="col-header col-inprogress">
-              <span class="col-title">En cours</span>
+              <span class="col-title">In Progress</span>
               <span class="col-count">{{ inProgressTasks().length }}</span>
             </div>
             @for (task of inProgressTasks(); track task.id) {
@@ -251,7 +257,7 @@
                [cdkDropListConnectedTo]="['todo-list', 'inprogress-list']"
                (cdkDropListDropped)="drop($event, 'DONE')">
             <div class="col-header col-done">
-              <span class="col-title">Terminé</span>
+              <span class="col-title">Done</span>
               <span class="col-count">{{ doneTasks().length }}</span>
             </div>
             @for (task of doneTasks(); track task.id) {
@@ -345,7 +351,7 @@
             <label class="form-label">
               GitHub Repository URL
               <span class="required-star">*</span>
-              <span class="required-hint">— requis pour la validation de mission par l'entreprise</span>
+              <span class="required-hint">— required for mission validation by the company</span>
             </label>
             <div class="git-url-row">
               <input class="form-input"
@@ -494,7 +500,7 @@
         @if (mission()?.status === 'COMPLETED') {
           <div class="validation-banner validation-banner-success">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <div>
+            <div class="validation-banner-body">
               <p class="validation-banner-title">Mission Validated ✅</p>
               <p class="validation-banner-sub">The company has approved your work. This mission is now complete.</p>
               @if (mission()?.validationNote) {
@@ -507,6 +513,26 @@
                          xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none">
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
+                  }
+                </div>
+              }
+              @if (isFreelancer()) {
+                <div class="history-actions">
+                  @if (!showDeleteConfirm()) {
+                    <button class="btn-delete-history-detail" (click)="showDeleteConfirm.set(true)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                      Remove from history
+                    </button>
+                  } @else {
+                    <div class="delete-confirm-block">
+                      <p class="delete-confirm-question">Are you sure you want to remove this mission from your history? This action is irreversible.</p>
+                      <div class="delete-confirm-btns">
+                        <button class="btn-delete-confirm-detail" (click)="deleteFromHistory()" [disabled]="deletingFromHistory()">
+                          @if (deletingFromHistory()) { Deleting... } @else { Yes, delete }
+                        </button>
+                        <button class="btn-ghost" (click)="showDeleteConfirm.set(false)">Cancel</button>
+                      </div>
+                    </div>
                   }
                 </div>
               }

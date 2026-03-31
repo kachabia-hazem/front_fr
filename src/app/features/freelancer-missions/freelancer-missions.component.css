@@ -261,6 +261,22 @@
 }
 .mission-dates svg { flex-shrink: 0; }
 
-.mission-card-footer { border-top: 1px solid #e8eaed; padding-top: 12px; }
+.mission-card-footer { border-top: 1px solid #e8eaed; padding-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 :host-context(body.dark-theme) .mission-card-footer { border-top-color: #2a3040; }
 .view-link { font-size: 0.85rem; font-weight: 600; color: #3793B0; }
+
+.btn-delete-history { display: flex; align-items: center; gap: 5px; background: none; border: 1px solid #fca5a5; color: #dc2626; padding: 5px 10px; border-radius: 7px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background 0.18s, color 0.18s; }
+.btn-delete-history:hover { background: #fee2e2; }
+:host-context(body.dark-theme) .btn-delete-history { border-color: rgba(220,38,38,0.4); color: #f87171; }
+:host-context(body.dark-theme) .btn-delete-history:hover { background: rgba(220,38,38,0.12); }
+
+.delete-confirm-inline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; width: 100%; }
+.delete-confirm-text { font-size: 0.78rem; color: #dc2626; font-weight: 600; flex: 1; }
+:host-context(body.dark-theme) .delete-confirm-text { color: #f87171; }
+.btn-delete-confirm { background: #dc2626; color: #fff; border: none; padding: 5px 12px; border-radius: 7px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background 0.18s; }
+.btn-delete-confirm:hover:not(:disabled) { background: #b91c1c; }
+.btn-delete-confirm:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-delete-cancel { background: none; border: 1px solid #d1d5db; color: #6b7280; padding: 5px 10px; border-radius: 7px; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+.btn-delete-cancel:hover { background: #f3f4f6; }
+:host-context(body.dark-theme) .btn-delete-cancel { border-color: #374151; color: #9ca3af; }
+:host-context(body.dark-theme) .btn-delete-cancel:hover { background: rgba(255,255,255,0.05); }

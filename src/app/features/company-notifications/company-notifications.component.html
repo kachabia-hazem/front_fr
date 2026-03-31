@@ -18,6 +18,10 @@
       </div>
 
       <nav class="sidebar-nav">
+        <a routerLink="/" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </a>
         <a routerLink="/company-dashboard" routerLinkActive="active" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -101,13 +105,6 @@
           <span class="sidebar-user-role">Company</span>
         </div>
       </div>
-      <a class="sidebar-back-btn" (click)="goBack()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
-        </svg>
-        Back
-      </a>
     </div>
   </aside>
 
@@ -209,7 +206,7 @@
       </div>
     } @else {
       <div class="notif-list">
-        @for (notif of filtered(); track notif.id) {
+        @for (notif of paginatedNotifications(); track notif.id) {
           <div class="notif-item" [id]="'notif-' + notif.id" [class.notif-unread]="!notif.isRead"
             (click)="handleNotificationClick(notif)">
 
@@ -256,8 +253,27 @@
         }
       </div>
 
+      <!-- Pagination -->
+      @if (totalPages() > 1) {
+        <div class="notif-pagination">
+          <button class="pag-btn pag-arrow" (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          @for (p of pageNumbers(); track p) {
+            @if (p === 1 || p === totalPages() || (p >= currentPage() - 1 && p <= currentPage() + 1)) {
+              <button class="pag-btn" [class.pag-active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
+            } @else if (p === currentPage() - 2 || p === currentPage() + 2) {
+              <span class="pag-ellipsis">…</span>
+            }
+          }
+          <button class="pag-btn pag-arrow" (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      }
+
       <p class="notif-count-info">
-        Showing {{ filtered().length }} of {{ notifications().length }} notifications
+        Showing {{ (currentPage() - 1) * PAGE_SIZE + 1 }}–{{ currentPage() * PAGE_SIZE > filtered().length ? filtered().length : currentPage() * PAGE_SIZE }} of {{ filtered().length }} notification{{ filtered().length > 1 ? 's' : '' }}
       </p>
     }
   </main>

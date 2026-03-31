@@ -94,7 +94,7 @@ export class MissionApplicationsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/company-missions']);
   }
 
   accept(event: Event, app: Application): void {
