@@ -41,59 +41,49 @@
         }
       </div>
 
-      <form [formGroup]="emailForm" (ngSubmit)="onSubmit()">
-        <!-- Email field -->
-        <div class="form-field icon-field">
-          <label>Email Address</label>
-          <div class="email-verify-row">
-            <div class="icon-input" style="flex:1">
-              <svg class="field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-              <input type="email" formControlName="email" placeholder="Email Address" [readonly]="emailVerified" />
-            </div>
-            @if (emailVerified) {
-              <span class="verified-badge">&#10003; Verified</span>
-            } @else {
+      <form (ngSubmit)="onSubmit()">
+        <!-- Verification section -->
+        @if (!emailVerified) {
+          <div class="verification-section">
+            <div class="email-verify-row" style="margin-bottom: 0.75rem;">
+              @if (!verificationSent) {
+                <div class="verification-hint" style="flex:1">Click "Send Code" to receive a 6-digit code via email</div>
+              } @else {
+                <div class="verification-label" style="flex:1">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  Enter verification code
+                </div>
+              }
               <button type="button" class="btn-verify" (click)="sendVerificationCode()" [disabled]="verificationLoading || cooldownSeconds > 0">
                 {{ verificationLoading ? 'Sending...' : cooldownSeconds > 0 ? 'Resend (' + cooldownSeconds + 's)' : verificationSent ? 'Resend' : 'Send Code' }}
               </button>
-            }
-          </div>
-
-          <!-- Verification code section -->
-          @if (!emailVerified) {
-            <div class="verification-section">
-              <div class="verification-label">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                Enter verification code
-              </div>
-              <div class="email-verify-row">
-                <input
-                  type="text"
-                  class="code-input"
-                  [(ngModel)]="verificationCode"
-                  [ngModelOptions]="{standalone: true}"
-                  placeholder="000000"
-                  maxlength="6"
-                  [disabled]="!verificationSent"
-                />
-                <button
-                  type="button"
-                  class="btn-confirm-code"
-                  (click)="submitVerificationCode()"
-                  [disabled]="verificationLoading || !verificationSent || verificationCode.length !== 6"
-                >
-                  {{ verificationLoading ? 'Checking...' : 'Confirm' }}
-                </button>
-              </div>
-              @if (!verificationSent) {
-                <div class="verification-hint">Click "Send Code" to receive a 6-digit code via email</div>
-              }
             </div>
-          }
-          @if (verificationError) {
-            <div class="verification-error">{{ verificationError }}</div>
-          }
-        </div>
+            <div class="email-verify-row">
+              <input
+                type="text"
+                class="code-input"
+                [(ngModel)]="verificationCode"
+                [ngModelOptions]="{standalone: true}"
+                placeholder="000000"
+                maxlength="6"
+                [disabled]="!verificationSent"
+              />
+              <button
+                type="button"
+                class="btn-confirm-code"
+                (click)="submitVerificationCode()"
+                [disabled]="verificationLoading || !verificationSent || verificationCode.length !== 6"
+              >
+                {{ verificationLoading ? 'Checking...' : 'Confirm' }}
+              </button>
+            </div>
+          </div>
+        } @else {
+          <span class="verified-badge">&#10003; Verified</span>
+        }
+        @if (verificationError) {
+          <div class="verification-error">{{ verificationError }}</div>
+        }
 
         <!-- Error -->
         @if (errorMessage) {

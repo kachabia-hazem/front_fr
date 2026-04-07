@@ -21,6 +21,7 @@ export class RegisterComponent {
   companyForm: FormGroup;
   errorMessage = '';
   showPassword = false;
+  showConfirmPassword = false;
 
   genders = Object.values(Gender);
   legalForms = Object.values(LegalForm);
@@ -45,15 +46,18 @@ export class RegisterComponent {
     this.freelancerForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern(/^[a-zA-ZÀ-ÿ\s'-]+$/)]],
       lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern(/^[a-zA-ZÀ-ÿ\s'-]+$/)]],
+      email: ['', [Validators.required, Validators.email]],
       phoneNumber: ['', [Validators.required, Validators.pattern(/^[+0]\d{8,15}$/)]],
       gender: ['', Validators.required],
       dateOfBirth: ['', [Validators.required, this.pastDateValidator, this.minAgeValidator(18)]],
       currentPosition: ['', [Validators.maxLength(100)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(64), this.strongPasswordValidator]],
-    });
+      confirmPassword: ['', Validators.required],
+    }, { validators: this.passwordMatchValidator });
 
     this.companyForm = this.fb.group({
       companyName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      email: ['', [Validators.required, Validators.email]],
       foundationDate: ['', [Validators.required, this.pastDateValidator]],
       websiteUrl: ['', [this.optionalUrlValidator]],
       businessSector: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
@@ -67,12 +71,27 @@ export class RegisterComponent {
       description: ['', [Validators.maxLength(500)]],
       numberOfEmployees: [null, [Validators.min(1), Validators.max(1000000)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(64), this.strongPasswordValidator]],
-    });
+      confirmPassword: ['', Validators.required],
+    }, { validators: this.passwordMatchValidator });
 
     this.restoreFormData();
   }
 
   // ── Custom Validators ──
+
+  private passwordMatchValidator = (group: AbstractControl): ValidationErrors | null => {
+    const passCtrl = group.get('password');
+    const confirmCtrl = group.get('confirmPassword');
+    if (!passCtrl || !confirmCtrl) return null;
+    if (confirmCtrl.value && passCtrl.value !== confirmCtrl.value) {
+      confirmCtrl.setErrors({ ...(confirmCtrl.errors ?? {}), passwordMismatch: true });
+    } else if (confirmCtrl.errors?.['passwordMismatch']) {
+      const errors = { ...confirmCtrl.errors };
+      delete errors['passwordMismatch'];
+      confirmCtrl.setErrors(Object.keys(errors).length ? errors : null);
+    }
+    return null;
+  };
 
   private pastDateValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value) return null;
@@ -142,6 +161,7 @@ export class RegisterComponent {
     if (errors['noUppercase']) return `Password must contain at least one uppercase letter.`;
     if (errors['noLowercase']) return `Password must contain at least one lowercase letter.`;
     if (errors['noDigit']) return `Password must contain at least one number.`;
+    if (errors['passwordMismatch']) return `Passwords do not match.`;
     if (errors['min']) return `${label} must be at least ${errors['min'].min}.`;
     if (errors['max']) return `${label} must not exceed ${errors['max'].max}.`;
 
@@ -164,6 +184,10 @@ export class RegisterComponent {
     this.showPassword = !this.showPassword;
   }
 
+  toggleConfirmPassword(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
   onContinue(): void {
     const form = this.selectedRole === 'freelancer' ? this.freelancerForm : this.companyForm;
 
@@ -175,7 +199,8 @@ export class RegisterComponent {
 
     this.errorMessage = '';
     sessionStorage.setItem('register_role', this.selectedRole);
-    sessionStorage.setItem('register_data', JSON.stringify(form.value));
+    const { confirmPassword, ...dataToSave } = form.value;
+    sessionStorage.setItem('register_data', JSON.stringify(dataToSave));
     this.router.navigate(['/auth/register/verify']);
   }
 
@@ -216,6 +241,8 @@ export class RegisterComponent {
     description: 'Description',
     numberOfEmployees: 'Number of Employees',
     currentPosition: 'Job Title',
+    confirmPassword: 'Confirm Password',
+    email: 'Email Address',
   };
 
   private getFormErrors(form: FormGroup): string {

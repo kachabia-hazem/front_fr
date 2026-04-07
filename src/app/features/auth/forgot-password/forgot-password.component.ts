@@ -51,7 +51,7 @@ export class ForgotPasswordComponent {
     this.errorMessage = '';
     this.email = this.emailForm.value.email;
 
-    this.authService.sendVerificationCode(this.email).subscribe({
+    this.authService.sendPasswordResetCode(this.email).subscribe({
       next: () => {
         this.loading = false;
         this.step = 'code';
@@ -112,7 +112,7 @@ export class ForgotPasswordComponent {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.authService.sendVerificationCode(this.email).subscribe({
+    this.authService.sendPasswordResetCode(this.email).subscribe({
       next: () => {
         this.loading = false;
         this.successMessage = 'A new code has been sent to your email.';

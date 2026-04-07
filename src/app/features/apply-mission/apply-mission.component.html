@@ -203,14 +203,18 @@
 
             <!-- City -->
             <div class="form-group">
-              <label class="form-label" for="city">City</label>
+              <label class="form-label" for="city">City <span class="required-star">*</span></label>
               <input
                 id="city"
                 type="text"
                 class="form-input"
+                [class.input-error]="isFieldInvalid('city')"
                 formControlName="city"
                 placeholder="Enter your city"
               />
+              @if (isFieldInvalid('city')) {
+                <span class="field-error">City is required</span>
+              }
             </div>
 
             <!-- Buttons -->
@@ -703,18 +707,23 @@
               </div>
             }
 
-            <!-- Submit Button -->
+            <!-- Submit / Withdraw Buttons -->
             <div class="review-submit-area">
-              <button type="button" class="btn-submit-application" (click)="onSubmitApplication()" [disabled]="submitting()">
-                @if (submitting()) {
-                  Submitting...
-                } @else {
-                  Submit Application
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9 6 15 12 9 18"/>
-                  </svg>
-                }
-              </button>
+              <div class="review-actions-row">
+                <button type="button" class="btn-withdraw-application" (click)="withdrawApplication()" [disabled]="submitting()">
+                  Withdraw Application
+                </button>
+                <button type="button" class="btn-submit-application" (click)="onSubmitApplication()" [disabled]="submitting()">
+                  @if (submitting()) {
+                    Submitting...
+                  } @else {
+                    Submit Application
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="9 6 15 12 9 18"/>
+                    </svg>
+                  }
+                </button>
+              </div>
             </div>
           </div>
         }
@@ -797,6 +806,17 @@
       }
 
     </div>
+
+    <!-- Withdraw Toast -->
+    @if (showWithdrawToast()) {
+      <div class="withdraw-toast">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Application withdrawn successfully
+      </div>
+    }
+
   </div>
 
 }

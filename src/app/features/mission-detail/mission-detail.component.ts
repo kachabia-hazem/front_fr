@@ -101,7 +101,7 @@ export class MissionDetailComponent implements OnInit {
       }
       const d = new Date(date);
       if (isNaN(d.getTime())) return String(date);
-      return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+      return d.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
     } catch {
       return String(date);
     }
@@ -112,13 +112,13 @@ export class MissionDetailComponent implements OnInit {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 60) return `Il y a ${diffMins} min`;
+    if (diffMins < 60) return `${diffMins} min ago`;
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `Il y a ${diffHours}h`;
+    if (diffHours < 24) return `${diffHours}h ago`;
     const diffDays = Math.floor(diffHours / 24);
-    if (diffDays < 30) return `Il y a ${diffDays}j`;
+    if (diffDays < 30) return `${diffDays}d ago`;
     const diffMonths = Math.floor(diffDays / 30);
-    return `Il y a ${diffMonths} mois`;
+    return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
   }
 
   getSkillsList(skills: string): string[] {

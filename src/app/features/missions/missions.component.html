@@ -442,7 +442,7 @@
                 <span class="badge badge-field">{{ mission.field }}</span>
               }
               @if (mission.yearsOfExperience) {
-                <span class="badge badge-exp">{{ mission.yearsOfExperience }} ans exp.</span>
+                <span class="badge badge-exp">{{ mission.yearsOfExperience }} yrs exp.</span>
               }
             </div>
 
@@ -451,7 +451,7 @@
               @if (mission.tjm) {
                 <div class="info-item tarif-item">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                  <span class="tarif-value">{{ mission.tjm }} DT/jour</span>
+                  <span class="tarif-value">{{ mission.tjm }} DT/day</span>
                 </div>
               }
               @if (mission.startDate) {
@@ -581,7 +581,7 @@
             <span class="badge badge-field">{{ selectedMission.field }}</span>
           }
           @if (selectedMission.yearsOfExperience) {
-            <span class="badge badge-exp">{{ selectedMission.yearsOfExperience }} ans exp.</span>
+            <span class="badge badge-exp">{{ selectedMission.yearsOfExperience }} yrs exp.</span>
           }
         </div>
 
@@ -591,8 +591,8 @@
             <div class="m-info-card m-info-card-tjm">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
               <div>
-                <span class="m-info-label">TJM</span>
-                <span class="m-info-value m-tjm">{{ selectedMission.tjm }} DT/jour</span>
+                <span class="m-info-label">Daily Rate</span>
+                <span class="m-info-value m-tjm">{{ selectedMission.tjm }} DT/day</span>
               </div>
             </div>
           }
@@ -610,7 +610,7 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
               <div>
                 <span class="m-info-label">Experience</span>
-                <span class="m-info-value">{{ selectedMission.yearsOfExperience }} ans</span>
+                <span class="m-info-value">{{ selectedMission.yearsOfExperience }} yrs</span>
               </div>
             </div>
           }

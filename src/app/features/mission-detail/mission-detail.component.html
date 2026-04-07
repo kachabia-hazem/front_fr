@@ -210,7 +210,7 @@
             <span class="badge badge-field">{{ mission()!.field }}</span>
           }
           @if (mission()!.yearsOfExperience) {
-            <span class="badge badge-exp">{{ mission()!.yearsOfExperience }} ans exp.</span>
+            <span class="badge badge-exp">{{ mission()!.yearsOfExperience }} yrs exp.</span>
           }
         </div>
       </div>
@@ -223,8 +223,8 @@
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             </div>
             <div class="info-card-content">
-              <span class="info-card-label">TJM</span>
-              <span class="info-card-value tjm-value">{{ mission()!.tjm }} DT/jour</span>
+              <span class="info-card-label">Daily Rate</span>
+              <span class="info-card-value tjm-value">{{ mission()!.tjm }} DT/day</span>
             </div>
           </div>
         }
@@ -248,7 +248,7 @@
             </div>
             <div class="info-card-content">
               <span class="info-card-label">Experience</span>
-              <span class="info-card-value">{{ mission()!.yearsOfExperience }} ans</span>
+              <span class="info-card-value">{{ mission()!.yearsOfExperience }} yrs</span>
             </div>
           </div>
         }
@@ -359,10 +359,10 @@
           <button class="btn-matching-lg" (click)="checkMatching()" [disabled]="matchingLoading()">
             @if (matchingLoading()) {
               <span class="btn-spinner"></span>
-              Analyse en cours...
+              Analyzing...
             } @else {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
-              Matching IA
+              AI Matching
             }
           </button>
         </div>
@@ -383,7 +383,7 @@
               }
             </div>
             <div class="company-info">
-              <h3 class="company-name">{{ mission()!.companyName || 'Entreprise' }}</h3>
+              <h3 class="company-name">{{ mission()!.companyName || 'Company' }}</h3>
               @if (mission()!.businessSector) {
                 <span class="company-sector">{{ mission()!.businessSector }}</span>
               }

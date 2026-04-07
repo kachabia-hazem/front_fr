@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -12,15 +11,15 @@ import {
 @Component({
   selector: 'app-register-verify',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './register-verify.component.html',
   styleUrl: './register-verify.component.css',
 })
 export class RegisterVerifyComponent implements OnInit {
   role: 'freelancer' | 'company' = 'freelancer';
   savedData: any = null;
+  email = '';
 
-  emailForm: FormGroup;
   errorMessage = '';
   loading = false;
 
@@ -34,14 +33,9 @@ export class RegisterVerifyComponent implements OnInit {
   private cooldownInterval: any = null;
 
   constructor(
-    private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-  ) {
-    this.emailForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
     // Load saved data from sessionStorage
@@ -57,21 +51,20 @@ export class RegisterVerifyComponent implements OnInit {
     this.role = savedRole as 'freelancer' | 'company';
     try {
       this.savedData = JSON.parse(savedData);
+      this.email = this.savedData.email || '';
+      if (!this.email) {
+        this.router.navigate(['/auth/register']);
+      }
     } catch {
       this.router.navigate(['/auth/register']);
     }
   }
 
-  get currentEmailValue(): string {
-    return this.emailForm.get('email')?.value || '';
-  }
-
   sendVerificationCode(): void {
-    const email = this.currentEmailValue;
-    const emailControl = this.emailForm.get('email');
+    const email = this.email;
 
-    if (!email || emailControl?.invalid) {
-      this.verificationError = 'Please enter a valid email address.';
+    if (!email) {
+      this.verificationError = 'Email address not found. Please go back and fill the form.';
       return;
     }
 
@@ -92,7 +85,7 @@ export class RegisterVerifyComponent implements OnInit {
   }
 
   submitVerificationCode(): void {
-    const email = this.currentEmailValue;
+    const email = this.email;
     if (!this.verificationCode || this.verificationCode.length !== 6) {
       this.verificationError = 'Please enter the 6-digit code.';
       return;
@@ -144,13 +137,8 @@ export class RegisterVerifyComponent implements OnInit {
     this.errorMessage = '';
     this.loading = true;
 
-    const email = this.currentEmailValue;
-
     if (this.role === 'freelancer') {
-      const request: RegisterFreelancerRequest = {
-        ...this.savedData,
-        email,
-      };
+      const request: RegisterFreelancerRequest = { ...this.savedData };
 
       this.authService.registerFreelancer(request).subscribe({
         next: () => {
@@ -163,10 +151,7 @@ export class RegisterVerifyComponent implements OnInit {
         },
       });
     } else {
-      const request: RegisterCompanyRequest = {
-        ...this.savedData,
-        email,
-      };
+      const request: RegisterCompanyRequest = { ...this.savedData };
 
       this.authService.registerCompany(request).subscribe({
         next: () => {

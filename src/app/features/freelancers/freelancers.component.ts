@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, HostListener, effect, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, HostListener, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
@@ -80,6 +80,9 @@ export class FreelancersComponent implements OnInit {
   aiSearchPrompt = '';
   aiScoreMap = new Map<string, number>();
 
+  // Computed unique pour le state de chargement — garantit le tracking réactif en Angular zoneless
+  readonly isLoading = computed(() => this.loading() || this.aiSearchLoading());
+
   // Carousel
   cardImageIndex = signal<Record<string, number>>({});
   private imageCache = new Map<string, string[]>();
@@ -122,12 +125,18 @@ export class FreelancersComponent implements OnInit {
   });
 
   filteredFreelancers = computed(() => {
-    // En mode AI : afficher UNIQUEMENT les résultats AI (jamais la liste complète)
-    if (this.aiSearchMode()) {
-      return this.aiResults().map(r => r.freelancer);
-    }
+    const aiMode = this.aiSearchMode();
 
-    let list = this.freelancers();
+    // Base list: résultats AI ou liste complète
+    let list = aiMode
+      ? this.aiResults().map(r => r.freelancer)
+      : this.freelancers();
+
+    // Score map réactif (depuis le signal aiResults)
+    const aiScoreMap = aiMode
+      ? new Map(this.aiResults().map(r => [r.freelancer.id, r.score]))
+      : new Map<string, number>();
+
     const query = this.searchQuery().toLowerCase().trim();
     const profileTypes = this.selectedProfileTypes();
     const skills = this.selectedSkills();
@@ -137,51 +146,50 @@ export class FreelancersComponent implements OnInit {
     const expIdx = this.selectedExperience();
     const sort = this.sortBy();
 
-    // Smart search — split into tokens so "Doe John" finds "John Doe"
-    if (query) {
+    // Smart search textuel — uniquement en mode normal (le mode AI utilise la recherche sémantique)
+    if (!aiMode && query) {
       const tokens = query.split(/\s+/).filter(t => t.length > 0);
       list = list.filter(f => {
-        const firstName  = (f.firstName  || '').toLowerCase();
-        const lastName   = (f.lastName   || '').toLowerCase();
-        const fullName   = firstName + ' ' + lastName;
+        const firstName   = (f.firstName  || '').toLowerCase();
+        const lastName    = (f.lastName   || '').toLowerCase();
+        const fullName    = firstName + ' ' + lastName;
         const reverseName = lastName + ' ' + firstName;
-        const position   = (f.currentPosition || '').toLowerCase();
-        const skills     = (f.skills || []).map(s => s.toLowerCase());
+        const position    = (f.currentPosition || '').toLowerCase();
+        const fSkills     = (f.skills || []).map(s => s.toLowerCase());
 
-        // Every token must match at least one field (AND logic across tokens)
         return tokens.every(token =>
           firstName.includes(token)   ||
           lastName.includes(token)    ||
           fullName.includes(token)    ||
           reverseName.includes(token) ||
           position.includes(token)    ||
-          skills.some(s => s.includes(token))
+          fSkills.some(s => s.includes(token))
         );
       });
     }
 
-    // Profile type
+    // Filtre Profile type (s'applique en mode AI et normal)
     if (profileTypes.size > 0) {
       list = list.filter((f) =>
         (f.profileTypes || []).some((pt) => profileTypes.has(pt)),
       );
     }
 
-    // Skills
+    // Filtre Skills (s'applique en mode AI et normal)
     if (skills.size > 0) {
       list = list.filter((f) =>
         (f.skills || []).some((s) => skills.has(s)),
       );
     }
 
-    // Languages
+    // Filtre Languages (s'applique en mode AI et normal)
     if (languages.size > 0) {
       list = list.filter((f) =>
         (f.languages || []).some((l) => languages.has(l)),
       );
     }
 
-    // Budget (TJM)
+    // Filtre Budget / TJM (s'applique en mode AI et normal)
     if (bMin !== null) {
       list = list.filter((f) => f.tjm != null && f.tjm >= bMin);
     }
@@ -189,7 +197,7 @@ export class FreelancersComponent implements OnInit {
       list = list.filter((f) => f.tjm != null && f.tjm <= bMax);
     }
 
-    // Experience
+    // Filtre Experience (s'applique en mode AI et normal)
     if (expIdx !== null) {
       const range = EXPERIENCE_RANGES[expIdx];
       list = list.filter(
@@ -200,8 +208,12 @@ export class FreelancersComponent implements OnInit {
       );
     }
 
-    // Sort
+    // Tri
     list = [...list].sort((a, b) => {
+      // En mode AI avec tri par défaut (rating) → trier par score de pertinence IA
+      if (aiMode && sort === 'rating') {
+        return (aiScoreMap.get(b.id!) ?? 0) - (aiScoreMap.get(a.id!) ?? 0);
+      }
       switch (sort) {
         case 'rating':
           return (b.rating || 0) - (a.rating || 0);
@@ -298,10 +310,10 @@ export class FreelancersComponent implements OnInit {
 
     this.freelancerService.aiSearch(prompt).subscribe({
       next: (results) => {
-        this.aiSearchLoading.set(false);
         this.aiResults.set(results);
         this.buildImageCache(results.map(r => r.freelancer));
         results.forEach(r => this.aiScoreMap.set(r.freelancer.id!, r.score));
+        this.aiSearchLoading.set(false);
       },
       error: () => {
         this.aiSearchLoading.set(false);

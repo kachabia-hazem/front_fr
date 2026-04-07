@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { CompanyService } from '../../core/services/company.service';
 import { AuthService } from '../../core/services/auth.service';
+import { MissionService } from '../../core/services/mission.service';
 import { Company } from '../../core/models';
 import { environment } from '../../../environments/environment';
 
@@ -18,11 +19,13 @@ export class ViewCompanyProfileComponent implements OnInit {
   loading = signal(true);
   error = signal('');
   isOwnProfile = signal(false);
+  missionCount = signal(0);
 
   constructor(
     private route: ActivatedRoute,
     private companyService: CompanyService,
     private authService: AuthService,
+    private missionService: MissionService,
   ) {}
 
   ngOnInit(): void {
@@ -41,6 +44,7 @@ export class ViewCompanyProfileComponent implements OnInit {
         this.company.set(company);
         this.checkIfOwnProfile(company);
         this.loading.set(false);
+        this.loadMissionCount(company.id);
       },
       error: () => {
         this.error.set('Company not found');
@@ -55,11 +59,20 @@ export class ViewCompanyProfileComponent implements OnInit {
         this.company.set(company);
         this.isOwnProfile.set(true);
         this.loading.set(false);
+        this.loadMissionCount(company.id);
       },
       error: () => {
         this.error.set('Failed to load profile');
         this.loading.set(false);
       },
+    });
+  }
+
+  private loadMissionCount(companyId: string): void {
+    if (!companyId) return;
+    this.missionService.getMissionCountByCompany(companyId).subscribe({
+      next: (res) => this.missionCount.set(res.count),
+      error: () => this.missionCount.set(0),
     });
   }
 

@@ -31,6 +31,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
   error = signal('');
   submitting = signal(false);
   submitError = signal('');
+  showWithdrawToast = signal(false);
   showFullDescription = signal(false);
 
   currentStep = 1;
@@ -86,7 +87,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
     this.locationForm = this.fb.group({
       country: ['', Validators.required],
       postalCode: [''],
-      city: [''],
+      city: ['', Validators.required],
     });
 
     this.questionsForm = this.fb.group({
@@ -465,6 +466,14 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/missions']);
     }
+  }
+
+  withdrawApplication(): void {
+    this.showWithdrawToast.set(true);
+    setTimeout(() => {
+      this.showWithdrawToast.set(false);
+      this.router.navigate(['/missions']);
+    }, 2000);
   }
 
   isFieldInvalid(fieldName: string): boolean {

@@ -66,6 +66,10 @@ export class AuthService {
     return this.http.post<{ verified: boolean }>(`${this.apiUrl}/email/verify-code`, { email, code });
   }
 
+  sendPasswordResetCode(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/email/send-reset-code`, { email });
+  }
+
   // ── Password Reset ──
 
   resetPassword(email: string, code: string, newPassword: string): Observable<{ message: string }> {

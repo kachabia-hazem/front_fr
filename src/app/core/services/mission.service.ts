@@ -25,6 +25,10 @@ export class MissionService {
 
   constructor(private http: HttpClient) {}
 
+  getMissionCountByCompany(companyId: string): Observable<{ count: number }> {
+    return this.http.get<{ count: number }>(`${this.apiUrl}/public/company/${companyId}/count`);
+  }
+
   createMission(data: CreateMissionRequest): Observable<Mission> {
     return this.http.post<Mission>(this.apiUrl, data);
   }

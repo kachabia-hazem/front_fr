@@ -711,8 +711,8 @@ export class MissionsComponent implements OnInit {
     try {
       const d = new Date(dateStr);
       if (isNaN(d.getTime())) return '';
-      return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
-        + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      return d.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })
+        + ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     } catch {
       return '';
     }
@@ -723,13 +723,13 @@ export class MissionsComponent implements OnInit {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 60) return `Il y a ${diffMins} min`;
+    if (diffMins < 60) return `${diffMins} min ago`;
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `Il y a ${diffHours}h`;
+    if (diffHours < 24) return `${diffHours}h ago`;
     const diffDays = Math.floor(diffHours / 24);
-    if (diffDays < 30) return `Il y a ${diffDays}j`;
+    if (diffDays < 30) return `${diffDays}d ago`;
     const diffMonths = Math.floor(diffDays / 30);
-    return `Il y a ${diffMonths} mois`;
+    return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
   }
 
   getSkillsList(skills: string): string[] {
@@ -753,7 +753,7 @@ export class MissionsComponent implements OnInit {
       // Handle string format "2025-06-15"
       const d = new Date(date);
       if (isNaN(d.getTime())) return String(date);
-      return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+      return d.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
     } catch {
       return String(date);
     }

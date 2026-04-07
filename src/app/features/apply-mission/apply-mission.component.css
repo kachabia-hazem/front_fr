@@ -1083,10 +1083,50 @@
   margin-top: 0.2rem;
 }
 
-/* Submit Button */
+/* Submit / Withdraw Buttons */
 
 .review-submit-area {
   margin-top: 2.5rem;
+}
+
+.review-actions-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-withdraw-application {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  color: #dc2626;
+  border: 2px solid #dc2626;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-withdraw-application:hover {
+  background: #dc2626;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3);
+}
+
+.btn-withdraw-application:active {
+  transform: translateY(0);
+}
+
+.btn-withdraw-application:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-submit-application {
@@ -1094,7 +1134,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  width: 100%;
+  flex: 1;
   padding: 1rem 2rem;
   background: linear-gradient(135deg, #3793B0 0%, #3793B0 100%);
   color: #fff;
@@ -1307,4 +1347,32 @@
 :host-context(body.dark-theme) .btn-previous:hover {
   background: #253347;
   border-color: #4b5563;
+}
+
+/* ══════════════════════════════════════
+   WITHDRAW TOAST
+   ══════════════════════════════════════ */
+
+.withdraw-toast {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #16a34a;
+  color: #fff;
+  padding: 0.85rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  z-index: 9999;
+  animation: toast-in 0.25s ease;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
