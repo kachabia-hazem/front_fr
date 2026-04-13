@@ -119,4 +119,11 @@ export class FreelancerMissionsComponent implements OnInit {
       default: return '';
     }
   }
+
+  isOverdue(m: ActiveMission): boolean {
+    if (m.status !== 'ACTIVE') return false;
+    const end = m.endDate;
+    if (!end) return false;
+    return new Date(end) <= new Date();
+  }
 }

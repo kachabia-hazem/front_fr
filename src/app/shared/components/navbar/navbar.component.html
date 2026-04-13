@@ -8,6 +8,9 @@
       <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" class="nav-menu-link">Home</a>
       <a routerLink="/freelancers" routerLinkActive="active-link" class="nav-menu-link">Freelancers</a>
       <a routerLink="/missions" routerLinkActive="active-link" class="nav-menu-link">Missions</a>
+      @if (isFreelancer) {
+        <a routerLink="/saved-missions" routerLinkActive="active-link" class="nav-menu-link">Favorites</a>
+      }
     </div>
   </div>
   <div class="nav-right">

@@ -4,16 +4,18 @@ import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/r
 import { FormsModule } from '@angular/forms';
 import { ActiveMissionService } from '../../core/services/active-mission.service';
 import { CompanyService } from '../../core/services/company.service';
+import { ContractService } from '../../core/services/contract.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { Company } from '../../core/models/user.model';
 import { ActiveMission, Task, Deliverable } from '../../core/models/active-mission.model';
 import { environment } from '../../../environments/environment';
+import { FeedbackModalComponent } from '../../shared/components/feedback-modal/feedback-modal.component';
 
 @Component({
   selector: 'app-company-mission-view',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, FeedbackModalComponent],
   templateUrl: './company-mission-view.component.html',
   styleUrl: './company-mission-view.component.css',
 })
@@ -32,6 +34,17 @@ export class CompanyMissionViewComponent implements OnInit {
   selectedRating    = signal(0);
   validating        = signal(false);
 
+  // Feedback modal
+  showFeedbackModal = signal(false);
+
+  // Extend deadline
+  showExtendForm   = signal(false);
+  extendEndDate    = '';
+  extendPayment: number | null = null;
+  extendReason     = '';
+  extending        = signal(false);
+  contractSalary   = signal<number | null>(null);
+
   // Kanban columns (read-only)
   todoTasks       = computed(() => this.tasks().filter(t => t.status === 'TODO'));
   inProgressTasks = computed(() => this.tasks().filter(t => t.status === 'IN_PROGRESS'));
@@ -44,13 +57,14 @@ export class CompanyMissionViewComponent implements OnInit {
     return n.split(' ').map(w => w.charAt(0)).join('').substring(0, 2).toUpperCase();
   });
 
-  private missionId = '';
+  missionId = '';
 
   constructor(
     private route: ActivatedRoute,
     public router: Router,
     private activeMissionService: ActiveMissionService,
     private companyService: CompanyService,
+    private contractService: ContractService,
     private notificationService: NotificationService,
     public themeService: ThemeService,
     private location: Location,
@@ -67,6 +81,11 @@ export class CompanyMissionViewComponent implements OnInit {
       next: (m) => {
         this.mission.set(m);
         this.loading.set(false);
+        if (m.contractId) {
+          this.contractService.getContractById(m.contractId).subscribe({
+            next: (c) => this.contractSalary.set(c.salary),
+          });
+        }
       },
       error: () => this.loading.set(false),
     });
@@ -113,16 +132,51 @@ export class CompanyMissionViewComponent implements OnInit {
     return new Date(end) <= new Date();
   }
 
+  isOverdue(): boolean {
+    const m = this.mission();
+    if (!m) return false;
+    return m.status === 'ACTIVE' && this.isDeadlinePassed();
+  }
+
   canValidate(): boolean {
     const m = this.mission();
     if (!m) return false;
-    return m.status === 'SUBMITTED' || (m.status === 'ACTIVE' && this.isDeadlinePassed());
+    // Only validate when freelancer has submitted; overdue missions need deadline extension first
+    return m.status === 'SUBMITTED';
   }
 
   // ── Validation ────────────────────────────────────────────────────────────
 
   setRating(value: number): void {
     this.selectedRating.set(value);
+  }
+
+  openExtendForm(): void {
+    this.extendPayment = this.contractSalary();
+    this.showExtendForm.set(true);
+  }
+
+  extendDeadline(): void {
+    if (!this.extendEndDate) return;
+    this.extending.set(true);
+    const data: { newEndDate: string; adjustedPayment?: number; reason?: string } = {
+      newEndDate: this.extendEndDate,
+    };
+    const payment = this.extendPayment;
+    if (payment !== null && payment > 0) data.adjustedPayment = payment;
+    if (this.extendReason.trim()) data.reason = this.extendReason.trim();
+
+    this.activeMissionService.extendDeadline(this.missionId, data).subscribe({
+      next: (m) => {
+        this.mission.set(m);
+        this.showExtendForm.set(false);
+        this.extendEndDate = '';
+        this.extendPayment = null;
+        this.extendReason = '';
+        this.extending.set(false);
+      },
+      error: () => this.extending.set(false),
+    });
   }
 
   validate(approved: boolean): void {
@@ -140,6 +194,9 @@ export class CompanyMissionViewComponent implements OnInit {
         this.validationNote = '';
         this.selectedRating.set(0);
         this.validating.set(false);
+        if (approved) {
+          this.showFeedbackModal.set(true);
+        }
       },
       error: () => this.validating.set(false),
     });

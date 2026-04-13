@@ -66,6 +66,9 @@
   border-bottom-color: var(--logo-color, #3793B0);
 }
 
+/* ── Saved Missions nav link ── */
+.nav-saved-link { display: inline-flex; align-items: center; gap: 5px; }
+
 /* ── Post a Job Button ── */
 
 .btn-post-job {

@@ -100,6 +100,11 @@ export class ActiveMissionService {
     return this.http.delete<void>(`${this.apiUrl}/${missionId}/history`);
   }
 
+  /** Company: extend deadline of an overdue mission and reset contract for re-signing */
+  extendDeadline(missionId: string, data: { newEndDate: string; adjustedPayment?: number; reason?: string }): Observable<ActiveMission> {
+    return this.http.post<ActiveMission>(`${this.apiUrl}/${missionId}/extend`, data);
+  }
+
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   getFileUrl(relativePath: string | null | undefined): string {

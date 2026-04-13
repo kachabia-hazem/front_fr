@@ -1,0 +1,159 @@
+<div class="saved-page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="page-title">Saved Missions</h1>
+        <p class="page-subtitle">Missions you bookmarked to apply to later</p>
+      </div>
+    </div>
+    @if (!loading() && missions().length > 0) {
+      <span class="page-count">{{ missions().length }} saved</span>
+    }
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="page-loading">
+      <div class="spinner"></div>
+      <p>Loading your saved missions...</p>
+    </div>
+  }
+
+  <!-- Empty state -->
+  @else if (missions().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </div>
+      <h2 class="empty-title">No saved missions yet</h2>
+      <p class="empty-sub">Browse missions and click the ♥ icon to save them here for later.</p>
+      <button class="btn-browse" (click)="router.navigate(['/missions'])">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Browse Missions
+      </button>
+    </div>
+  }
+
+  <!-- Mission cards grid -->
+  @else {
+    <div class="saved-grid">
+      @for (mission of missions(); track mission.id) {
+        <div class="saved-card" [class.deadline-passed]="isDeadlinePassed(mission)">
+
+          <!-- Card top row: company + unsave button -->
+          <div class="card-top">
+            <div class="company-info">
+              <div class="company-avatar">
+                @if (mission.companyLogo) {
+                  <img [src]="getFileUrl(mission.companyLogo)" [alt]="mission.companyName" />
+                } @else {
+                  <span class="avatar-letter">{{ (mission.companyName || 'C').charAt(0) }}</span>
+                }
+              </div>
+              <div>
+                <span class="company-name">{{ mission.companyName || 'Company' }}</span>
+                @if (mission.businessSector) {
+                  <span class="company-sector">{{ mission.businessSector }}</span>
+                }
+              </div>
+            </div>
+            <button class="btn-unsave" (click)="unsave(mission.id!)" title="Remove from saved">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Title & badges -->
+          <h3 class="card-title">{{ mission.jobTitle }}</h3>
+
+          <div class="card-badges">
+            @if (mission.location) {
+              <span class="badge bdg-loc">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ mission.location }}
+              </span>
+            }
+            @if (mission.missionType) {
+              <span class="badge bdg-type">{{ mission.missionType }}</span>
+            }
+            @if (mission.field) {
+              <span class="badge bdg-field">{{ mission.field }}</span>
+            }
+            @if (isDeadlinePassed(mission)) {
+              <span class="badge bdg-expired">Expired</span>
+            }
+          </div>
+
+          <!-- Key info -->
+          <div class="card-info">
+            @if (mission.tjm) {
+              <span class="info-chip">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                {{ mission.tjm }} DT/jour
+              </span>
+            }
+            @if (mission.startDate) {
+              <span class="info-chip">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                {{ formatDate(mission.startDate) }}
+              </span>
+            }
+            @if (mission.yearsOfExperience) {
+              <span class="info-chip">{{ mission.yearsOfExperience }} yrs exp.</span>
+            }
+          </div>
+
+          <!-- Skills -->
+          @if (getSkills(mission.requiredSkills).length > 0) {
+            <div class="card-skills">
+              @for (skill of getSkills(mission.requiredSkills); track skill) {
+                <span class="skill-tag">{{ skill }}</span>
+              }
+            </div>
+          }
+
+          <!-- Footer actions -->
+          <div class="card-footer">
+            <button class="btn-view" (click)="router.navigate(['/missions', mission.id], { queryParams: { from: 'favorites' } })">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              See details
+            </button>
+            @if (getApplicationStatus(mission.id) === 'ACCEPTED') {
+              <span class="app-status-badge badge-accepted">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Accepted
+              </span>
+            } @else if (getApplicationStatus(mission.id) === 'REJECTED') {
+              <span class="app-status-badge badge-rejected">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                Rejected
+              </span>
+            } @else if (getApplicationStatus(mission.id) === 'PENDING') {
+              <span class="app-status-badge badge-pending">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Pending
+              </span>
+            } @else if (!isDeadlinePassed(mission)) {
+              <button class="btn-apply" (click)="applyNow(mission.id)">
+                Apply now
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+            }
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+
+</div>

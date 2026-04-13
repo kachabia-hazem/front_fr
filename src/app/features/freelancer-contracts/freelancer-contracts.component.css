@@ -96,7 +96,17 @@
 }
 .page-title { font-size: 24px; font-weight: 700; color: #1e293b; margin: 0 0 4px; }
 .page-subtitle { color: #64748b; font-size: 14px; margin: 0; }
+.page-header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
 .page-header-stats { display: flex; gap: 12px; }
+
+.btn-select-mode {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 8px;
+  background: #f1f5f9; border: 1px solid #e2e8f0;
+  color: #475569; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background .15s, border-color .15s;
+}
+.btn-select-mode:hover { background: #e2e8f0; border-color: #cbd5e1; }
 .stat-chip {
   display: flex; align-items: center; gap: 8px;
   padding: 8px 16px; border-radius: 50px;
@@ -150,7 +160,15 @@
 .signed-card { border-left: 4px solid #22c55e; }
 
 .contract-card-header {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.card-header-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.badge-completed {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+  background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;
 }
 
 .contract-status-badge {
@@ -661,3 +679,72 @@
   border-color: #3a4255;
 }
 :host-context(body.dark-theme) .pag-pages { color: #9ca3af; }
+
+/* ── Selection toolbar ───────────────────────────────────────────────────── */
+.selection-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+  padding: 10px 16px; margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.selection-toolbar-left { display: flex; align-items: center; gap: 12px; }
+.selection-toolbar-right { display: flex; align-items: center; gap: 8px; }
+.selection-count { font-size: 14px; font-weight: 600; color: #1e293b; }
+
+.sel-checkbox-all {
+  width: 20px; height: 20px; border-radius: 5px;
+  border: 2px solid #cbd5e1; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .15s, border-color .15s;
+  flex-shrink: 0;
+}
+.sel-checkbox-all.checked { background: #3793B0; border-color: #3793B0; }
+
+.btn-delete-selected {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 8px;
+  background: #fef2f2; border: 1px solid #fecaca;
+  color: #dc2626; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background .15s;
+}
+.btn-delete-selected:hover { background: #fee2e2; }
+
+.btn-cancel-selection {
+  padding: 7px 14px; border-radius: 8px;
+  background: #f1f5f9; border: 1px solid #e2e8f0;
+  color: #475569; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background .15s;
+}
+.btn-cancel-selection:hover { background: #e2e8f0; }
+
+/* ── Card selection state ────────────────────────────────────────────────── */
+.contract-card.card-selected {
+  border-color: #3793B0;
+  background: #f0f9ff;
+  box-shadow: 0 0 0 2px rgba(55,147,176,.25);
+}
+.contract-card.selection-mode:hover { transform: none; }
+
+.card-checkbox {
+  position: absolute; top: 14px; right: 14px;
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #cbd5e1; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .15s, border-color .15s;
+  z-index: 2; flex-shrink: 0;
+}
+.card-checkbox.checked { background: #3793B0; border-color: #3793B0; }
+
+/* make card position relative for the absolute checkbox */
+.contract-card { position: relative; }
+
+/* ── Delete confirm modal ────────────────────────────────────────────────── */
+.delete-confirm-modal { max-width: 460px; }
+
+/* dark theme */
+:host-context(body.dark-theme) .selection-toolbar { background: #1e2435; border-color: #2a3040; }
+:host-context(body.dark-theme) .selection-count   { color: #c5cad8; }
+:host-context(body.dark-theme) .sel-checkbox-all  { background: #252a3a; border-color: #3a4050; }
+:host-context(body.dark-theme) .btn-cancel-selection { background: #252a3a; border-color: #3a4050; color: #9ca3af; }
+:host-context(body.dark-theme) .contract-card.card-selected { background: rgba(55,147,176,.1); border-color: #3793B0; }
+:host-context(body.dark-theme) .btn-select-mode { background: #252a3a; border-color: #3a4050; color: #9ca3af; }

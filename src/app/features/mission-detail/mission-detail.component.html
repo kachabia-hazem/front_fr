@@ -135,7 +135,7 @@
           </div>
 
           <!-- Action -->
-          @if (matchingResult()!.recommendation !== 'DO NOT APPLY' && !hasApplied() && mission()!.status !== 'CLOSED') {
+          @if (matchingResult()!.recommendation !== 'DO NOT APPLY' && !applicationStatus() && mission()!.status !== 'CLOSED') {
             <div class="matching-actions">
               <button class="btn-postuler-from-match" (click)="applyToMission(); closeMatchingModal()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
@@ -170,7 +170,7 @@
   <div class="back-bar">
     <button class="btn-back" (click)="goBack()">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-      Back to Missions
+      {{ fromFavorites ? 'Back to Favorites' : 'Back to Missions' }}
     </button>
   </div>
 
@@ -345,7 +345,17 @@
       <!-- Footer Actions -->
       @if (isFreelancer && mission()!.status !== 'CLOSED') {
         <div class="detail-actions">
-          @if (hasApplied()) {
+          @if (applicationStatus() === 'ACCEPTED') {
+            <span class="application-status-badge-lg status-accepted-lg">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Accepted
+            </span>
+          } @else if (applicationStatus() === 'REJECTED') {
+            <span class="application-status-badge-lg status-rejected-lg">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Rejected
+            </span>
+          } @else if (applicationStatus() === 'PENDING') {
             <button class="btn-withdraw-lg" (click)="withdrawApplication()" [disabled]="withdrawing()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
               {{ withdrawing() ? 'Withdrawing...' : 'Withdraw Application' }}
@@ -356,15 +366,17 @@
               Apply
             </button>
           }
-          <button class="btn-matching-lg" (click)="checkMatching()" [disabled]="matchingLoading()">
-            @if (matchingLoading()) {
-              <span class="btn-spinner"></span>
-              Analyzing...
-            } @else {
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
-              AI Matching
-            }
-          </button>
+          @if (applicationStatus() !== 'ACCEPTED' && applicationStatus() !== 'REJECTED') {
+            <button class="btn-matching-lg" (click)="checkMatching()" [disabled]="matchingLoading()">
+              @if (matchingLoading()) {
+                <span class="btn-spinner"></span>
+                Analyzing...
+              } @else {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+                AI Matching
+              }
+            </button>
+          }
         </div>
       }
     </div>

@@ -314,6 +314,14 @@ export const routes: Routes = [
             (m) => m.FreelancersComponent,
           ),
       },
+      // Freelancer saved missions
+      {
+        path: 'saved-missions',
+        loadComponent: () =>
+          import('./features/saved-missions/saved-missions.component').then(
+            (m) => m.SavedMissionsComponent,
+          ),
+      },
       // Apply to a mission (Freelancer)
       {
         path: 'apply/:id',

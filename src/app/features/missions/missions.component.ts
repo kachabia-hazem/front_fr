@@ -6,6 +6,7 @@ import { MissionService, AiSearchResult, MatchMissionResult } from '../../core/s
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { ApplicationService } from '../../core/services/application.service';
 import { ToastService } from '../../core/services/toast.service';
+import { SavedMissionsService } from '../../core/services/saved-missions.service';
 import { Mission } from '../../core/models/mission.model';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
@@ -100,6 +101,7 @@ export class MissionsComponent implements OnInit {
     private freelancerService: FreelancerService,
     private applicationService: ApplicationService,
     private toastService: ToastService,
+    public savedMissionsService: SavedMissionsService,
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
@@ -363,8 +365,31 @@ export class MissionsComponent implements OnInit {
       this.freelancerService.getMyProfile().subscribe({
         next: (f) => this.profileCompletion = getProfileCompletion(f),
       });
+      this.restoreApplicationStatusCache();
       this.loadMyApplications();
+      this.savedMissionsService.load();
     }
+  }
+
+  private readonly APP_STATUS_CACHE_KEY = 'wl_app_status_cache';
+
+  private restoreApplicationStatusCache(): void {
+    try {
+      const raw = localStorage.getItem(this.APP_STATUS_CACHE_KEY);
+      if (raw) {
+        const entries: [string, 'PENDING' | 'ACCEPTED' | 'REJECTED'][] = JSON.parse(raw);
+        this.applicationStatusMap = new Map(entries);
+      }
+    } catch {
+      localStorage.removeItem(this.APP_STATUS_CACHE_KEY);
+    }
+  }
+
+  private saveApplicationStatusCache(): void {
+    try {
+      const entries = Array.from(this.applicationStatusMap.entries());
+      localStorage.setItem(this.APP_STATUS_CACHE_KEY, JSON.stringify(entries));
+    } catch { /* ignore quota errors */ }
   }
 
   loadMyApplications(): void {
@@ -376,6 +401,7 @@ export class MissionsComponent implements OnInit {
             this.applicationStatusMap.set(app.missionId, app.status as 'PENDING' | 'ACCEPTED' | 'REJECTED');
           }
         }
+        this.saveApplicationStatusCache();
       },
     });
   }
@@ -388,6 +414,22 @@ export class MissionsComponent implements OnInit {
     return this.applicationStatusMap.get(mission.id!) ?? null;
   }
 
+  // ── Saved missions ────────────────────────────────────────────────────────
+
+  toggleSave(event: Event, mission: Mission): void {
+    event.stopPropagation();
+    if (!this.isFreelancer || !mission.id) return;
+    this.savedMissionsService.toggle(mission.id).subscribe({
+      next: () => {
+        const saved = this.savedMissionsService.isSaved(mission.id!);
+        this.toastService.show(
+          saved ? 'Mission saved to your favourites.' : 'Mission removed from favourites.',
+          'success',
+        );
+      },
+    });
+  }
+
   cancelApplication(event: Event, mission: Mission): void {
     event.stopPropagation();
     if (this.cancellingMissionIds.has(mission.id!)) return;
@@ -396,6 +438,7 @@ export class MissionsComponent implements OnInit {
     this.applicationService.withdrawApplication(mission.id!).subscribe({
       next: () => {
         this.applicationStatusMap.delete(mission.id!);
+        this.saveApplicationStatusCache();
         this.cancellingMissionIds.delete(mission.id!);
         this.toastService.show('Your application has been cancelled.', 'success');
       },

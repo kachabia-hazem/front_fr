@@ -85,7 +85,7 @@
       </div>
     } @else if (mission()) {
       <!-- GitHub URL Required Banner -->
-      @if (isFreelancer() && !mission()?.gitRepositoryUrl) {
+      @if (isFreelancer() && !mission()?.gitRepositoryUrl && !isReadOnly()) {
         <div class="git-required-banner">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <div class="git-required-banner-text">
@@ -100,7 +100,11 @@
         <div class="mission-header-info">
           <h1 class="mission-title">{{ mission()!.title }}</h1>
           <div class="mission-meta">
-            <span class="mission-status" [class]="getStatusClass(mission()!.status)">{{ mission()!.status }}</span>
+            @if (isOverdue()) {
+              <span class="mission-status status-overdue">Overdue</span>
+            } @else {
+              <span class="mission-status" [class]="getStatusClass(mission()!.status)">{{ mission()!.status }}</span>
+            }
             <span class="mission-dates">{{ mission()!.startDate | date:'dd/MM/yyyy' }} → {{ mission()!.endDate | date:'dd/MM/yyyy' }}</span>
           </div>
         </div>
@@ -114,6 +118,13 @@
           </div>
         </div>
       </div>
+
+      @if (isReadOnly()) {
+        <div class="readonly-banner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span>This mission has been <strong>validated by the company</strong>. You are viewing your work in read-only mode.</span>
+        </div>
+      }
 
       <!-- ═══════════════════════════════════════════════════════════════════ -->
       <!-- SECTION A: KANBAN BOARD -->
@@ -139,7 +150,7 @@
               <span class="col-count">{{ todoTasks().length }}</span>
             </div>
             @for (task of todoTasks(); track task.id) {
-              <div class="task-card" cdkDrag [cdkDragData]="task" [cdkDragDisabled]="editingTaskId() === task.id">
+              <div class="task-card" cdkDrag [cdkDragData]="task" [cdkDragDisabled]="editingTaskId() === task.id || isReadOnly()">
                 @if (editingTaskId() === task.id) {
                   <div class="task-edit-form" (click)="$event.stopPropagation()">
                     <input class="task-input" [(ngModel)]="editTaskTitle" placeholder="Task title..." (keyup.enter)="submitEditTask(task.id, $event)" />
@@ -156,7 +167,7 @@
                       <p class="task-desc">{{ task.description }}</p>
                     }
                   </div>
-                  @if (isFreelancer()) {
+                  @if (isFreelancer() && !isReadOnly()) {
                     <div class="task-actions">
                       <button class="task-edit-btn" (click)="openEditTask(task, $event)" title="Edit task">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -169,7 +180,7 @@
                 }
               </div>
             }
-            @if (isFreelancer()) {
+            @if (isFreelancer() && !isReadOnly()) {
               @if (showAddTaskForm() === 'TODO') {
                 <div class="add-task-form">
                   <input class="task-input" [(ngModel)]="newTaskTitle" placeholder="Task title..." (keyup.enter)="submitAddTask()" />
@@ -200,7 +211,7 @@
               <span class="col-count">{{ inProgressTasks().length }}</span>
             </div>
             @for (task of inProgressTasks(); track task.id) {
-              <div class="task-card" cdkDrag [cdkDragData]="task" [cdkDragDisabled]="editingTaskId() === task.id">
+              <div class="task-card" cdkDrag [cdkDragData]="task" [cdkDragDisabled]="editingTaskId() === task.id || isReadOnly()">
                 @if (editingTaskId() === task.id) {
                   <div class="task-edit-form" (click)="$event.stopPropagation()">
                     <input class="task-input" [(ngModel)]="editTaskTitle" placeholder="Task title..." (keyup.enter)="submitEditTask(task.id, $event)" />
@@ -217,7 +228,7 @@
                       <p class="task-desc">{{ task.description }}</p>
                     }
                   </div>
-                  @if (isFreelancer()) {
+                  @if (isFreelancer() && !isReadOnly()) {
                     <div class="task-actions">
                       <button class="task-edit-btn" (click)="openEditTask(task, $event)" title="Edit task">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -230,7 +241,7 @@
                 }
               </div>
             }
-            @if (isFreelancer()) {
+            @if (isFreelancer() && !isReadOnly()) {
               @if (showAddTaskForm() === 'IN_PROGRESS') {
                 <div class="add-task-form">
                   <input class="task-input" [(ngModel)]="newTaskTitle" placeholder="Task title..." (keyup.enter)="submitAddTask()" />
@@ -261,7 +272,7 @@
               <span class="col-count">{{ doneTasks().length }}</span>
             </div>
             @for (task of doneTasks(); track task.id) {
-              <div class="task-card task-card-done" cdkDrag [cdkDragData]="task" [cdkDragDisabled]="editingTaskId() === task.id">
+              <div class="task-card task-card-done" cdkDrag [cdkDragData]="task" [cdkDragDisabled]="editingTaskId() === task.id || isReadOnly()">
                 @if (editingTaskId() === task.id) {
                   <div class="task-edit-form" (click)="$event.stopPropagation()">
                     <input class="task-input" [(ngModel)]="editTaskTitle" placeholder="Task title..." (keyup.enter)="submitEditTask(task.id, $event)" />
@@ -278,7 +289,7 @@
                       <p class="task-desc">{{ task.description }}</p>
                     }
                   </div>
-                  @if (isFreelancer()) {
+                  @if (isFreelancer() && !isReadOnly()) {
                     <div class="task-actions">
                       <button class="task-edit-btn" (click)="openEditTask(task, $event)" title="Edit task">
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -291,7 +302,7 @@
                 }
               </div>
             }
-            @if (isFreelancer()) {
+            @if (isFreelancer() && !isReadOnly()) {
               @if (showAddTaskForm() === 'DONE') {
                 <div class="add-task-form">
                   <input class="task-input" [(ngModel)]="newTaskTitle" placeholder="Task title..." (keyup.enter)="submitAddTask()" />
@@ -322,7 +333,7 @@
             Git Activity
           </h2>
           <div class="section-actions">
-            @if (mission()?.gitRepositoryUrl && isFreelancer()) {
+            @if (mission()?.gitRepositoryUrl && isFreelancer() && !isReadOnly()) {
               @if (lastGitRefresh()) {
                 <span class="git-auto-refresh-badge">
                   <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -346,7 +357,7 @@
           <div class="error-banner">{{ gitError() }}</div>
         }
 
-        @if (!mission()?.gitRepositoryUrl || showGitUrlForm()) {
+        @if ((!mission()?.gitRepositoryUrl || showGitUrlForm()) && !isReadOnly()) {
           <div class="git-url-form">
             <label class="form-label">
               GitHub Repository URL
@@ -435,7 +446,7 @@
           </h2>
         </div>
 
-        @if (isFreelancer()) {
+        @if (isFreelancer() && !isReadOnly()) {
           <div class="deliverable-upload">
             <div class="upload-row">
               <label class="file-label">
@@ -554,6 +565,17 @@
           </div>
         }
 
+        <!-- Overdue — deadline passed, freelancer hasn't submitted -->
+        @else if (isFreelancer() && isOverdue()) {
+          <div class="validation-banner validation-banner-overdue">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div>
+              <p class="validation-banner-title">Deadline has passed</p>
+              <p class="validation-banner-sub">Submission is no longer possible. Check with the employer if an extension is available.</p>
+            </div>
+          </div>
+        }
+
         <!-- Active — freelancer can submit -->
         @else if (isFreelancer() && canSubmit()) {
           @if (submitSuccess()) {
@@ -589,3 +611,38 @@
     }
   </main>
 </div>
+
+<!-- ═══ Contract Pending Modal ═══ -->
+@if (contractPending()) {
+  <div class="contract-pending-overlay">
+    <div class="contract-pending-modal">
+      <div class="contract-pending-modal-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h2 class="contract-pending-modal-title">Signature Required</h2>
+      </div>
+
+      <div class="contract-pending-modal-body">
+        <div class="contract-pending-warning">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <p>Please sign the contract to access the workspace. The employer has updated the contract terms.</p>
+        </div>
+      </div>
+
+      <div class="contract-pending-modal-footer">
+        <button class="btn-ghost-pending" (click)="router.navigate(['/freelancer-missions'])">Go back</button>
+        <button class="btn-go-contracts" (click)="viewContract()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          View Contract
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ═══ Feedback Modal (shown to freelancer when mission is completed) ═══ -->
+@if (showFeedbackModal()) {
+  <app-feedback-modal
+    [missionId]="missionId"
+    (closed)="showFeedbackModal.set(false)">
+  </app-feedback-modal>
+}

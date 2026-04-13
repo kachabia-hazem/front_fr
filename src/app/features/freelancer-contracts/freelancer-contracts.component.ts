@@ -3,11 +3,13 @@ import {
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 
 import { SafeUrlPipe } from '../../shared/pipes/safe-url.pipe';
+import { forkJoin } from 'rxjs';
 import { ContractService } from '../../core/services/contract.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
+import { ActiveMissionService } from '../../core/services/active-mission.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
@@ -26,6 +28,9 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
   freelancer      = signal<Freelancer | null>(null);
   contracts       = signal<Contract[]>([]);
   loading         = signal(true);
+
+  completedContractIds = signal<Set<string>>(new Set());
+  isCompleted(contractId: string): boolean { return this.completedContractIds().has(contractId); }
   sidebarCollapsed = signal(false);
   unreadNotifCount = computed(() => this.notificationService.unreadCount());
 
@@ -38,6 +43,76 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
   signSuccess       = signal(false);
   pdfBlobUrl        = signal<string | null>(null);
   pdfLoading        = signal(false);
+
+  // Selection & delete
+  selectionMode     = signal(false);
+  selectedIds       = signal<Set<string>>(new Set());
+  showDeleteConfirm = signal(false);
+  deleting          = signal(false);
+
+  selectedCount = computed(() => this.selectedIds().size);
+  allSelected   = computed(() =>
+    this.pagedContracts().length > 0 &&
+    this.pagedContracts().every(c => this.selectedIds().has(c.id))
+  );
+
+  isSelected(id: string): boolean { return this.selectedIds().has(id); }
+
+  toggleSelection(id: string, event: Event): void {
+    event.stopPropagation();
+    this.selectedIds.update(set => {
+      const next = new Set(set);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }
+
+  toggleSelectAll(): void {
+    const all = this.allSelected();
+    this.selectedIds.update(set => {
+      const next = new Set(set);
+      this.pagedContracts().forEach(c => all ? next.delete(c.id) : next.add(c.id));
+      return next;
+    });
+  }
+
+  enterSelectionMode(): void { this.selectionMode.set(true); }
+
+  exitSelectionMode(): void {
+    this.selectionMode.set(false);
+    this.selectedIds.set(new Set());
+    this.showDeleteConfirm.set(false);
+  }
+
+  confirmDeleteSelected(): void { this.showDeleteConfirm.set(true); }
+
+  cancelDeleteConfirm(): void { this.showDeleteConfirm.set(false); }
+
+  deleteSelected(): void {
+    const ids = [...this.selectedIds()];
+    if (!ids.length) return;
+    this.deleting.set(true);
+    let completed = 0;
+    ids.forEach(id => {
+      this.contractService.deleteContract(id).subscribe({
+        next: () => {
+          this.contracts.update(list => list.filter(c => c.id !== id));
+          completed++;
+          if (completed === ids.length) {
+            this.deleting.set(false);
+            this.exitSelectionMode();
+          }
+        },
+        error: () => {
+          completed++;
+          if (completed === ids.length) {
+            this.deleting.set(false);
+            this.exitSelectionMode();
+          }
+        },
+      });
+    });
+  }
 
   // Reject modal
   showRejectModal   = signal(false);
@@ -86,18 +161,39 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
   constructor(
     private contractService: ContractService,
     private freelancerService: FreelancerService,
+    private activeMissionService: ActiveMissionService,
     private notificationService: NotificationService,
     public authService: AuthService,
     public themeService: ThemeService,
     private router: Router,
     private location: Location,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
     this.freelancerService.getMyProfile().subscribe({ next: p => this.freelancer.set(p) });
-    this.contractService.getFreelancerContracts().subscribe({
-      next: list => { this.contracts.set(list); this.loading.set(false); },
-      error: ()  => this.loading.set(false),
+    const targetContractId = this.route.snapshot.queryParamMap.get('contractId');
+    forkJoin({
+      contracts:      this.contractService.getFreelancerContracts(),
+      activeMissions: this.activeMissionService.getFreelancerMissions(),
+    }).subscribe({
+      next: ({ contracts, activeMissions }) => {
+        this.contracts.set(contracts);
+        const completedIds = new Set(
+          activeMissions
+            .filter(m => m.status === 'COMPLETED' && m.contractId)
+            .map(m => m.contractId)
+        );
+        this.completedContractIds.set(completedIds);
+        this.loading.set(false);
+        if (targetContractId) {
+          const target = contracts.find(c => c.id === targetContractId);
+          if (target) {
+            this.openContract(target);
+          }
+        }
+      },
+      error: () => this.loading.set(false),
     });
     this.notificationService.getUnreadCount().subscribe();
   }

@@ -1,0 +1,97 @@
+<div class="fb-overlay" (click)="later()">
+  <div class="fb-modal" (click)="$event.stopPropagation()">
+
+    @if (submitted()) {
+      <!-- ── Thank-you screen ── -->
+      <div class="fb-thanks">
+        <div class="fb-thanks-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <p class="fb-thanks-title">Thank you for your feedback!</p>
+        <p class="fb-thanks-sub">Your opinion helps us improve WorkLink.</p>
+      </div>
+    } @else {
+      <!-- ── Header ── -->
+      <div class="fb-header">
+        <div class="fb-header-left">
+          <div class="fb-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="fb-title">Share your feedback</h2>
+            <p class="fb-subtitle">Help us improve your experience on the platform.</p>
+          </div>
+        </div>
+        <button class="fb-close-btn" (click)="later()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- ── Body ── -->
+      <div class="fb-body">
+        <!-- Stars -->
+        <div class="fb-field">
+          <label class="fb-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            Rating (1–5 stars)
+          </label>
+          <div class="fb-stars">
+            @for (s of stars; track s) {
+              <button class="fb-star-btn" (click)="setRating(s)" [title]="s + ' star' + (s > 1 ? 's' : '')">
+                <svg [class.fb-star-filled]="s <= selectedRating()"
+                     xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </button>
+            }
+          </div>
+          @if (selectedRating() === 0) {
+            <p class="fb-hint">Please select a rating to submit.</p>
+          }
+        </div>
+
+        <!-- Comment -->
+        <div class="fb-field">
+          <label class="fb-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/>
+            </svg>
+            Your feedback <span class="fb-optional">(optional)</span>
+          </label>
+          <textarea
+            class="fb-textarea"
+            [(ngModel)]="comment"
+            rows="3"
+            placeholder="Share your thoughts about WorkLink...">
+          </textarea>
+        </div>
+      </div>
+
+      <!-- ── Footer ── -->
+      <div class="fb-footer">
+        <button class="fb-btn-later" (click)="later()" [disabled]="submitting()">Later</button>
+        <button class="fb-btn-submit" (click)="submit()" [disabled]="submitting() || selectedRating() === 0">
+          @if (submitting()) {
+            <span class="fb-spinner"></span>
+            Submitting...
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+            Submit feedback
+          }
+        </button>
+      </div>
+    }
+
+  </div>
+</div>

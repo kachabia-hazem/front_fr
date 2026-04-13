@@ -7,17 +7,19 @@ import { interval } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActiveMissionService } from '../../core/services/active-mission.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
+import { ContractService } from '../../core/services/contract.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { Freelancer } from '../../core/models';
 import { ActiveMission, Task, Deliverable } from '../../core/models/active-mission.model';
 import { environment } from '../../../environments/environment';
+import { FeedbackModalComponent } from '../../shared/components/feedback-modal/feedback-modal.component';
 
 @Component({
   selector: 'app-active-mission',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, DragDropModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, DragDropModule, FeedbackModalComponent],
   templateUrl: './active-mission.component.html',
   styleUrl: './active-mission.component.css',
 })
@@ -80,12 +82,18 @@ export class ActiveMissionComponent implements OnInit {
   submitting = signal(false);
   submitSuccess = signal(false);
 
+  // Feedback modal (shown when mission is completed — once per mission)
+  showFeedbackModal = signal(false);
+
   // History deletion
   showDeleteConfirm = signal(false);
   deletingFromHistory = signal(false);
 
   // User role check
-  isFreelancer = signal(false);
+  isFreelancer    = signal(false);
+  isReadOnly      = computed(() => this.mission()?.status === 'COMPLETED');
+  isOverdue       = computed(() => this.mission()?.status === 'ACTIVE' && this.isDeadlinePassed());
+  contractPending = signal(false);
 
   initials = computed(() => {
     const f = this.freelancer();
@@ -99,7 +107,7 @@ export class ActiveMissionComponent implements OnInit {
   });
   currentPosition = computed(() => this.freelancer()?.currentPosition || 'Freelancer');
 
-  private missionId = '';
+  missionId = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -107,6 +115,7 @@ export class ActiveMissionComponent implements OnInit {
     private location: Location,
     private activeMissionService: ActiveMissionService,
     private freelancerService: FreelancerService,
+    private contractService: ContractService,
     private notificationService: NotificationService,
     public authService: AuthService,
     public themeService: ThemeService,
@@ -139,12 +148,24 @@ export class ActiveMissionComponent implements OnInit {
       });
   }
 
+  private readonly FEEDBACK_SHOWN_KEY = (id: string) => `wl_fb_shown_${id}`;
+
   loadMission(): void {
     this.activeMissionService.getMission(this.missionId).subscribe({
       next: (m) => {
         this.mission.set(m);
         this.newGitUrl = m.gitRepositoryUrl || '';
         this.loading.set(false);
+        if (m.contractId) {
+          this.contractService.getContractById(m.contractId).subscribe({
+            next: (c) => this.contractPending.set(c.status === 'PENDING_SIGNATURE'),
+          });
+        }
+        // Show feedback modal once when mission is completed and not yet prompted
+        if (m.status === 'COMPLETED' && !localStorage.getItem(this.FEEDBACK_SHOWN_KEY(this.missionId))) {
+          localStorage.setItem(this.FEEDBACK_SHOWN_KEY(this.missionId), '1');
+          this.showFeedbackModal.set(true);
+        }
       },
       error: () => this.loading.set(false),
     });
@@ -377,6 +398,7 @@ export class ActiveMissionComponent implements OnInit {
 
   canSubmit(): boolean {
     const status = this.mission()?.status;
+    if (this.isOverdue()) return false;
     return status === 'ACTIVE' || status === 'PAUSED';
   }
 
@@ -393,6 +415,13 @@ export class ActiveMissionComponent implements OnInit {
       },
       error: () => this.submitting.set(false),
     });
+  }
+
+  // ── View specific contract ────────────────────────────────────────────────
+
+  viewContract(): void {
+    const contractId = this.mission()?.contractId;
+    this.router.navigate(['/freelancer-contracts'], { queryParams: { contractId } });
   }
 
   // ── History deletion ──────────────────────────────────────────────────────

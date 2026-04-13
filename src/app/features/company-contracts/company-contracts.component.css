@@ -100,9 +100,10 @@
   padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600;
 }
 .stat-pill span { font-size: 16px; font-weight: 700; }
-.stat-pill.total  { background: #f1f5f9; color: #475569; }
-.stat-pill.pending { background: #fffbeb; color: #92400e; }
-.stat-pill.signed  { background: #f0fdf4; color: #166534; }
+.stat-pill.total    { background: #f1f5f9; color: #475569; }
+.stat-pill.pending  { background: #fffbeb; color: #92400e; }
+.stat-pill.signed   { background: #f0fdf4; color: #166534; }
+.stat-pill.rejected { background: #fef2f2; color: #dc2626; }
 
 /* Filters */
 .filters-bar {
@@ -207,6 +208,8 @@
 .badge-pending_signature { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
 .badge-signed { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
 .badge-cancelled { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.badge-rejected  { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.date-rejected   { color: #dc2626; font-weight: 600; }
 
 /* ── 3-dot action menu ──────────────────────────────────────────────────── */
 .action-menu-wrapper {
@@ -467,7 +470,8 @@
 /* Stat pills */
 :host-context(body.dark-theme) .stat-pill.total   { background: #252a3a; color: #9ca3af; }
 :host-context(body.dark-theme) .stat-pill.pending { background: rgba(245,158,11,.12); color: #fbbf24; }
-:host-context(body.dark-theme) .stat-pill.signed  { background: rgba(34,197,94,.12);   color: #4ade80; }
+:host-context(body.dark-theme) .stat-pill.signed    { background: rgba(34,197,94,.12);   color: #4ade80; }
+:host-context(body.dark-theme) .stat-pill.rejected  { background: rgba(220,38,38,.12);  color: #f87171; }
 
 /* Filters bar */
 :host-context(body.dark-theme) .filters-bar {
@@ -722,3 +726,167 @@
   border-color: #3a4255;
 }
 :host-context(body.dark-theme) .pag-pages { color: #9ca3af; }
+
+/* ── Dropdown rejected item ─────────────────────────────────────────────── */
+.dropdown-item-rejected { color: #dc2626; }
+.dropdown-item-rejected:hover { background: #fef2f2; color: #b91c1c; }
+
+/* ── Rejection reason modal ─────────────────────────────────────────────── */
+.rejection-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 24px;
+}
+
+.rejection-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.18);
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  animation: modalIn .2s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(-12px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0)      scale(1);  }
+}
+
+.rejection-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.rejection-modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rejection-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.rejection-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: color .15s, background .15s;
+}
+.rejection-modal-close:hover { background: #f1f5f9; color: #475569; }
+
+.rejection-modal-body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rejection-contract-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rejection-info-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  min-width: 90px;
+}
+
+.rejection-info-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.rejection-reason-box {
+  margin-top: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.rejection-reason-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #dc2626;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: 10px;
+}
+
+.rejection-reason-text {
+  font-size: 14px;
+  color: #1e293b;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.rejection-reason-empty {
+  font-size: 14px;
+  color: #94a3b8;
+  font-style: italic;
+  margin: 0;
+}
+
+.rejection-modal-footer {
+  padding: 16px 24px 20px;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-close-rejection {
+  background: #f1f5f9;
+  border: none;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-close-rejection:hover { background: #e2e8f0; }
+
+/* dark theme */
+:host-context(body.dark-theme) .rejection-modal {
+  background: #1e2435;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+:host-context(body.dark-theme) .rejection-modal-header,
+:host-context(body.dark-theme) .rejection-modal-footer { border-color: #2a3040; }
+:host-context(body.dark-theme) .rejection-modal-title  { color: #e4e4ef; }
+:host-context(body.dark-theme) .rejection-info-value   { color: #c5cad8; }
+:host-context(body.dark-theme) .rejection-reason-box   { background: rgba(220,38,38,.1); border-color: rgba(220,38,38,.25); }
+:host-context(body.dark-theme) .rejection-reason-text  { color: #c5cad8; }
+:host-context(body.dark-theme) .btn-close-rejection    { background: #252a3a; color: #9ca3af; }
+:host-context(body.dark-theme) .btn-close-rejection:hover { background: #2f3545; }

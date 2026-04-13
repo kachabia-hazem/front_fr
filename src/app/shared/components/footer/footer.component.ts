@@ -1,15 +1,21 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css',
 })
 export class FooterComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router, public authService: AuthService) {}
+
+  get isFreelancer(): boolean {
+    return this.authService.currentUser()?.role === 'FREELANCER';
+  }
 
   goHome(): void {
     this.router.navigate(['/']);

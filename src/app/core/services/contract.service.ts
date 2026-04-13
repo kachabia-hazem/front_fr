@@ -34,6 +34,10 @@ export class ContractService {
     return this.http.post<Contract>(`${this.apiUrl}/${id}/reject`, { reason });
   }
 
+  deleteContract(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
   getFileUrl(relativePath: string | null | undefined): string {
     if (!relativePath) return '';
     const baseUrl = environment.apiUrl.replace(/\/api$/, '');

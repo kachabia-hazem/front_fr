@@ -11,6 +11,7 @@ export interface ActiveMission {
   progress: number;
   startDate: string;
   endDate: string;
+  salary?: number;
   gitRepositoryUrl?: string;
   gitCurrentBranch?: string;
   gitCommitCount?: number;

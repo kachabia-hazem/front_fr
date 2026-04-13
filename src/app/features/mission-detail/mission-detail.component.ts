@@ -21,7 +21,9 @@ export class MissionDetailComponent implements OnInit {
   mission = signal<Mission | null>(null);
   loading = signal(true);
   error = signal('');
+  fromFavorites = false;
   hasApplied = signal(false);
+  applicationStatus = signal<'PENDING' | 'ACCEPTED' | 'REJECTED' | null>(null);
   withdrawing = signal(false);
   matchingLoading = signal(false);
   matchingResult = signal<MatchMissionResult | null>(null);
@@ -46,6 +48,7 @@ export class MissionDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.fromFavorites = this.route.snapshot.queryParamMap.get('from') === 'favorites';
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadMission(id);
@@ -76,14 +79,39 @@ export class MissionDetailComponent implements OnInit {
     });
   }
 
+  private readonly APP_STATUS_CACHE_KEY = 'wl_app_status_cache';
+
   private checkApplicationStatus(missionId: string): void {
-    this.applicationService.checkIfApplied(missionId).subscribe({
-      next: (applied) => this.hasApplied.set(applied),
+    // Restore from cache immediately (no network lag)
+    try {
+      const raw = localStorage.getItem(this.APP_STATUS_CACHE_KEY);
+      if (raw) {
+        const entries: [string, 'PENDING' | 'ACCEPTED' | 'REJECTED'][] = JSON.parse(raw);
+        const cached = new Map(entries).get(missionId) ?? null;
+        if (cached) {
+          this.hasApplied.set(true);
+          this.applicationStatus.set(cached);
+        }
+      }
+    } catch { /* ignore */ }
+
+    // Refresh from API to ensure accuracy
+    this.applicationService.getMyApplications().subscribe({
+      next: (applications) => {
+        const app = applications.find(a => a.missionId === missionId && a.status !== 'WITHDRAWN');
+        if (app) {
+          this.hasApplied.set(true);
+          this.applicationStatus.set(app.status as 'PENDING' | 'ACCEPTED' | 'REJECTED');
+        } else {
+          this.hasApplied.set(false);
+          this.applicationStatus.set(null);
+        }
+      },
     });
   }
 
   goBack(): void {
-    this.router.navigate(['/missions']);
+    this.router.navigate([this.fromFavorites ? '/saved-missions' : '/missions']);
   }
 
   getFileUrl(relativePath: string | undefined): string {
@@ -152,6 +180,7 @@ export class MissionDetailComponent implements OnInit {
     this.applicationService.withdrawApplication(id).subscribe({
       next: () => {
         this.hasApplied.set(false);
+        this.applicationStatus.set(null);
         this.withdrawing.set(false);
         this.toastService.show('Your application has been withdrawn successfully.', 'success');
       },

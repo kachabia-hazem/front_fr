@@ -2914,3 +2914,28 @@
   font-weight: 700; cursor: pointer; transition: all 0.2s;
 }
 .btn-postuler-from-match:hover { opacity: 0.9; transform: translateY(-1px); }
+
+
+/* ── Heart / Save button ─────────────────────────────────────────────────── */
+.btn-save-heart {
+  background: rgba(255, 220, 220, 0.45);
+  border: none;
+  cursor: pointer;
+  padding: 7px;
+  border-radius: 50%;
+  color: #e53e3e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.18s, transform 0.18s, background 0.18s;
+  flex-shrink: 0;
+}
+.btn-save-heart svg { fill: none; }
+.btn-save-heart:hover { background: rgba(229,62,62,0.15); transform: scale(1.1); }
+.btn-save-heart.saved { color: #e53e3e; background: rgba(255, 220, 220, 0.55); }
+.btn-save-heart.saved svg { fill: #e53e3e; }
+.btn-save-heart.saved:hover { background: rgba(229,62,62,0.2); }
+
+/* Modal save button (slightly larger) */
+.modal-save-btn { padding: 6px; }
+.modal-header-actions { display: flex; align-items: center; gap: 6px; }

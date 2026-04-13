@@ -42,6 +42,10 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
   // Dropdown menu
   openMenuId = signal<string | null>(null);
 
+  // Rejection reason modal
+  showRejectionModal   = signal(false);
+  rejectionContract    = signal<Contract | null>(null);
+
   toggleMenu(id: string): void {
     this.openMenuId.update(cur => cur === id ? null : id);
   }
@@ -71,12 +75,18 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
     return n.split(' ').map((w: string) => w.charAt(0)).join('').substring(0, 2).toUpperCase();
   });
 
-  pendingCount = computed(() => this.contracts().filter(c => c.status === 'PENDING_SIGNATURE').length);
-  signedCount  = computed(() => this.contracts().filter(c => c.status === 'SIGNED').length);
+  pendingCount  = computed(() => this.contracts().filter(c => c.status === 'PENDING_SIGNATURE').length);
+  signedCount   = computed(() => this.contracts().filter(c => c.status === 'SIGNED').length);
+  rejectedCount = computed(() => this.contracts().filter(c => c.status === 'REJECTED').length);
 
   readonly PAGE_SIZE = 7;
   readonly Math = Math;
   contractPage = signal(0);
+
+  private responseDate(c: Contract): number {
+    const d = c.signedAt || c.rejectedAt;
+    return d ? new Date(d).getTime() : 0;
+  }
 
   filteredContracts = computed(() => {
     let list = this.contracts();
@@ -89,8 +99,9 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
       list = list.filter(c => c.status === this.statusFilter());
     }
     return list.sort((a, b) => {
-      const diff = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      return this.sortDir() === 'desc' ? diff : -diff;
+      const aTime = new Date(a.createdAt).getTime();
+      const bTime = new Date(b.createdAt).getTime();
+      return this.sortDir() === 'desc' ? bTime - aTime : aTime - bTime;
     });
   });
 
@@ -310,7 +321,23 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
   statusLabel(status: string): string {
     if (status === 'PENDING_SIGNATURE') return 'Pending Signature';
     if (status === 'SIGNED') return 'Signed';
+    if (status === 'REJECTED') return 'Rejected';
     return status;
+  }
+
+  getResponseDate(contract: Contract): string {
+    const d = contract.signedAt || contract.rejectedAt;
+    return d ? this.formatDate(d) : '—';
+  }
+
+  openRejectionModal(contract: Contract): void {
+    this.rejectionContract.set(contract);
+    this.showRejectionModal.set(true);
+  }
+
+  closeRejectionModal(): void {
+    this.showRejectionModal.set(false);
+    this.rejectionContract.set(null);
   }
 
   logout(): void { this.authService.logout(); this.router.navigate(['/auth/login']); }

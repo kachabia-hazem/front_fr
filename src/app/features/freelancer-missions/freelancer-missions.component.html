@@ -102,9 +102,13 @@
             <div class="mission-card" (click)="goToMission(mission.id)">
               <div class="mission-card-header">
                 <h3 class="mission-title">{{ mission.title }}</h3>
-                <span class="mission-status" [class]="getStatusClass(mission.status)">
-                  {{ mission.status }}
-                </span>
+                @if (isOverdue(mission)) {
+                  <span class="mission-status status-overdue">Overdue</span>
+                } @else {
+                  <span class="mission-status" [class]="getStatusClass(mission.status)">
+                    {{ mission.status }}
+                  </span>
+                }
               </div>
 
               <div class="mission-progress-row">
