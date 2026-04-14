@@ -1460,3 +1460,24 @@
   border-color: #3793B0;
   color: #3793B0;
 }
+
+/* ── AI Off-topic error state ──────────────────────────────────────────────── */
+.ai-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 48px 24px;
+  text-align: center;
+}
+.ai-error-msg {
+  max-width: 480px;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 0.93rem;
+  line-height: 1.6;
+}

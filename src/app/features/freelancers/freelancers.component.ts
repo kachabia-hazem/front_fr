@@ -78,6 +78,7 @@ export class FreelancersComponent implements OnInit {
   aiSearchLoading = signal(false);
   aiResults = signal<AiFreelancerSearchResult[]>([]);
   aiSearchPrompt = '';
+  aiError = signal('');
   aiScoreMap = new Map<string, number>();
 
   // Computed unique pour le state de chargement — garantit le tracking réactif en Angular zoneless
@@ -298,6 +299,7 @@ export class FreelancersComponent implements OnInit {
     if (current) {
       this.aiResults.set([]);
       this.aiSearchPrompt = '';
+      this.aiError.set('');
       this.aiScoreMap.clear();
     }
   }
@@ -306,6 +308,7 @@ export class FreelancersComponent implements OnInit {
     const prompt = this.aiSearchPrompt.trim();
     if (!prompt) return;
     this.aiSearchLoading.set(true);
+    this.aiError.set('');
     this.aiScoreMap.clear();
 
     this.freelancerService.aiSearch(prompt).subscribe({
@@ -315,8 +318,13 @@ export class FreelancersComponent implements OnInit {
         results.forEach(r => this.aiScoreMap.set(r.freelancer.id!, r.score));
         this.aiSearchLoading.set(false);
       },
-      error: () => {
+      error: (err) => {
         this.aiSearchLoading.set(false);
+        this.aiError.set(
+          err?.error?.detail ||
+          err?.error?.message ||
+          'Une erreur est survenue lors de la recherche AI.'
+        );
       },
     });
   }

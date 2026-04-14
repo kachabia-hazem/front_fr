@@ -70,6 +70,7 @@ export class MissionsComponent implements OnInit {
   aiSearchLoading = false;
   aiResults: AiSearchResult[] = [];
   aiSearchPrompt = '';
+  aiError = '';
 
   // Login prompt modal (for unauthenticated users)
   showLoginPrompt = false;
@@ -492,6 +493,7 @@ export class MissionsComponent implements OnInit {
       // Retour mode normal : réafficher toutes les missions
       this.aiResults = [];
       this.aiSearchPrompt = '';
+      this.aiError = '';
       this.aiScoreMap.clear();
       this.applyFilters();
     }
@@ -502,6 +504,7 @@ export class MissionsComponent implements OnInit {
     if (!prompt) return;
 
     this.aiSearchLoading = true;
+    this.aiError = '';
     this.aiResults = [];
     this.aiScoreMap.clear();
 
@@ -516,9 +519,13 @@ export class MissionsComponent implements OnInit {
         // Remplacer filteredMissions par les résultats AI dans le bon ordre
         this.filteredMissions = results.map(r => r.mission);
       },
-      error: () => {
+      error: (err) => {
         this.aiSearchLoading = false;
         this.filteredMissions = [];
+        this.aiError =
+          err?.error?.detail ||
+          err?.error?.message ||
+          'Une erreur est survenue lors de la recherche AI.';
       },
     });
   }

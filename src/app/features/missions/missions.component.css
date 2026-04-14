@@ -72,6 +72,7 @@
   font-size: 14.5px;
   outline: none;
   color: #1e1b4b;
+  cursor: text;
 }
 
 .ai-prompt-input::placeholder {
@@ -81,6 +82,7 @@
 
 .ai-prompt-input:disabled {
   opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Bouton envoyer */
@@ -397,7 +399,7 @@
   border-radius: 0.5rem;
   font-size: 0.85rem;
   font-weight: 600;
-  cursor: not-allowed;
+  cursor: pointer;
   white-space: nowrap;
   opacity: 0.7;
 }
@@ -2939,3 +2941,29 @@
 /* Modal save button (slightly larger) */
 .modal-save-btn { padding: 6px; }
 .modal-header-actions { display: flex; align-items: center; gap: 6px; }
+
+/* ── AI Off-topic error state ──────────────────────────────────────────────── */
+.ai-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 48px 24px;
+  text-align: center;
+}
+.ai-error-msg {
+  max-width: 480px;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 0.93rem;
+  line-height: 1.6;
+}
+:host-context(body.dark-theme) .ai-error-msg {
+  background: #2d2006;
+  color: #fcd34d;
+  border-color: #92400e;
+}
