@@ -69,7 +69,7 @@ export class ActiveMissionComponent implements OnInit {
   }
 
   private readonly destroyRef = inject(DestroyRef);
-  private readonly GIT_POLL_INTERVAL_MS = 60_000; // 60 secondes
+  private readonly GIT_POLL_INTERVAL_MS = 30_000; // 30 secondes
 
   // Deliverables
   selectedFile = signal<File | null>(null);
@@ -81,6 +81,7 @@ export class ActiveMissionComponent implements OnInit {
   submissionNote = '';
   submitting = signal(false);
   submitSuccess = signal(false);
+  gitRequiredError = signal(false);
 
   // Feedback modal (shown when mission is completed — once per mission)
   showFeedbackModal = signal(false);
@@ -308,6 +309,7 @@ export class ActiveMissionComponent implements OnInit {
         this.mission.set(m);
         this.showGitUrlForm.set(false);
         this.gitUrlValidation.set(null);
+        this.refreshGit();
       },
       error: () => this.gitError.set('Failed to save repository URL.'),
     });
@@ -400,6 +402,16 @@ export class ActiveMissionComponent implements OnInit {
     const status = this.mission()?.status;
     if (this.isOverdue()) return false;
     return status === 'ACTIVE' || status === 'PAUSED';
+  }
+
+  tryShowSubmitForm(): void {
+    if (!this.mission()?.gitRepositoryUrl) {
+      this.gitRequiredError.set(true);
+      setTimeout(() => this.gitRequiredError.set(false), 5000);
+      return;
+    }
+    this.gitRequiredError.set(false);
+    this.showSubmitForm.set(true);
   }
 
   submitMission(): void {

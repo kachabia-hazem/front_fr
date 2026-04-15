@@ -342,6 +342,10 @@
 .btn-submit-mission { display: flex; align-items: center; gap: 8px; background: #16a34a; color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
 .btn-submit-mission:hover:not(:disabled) { background: #15803d; }
 .btn-submit-mission:disabled { opacity: 0.6; cursor: not-allowed; }
+.git-required-error { display: flex; align-items: flex-start; gap: 8px; margin-top: 10px; padding: 10px 14px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; font-size: 0.82rem; color: #b91c1c; }
+.git-required-error svg { flex-shrink: 0; margin-top: 1px; color: #ef4444; }
+.git-required-error strong { font-weight: 700; }
+:host-context(body.dark-theme) .git-required-error { background: rgba(239,68,68,0.1); border-color: #ef4444; color: #fca5a5; }
 
 .submit-form { display: flex; flex-direction: column; gap: 14px; }
 .submit-form-label { font-size: 0.83rem; font-weight: 600; color: #374151; }

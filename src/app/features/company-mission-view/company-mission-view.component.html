@@ -333,24 +333,55 @@
               </button>
             } @else {
               <div class="validate-form">
-                <label class="submit-form-label">Your feedback (optional)</label>
-                <textarea class="form-input" [(ngModel)]="validationNote" rows="3"
-                          placeholder="Comments, observations, feedback for the freelancer..."></textarea>
 
-                <label class="submit-form-label">Rate this delivery</label>
-                <div class="star-picker">
-                  @for (s of [1,2,3,4,5]; track s) {
-                    <button class="star-btn" (click)="setRating(s)" [title]="s + ' star' + (s > 1 ? 's' : '')">
-                      <svg [class.star-filled]="s <= selectedRating()"
-                           xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                      </svg>
-                    </button>
+                <!-- Header -->
+                <div class="validate-form-header">
+                  <div class="validate-form-header-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <div>
+                    <p class="validate-form-title">Review this submission</p>
+                    <p class="validate-form-sub">Your feedback will be shared with the freelancer.</p>
+                  </div>
+                </div>
+
+                <div class="validate-form-divider"></div>
+
+                <!-- Feedback textarea -->
+                <div class="validate-field">
+                  <label class="validate-field-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Your feedback <span class="validate-optional">(optional)</span>
+                  </label>
+                  <textarea class="form-input" [(ngModel)]="validationNote" rows="3"
+                            placeholder="Comments, observations, feedback for the freelancer..."></textarea>
+                </div>
+
+                <!-- Star rating -->
+                <div class="validate-field">
+                  <label class="validate-field-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    Rate this delivery <span class="validate-required">*</span>
+                  </label>
+                  <div class="star-picker-row">
+                    @for (s of [1,2,3,4,5]; track s) {
+                      <button class="star-btn" (click)="setRating(s)" [title]="s + ' star' + (s > 1 ? 's' : '')">
+                        <svg [class.star-filled]="s <= selectedRating()"
+                             xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                      </button>
+                    }
+                    @if (selectedRating() > 0) {
+                      <span class="star-label">{{ ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][selectedRating()] }}</span>
+                    }
+                  </div>
+                  @if (selectedRating() === 0) {
+                    <p class="rating-hint">A rating is required to approve the mission.</p>
                   }
                 </div>
-                @if (selectedRating() === 0) {
-                  <p class="rating-hint">Please select a rating to approve.</p>
-                }
+
+                <div class="validate-form-divider"></div>
 
                 <div class="validate-form-actions">
                   <button class="btn-approve" (click)="validate(true)" [disabled]="validating() || selectedRating() === 0">

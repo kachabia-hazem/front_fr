@@ -84,16 +84,6 @@
         <p>Loading mission workspace...</p>
       </div>
     } @else if (mission()) {
-      <!-- GitHub URL Required Banner -->
-      @if (isFreelancer() && !mission()?.gitRepositoryUrl && !isReadOnly()) {
-        <div class="git-required-banner">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <div class="git-required-banner-text">
-            <strong>GitHub Repository URL missing</strong>
-            <span>The GitHub repository URL is required to allow the company to validate your mission. Please set it in the <em>Git Activity</em> section below.</span>
-          </div>
-        </div>
-      }
 
       <!-- Mission Header -->
       <div class="mission-header">
@@ -337,7 +327,7 @@
               @if (lastGitRefresh()) {
                 <span class="git-auto-refresh-badge">
                   <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  Auto • {{ lastGitRefresh() | date:'HH:mm:ss' }}
+                  Auto every 30s • {{ lastGitRefresh() | date:'HH:mm:ss' }}
                 </span>
               }
               <button class="btn-secondary" (click)="refreshGit()" [disabled]="refreshingGit()">
@@ -586,11 +576,17 @@
           @if (!showSubmitForm()) {
             <div class="submit-cta">
               <p class="submit-cta-text">Finished your work? Submit the mission to notify the company for final validation.</p>
-              <button class="btn-submit-mission" (click)="showSubmitForm.set(true)">
+              <button class="btn-submit-mission" (click)="tryShowSubmitForm()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 Mark as Completed
               </button>
             </div>
+            @if (gitRequiredError()) {
+              <div class="git-required-error">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>GitHub Repository URL is required. Please set it in the <strong>Git Activity</strong> section above before submitting.</span>
+              </div>
+            }
           } @else {
             <div class="submit-form">
               <label class="submit-form-label">Delivery note (optional)</label>

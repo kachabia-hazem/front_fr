@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Feedback, SubmitFeedbackRequest } from '../models/feedback.model';
+import { Feedback, FeedbackPublicDto, SubmitFeedbackRequest } from '../models/feedback.model';
 
 @Injectable({ providedIn: 'root' })
 export class FeedbackService {
@@ -10,6 +10,12 @@ export class FeedbackService {
   private readonly adminUrl   = `${environment.apiUrl}/admin/feedbacks`;
 
   constructor(private http: HttpClient) {}
+
+  // ── Public (home page) ───────────────────────────────────────────────────
+
+  getPublicFeedbacks(): Observable<FeedbackPublicDto[]> {
+    return this.http.get<FeedbackPublicDto[]>(`${environment.apiUrl}/public/feedbacks`);
+  }
 
   // ── User (company / freelancer) ───────────────────────────────────────────
 

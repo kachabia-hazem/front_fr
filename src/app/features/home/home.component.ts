@@ -7,6 +7,8 @@ import { AuthService } from '../../core/services/auth.service';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { MissionService, AiSearchResult } from '../../core/services/mission.service';
+import { FeedbackService } from '../../core/services/feedback.service';
+import { FeedbackPublicDto } from '../../core/models/feedback.model';
 import { environment } from '../../../environments/environment';
 
 interface StatItem {
@@ -49,6 +51,58 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {}
+
+  // ─── Feedbacks ───────────────────────────────────────────────────────────
+  companyFeedbacks = signal<FeedbackPublicDto[]>([]);
+  freelancerFeedbacks = signal<FeedbackPublicDto[]>([]);
+  companyPage = 0;
+  freelancerPage = 0;
+  readonly CARDS_VISIBLE = 3;
+
+  totalPages(list: FeedbackPublicDto[]): number {
+    return Math.ceil(list.length / this.CARDS_VISIBLE);
+  }
+
+  pagesArray(list: FeedbackPublicDto[]): number[] {
+    return Array.from({ length: this.totalPages(list) }, (_, i) => i);
+  }
+
+  visibleCards(list: FeedbackPublicDto[], page: number): FeedbackPublicDto[] {
+    const start = page * this.CARDS_VISIBLE;
+    return list.slice(start, start + this.CARDS_VISIBLE);
+  }
+
+  prevCarousel(type: 'company' | 'freelancer'): void {
+    if (type === 'company') {
+      const pages = this.totalPages(this.companyFeedbacks());
+      this.companyPage = (this.companyPage - 1 + pages) % pages;
+    } else {
+      const pages = this.totalPages(this.freelancerFeedbacks());
+      this.freelancerPage = (this.freelancerPage - 1 + pages) % pages;
+    }
+  }
+
+  nextCarousel(type: 'company' | 'freelancer'): void {
+    if (type === 'company') {
+      this.companyPage = (this.companyPage + 1) % this.totalPages(this.companyFeedbacks());
+    } else {
+      this.freelancerPage = (this.freelancerPage + 1) % this.totalPages(this.freelancerFeedbacks());
+    }
+  }
+
+  starsArray(rating: number): number[] {
+    return Array.from({ length: 5 }, (_, i) => i + 1);
+  }
+
+  getPhotoUrl(path: string | undefined): string {
+    if (!path) return '';
+    const base = environment.apiUrl.replace(/\/api$/, '');
+    return base + path;
+  }
+
+  getInitials(name: string): string {
+    return name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+  }
 
   // ─── Recommended Missions ────────────────────────────────────────────────
   recommendedMissions = signal<AiSearchResult[]>([]);
@@ -167,9 +221,17 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private ngZone: NgZone,
     private missionService: MissionService,
+    private feedbackService: FeedbackService,
   ) {}
 
   ngOnInit(): void {
+    this.feedbackService.getPublicFeedbacks().subscribe({
+      next: (list) => {
+        this.companyFeedbacks.set(list.filter(f => f.userRole === 'COMPANY'));
+        this.freelancerFeedbacks.set(list.filter(f => f.userRole === 'FREELANCER'));
+      }
+    });
+
     if (this.isCompany) {
       this.activeTab = 'companies';
     }
