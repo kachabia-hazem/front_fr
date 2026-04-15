@@ -492,7 +492,7 @@
                 <div class="chart-bar-wrapper">
                   <div class="chart-bar" [style.height.%]="getBarHeight(value)">
                     @if (value > 0) {
-                      <span class="chart-bar-tooltip">${{ formatCurrency(value) }}</span>
+                      <span class="chart-bar-tooltip">{{ formatCurrency(value) }} DT</span>
                     }
                   </div>
                   <span class="chart-label">{{ stats()?.monthLabels?.[$index] || '' }}</span>

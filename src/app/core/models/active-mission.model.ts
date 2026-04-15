@@ -1,4 +1,4 @@
-export type ActiveMissionStatus = 'ACTIVE' | 'SUBMITTED' | 'COMPLETED' | 'PAUSED' | 'DISPUTE';
+export type ActiveMissionStatus = 'PENDING' | 'ACTIVE' | 'SUBMITTED' | 'COMPLETED' | 'PAUSED' | 'DISPUTE';
 
 export interface ActiveMission {
   id: string;

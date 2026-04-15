@@ -400,11 +400,11 @@
           <div class="turnover-stats">
             <div class="turnover-stat">
               <span class="turnover-label">Revenue</span>
-              <span class="turnover-value">${{ formatCurrency(stats()?.revenue || 0) }}</span>
+              <span class="turnover-value">{{ formatCurrency(stats()?.revenue || 0) }} DT</span>
             </div>
             <div class="turnover-stat">
               <span class="turnover-label">Current missions amount</span>
-              <span class="turnover-value">${{ formatCurrency(stats()?.currentMissionsAmount || 0) }}</span>
+              <span class="turnover-value">{{ formatCurrency(stats()?.currentMissionsAmount || 0) }} DT</span>
             </div>
             <div class="turnover-stat">
               <span class="turnover-label">Projects completed</span>
@@ -493,15 +493,6 @@
               </div>
             </div>
 
-            <div class="visibility-item">
-              <div class="visibility-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              </div>
-              <div class="visibility-data">
-                <span class="visibility-value">{{ stats()?.visibility?.favorites || 0 }}</span>
-                <span class="visibility-label">Added to favorites</span>
-              </div>
-            </div>
           </div>
 
         </div>
@@ -771,7 +762,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @for (app of pagedApplications(); track app.id) {
+                  @for (app of sortedApplications().slice(0, 5); track app.id) {
                     <tr>
                       <td class="cell-mission">{{ app.missionTitle || 'N/A' }}</td>
                       <td class="cell-company">{{ app.companyName || 'N/A' }}</td>
@@ -790,17 +781,6 @@
                 </tbody>
               </table>
 
-              @if (appTotalPages() > 1) {
-                <div class="pagination">
-                  <button class="pagination-btn" (click)="appPrevPage()" [disabled]="appPage() === 0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                  </button>
-                  <span class="pagination-info">{{ appPage() + 1 }} / {{ appTotalPages() }}</span>
-                  <button class="pagination-btn" (click)="appNextPage()" [disabled]="appPage() === appTotalPages() - 1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                  </button>
-                </div>
-              }
             </div>
           }
         </div>

@@ -235,16 +235,18 @@
   letter-spacing: 0.05em;
   white-space: nowrap;
 }
-.status-active { background: #dcfce7; color: #16a34a; }
+.status-pending  { background: #fff7ed; color: #ea580c; }
+.status-active   { background: #dcfce7; color: #16a34a; }
 .status-completed { background: #e0f2fe; color: #0284c7; }
-.status-paused { background: #fef9c3; color: #ca8a04; }
-.status-dispute { background: #fee2e2; color: #dc2626; }
-.status-overdue { background: #fee2e2; color: #dc2626; }
-:host-context(body.dark-theme) .status-active { background: rgba(22,163,74,0.15); color: #4ade80; }
+.status-paused   { background: #fef9c3; color: #ca8a04; }
+.status-dispute  { background: #fee2e2; color: #dc2626; }
+.status-overdue  { background: #fee2e2; color: #dc2626; }
+:host-context(body.dark-theme) .status-pending  { background: rgba(234,88,12,0.15); color: #fb923c; }
+:host-context(body.dark-theme) .status-active   { background: rgba(22,163,74,0.15); color: #4ade80; }
 :host-context(body.dark-theme) .status-completed { background: rgba(2,132,199,0.15); color: #38bdf8; }
-:host-context(body.dark-theme) .status-paused { background: rgba(202,138,4,0.15); color: #facc15; }
-:host-context(body.dark-theme) .status-dispute { background: rgba(220,38,38,0.15); color: #f87171; }
-:host-context(body.dark-theme) .status-overdue { background: rgba(220,38,38,0.15); color: #f87171; }
+:host-context(body.dark-theme) .status-paused   { background: rgba(202,138,4,0.15); color: #facc15; }
+:host-context(body.dark-theme) .status-dispute  { background: rgba(220,38,38,0.15); color: #f87171; }
+:host-context(body.dark-theme) .status-overdue  { background: rgba(220,38,38,0.15); color: #f87171; }
 
 .mission-progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .progress-label { font-size: 0.8rem; color: #6b7280; }
@@ -282,3 +284,97 @@
 .btn-delete-cancel:hover { background: #f3f4f6; }
 :host-context(body.dark-theme) .btn-delete-cancel { border-color: #374151; color: #9ca3af; }
 :host-context(body.dark-theme) .btn-delete-cancel:hover { background: rgba(255,255,255,0.05); }
+
+/* ── Pending mission card ── */
+.mission-card-pending { border-color: #fed7aa; cursor: default; }
+.mission-card-pending:hover { transform: none; box-shadow: 0 2px 12px rgba(234,88,12,0.1); }
+:host-context(body.dark-theme) .mission-card-pending { border-color: rgba(234,88,12,0.3); }
+
+.view-link-pending {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #ea580c;
+}
+:host-context(body.dark-theme) .view-link-pending { color: #fb923c; }
+
+/* ── Pending toast ── */
+.pending-toast-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.pending-toast {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 28px 24px;
+  max-width: 440px;
+  width: 90%;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  position: relative;
+  animation: slideUp 0.2s ease;
+  border-top: 4px solid #ea580c;
+}
+:host-context(body.dark-theme) .pending-toast { background: #1e2535; border-top-color: #fb923c; }
+
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.pending-toast-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff7ed;
+  color: #ea580c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+:host-context(body.dark-theme) .pending-toast-icon { background: rgba(234,88,12,0.15); color: #fb923c; }
+
+.pending-toast-body { flex: 1; }
+
+.pending-toast-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 8px;
+}
+:host-context(body.dark-theme) .pending-toast-title { color: #e4e4ef; }
+
+.pending-toast-text {
+  font-size: 0.88rem;
+  color: #4b5563;
+  margin: 0;
+  line-height: 1.6;
+}
+:host-context(body.dark-theme) .pending-toast-text { color: #9ca3af; }
+
+.pending-toast-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  line-height: 0;
+  transition: color 0.15s, background 0.15s;
+}
+.pending-toast-close:hover { color: #374151; background: #f3f4f6; }
+:host-context(body.dark-theme) .pending-toast-close:hover { color: #e4e4ef; background: rgba(255,255,255,0.08); }

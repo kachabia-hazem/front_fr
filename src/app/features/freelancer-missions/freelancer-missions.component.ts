@@ -37,6 +37,8 @@ export class FreelancerMissionsComponent implements OnInit {
 
   activeMissionsCount = computed(() => this.missions().filter(m => m.status === 'ACTIVE').length);
 
+  pendingToastMission = signal<ActiveMission | null>(null);
+
   confirmDeleteId = signal<string | null>(null);
   deletingId = signal<string | null>(null);
 
@@ -69,8 +71,16 @@ export class FreelancerMissionsComponent implements OnInit {
     this.sidebarCollapsed.update(v => !v);
   }
 
-  goToMission(id: string): void {
-    this.router.navigate(['/active-mission', id]);
+  goToMission(mission: ActiveMission): void {
+    if (mission.status === 'PENDING') {
+      this.pendingToastMission.set(mission);
+      return;
+    }
+    this.router.navigate(['/active-mission', mission.id]);
+  }
+
+  dismissPendingToast(): void {
+    this.pendingToastMission.set(null);
   }
 
   requestDelete(missionId: string, event: Event): void {
@@ -112,6 +122,7 @@ export class FreelancerMissionsComponent implements OnInit {
 
   getStatusClass(status: string): string {
     switch (status) {
+      case 'PENDING': return 'status-pending';
       case 'ACTIVE': return 'status-active';
       case 'COMPLETED': return 'status-completed';
       case 'PAUSED': return 'status-paused';

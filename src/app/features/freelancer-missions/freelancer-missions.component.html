@@ -99,7 +99,7 @@
       } @else {
         <div class="missions-grid">
           @for (mission of missions(); track mission.id) {
-            <div class="mission-card" (click)="goToMission(mission.id)">
+            <div class="mission-card" [class.mission-card-pending]="mission.status === 'PENDING'" (click)="goToMission(mission)">
               <div class="mission-card-header">
                 <h3 class="mission-title">{{ mission.title }}</h3>
                 @if (isOverdue(mission)) {
@@ -129,7 +129,12 @@
               </div>
 
               <div class="mission-card-footer">
-                @if (mission.status === 'COMPLETED') {
+                @if (mission.status === 'PENDING') {
+                  <span class="view-link view-link-pending">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Starts on {{ mission.startDate | date:'dd/MM/yyyy' }}
+                  </span>
+                } @else if (mission.status === 'COMPLETED') {
                   @if (confirmDeleteId() === mission.id) {
                     <div class="delete-confirm-inline" (click)="$event.stopPropagation()">
                       <span class="delete-confirm-text">Remove from history?</span>
@@ -156,3 +161,24 @@
     }
   </main>
 </div>
+
+@if (pendingToastMission()) {
+  <div class="pending-toast-overlay" (click)="dismissPendingToast()">
+    <div class="pending-toast" (click)="$event.stopPropagation()">
+      <div class="pending-toast-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="pending-toast-body">
+        <h4 class="pending-toast-title">Mission not started yet</h4>
+        <p class="pending-toast-text">
+          The mission <strong>{{ pendingToastMission()!.title }}</strong> will automatically activate on
+          <strong>{{ pendingToastMission()!.startDate | date:'MMMM d, yyyy' }}</strong>.
+          You will be notified when the workspace opens.
+        </p>
+      </div>
+      <button class="pending-toast-close" (click)="dismissPendingToast()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+}
