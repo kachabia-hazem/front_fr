@@ -1,5 +1,5 @@
 /* ── Layout ── */
-.dashboard-layout { display: flex; min-height: 100vh; }
+.dashboard-layout { display: flex; height: 100vh; overflow: hidden; }
 
 /* ── Sidebar ── */
 .sidebar {
@@ -10,7 +10,11 @@
   padding: 24px 0;
   border-right: 1px solid #e8eaed;
   transition: width 0.3s cubic-bezier(0.4,0,0.2,1), min-width 0.3s cubic-bezier(0.4,0,0.2,1);
-  overflow: hidden;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 :host-context(body.dark-theme) .sidebar { background: #1a1f2e; border-right-color: #2a3040; }
 .sidebar.collapsed { width: 72px; min-width: 72px; }
@@ -53,7 +57,7 @@
 :host-context(body.dark-theme) .sidebar-back-btn:hover { background: rgba(255,255,255,0.06); color: #e4e4ef; }
 
 /* ── Main content ── */
-.mission-main { flex: 1; padding: 36px 40px; background: #f4f6f9; min-height: 100vh; overflow-y: auto; }
+.mission-main { flex: 1; padding: 36px 40px; background: #f4f6f9; overflow-y: auto; }
 :host-context(body.dark-theme) .mission-main { background: #111622; }
 
 .page-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; gap: 16px; color: #6b7280; }

@@ -1,0 +1,135 @@
+{
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "applications": "Applications",
+    "active_missions": "Active Missions",
+    "messaging": "Messaging",
+    "contracts": "Contracts",
+    "my_balance": "My Balance",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "my_missions": "My Missions",
+    "mission_tracking": "Mission Tracking"
+  },
+  "sidebar": {
+    "freelancer": "Freelancer",
+    "company": "Company"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account, security, and preferences",
+    "password": {
+      "label": "Password",
+      "title": "Change Password",
+      "desc": "Update your password to keep your account secure.",
+      "current": "Current Password",
+      "new": "New Password",
+      "confirm": "Confirm New Password",
+      "btn": "Update Password",
+      "success": "Password updated successfully.",
+      "error_empty": "Please fill in all fields.",
+      "error_length": "New password must be at least 8 characters.",
+      "error_match": "Passwords do not match.",
+      "strength": {
+        "weak": "Weak",
+        "fair": "Fair",
+        "good": "Good",
+        "strong": "Strong"
+      }
+    },
+    "security": {
+      "label": "Security",
+      "title": "Connected Devices",
+      "desc": "Manage sessions and devices currently logged into your account.",
+      "current_badge": "Current",
+      "disconnect": "Disconnect",
+      "disconnect_all": "Disconnect All Other Sessions",
+      "success": "All other sessions have been terminated.",
+      "active_now": "Active now",
+      "no_other": "No other active sessions."
+    },
+    "notifications": {
+      "label": "Notifications",
+      "title": "Notification Preferences",
+      "desc": "Choose which emails you want to receive from WorkLink.",
+      "group_email": "Email Notifications",
+      "marketing": "Platform updates & newsletters",
+      "marketing_desc": "News about WorkLink features and announcements",
+      "security_alerts": "Account activity alerts",
+      "security_alerts_desc": "Login attempts, password changes, and security alerts",
+      "new_mission": "New matching missions",
+      "new_mission_desc": "Get notified when a mission matches your profile",
+      "application_status": "Application status updates",
+      "application_status_desc": "When your application is reviewed or accepted",
+      "new_applications": "New applications received",
+      "new_applications_desc": "When a freelancer applies to one of your missions",
+      "contract_alerts": "Contract & payment alerts",
+      "contract_alerts_desc": "Updates on contract signing and payment status",
+      "save": "Save Preferences",
+      "success": "Notification preferences saved."
+    },
+    "preferences": {
+      "label": "Preferences",
+      "title": "Preferences",
+      "desc": "Customize your language and timezone settings.",
+      "language": "Language",
+      "timezone": "Timezone",
+      "save": "Save Preferences",
+      "success": "Preferences saved."
+    },
+    "payment": {
+      "label": "Payment",
+      "title": "Payment Methods",
+      "desc": "Manage your billing information and payment methods.",
+      "coming_soon_title": "Coming Soon",
+      "coming_soon_desc": "Payment management will be available in an upcoming release. Stay tuned!"
+    },
+    "delete": {
+      "label": "Delete Account",
+      "title": "Delete Account",
+      "desc": "Permanently remove your account and all associated data.",
+      "warning": "This action is irreversible. All your data including profile, applications, contracts, messages and balance will be permanently deleted. This cannot be undone.",
+      "confirm_label": "To confirm, type",
+      "confirm_keyword": "delete my account",
+      "confirm_placeholder": "delete my account",
+      "btn": "Delete My Account Permanently"
+    }
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "soon": "Soon",
+    "back": "Back",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "freelancer": "Freelancer",
+    "company": "Company"
+  },
+  "missions": {
+    "title": "Active Missions",
+    "no_missions": "No active missions",
+    "status_open": "Open",
+    "status_closed": "Closed"
+  },
+  "notifications_page": {
+    "title": "Notifications",
+    "mark_all_read": "Mark all as read",
+    "no_notifications": "No notifications"
+  },
+  "messaging_page": {
+    "title": "Messages",
+    "search": "Search conversations...",
+    "no_convs": "No conversations yet",
+    "start_chat": "New Conversation",
+    "write_message": "Write a message...",
+    "send": "Send",
+    "online": "Online",
+    "typing": "typing…",
+    "locked": "Messaging is locked until a contract is signed.",
+    "waiting": "Waiting for the company to start the conversation…"
+  }
+}

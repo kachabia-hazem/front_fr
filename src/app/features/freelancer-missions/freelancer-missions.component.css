@@ -1,7 +1,8 @@
 /* ── Layout ── */
 .dashboard-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* ── Sidebar (shared pattern) ── */
@@ -15,7 +16,11 @@
   padding: 24px 0;
   border-right: 1px solid #e8eaed;
   transition: width 0.3s cubic-bezier(0.4,0,0.2,1), min-width 0.3s cubic-bezier(0.4,0,0.2,1);
-  overflow: hidden;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 :host-context(body.dark-theme) .sidebar { background: #1a1f2e; border-right-color: #2a3040; }
 
@@ -156,7 +161,6 @@
   flex: 1;
   padding: 40px 40px;
   background: #f4f6f9;
-  min-height: 100vh;
   overflow-y: auto;
 }
 :host-context(body.dark-theme) .missions-main { background: #111622; }

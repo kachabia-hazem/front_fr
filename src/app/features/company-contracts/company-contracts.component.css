@@ -1,5 +1,5 @@
 /* ── Layout ── */
-.dashboard-layout { display: flex; min-height: 100vh; }
+.dashboard-layout { display: flex; height: 100vh; overflow: hidden; }
 
 /* ── Sidebar ── */
 .sidebar {
@@ -8,7 +8,11 @@
   justify-content: space-between; padding: 24px 0;
   border-right: 1px solid #e8eaed;
   transition: width .3s cubic-bezier(.4,0,.2,1), min-width .3s cubic-bezier(.4,0,.2,1);
-  overflow: hidden;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 :host-context(body.dark-theme) .sidebar { background: #1a1f2e; border-right-color: #2a3040; }
 .sidebar-top { flex: 1; }

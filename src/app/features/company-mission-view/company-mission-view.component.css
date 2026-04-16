@@ -1,5 +1,5 @@
 /* ── Layout ── */
-.dashboard-layout { display: flex; min-height: 100vh; }
+.dashboard-layout { display: flex; height: 100vh; overflow: hidden; }
 
 /* ── Back button ── */
 .back-to-missions-btn { display: inline-flex; align-items: center; gap: 7px; background: none; border: 1px solid #e8eaed; color: #374151; padding: 7px 14px; border-radius: 8px; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: background 0.18s, border-color 0.18s; margin-bottom: 18px; }
@@ -8,7 +8,7 @@
 :host-context(body.dark-theme) .back-to-missions-btn:hover { background: rgba(255,255,255,0.06); border-color: #374151; }
 
 /* ── Sidebar ── */
-.sidebar { width: 260px; min-width: 260px; background: #f8f9fb; display: flex; flex-direction: column; justify-content: space-between; padding: 24px 0; border-right: 1px solid #e8eaed; transition: width 0.3s cubic-bezier(0.4,0,0.2,1), min-width 0.3s cubic-bezier(0.4,0,0.2,1); overflow: hidden; }
+.sidebar { width: 260px; min-width: 260px; background: #f8f9fb; display: flex; flex-direction: column; justify-content: space-between; padding: 24px 0; border-right: 1px solid #e8eaed; transition: width 0.3s cubic-bezier(0.4,0,0.2,1), min-width 0.3s cubic-bezier(0.4,0,0.2,1); position: sticky; top: 0; height: 100vh; overflow-y: auto; overflow-x: hidden; }
 :host-context(body.dark-theme) .sidebar { background: #1a1f2e; border-right-color: #2a3040; }
 .sidebar.collapsed { width: 72px; min-width: 72px; }
 .sidebar.collapsed .sidebar-logo-text, .sidebar.collapsed .sidebar-user-info, .sidebar.collapsed .badge-soon { display: none; }
@@ -44,7 +44,7 @@
 :host-context(body.dark-theme) .sidebar-back-btn:hover { background: rgba(255,255,255,0.06); color: #e4e4ef; }
 
 /* ── Main ── */
-.mission-main { flex: 1; padding: 36px 40px; background: #f4f6f9; min-height: 100vh; overflow-y: auto; }
+.mission-main { flex: 1; padding: 36px 40px; background: #f4f6f9; overflow-y: auto; }
 :host-context(body.dark-theme) .mission-main { background: #111622; }
 .page-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; gap: 16px; color: #6b7280; }
 .spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: #3793B0; border-radius: 50%; animation: spin 0.8s linear infinite; }

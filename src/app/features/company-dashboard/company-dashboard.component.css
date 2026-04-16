@@ -1,7 +1,8 @@
 /* ── Layout ── */
 .dashboard-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* ── Sidebar ── */
@@ -16,7 +17,11 @@
   border-right: 1px solid #e8eaed;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 :host-context(body.dark-theme) .sidebar {
@@ -378,6 +383,7 @@
 /* ── Main Content ── */
 .dashboard-main {
   flex: 1;
+  min-height: 0;
   padding: 32px 36px;
   background: var(--bg-page, #f5f7fa);
   overflow-y: auto;
