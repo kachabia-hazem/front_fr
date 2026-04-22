@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CompanyService } from '../../core/services/company.service';
 import { AuthService } from '../../core/services/auth.service';
 import { MissionService } from '../../core/services/mission.service';
@@ -10,7 +11,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-view-company-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './view-company-profile.component.html',
   styleUrl: './view-company-profile.component.css',
 })
@@ -26,6 +27,7 @@ export class ViewCompanyProfileComponent implements OnInit {
     private companyService: CompanyService,
     private authService: AuthService,
     private missionService: MissionService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -47,7 +49,7 @@ export class ViewCompanyProfileComponent implements OnInit {
         this.loadMissionCount(company.id);
       },
       error: () => {
-        this.error.set('Company not found');
+        this.error.set(this.translate.instant('view_company.not_found'));
         this.loading.set(false);
       },
     });
@@ -62,7 +64,7 @@ export class ViewCompanyProfileComponent implements OnInit {
         this.loadMissionCount(company.id);
       },
       error: () => {
-        this.error.set('Failed to load profile');
+        this.error.set(this.translate.instant('view_company.load_error'));
         this.loading.set(false);
       },
     });
@@ -104,7 +106,8 @@ export class ViewCompanyProfileComponent implements OnInit {
 
   formatDate(date: string | undefined): string {
     if (!date) return '';
-    return new Date(date).toLocaleDateString('en-US', {
+    const locale = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-US';
+    return new Date(date).toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

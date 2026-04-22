@@ -2,6 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../environments/environment';
 import {
   AuthResponse,
@@ -28,6 +29,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private translate: TranslateService,
   ) {}
 
   // ── Auth API calls ──
@@ -95,6 +97,8 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('auth');
     this.currentUserSignal.set(null);
+    this.translate.use('en');
+    document.documentElement.setAttribute('lang', 'en');
     this.router.navigate(['/']);
   }
 

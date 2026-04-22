@@ -18,14 +18,14 @@
         </svg>
       </div>
 
-      <h2 class="login-prompt-title">Log in to continue</h2>
+      <h2 class="login-prompt-title">{{ 'freelancers_page.login_title' | translate }}</h2>
       <p class="login-prompt-msg">
-        Please log in to view freelancer details.<br/>
-        You need an active <strong>WorkLink</strong> account to access full freelancer profiles.
+        {{ 'freelancers_page.login_msg' | translate }}<br/>
+        {{ 'freelancers_page.login_msg2' | translate }}
       </p>
       <div class="login-prompt-actions">
-        <a routerLink="/auth/login" class="btn-login-prompt">Log In</a>
-        <a routerLink="/auth/register" class="btn-register-prompt">Create an Account</a>
+        <a routerLink="/auth/login" class="btn-login-prompt">{{ 'freelancers_page.login_btn' | translate }}</a>
+        <a routerLink="/auth/register" class="btn-register-prompt">{{ 'freelancers_page.register_btn' | translate }}</a>
       </div>
     </div>
   </div>
@@ -36,8 +36,8 @@
   <!-- Search Hero -->
   <div class="search-hero">
     <div class="search-hero-inner">
-      <h1 class="search-hero-title">Find Your Next <span class="search-hero-accent">Freelancer</span></h1>
-      <p class="search-hero-sub">Browse talented professionals ready to bring your projects to life.</p>
+      <h1 class="search-hero-title">{{ 'freelancers_page.hero_title' | translate }} <span class="search-hero-accent">{{ 'freelancers_page.hero_accent' | translate }}</span></h1>
+      <p class="search-hero-sub">{{ 'freelancers_page.hero_subtitle' | translate }}</p>
 
       @if (!aiSearchMode()) {
         <div class="search-hero-bar">
@@ -45,7 +45,7 @@
           <input
             type="text"
             class="search-hero-input"
-            placeholder="Search by name, skill, or position..."
+            [placeholder]="'freelancers_page.search_placeholder' | translate"
             [ngModel]="searchQuery()"
             (ngModelChange)="onSearchChange($event)"
             autocomplete="off"
@@ -57,11 +57,11 @@
           }
           <div class="search-hero-sep"></div>
           <button class="btn-ai-search" (click)="toggleAiMode()" type="button">
-            <span class="ai-star">✦</span> AI Search <span class="beta-badge">Beta</span>
+            <span class="ai-star">✦</span> {{ 'freelancers_page.ai_search' | translate }} <span class="beta-badge">Beta</span>
           </button>
         </div>
         <div class="search-quick-tags">
-          <span class="quick-tag-label">Popular:</span>
+          <span class="quick-tag-label">{{ 'freelancers_page.popular' | translate }}</span>
           @for (tag of quickTags; track tag) {
             <button class="quick-tag" (click)="onSearchChange(tag)" type="button">{{ tag }}</button>
           }
@@ -88,25 +88,25 @@
             @if (aiSearchLoading()) {
               <span class="ai-spinner"></span>
             } @else {
-              Search
+              {{ 'freelancers_page.ai_search' | translate }}
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             }
           </button>
-          <button class="search-clear-btn" (click)="toggleAiMode()" type="button" title="Exit AI Search">
+          <button class="search-clear-btn" (click)="toggleAiMode()" type="button" [title]="'freelancers_page.exit_ai' | translate">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
         @if (aiSearchMode() && !aiSearchLoading() && aiResults().length > 0) {
           <div class="ai-results-info">
             <span class="ai-star">✦</span>
-            <span>{{ aiResults().length }} result(s) for: <em>"{{ aiSearchPrompt }}"</em></span>
+            <span>{{ aiResults().length }} {{ 'freelancers_page.results_ai' | translate }} <em>"{{ aiSearchPrompt }}"</em></span>
           </div>
         }
       }
     </div>
   </div>
 
-  <!-- Fiverr-style Filter Bar (masqué en mode AI) -->
+  <!-- Filter Bar (masqué en mode AI) -->
   @if (!aiSearchMode()) {
   <div class="filter-bar">
     <div class="filter-buttons">
@@ -158,7 +158,7 @@
                 </label>
               }
               @if (allSkills().length === 0) {
-                <span class="filter-empty">No skills available</span>
+                <span class="filter-empty">{{ 'freelancers_page.no_skills' | translate }}</span>
               }
             </div>
           </div>
@@ -181,7 +181,7 @@
             <div class="filter-panel-body">
               <div class="budget-row">
                 <div class="budget-field">
-                  <label>Min</label>
+                  <label>{{ 'freelancers_page.budget_min' | translate }}</label>
                   <div class="budget-input-wrap">
                     <input
                       type="number"
@@ -196,7 +196,7 @@
                 </div>
                 <span class="budget-separator">—</span>
                 <div class="budget-field">
-                  <label>Max</label>
+                  <label>{{ 'freelancers_page.budget_max' | translate }}</label>
                   <div class="budget-input-wrap">
                     <input
                       type="number"
@@ -210,7 +210,7 @@
                   </div>
                 </div>
               </div>
-              <p class="budget-hint">Average daily rate (DT/day)</p>
+              <p class="budget-hint">{{ 'freelancers_page.budget_hint' | translate }}</p>
             </div>
           </div>
         }
@@ -274,12 +274,12 @@
       @if (activeFilterCount() > 0) {
         <button class="btn-clear-all" (click)="clearAllFilters()">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          Clear filters
+          {{ 'freelancers_page.clear_filters' | translate }}
         </button>
       }
       <span class="results-count">{{ filteredFreelancers().length }} result{{ filteredFreelancers().length !== 1 ? 's' : '' }}</span>
       <div class="sort-wrapper">
-        <span class="sort-label">Sort by:</span>
+        <span class="sort-label">{{ 'freelancers_page.sort_by' | translate }}</span>
         <button class="sort-btn" (click)="toggleSortDropdown($event)">
           {{ currentSortLabel }}
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -292,7 +292,7 @@
                 [class.selected]="sortBy() === opt.value"
                 (click)="selectSort(opt.value)"
               >
-                {{ opt.label }}
+                {{ opt.labelKey | translate }}
                 @if (sortBy() === opt.value) {
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                 }
@@ -309,7 +309,7 @@
   @if (isLoading()) {
     <div class="loading-state">
       <div class="spinner"></div>
-      <p>{{ aiSearchLoading() ? "L'IA analyse votre demande..." : 'Loading freelancers...' }}</p>
+      <p>{{ aiSearchLoading() ? ('missions_page.ai_analyzing' | translate) : ('common.loading' | translate) }}</p>
     </div>
   } @else if (aiError()) {
     <!-- Erreur hors-sujet AI -->
@@ -323,11 +323,11 @@
   } @else if (filteredFreelancers().length === 0) {
     <div class="empty-state">
       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <h3>No freelancers found</h3>
+      <h3>{{ 'freelancers_page.no_freelancers' | translate }}</h3>
       @if (aiSearchMode() && aiSearchPrompt) {
-        <p>No results for "<em>{{ aiSearchPrompt }}</em>". Try rephrasing your search.</p>
+        <p>{{ 'freelancers_page.no_results_ai' | translate }} "<em>{{ aiSearchPrompt }}</em>". {{ 'freelancers_page.try_rephrase' | translate }}</p>
       } @else {
-        <p>Try adjusting your search criteria.</p>
+        <p>{{ 'freelancers_page.try_adjust' | translate }}</p>
       }
     </div>
   } @else {
@@ -384,7 +384,7 @@
                 } @else {
                   <div class="avatar avatar-initials">{{ getInitials(f) }}</div>
                 }
-                <span class="availability-dot" title="Available"></span>
+                <span class="availability-dot" [title]="'freelancers_page.available' | translate"></span>
               </div>
               <div class="card-identity">
                 <h3 class="card-name">{{ f.firstName }} {{ f.lastName }}</h3>
@@ -416,7 +416,7 @@
               <div class="stat-divider"></div>
               <div class="stat-item">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                <span class="stat-value">{{ f.completedProjects || 0 }} projects</span>
+                <span class="stat-value">{{ f.completedProjects || 0 }} {{ 'freelancers_page.projects' | translate }}</span>
               </div>
               @if (f.yearsOfExperience) {
                 <div class="stat-divider"></div>
@@ -434,7 +434,7 @@
                 <span></span>
               }
               <button class="btn-view-profile" (click)="viewProfile(f.id)">
-                View Profile
+                {{ 'freelancers_page.view_profile' | translate }}
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </button>
             </div>

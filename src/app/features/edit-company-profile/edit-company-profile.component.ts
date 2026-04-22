@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CompanyService, UpdateCompanyRequest } from '../../core/services/company.service';
 import { Company, LegalForm } from '../../core/models';
 import { FileUploadComponent } from '../../shared/components/file-upload/file-upload.component';
@@ -10,7 +11,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-edit-company-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FileUploadComponent],
+  imports: [CommonModule, ReactiveFormsModule, FileUploadComponent, TranslateModule],
   templateUrl: './edit-company-profile.component.html',
   styleUrl: './edit-company-profile.component.css',
 })
@@ -29,6 +30,7 @@ export class EditCompanyProfileComponent implements OnInit {
     private fb: FormBuilder,
     private companyService: CompanyService,
     private router: Router,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {

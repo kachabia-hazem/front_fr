@@ -188,11 +188,29 @@
               <div class="s-form">
                 <div class="s-field">
                   <label class="s-label">{{ 'settings.password.current' | translate }}</label>
-                  <input type="password" class="s-input" placeholder="••••••••" [(ngModel)]="currentPassword" />
+                  <div class="s-input-wrap">
+                    <input [type]="showCurrentPwd ? 'text' : 'password'" class="s-input" placeholder="••••••••" [(ngModel)]="currentPassword" />
+                    <button type="button" class="pwd-toggle" (click)="showCurrentPwd = !showCurrentPwd">
+                      @if (showCurrentPwd) {
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                      } @else {
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      }
+                    </button>
+                  </div>
                 </div>
                 <div class="s-field">
                   <label class="s-label">{{ 'settings.password.new' | translate }}</label>
-                  <input type="password" class="s-input" placeholder="••••••••" [(ngModel)]="newPassword" />
+                  <div class="s-input-wrap">
+                    <input [type]="showNewPwd ? 'text' : 'password'" class="s-input" placeholder="••••••••" [(ngModel)]="newPassword" />
+                    <button type="button" class="pwd-toggle" (click)="showNewPwd = !showNewPwd">
+                      @if (showNewPwd) {
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                      } @else {
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      }
+                    </button>
+                  </div>
                   @if (newPassword) {
                     <div class="pwd-strength">
                       <div class="pwd-bars">
@@ -206,7 +224,16 @@
                 </div>
                 <div class="s-field">
                   <label class="s-label">{{ 'settings.password.confirm' | translate }}</label>
-                  <input type="password" class="s-input" placeholder="••••••••" [(ngModel)]="confirmPassword" />
+                  <div class="s-input-wrap">
+                    <input [type]="showConfirmPwd ? 'text' : 'password'" class="s-input" placeholder="••••••••" [(ngModel)]="confirmPassword" />
+                    <button type="button" class="pwd-toggle" (click)="showConfirmPwd = !showConfirmPwd">
+                      @if (showConfirmPwd) {
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                      } @else {
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      }
+                    </button>
+                  </div>
                 </div>
                 <div class="s-actions">
                   <button class="s-btn s-btn-primary" (click)="changePassword()" [disabled]="passwordLoading">

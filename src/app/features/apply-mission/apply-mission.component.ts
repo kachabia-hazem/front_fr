@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MissionService } from '../../core/services/mission.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { CvService } from '../../core/services/cv.service';
@@ -18,7 +19,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = './assets/pdf.worker.min.mjs';
 @Component({
   selector: 'app-apply-mission',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PhoneInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, PhoneInputComponent, TranslateModule],
   templateUrl: './apply-mission.component.html',
   styleUrl: './apply-mission.component.css',
 })
@@ -70,6 +71,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
     private router: Router,
     private ngZone: NgZone,
     private cdr: ChangeDetectorRef,
+    private translate: TranslateService,
     private missionService: MissionService,
     private freelancerService: FreelancerService,
     private cvService: CvService,
@@ -429,7 +431,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
   get reviewCvName(): string {
     if (this.cvOption === 'upload') return this.uploadedCvName;
     if (this.cvOption === 'profile') return this.profileCvName;
-    return 'No CV selected';
+    return this.translate.instant('apply.no_cv');
   }
 
   get contactFullName(): string {

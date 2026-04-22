@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
@@ -12,7 +13,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-company-mission-control',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule],
   templateUrl: './company-mission-control.component.html',
   styleUrl: './company-mission-control.component.css',
 })

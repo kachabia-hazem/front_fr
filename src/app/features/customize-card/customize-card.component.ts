@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { CvService } from '../../core/services/cv.service';
 import { Freelancer } from '../../core/models';
@@ -9,7 +10,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-customize-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './customize-card.component.html',
   styleUrl: './customize-card.component.css',
 })
@@ -30,6 +31,7 @@ export class CustomizeCardComponent implements OnInit {
     private cvService: CvService,
     private router: Router,
     private cdr: ChangeDetectorRef,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -66,7 +68,7 @@ export class CustomizeCardComponent implements OnInit {
         this.uploading.set(false);
       },
       error: () => {
-        this.showMessage('error', 'Failed to upload background image.');
+        this.showMessage('error', this.translate.instant('customize_card.bg_upload_error'));
         this.uploading.set(false);
       },
     });
@@ -77,7 +79,7 @@ export class CustomizeCardComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     if (this.portfolioImages().length >= this.maxPortfolioImages) {
-      this.showMessage('error', `Maximum ${this.maxPortfolioImages} portfolio images allowed.`);
+      this.showMessage('error', this.translate.instant('customize_card.portfolio_hint', { max: this.maxPortfolioImages }));
       return;
     }
     const file = input.files[0];
@@ -88,7 +90,7 @@ export class CustomizeCardComponent implements OnInit {
         this.uploading.set(false);
       },
       error: () => {
-        this.showMessage('error', 'Failed to upload portfolio image.');
+        this.showMessage('error', this.translate.instant('customize_card.portfolio_upload_error'));
         this.uploading.set(false);
       },
     });
@@ -122,11 +124,11 @@ export class CustomizeCardComponent implements OnInit {
       next: (updated) => {
         this.freelancer.set(updated);
         this.saving.set(false);
-        this.showSuccessToast('Card customization saved successfully!');
+        this.showSuccessToast(this.translate.instant('customize_card.save_success'));
       },
       error: () => {
         this.saving.set(false);
-        this.showMessage('error', 'Failed to save card customization.');
+        this.showMessage('error', this.translate.instant('customize_card.save_error'));
       },
     });
   }

@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
@@ -16,7 +17,7 @@ type FilterType = 'all' | 'unread' | 'read';
 @Component({
   selector: 'app-company-notifications',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, HighlightPipe],
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, HighlightPipe, TranslateModule],
   templateUrl: './company-notifications.component.html',
   styleUrl: './company-notifications.component.css',
 })

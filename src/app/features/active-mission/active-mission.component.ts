@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { Component, OnInit, signal, computed, DestroyRef, inject } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
@@ -19,7 +20,7 @@ import { FeedbackModalComponent } from '../../shared/components/feedback-modal/f
 @Component({
   selector: 'app-active-mission',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, DragDropModule, FeedbackModalComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, DragDropModule, FeedbackModalComponent, TranslateModule],
   templateUrl: './active-mission.component.html',
   styleUrl: './active-mission.component.css',
 })

@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import {
   Component, OnInit, AfterViewInit, signal, computed, ViewChild, ElementRef
 } from '@angular/core';
@@ -16,7 +17,7 @@ import { Company } from '../../core/models/user.model';
 @Component({
   selector: 'app-company-contracts',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, SafeUrlPipe],
+  imports: [CommonModule, RouterLink, RouterLinkActive, SafeUrlPipe, TranslateModule],
   templateUrl: './company-contracts.component.html',
   styleUrl: './company-contracts.component.css',
 })

@@ -15,34 +15,34 @@
       <nav class="sidebar-nav">
         <a routerLink="/" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Home
+          {{ 'nav.home' | translate }}
         </a>
         <a routerLink="/freelancer-dashboard" routerLinkActive="active" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          Dashboard
+          {{ 'nav.dashboard' | translate }}
         </a>
         <a routerLink="/freelancer-applications" routerLinkActive="active" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          Applications
+          {{ 'nav.applications' | translate }}
         </a>
         <a routerLink="/freelancer-missions" routerLinkActive="active" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-          Active Missions
+          {{ 'nav.active_missions' | translate }}
           @if (activeMissionsCount() > 0) {
             <span class="badge-count">{{ activeMissionsCount() }}</span>
           }
         </a>
         <a routerLink="/messaging" routerLinkActive="active" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Messaging
+          {{ 'nav.messaging' | translate }}
         </a>
         <a routerLink="/freelancer-contracts" routerLinkActive="active" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          Contracts
+          {{ 'nav.contracts' | translate }}
         </a>
         <a routerLink="/freelancer-balance" routerLinkActive="active" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          My Balance
+          {{ 'nav.my_balance' | translate }}
         </a>
         <a routerLink="/freelancer-notifications" routerLinkActive="active" class="sidebar-link">
           <span class="notif-icon-wrapper">
@@ -51,11 +51,11 @@
               <span class="sidebar-notif-badge">{{ unreadNotifCount() > 99 ? '99+' : unreadNotifCount() }}</span>
             }
           </span>
-          Notifications
+          {{ 'nav.notifications' | translate }}
         </a>
         <a routerLink="/settings" routerLinkActive="active" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          Settings
+          {{ 'nav.settings' | translate }}
         </a>
       </nav>
     </div>
@@ -81,14 +81,14 @@
     @if (loading()) {
       <div class="dashboard-loading">
         <div class="spinner"></div>
-        <p>Loading dashboard...</p>
+        <p>{{ 'dashboard.loading' | translate }}</p>
       </div>
     } @else {
       <!-- Header -->
       <div class="dashboard-header">
         <div>
-          <h1 class="dashboard-title">Welcome back, {{ firstName() }}</h1>
-          <p class="dashboard-subtitle">Track, manage and forecast your missions and revenue.</p>
+          <h1 class="dashboard-title">{{ 'dashboard.welcome_freelancer' | translate:{ name: firstName() } }}</h1>
+          <p class="dashboard-subtitle">{{ 'dashboard.subtitle_freelancer' | translate }}</p>
         </div>
         <div class="header-actions">
           <button class="header-theme-btn" (click)="themeService.toggle()" [title]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
@@ -149,7 +149,7 @@
           <div class="msg-panel-header">
             <div class="notif-panel-title-row">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="notif-panel-title-icon"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              <span class="notif-panel-title">Messages</span>
+              <span class="notif-panel-title">{{ 'dashboard.messages' | translate }}</span>
               @if (unreadMsgCount() > 0) {
                 <span class="notif-panel-count">{{ unreadMsgCount() }}</span>
               }
@@ -168,8 +168,8 @@
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                   </svg>
                 </div>
-                <p class="notif-empty-title">No conversations</p>
-                <p class="notif-empty-sub">Messages from companies will appear here</p>
+                <p class="notif-empty-title">{{ 'dashboard.no_conversations' | translate }}</p>
+                <p class="notif-empty-sub">{{ 'dashboard.no_conv_freelancer' | translate }}</p>
               </div>
             } @else {
               <div class="msg-conv-list">
@@ -188,7 +188,7 @@
                         <span class="msg-conv-time">{{ formatPanelTime(conv.lastMessageTime) }}</span>
                       </div>
                       <div class="msg-conv-row">
-                        <span class="msg-conv-last">{{ conv.lastMessage || 'Start a conversation' }}</span>
+                        <span class="msg-conv-last">{{ conv.lastMessage || ('dashboard.start_conversation' | translate) }}</span>
                         @if (getPanelUnread(conv) > 0) {
                           <span class="msg-conv-badge">{{ getPanelUnread(conv) > 99 ? '99+' : getPanelUnread(conv) }}</span>
                         }
@@ -201,7 +201,7 @@
           </div>
           <div class="notif-panel-footer">
             <a routerLink="/messaging" (click)="closeMsgPanel()" class="notif-panel-view-all">
-              Open full messaging
+              {{ 'dashboard.open_messaging' | translate }}
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"/>
               </svg>
@@ -247,7 +247,7 @@
             <input
               class="msg-panel-input"
               type="text"
-              placeholder="Write a message..."
+              [placeholder]="'dashboard.write_message' | translate"
               [(ngModel)]="panelMsgText"
               (keydown)="onPanelKeyDown($event)"
             />
@@ -270,7 +270,7 @@
         <div class="notif-panel-header">
           <div class="notif-panel-title-row">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="notif-panel-title-icon"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <span class="notif-panel-title">Notifications</span>
+            <span class="notif-panel-title">{{ 'dashboard.notifications' | translate }}</span>
             @if (unreadNotifCount() > 0) {
               <span class="notif-panel-count">{{ unreadNotifCount() }}</span>
             }
@@ -279,7 +279,7 @@
             @if (unreadNotifCount() > 0) {
               <button class="notif-panel-mark-all" (click)="markAllNotifsAsRead()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                Mark all read
+                {{ 'dashboard.mark_all_read' | translate }}
               </button>
             }
             <button class="notif-panel-close-btn" (click)="closeNotifPanel()">
@@ -300,8 +300,8 @@
                   <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
                 </svg>
               </div>
-              <p class="notif-empty-title">All caught up!</p>
-              <p class="notif-empty-sub">No notifications yet</p>
+              <p class="notif-empty-title">{{ 'dashboard.all_caught_up' | translate }}</p>
+              <p class="notif-empty-sub">{{ 'dashboard.no_notifs' | translate }}</p>
             </div>
           } @else {
             <div class="notif-list">
@@ -330,7 +330,7 @@
         <!-- Footer -->
         <div class="notif-panel-footer">
           <a routerLink="/freelancer-notifications" (click)="closeNotifPanel()" class="notif-panel-view-all">
-            View all notifications
+            {{ 'dashboard.view_all_notifs' | translate }}
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"/>
             </svg>
@@ -345,7 +345,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
           </div>
           <div class="stat-content">
-            <span class="stat-label">Total Applications</span>
+            <span class="stat-label">{{ 'dashboard.total_applications' | translate }}</span>
             <span class="stat-value">{{ stats()?.totalApplications || 0 }}</span>
             <div class="stat-trend" [class.trend-up]="(stats()?.applicationsTrend || 0) >= 0" [class.trend-down]="(stats()?.applicationsTrend || 0) < 0">
               @if ((stats()?.applicationsTrend || 0) >= 0) {
@@ -353,7 +353,7 @@
               } @else {
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
               }
-              <span>{{ stats()?.applicationsTrend || 0 }}% vs last month</span>
+              <span>{{ stats()?.applicationsTrend || 0 }}{{ 'dashboard.vs_last_month' | translate }}</span>
             </div>
           </div>
         </div>
@@ -363,11 +363,11 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
           </div>
           <div class="stat-content">
-            <span class="stat-label">Active Missions</span>
+            <span class="stat-label">{{ 'dashboard.active_missions' | translate }}</span>
             <span class="stat-value">{{ activeMissionsCount() }}</span>
             <div class="stat-trend trend-up">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-              <span>View workspaces</span>
+              <span>{{ 'dashboard.view_workspaces' | translate }}</span>
             </div>
           </div>
         </div>
@@ -376,7 +376,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
           </div>
           <div class="stat-content">
-            <span class="stat-label">Active Contracts</span>
+            <span class="stat-label">{{ 'dashboard.active_contracts' | translate }}</span>
             <span class="stat-value">{{ activeContractsCount() }}</span>
           </div>
         </div>
@@ -390,24 +390,24 @@
         <!-- My Turnover Card -->
         <div class="turnover-card" [class.card-compact]="expandedCard() === 'visibility'">
           <div class="card-header-row">
-            <h2 class="section-title">My Turnover</h2>
+            <h2 class="section-title">{{ 'dashboard.my_turnover' | translate }}</h2>
             <button class="btn-see-stats" (click)="toggleChart('turnover')" [class.active]="expandedCard() === 'turnover'">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-              {{ expandedCard() === 'turnover' ? 'Masquer' : 'All my statistics' }}
+              {{ expandedCard() === 'turnover' ? ('dashboard.hide' | translate) : ('dashboard.all_statistics' | translate) }}
             </button>
           </div>
 
           <div class="turnover-stats">
             <div class="turnover-stat">
-              <span class="turnover-label">Revenue</span>
+              <span class="turnover-label">{{ 'dashboard.revenue' | translate }}</span>
               <span class="turnover-value">{{ formatCurrency(stats()?.revenue || 0) }} DT</span>
             </div>
             <div class="turnover-stat">
-              <span class="turnover-label">Current missions amount</span>
+              <span class="turnover-label">{{ 'dashboard.current_missions_amount' | translate }}</span>
               <span class="turnover-value">{{ formatCurrency(stats()?.currentMissionsAmount || 0) }} DT</span>
             </div>
             <div class="turnover-stat">
-              <span class="turnover-label">Projects completed</span>
+              <span class="turnover-label">{{ 'dashboard.projects_completed' | translate }}</span>
               <span class="turnover-value">{{ stats()?.completedProjects || 0 }}</span>
             </div>
           </div>
@@ -433,8 +433,8 @@
         <div class="curve-chart-panel" [class.panel-visible]="expandedCard() === 'turnover'">
           <div class="curve-chart-inner">
             <div class="curve-chart-header">
-              <h3 class="curve-chart-title">Revenue Evolution</h3>
-              <span class="curve-chart-period">Last 6 months</span>
+              <h3 class="curve-chart-title">{{ 'dashboard.revenue_evolution' | translate }}</h3>
+              <span class="curve-chart-period">{{ 'dashboard.last_6_months' | translate }}</span>
             </div>
             <div class="curve-chart-body">
               <svg class="curve-svg" viewBox="0 0 400 160" preserveAspectRatio="none">
@@ -465,10 +465,10 @@
         <!-- My Visibility Card -->
         <div class="visibility-card" [class.card-compact]="expandedCard() === 'turnover'">
           <div class="card-header-row">
-            <h2 class="section-title">My Visibility</h2>
+            <h2 class="section-title">{{ 'dashboard.my_visibility' | translate }}</h2>
             <button class="btn-see-stats" (click)="toggleChart('visibility')" [class.active]="expandedCard() === 'visibility'">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-              {{ expandedCard() === 'visibility' ? 'Masquer' : 'All my statistics' }}
+              {{ expandedCard() === 'visibility' ? ('dashboard.hide' | translate) : ('dashboard.all_statistics' | translate) }}
             </button>
           </div>
 
@@ -479,7 +479,7 @@
               </div>
               <div class="visibility-data">
                 <span class="visibility-value">{{ stats()?.visibility?.appearances || 0 }}</span>
-                <span class="visibility-label">Appearances in search</span>
+                <span class="visibility-label">{{ 'dashboard.appearances' | translate }}</span>
               </div>
             </div>
 
@@ -489,7 +489,7 @@
               </div>
               <div class="visibility-data">
                 <span class="visibility-value">{{ stats()?.visibility?.views || 0 }}</span>
-                <span class="visibility-label">Profile views</span>
+                <span class="visibility-label">{{ 'dashboard.profile_views' | translate }}</span>
               </div>
             </div>
 
@@ -501,8 +501,8 @@
         <div class="curve-chart-panel" [class.panel-visible]="expandedCard() === 'visibility'">
           <div class="curve-chart-inner">
             <div class="curve-chart-header">
-              <h3 class="curve-chart-title">Visibility Evolution</h3>
-              <span class="curve-chart-period">Last 6 months</span>
+              <h3 class="curve-chart-title">{{ 'dashboard.visibility_evolution' | translate }}</h3>
+              <span class="curve-chart-period">{{ 'dashboard.last_6_months' | translate }}</span>
             </div>
             <div class="curve-chart-body curve-chart-body--yaxis">
               <div class="curve-with-yaxis">
@@ -545,15 +545,15 @@
           <!-- Card header -->
           <div class="payment-card-header">
             <div>
-              <h2 class="section-title" style="margin:0">Payment Schedule</h2>
-              <p class="payment-subtitle">Upcoming weekly earnings from your signed contracts</p>
+              <h2 class="section-title" style="margin:0">{{ 'dashboard.payment_schedule' | translate }}</h2>
+              <p class="payment-subtitle">{{ 'dashboard.upcoming_earnings' | translate }}</p>
             </div>
             <div class="payment-header-right">
-              <span class="payment-period-badge">Next 8 weeks</span>
+              <span class="payment-period-badge">{{ 'dashboard.next_8_weeks' | translate }}</span>
               @if (hasPaymentData()) {
                 <button class="btn-see-stats" (click)="togglePaymentChart()" [class.active]="expandedPaymentChart()">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                  {{ expandedPaymentChart() ? 'Hide chart' : 'Show chart' }}
+                  {{ expandedPaymentChart() ? ('dashboard.hide_chart' | translate) : ('dashboard.show_chart' | translate) }}
                 </button>
               }
             </div>
@@ -567,26 +567,26 @@
                   <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                 </svg>
               </div>
-              <p class="payment-empty-title">No payment data available</p>
-              <p class="payment-empty-sub">Sign a contract with a defined salary and period to see your payment schedule.</p>
-              <a routerLink="/freelancer-contracts" class="btn-browse">View Contracts</a>
+              <p class="payment-empty-title">{{ 'dashboard.no_payment' | translate }}</p>
+              <p class="payment-empty-sub">{{ 'dashboard.sign_contract' | translate }}</p>
+              <a routerLink="/freelancer-contracts" class="btn-browse">{{ 'dashboard.view_contracts' | translate }}</a>
             </div>
           } @else {
 
             <!-- Summary stats -->
             <div class="payment-stats-row">
               <div class="payment-stat-item">
-                <span class="payment-stat-label">This Week</span>
+                <span class="payment-stat-label">{{ 'dashboard.this_week' | translate }}</span>
                 <span class="payment-stat-value payment-stat-value--this">{{ formatCurrency(thisWeekPayment()) }} <span class="payment-currency">DT</span></span>
               </div>
               <div class="payment-stat-divider"></div>
               <div class="payment-stat-item">
-                <span class="payment-stat-label">Next Week</span>
+                <span class="payment-stat-label">{{ 'dashboard.next_week' | translate }}</span>
                 <span class="payment-stat-value">{{ formatCurrency(nextWeekPayment()) }} <span class="payment-currency">DT</span></span>
               </div>
               <div class="payment-stat-divider"></div>
               <div class="payment-stat-item">
-                <span class="payment-stat-label">Total Remaining Value</span>
+                <span class="payment-stat-label">{{ 'dashboard.total_remaining' | translate }}</span>
                 <span class="payment-stat-value payment-stat-value--total">{{ formatCurrency(totalRemainingValue()) }} <span class="payment-currency">DT</span></span>
               </div>
             </div>
@@ -599,7 +599,7 @@
 
                   <!-- Y-axis title (rotated) -->
                   <div class="payment-yaxis-title-wrap">
-                    <span class="payment-yaxis-title">Earnings (DT)</span>
+                    <span class="payment-yaxis-title">{{ 'dashboard.earnings_dt' | translate }}</span>
                   </div>
 
                   <!-- Y labels + SVG block -->
@@ -692,7 +692,7 @@
                   <!-- X-axis title -->
                   <div class="payment-xaxis-title-row">
                     <div class="payment-y-axis-spacer"></div>
-                    <span class="payment-xaxis-title">Week →</span>
+                    <span class="payment-xaxis-title">{{ 'dashboard.week_axis' | translate }}</span>
                   </div>
 
                 </div>
@@ -701,7 +701,7 @@
 
             <!-- Contract breakdown -->
             <div class="payment-contracts">
-              <p class="payment-contracts-title">Active Contracts</p>
+              <p class="payment-contracts-title">{{ 'dashboard.active_contracts' | translate }}</p>
               <div class="payment-contracts-list">
                 @for (c of pagedContracts(); track c.id) {
                   <div class="payment-contract-row">
@@ -715,7 +715,7 @@
                         {{ formatDate(c.startDate!) }} → {{ formatDate(c.endDate!) }}
                       </span>
                     </div>
-                    <span class="payment-contract-badge">Active</span>
+                    <span class="payment-contract-badge">{{ 'dashboard.active_badge' | translate }}</span>
                   </div>
                 }
               </div>
@@ -741,24 +741,24 @@
       <div class="applications-section">
         <div class="applications-card">
           <div class="applications-header">
-            <h2 class="section-title">Recent Applications</h2>
+            <h2 class="section-title">{{ 'dashboard.recent_applications' | translate }}</h2>
           </div>
 
           @if (sortedApplications().length === 0) {
             <div class="applications-empty">
               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <p>No applications yet.</p>
-              <a routerLink="/missions" class="btn-browse">Browse Missions</a>
+              <p>{{ 'dashboard.no_applications' | translate }}</p>
+              <a routerLink="/missions" class="btn-browse">{{ 'dashboard.browse_missions' | translate }}</a>
             </div>
           } @else {
             <div class="applications-table-wrapper">
               <table class="applications-table">
                 <thead>
                   <tr>
-                    <th>Mission</th>
-                    <th>Company</th>
-                    <th>Date</th>
-                    <th>Status</th>
+                    <th>{{ 'dashboard.col_mission' | translate }}</th>
+                    <th>{{ 'dashboard.col_company' | translate }}</th>
+                    <th>{{ 'dashboard.col_date' | translate }}</th>
+                    <th>{{ 'dashboard.col_status' | translate }}</th>
                   </tr>
                 </thead>
                 <tbody>

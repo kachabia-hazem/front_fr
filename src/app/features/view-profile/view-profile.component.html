@@ -1,12 +1,12 @@
 <!-- Hero Banner -->
 <div class="hero-banner">
-  <h1>Freelancer Profile Details</h1>
+  <h1>{{ 'view_profile.title' | translate }}</h1>
 </div>
 
 @if (loading()) {
   <div class="loading-container">
     <div class="spinner"></div>
-    <p>Loading profile...</p>
+    <p>{{ 'view_profile.loading' | translate }}</p>
   </div>
 } @else if (error()) {
   <div class="error-container">
@@ -46,13 +46,13 @@
             @if (freelancer()!.cvUrl) {
               <a [href]="getFileUrl(freelancer()!.cvUrl)" target="_blank" class="btn-download-cv">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download CV
+                {{ 'view_profile.download_cv' | translate }}
               </a>
             }
             @if (freelancer()!.tjm) {
               <div class="tjm-badge">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                {{ freelancer()!.tjm }} DT/jour
+                {{ freelancer()!.tjm }} DT/{{ 'view_profile.dt_day' | translate }}
               </div>
             }
           </div>
@@ -61,7 +61,7 @@
         <!-- Expertise Tags -->
         @if (freelancer()!.profileTypes && freelancer()!.profileTypes.length > 0) {
           <div class="expertise-section">
-            <label class="section-label">Expertise</label>
+            <label class="section-label">{{ 'view_profile.expertise' | translate }}</label>
             <div class="tags-container">
               @for (type of freelancer()!.profileTypes; track type) {
                 <span class="tag">{{ formatEnumLabel(type) }}</span>
@@ -73,7 +73,7 @@
         <!-- Bio -->
         @if (freelancer()!.bio) {
           <div class="bio-section">
-            <label class="section-label">Bio</label>
+            <label class="section-label">{{ 'view_profile.bio' | translate }}</label>
             <p class="bio-text">{{ freelancer()!.bio }}</p>
           </div>
         }
@@ -82,7 +82,7 @@
         <div class="info-row">
           @if (freelancer()!.portfolioUrl) {
             <div class="info-column">
-              <label class="section-label">Portfolio</label>
+              <label class="section-label">{{ 'view_profile.portfolio' | translate }}</label>
               <a [href]="freelancer()!.portfolioUrl" target="_blank" class="portfolio-link">
                 {{ freelancer()!.portfolioUrl }}
               </a>
@@ -90,10 +90,10 @@
           }
 
           <div class="info-column">
-            <label class="section-label">Experience</label>
+            <label class="section-label">{{ 'view_profile.experience' | translate }}</label>
             <div class="experience-tags">
               @if (freelancer()!.yearsOfExperience) {
-                <span class="exp-tag">{{ freelancer()!.yearsOfExperience }} years</span>
+                <span class="exp-tag">{{ freelancer()!.yearsOfExperience }} {{ 'view_profile.years' | translate }}</span>
               }
               @if (freelancer()!.skills && freelancer()!.skills!.length > 0) {
                 @for (skill of freelancer()!.skills!.slice(0, 5); track skill) {
@@ -112,24 +112,24 @@
         <div class="card-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
-        <h4>Availability</h4>
-        <p>{{ freelancer()!.tjm ? 'Available' : 'Contact for availability' }}</p>
+        <h4>{{ 'view_profile.availability' | translate }}</h4>
+        <p>{{ freelancer()!.tjm ? ('view_profile.available' | translate) : ('view_profile.contact_availability' | translate) }}</p>
       </div>
 
       <div class="info-card">
         <div class="card-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         </div>
-        <h4>Daily Rate</h4>
-        <p>{{ freelancer()!.tjm ? freelancer()!.tjm + ' DT/day' : 'Negotiable' }}</p>
+        <h4>{{ 'view_profile.daily_rate' | translate }}</h4>
+        <p>{{ freelancer()!.tjm ? freelancer()!.tjm + ' DT/' + ('view_profile.dt_day' | translate) : ('view_profile.negotiable' | translate) }}</p>
       </div>
 
       <div class="info-card">
         <div class="card-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         </div>
-        <h4>Completed Projects</h4>
-        <p>{{ freelancer()!.completedProjects || 0 }} projects</p>
+        <h4>{{ 'view_profile.completed_projects' | translate }}</h4>
+        <p>{{ freelancer()!.completedProjects || 0 }} {{ 'view_profile.projects' | translate }}</p>
       </div>
     </section>
 
@@ -138,7 +138,7 @@
       <button class="section-header" (click)="toggleSection('workExperience')">
         <div class="section-header-left">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-          <h3>Work Experience</h3>
+          <h3>{{ 'view_profile.work_experience' | translate }}</h3>
         </div>
         <svg [class.rotated]="showWorkExperience()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
@@ -152,7 +152,7 @@
                   <div class="timeline-content">
                     <h4 class="exp-title">{{ exp.jobTitle }}</h4>
                     <p class="exp-company">{{ exp.company }}</p>
-                    <p class="exp-dates">{{ formatDate(exp.startDate) }} — {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate) }}</p>
+                    <p class="exp-dates">{{ formatDate(exp.startDate) }} — {{ exp.isCurrent ? ('view_profile.present' | translate) : formatDate(exp.endDate) }}</p>
                     @if (exp.description) {
                       <p class="exp-description">{{ exp.description }}</p>
                     }
@@ -161,19 +161,19 @@
               }
             </div>
           } @else {
-            <p class="empty-message">No work experience added yet.</p>
+            <p class="empty-message">{{ 'view_profile.no_experience' | translate }}</p>
           }
         </div>
       }
     </section>
 
-    <!-- Projects Section (visible uniquement si des projets existent) -->
+    <!-- Projects Section -->
     @if (freelancer()!.projects && freelancer()!.projects!.length > 0) {
       <section class="collapsible-section">
         <button class="section-header" (click)="toggleSection('projects')">
           <div class="section-header-left">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            <h3>Projects</h3>
+            <h3>{{ 'view_profile.projects_section' | translate }}</h3>
           </div>
           <svg [class.rotated]="showProjects()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
@@ -188,7 +188,7 @@
                       {{ project.name }}
                     </h4>
                     @if (project.url) {
-                      <a [href]="project.url" target="_blank" class="project-link" title="View project">
+                      <a [href]="project.url" target="_blank" class="project-link" [title]="'view_profile.view_project' | translate">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                       </a>
                     }
@@ -216,7 +216,7 @@
       <button class="section-header" (click)="toggleSection('certifications')">
         <div class="section-header-left">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
-          <h3>Certifications</h3>
+          <h3>{{ 'view_profile.certifications' | translate }}</h3>
         </div>
         <svg [class.rotated]="showCertifications()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
@@ -232,20 +232,20 @@
                       {{ cert.name }}
                     </h4>
                     @if (cert.certificateUrl) {
-                      <a [href]="getFileUrl(cert.certificateUrl)" target="_blank" class="item-link" title="View certificate">
+                      <a [href]="getFileUrl(cert.certificateUrl)" target="_blank" class="item-link" [title]="'view_profile.view_certificate' | translate">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                       </a>
                     }
                   </div>
                   <p class="item-subtitle">{{ cert.issuer }}</p>
                   @if (cert.issueDate) {
-                    <p class="item-meta">Issued: {{ formatDate(cert.issueDate) }}</p>
+                    <p class="item-meta">{{ 'view_profile.issued' | translate }}: {{ formatDate(cert.issueDate) }}</p>
                   }
                 </div>
               }
             </div>
           } @else {
-            <p class="empty-message">No certifications added yet.</p>
+            <p class="empty-message">{{ 'view_profile.no_certifications' | translate }}</p>
           }
         </div>
       }
@@ -256,7 +256,7 @@
       <button class="section-header" (click)="toggleSection('education')">
         <div class="section-header-left">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-          <h3>Education</h3>
+          <h3>{{ 'view_profile.education' | translate }}</h3>
         </div>
         <svg [class.rotated]="showEducation()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
@@ -279,7 +279,7 @@
               }
             </div>
           } @else {
-            <p class="empty-message">No education added yet.</p>
+            <p class="empty-message">{{ 'view_profile.no_education' | translate }}</p>
           }
         </div>
       }
@@ -290,7 +290,7 @@
       <button class="section-header" (click)="toggleSection('skills')">
         <div class="section-header-left">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <h3>Skills</h3>
+          <h3>{{ 'view_profile.skills' | translate }}</h3>
         </div>
         <svg [class.rotated]="showSkills()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
@@ -303,7 +303,7 @@
               }
             </div>
           } @else {
-            <p class="empty-message">No skills added yet.</p>
+            <p class="empty-message">{{ 'view_profile.no_skills' | translate }}</p>
           }
         </div>
       }
@@ -315,7 +315,7 @@
         <button class="section-header" (click)="toggleSection('languages')">
           <div class="section-header-left">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            <h3>Languages</h3>
+            <h3>{{ 'view_profile.languages' | translate }}</h3>
           </div>
           <svg [class.rotated]="showLanguages()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
@@ -339,7 +339,7 @@
       <button class="section-header" (click)="toggleSection('reviews')">
         <div class="section-header-left">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          <h3>Reviews</h3>
+          <h3>{{ 'view_profile.reviews' | translate }}</h3>
           @if (reviews().length > 0) {
             <span class="reviews-count-badge">{{ reviews().length }}</span>
           }
@@ -371,7 +371,7 @@
       @if (showReviews()) {
         <div class="section-content">
           @if (reviews().length === 0) {
-            <p class="empty-message">No reviews yet.</p>
+            <p class="empty-message">{{ 'view_profile.no_reviews' | translate }}</p>
           } @else {
             <div class="reviews-list">
               @for (review of reviews(); track review.id) {

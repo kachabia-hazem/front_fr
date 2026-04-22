@@ -2,7 +2,7 @@
 @if (loading()) {
   <div class="loading-container">
     <div class="spinner"></div>
-    <p>Loading application form...</p>
+    <p>{{ 'apply.loading' | translate }}</p>
   </div>
 } @else if (error()) {
   <div class="error-container">
@@ -14,7 +14,7 @@
       </svg>
     </div>
     <p>{{ error() }}</p>
-    <button class="btn-back-error" (click)="saveAndClose()">Back to Missions</button>
+    <button class="btn-back-error" (click)="saveAndClose()">{{ 'apply.error_back' | translate }}</button>
   </div>
 } @else {
 
@@ -31,7 +31,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="15 18 9 12 15 6"/>
             </svg>
-            Save & Close
+            {{ 'apply.save_close' | translate }}
           </button>
         }
 
@@ -46,8 +46,8 @@
         <!-- ══════ STEP 1: Contact Information ══════ -->
         @if (currentStep === 1) {
           <div class="step-header">
-            <h1 class="step-title">Your Contact Information</h1>
-            <p class="step-subtitle">Fields marked with an asterisk (<span class="required-star">*</span>) are required.</p>
+            <h1 class="step-title">{{ 'apply.step1_title' | translate }}</h1>
+            <p class="step-subtitle">{{ 'apply.required_fields' | translate }}</p>
           </div>
 
           <form [formGroup]="contactForm" (ngSubmit)="onContinue()" class="application-form">
@@ -55,42 +55,42 @@
             <!-- First Name -->
             <div class="form-group">
               <label class="form-label" for="firstName">
-                First Name <span class="required-star">*</span>
+                {{ 'apply.first_name' | translate }} <span class="required-star">*</span>
               </label>
               <input
                 id="firstName"
                 type="text"
                 class="form-input"
                 formControlName="firstName"
-                placeholder="Enter your first name"
+                [placeholder]="'apply.first_name_placeholder' | translate"
                 [class.input-error]="isFieldInvalid('firstName')"
               />
               @if (isFieldInvalid('firstName')) {
-                <span class="field-error">First name is required</span>
+                <span class="field-error">{{ 'apply.first_name_error' | translate }}</span>
               }
             </div>
 
             <!-- Last Name -->
             <div class="form-group">
               <label class="form-label" for="lastName">
-                Last Name <span class="required-star">*</span>
+                {{ 'apply.last_name' | translate }} <span class="required-star">*</span>
               </label>
               <input
                 id="lastName"
                 type="text"
                 class="form-input"
                 formControlName="lastName"
-                placeholder="Enter your last name"
+                [placeholder]="'apply.last_name_placeholder' | translate"
                 [class.input-error]="isFieldInvalid('lastName')"
               />
               @if (isFieldInvalid('lastName')) {
-                <span class="field-error">Last name is required</span>
+                <span class="field-error">{{ 'apply.last_name_error' | translate }}</span>
               }
             </div>
 
             <!-- Email -->
             <div class="form-group">
-              <label class="form-label" for="email">Email Address</label>
+              <label class="form-label" for="email">{{ 'apply.email' | translate }}</label>
               <div class="email-display">
                 <span class="email-value">{{ freelancer()?.email }}</span>
                 <div class="email-info-icon-wrapper">
@@ -102,7 +102,7 @@
                     </svg>
                   </div>
                   <div class="email-tooltip">
-                    This is the email address associated with your account. To change it, go to your account settings.
+                    {{ 'apply.email_tooltip' | translate }}
                   </div>
                 </div>
               </div>
@@ -111,19 +111,19 @@
             <!-- Phone Number -->
             <div class="form-group">
               <label class="form-label" for="phoneNumber">
-                Phone Number <span class="required-star">*</span>
+                {{ 'apply.phone' | translate }} <span class="required-star">*</span>
               </label>
               <app-phone-input
                 formControlName="phoneNumber"
-                placeholder="Phone number"
+                [placeholder]="'apply.phone_placeholder' | translate"
                 [class.input-error]="isFieldInvalid('phoneNumber')"
               ></app-phone-input>
               @if (isFieldInvalid('phoneNumber')) {
                 <span class="field-error">
                   @if (contactForm.get('phoneNumber')?.errors?.['required']) {
-                    Phone number is required
+                    {{ 'apply.phone_required' | translate }}
                   } @else {
-                    Please enter a valid phone number
+                    {{ 'apply.phone_invalid' | translate }}
                   }
                 </span>
               }
@@ -136,14 +136,14 @@
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="15 18 9 12 15 6"/>
                   </svg>
-                  Cancel
+                  {{ 'apply.cancel' | translate }}
                 </button>
               }
               <button type="submit" class="btn-continue">
                 @if (editingFromReview) {
-                  Save Changes
+                  {{ 'apply.save_changes' | translate }}
                 } @else {
-                  Continue
+                  {{ 'apply.continue' | translate }}
                 }
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="9 6 15 12 9 18"/>
@@ -156,11 +156,9 @@
         <!-- ══════ STEP 2: Location Information ══════ -->
         @if (currentStep === 2) {
           <div class="step-header">
-            <h1 class="step-title">Verify Your Location Details</h1>
-            <p class="step-description">
-              By providing your location, you help us match you with relevant jobs and estimate your commute time. Any changes will be saved to your profile.
-            </p>
-            <p class="step-subtitle">Fields marked with an asterisk (<span class="required-star">*</span>) are required.</p>
+            <h1 class="step-title">{{ 'apply.step2_title' | translate }}</h1>
+            <p class="step-description">{{ 'apply.step2_desc' | translate }}</p>
+            <p class="step-subtitle">{{ 'apply.required_fields' | translate }}</p>
           </div>
 
           <form [formGroup]="locationForm" (ngSubmit)="onContinue()" class="application-form">
@@ -168,52 +166,52 @@
             <!-- Country -->
             <div class="form-group">
               <label class="form-label">
-                Country <span class="required-star">*</span>
+                {{ 'apply.country' | translate }} <span class="required-star">*</span>
               </label>
               @if (!editingCountry) {
                 <div class="country-display">
-                  <span class="country-value">{{ locationForm.get('country')?.value || 'Not set' }}</span>
-                  <button type="button" class="btn-edit-inline" (click)="toggleEditCountry()">Edit</button>
+                  <span class="country-value">{{ locationForm.get('country')?.value || ('apply.country_not_set' | translate) }}</span>
+                  <button type="button" class="btn-edit-inline" (click)="toggleEditCountry()">{{ 'apply.country_edit' | translate }}</button>
                 </div>
               } @else {
                 <input
                   type="text"
                   class="form-input"
                   formControlName="country"
-                  placeholder="Enter your country"
+                  [placeholder]="'apply.country_placeholder' | translate"
                   [class.input-error]="isFieldInvalid('country')"
                 />
                 @if (isFieldInvalid('country')) {
-                  <span class="field-error">Country is required</span>
+                  <span class="field-error">{{ 'apply.country_error' | translate }}</span>
                 }
               }
             </div>
 
             <!-- Postal Code -->
             <div class="form-group">
-              <label class="form-label" for="postalCode">Postal Code</label>
+              <label class="form-label" for="postalCode">{{ 'apply.postal_code' | translate }}</label>
               <input
                 id="postalCode"
                 type="text"
                 class="form-input"
                 formControlName="postalCode"
-                placeholder="Enter your postal code"
+                [placeholder]="'apply.postal_code_placeholder' | translate"
               />
             </div>
 
             <!-- City -->
             <div class="form-group">
-              <label class="form-label" for="city">City <span class="required-star">*</span></label>
+              <label class="form-label" for="city">{{ 'apply.city' | translate }} <span class="required-star">*</span></label>
               <input
                 id="city"
                 type="text"
                 class="form-input"
                 [class.input-error]="isFieldInvalid('city')"
                 formControlName="city"
-                placeholder="Enter your city"
+                [placeholder]="'apply.city_placeholder' | translate"
               />
               @if (isFieldInvalid('city')) {
-                <span class="field-error">City is required</span>
+                <span class="field-error">{{ 'apply.city_error' | translate }}</span>
               }
             </div>
 
@@ -223,10 +221,10 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="15 18 9 12 15 6"/>
                 </svg>
-                @if (editingFromReview) { Cancel } @else { Previous }
+                @if (editingFromReview) { {{ 'apply.cancel' | translate }} } @else { {{ 'apply.previous' | translate }} }
               </button>
               <button type="submit" class="btn-continue">
-                @if (editingFromReview) { Save Changes } @else { Continue }
+                @if (editingFromReview) { {{ 'apply.save_changes' | translate }} } @else { {{ 'apply.continue' | translate }} }
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="9 6 15 12 9 18"/>
                 </svg>
@@ -238,11 +236,9 @@
         <!-- ══════ STEP 3: CV Upload ══════ -->
         @if (currentStep === 3) {
           <div class="step-header">
-            <h1 class="step-title">Upload Your CV <span class="required-star">*</span></h1>
-            <p class="step-description">
-              Please upload your CV so we can review your qualifications.
-            </p>
-            <p class="step-subtitle">Fields marked with an asterisk (<span class="required-star">*</span>) are required.</p>
+            <h1 class="step-title">{{ 'apply.step3_title' | translate }} <span class="required-star">*</span></h1>
+            <p class="step-description">{{ 'apply.step3_desc' | translate }}</p>
+            <p class="step-subtitle">{{ 'apply.required_fields' | translate }}</p>
           </div>
 
           <!-- Hidden file input -->
@@ -270,15 +266,15 @@
                   </svg>
                 </div>
                 <div class="cv-option-text">
-                  <h3 class="cv-option-title">Import your CV</h3>
-                  <p class="cv-option-desc">Accepted file types: PDF (recommended), DOCX, RTF or TXT.</p>
+                  <h3 class="cv-option-title">{{ 'apply.cv_import' | translate }}</h3>
+                  <p class="cv-option-desc">{{ 'apply.cv_import_desc' | translate }}</p>
                 </div>
               </div>
             </div>
 
             <!-- Separator -->
             <div class="cv-separator">
-              <span>or</span>
+              <span>{{ 'apply.cv_or' | translate }}</span>
             </div>
 
             <!-- Option 2: Import from profile -->
@@ -296,8 +292,8 @@
                     </svg>
                   </div>
                   <div class="cv-option-text">
-                    <h3 class="cv-option-title">Import your CV from your profile</h3>
-                    <p class="cv-option-desc">Use the CV you already uploaded to your profile.</p>
+                    <h3 class="cv-option-title">{{ 'apply.cv_from_profile' | translate }}</h3>
+                    <p class="cv-option-desc">{{ 'apply.cv_from_profile_desc' | translate }}</p>
                   </div>
                 </div>
               </div>
@@ -306,7 +302,7 @@
 
           <!-- CV Required Error -->
           @if (cvError) {
-            <span class="field-error" style="display:block; margin-top: 0.5rem;">A CV is required to submit your application</span>
+            <span class="field-error" style="display:block; margin-top: 0.5rem;">{{ 'apply.cv_required_error' | translate }}</span>
           }
 
           <!-- CV Selected Info + Clear -->
@@ -332,7 +328,7 @@
           @if (pdfLoading) {
             <div class="pdf-loading">
               <div class="spinner"></div>
-              <p>Loading preview...</p>
+              <p>{{ 'apply.pdf_loading' | translate }}</p>
             </div>
           }
 
@@ -387,10 +383,10 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="15 18 9 12 15 6"/>
               </svg>
-              @if (editingFromReview) { Cancel } @else { Previous }
+              @if (editingFromReview) { {{ 'apply.cancel' | translate }} } @else { {{ 'apply.previous' | translate }} }
             </button>
             <button type="button" class="btn-continue" (click)="onContinue()">
-              @if (editingFromReview) { Save Changes } @else { Continue }
+              @if (editingFromReview) { {{ 'apply.save_changes' | translate }} } @else { {{ 'apply.continue' | translate }} }
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="9 6 15 12 9 18"/>
               </svg>
@@ -401,11 +397,9 @@
         <!-- ══════ STEP 4: Employer Questions ══════ -->
         @if (currentStep === 4) {
           <div class="step-header">
-            <h1 class="step-title">A Few Questions</h1>
-            <p class="step-description">
-              Help the employer better understand your profile by answering the following questions.
-            </p>
-            <p class="step-subtitle">Fields marked with an asterisk (<span class="required-star">*</span>) are required.</p>
+            <h1 class="step-title">{{ 'apply.step4_title' | translate }}</h1>
+            <p class="step-description">{{ 'apply.step4_desc' | translate }}</p>
+            <p class="step-subtitle">{{ 'apply.required_fields' | translate }}</p>
           </div>
 
           <form [formGroup]="questionsForm" (ngSubmit)="onContinue()" class="application-form">
@@ -413,58 +407,58 @@
             <!-- Q1: Salary Expectations -->
             <div class="form-group">
               <label class="form-label" for="salaryExpectations">
-                Please confirm your salary expectations <span class="required-star">*</span>
+                {{ 'apply.salary_label' | translate }} <span class="required-star">*</span>
               </label>
               <input
                 id="salaryExpectations"
                 type="text"
                 class="form-input"
                 formControlName="salaryExpectations"
-                placeholder="e.g. 500 DT/day"
+                [placeholder]="'apply.salary_placeholder' | translate"
                 [class.input-error]="isQuestionInvalid('salaryExpectations')"
               />
               @if (isQuestionInvalid('salaryExpectations')) {
-                <span class="field-error">This field is required</span>
+                <span class="field-error">{{ 'apply.salary_error' | translate }}</span>
               }
             </div>
 
             <!-- Q2: Current Salary & Notice Period -->
             <div class="form-group">
               <label class="form-label" for="currentSalaryAndNotice">
-                Please confirm your current salary and notice period <span class="required-star">*</span>
+                {{ 'apply.current_salary_label' | translate }} <span class="required-star">*</span>
               </label>
               <input
                 id="currentSalaryAndNotice"
                 type="text"
                 class="form-input"
                 formControlName="currentSalaryAndNotice"
-                placeholder="e.g. 400 DT/day, 1 month notice"
+                [placeholder]="'apply.current_salary_placeholder' | translate"
                 [class.input-error]="isQuestionInvalid('currentSalaryAndNotice')"
               />
               @if (isQuestionInvalid('currentSalaryAndNotice')) {
-                <span class="field-error">This field is required</span>
+                <span class="field-error">{{ 'apply.salary_error' | translate }}</span>
               }
             </div>
 
             <!-- Q3: Previously Worked -->
             <div class="form-group">
               <label class="form-label">
-                Have you previously worked with us? <span class="required-star">*</span>
+                {{ 'apply.previously_worked' | translate }} <span class="required-star">*</span>
               </label>
               <div class="radio-group">
                 <label class="radio-option" [class.radio-selected]="questionsForm.get('previouslyWorked')?.value === 'yes'">
                   <input type="radio" formControlName="previouslyWorked" value="yes" />
                   <span class="radio-circle"></span>
-                  <span class="radio-label">Yes</span>
+                  <span class="radio-label">{{ 'apply.yes' | translate }}</span>
                 </label>
                 <label class="radio-option" [class.radio-selected]="questionsForm.get('previouslyWorked')?.value === 'no'">
                   <input type="radio" formControlName="previouslyWorked" value="no" />
                   <span class="radio-circle"></span>
-                  <span class="radio-label">No</span>
+                  <span class="radio-label">{{ 'apply.no' | translate }}</span>
                 </label>
               </div>
               @if (isQuestionInvalid('previouslyWorked')) {
-                <span class="field-error">Please select an option</span>
+                <span class="field-error">{{ 'apply.previously_worked_error' | translate }}</span>
               }
             </div>
 
@@ -472,7 +466,7 @@
             @if (questionsForm.get('previouslyWorked')?.value === 'yes') {
               <div class="form-group">
                 <label class="form-label" for="previousWorkDate">
-                  When did you work with us? <span class="required-star">*</span>
+                  {{ 'apply.when_worked' | translate }} <span class="required-star">*</span>
                 </label>
                 <input
                   id="previousWorkDate"
@@ -482,24 +476,24 @@
                   [class.input-error]="isQuestionInvalid('previousWorkDate')"
                 />
                 @if (isQuestionInvalid('previousWorkDate')) {
-                  <span class="field-error">Please provide the date</span>
+                  <span class="field-error">{{ 'apply.when_worked_error' | translate }}</span>
                 }
               </div>
 
               <div class="form-group">
                 <label class="form-label" for="previousWorkExperience">
-                  Tell us about your experience <span class="required-star">*</span>
+                  {{ 'apply.tell_experience' | translate }} <span class="required-star">*</span>
                 </label>
                 <textarea
                   id="previousWorkExperience"
                   class="form-input form-textarea"
                   formControlName="previousWorkExperience"
-                  placeholder="Describe your previous experience with this company..."
+                  [placeholder]="'apply.experience_placeholder' | translate"
                   rows="4"
                   [class.input-error]="isQuestionInvalid('previousWorkExperience')"
                 ></textarea>
                 @if (isQuestionInvalid('previousWorkExperience')) {
-                  <span class="field-error">Please describe your experience</span>
+                  <span class="field-error">{{ 'apply.experience_error' | translate }}</span>
                 }
               </div>
             }
@@ -510,10 +504,10 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="15 18 9 12 15 6"/>
                 </svg>
-                @if (editingFromReview) { Cancel } @else { Previous }
+                @if (editingFromReview) { {{ 'apply.cancel' | translate }} } @else { {{ 'apply.previous' | translate }} }
               </button>
               <button type="submit" class="btn-continue">
-                @if (editingFromReview) { Save Changes } @else { Continue }
+                @if (editingFromReview) { {{ 'apply.save_changes' | translate }} } @else { {{ 'apply.continue' | translate }} }
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="9 6 15 12 9 18"/>
                 </svg>
@@ -552,7 +546,7 @@
                 </g>
               </svg>
             </div>
-            <h2 class="preparation-title">Preparing your application</h2>
+            <h2 class="preparation-title">{{ 'apply.preparing' | translate }}</h2>
             <div class="preparation-bar-track">
               <div class="preparation-bar-fill" [style.width.%]="preparationProgress"></div>
             </div>
@@ -562,43 +556,39 @@
         <!-- ══════ STEP 6: Review ══════ -->
         @if (currentStep === 6) {
           <div class="review-container">
-            <h1 class="step-title">Review Your Application</h1>
-            <p class="step-description">
-              You will not be able to make changes after submitting your application.
-            </p>
+            <h1 class="step-title">{{ 'apply.review_title' | translate }}</h1>
+            <p class="step-description">{{ 'apply.review_desc' | translate }}</p>
 
             <!-- ── Contact Information ── -->
             <div class="review-section">
               <div class="review-section-header">
-                <h3 class="review-section-title">Contact Information</h3>
-                <button type="button" class="btn-review-edit" (click)="goToStep(1)">Edit</button>
+                <h3 class="review-section-title">{{ 'apply.contact_info' | translate }}</h3>
+                <button type="button" class="btn-review-edit" (click)="goToStep(1)">{{ 'apply.edit' | translate }}</button>
               </div>
               <div class="review-fields">
                 <div class="review-field">
-                  <span class="review-field-label">First Name</span>
+                  <span class="review-field-label">{{ 'apply.review_first_name' | translate }}</span>
                   <span class="review-field-value">{{ contactForm.get('firstName')?.value }}</span>
                 </div>
                 <div class="review-field-divider"></div>
                 <div class="review-field">
-                  <span class="review-field-label">Last Name</span>
+                  <span class="review-field-label">{{ 'apply.review_last_name' | translate }}</span>
                   <span class="review-field-value">{{ contactForm.get('lastName')?.value }}</span>
                 </div>
                 <div class="review-field-divider"></div>
                 <div class="review-field">
-                  <span class="review-field-label">Full Name</span>
+                  <span class="review-field-label">{{ 'apply.review_full_name' | translate }}</span>
                   <span class="review-field-value">{{ contactFullName }}</span>
                 </div>
                 <div class="review-field-divider"></div>
                 <div class="review-field">
-                  <span class="review-field-label">Email Address</span>
+                  <span class="review-field-label">{{ 'apply.review_email' | translate }}</span>
                   <span class="review-field-value review-field-bold">{{ freelancer()?.email }}</span>
-                  <p class="review-field-hint">
-                    To help prevent fraud, your email address may be hidden from employers. They will still be able to contact you through the platform.
-                  </p>
+                  <p class="review-field-hint">{{ 'apply.review_email_hint' | translate }}</p>
                 </div>
                 <div class="review-field-divider"></div>
                 <div class="review-field">
-                  <span class="review-field-label">Phone Number</span>
+                  <span class="review-field-label">{{ 'apply.review_phone' | translate }}</span>
                   <span class="review-field-value review-field-bold">{{ contactForm.get('phoneNumber')?.value }}</span>
                 </div>
               </div>
@@ -607,25 +597,25 @@
             <!-- ── Location Details ── -->
             <div class="review-section">
               <div class="review-section-header">
-                <h3 class="review-section-title">Location Details</h3>
-                <button type="button" class="btn-review-edit" (click)="goToStep(2)">Edit</button>
+                <h3 class="review-section-title">{{ 'apply.location_details' | translate }}</h3>
+                <button type="button" class="btn-review-edit" (click)="goToStep(2)">{{ 'apply.edit' | translate }}</button>
               </div>
               <div class="review-fields">
                 <div class="review-field">
-                  <span class="review-field-label">Country</span>
+                  <span class="review-field-label">{{ 'apply.review_country' | translate }}</span>
                   <span class="review-field-value">{{ locationForm.get('country')?.value || '—' }}</span>
                 </div>
                 @if (locationForm.get('postalCode')?.value) {
                   <div class="review-field-divider"></div>
                   <div class="review-field">
-                    <span class="review-field-label">Postal Code</span>
+                    <span class="review-field-label">{{ 'apply.review_postal' | translate }}</span>
                     <span class="review-field-value">{{ locationForm.get('postalCode')?.value }}</span>
                   </div>
                 }
                 @if (locationForm.get('city')?.value) {
                   <div class="review-field-divider"></div>
                   <div class="review-field">
-                    <span class="review-field-label">City</span>
+                    <span class="review-field-label">{{ 'apply.review_city' | translate }}</span>
                     <span class="review-field-value">{{ locationForm.get('city')?.value }}</span>
                   </div>
                 }
@@ -635,7 +625,7 @@
             <!-- ── CV ── -->
             <div class="review-section">
               <div class="review-section-header">
-                <h3 class="review-section-title">CV / Resume</h3>
+                <h3 class="review-section-title">{{ 'apply.cv_resume' | translate }}</h3>
                 <div class="review-cv-actions">
                   @if (cvOption) {
                     <button type="button" class="btn-review-download" (click)="downloadCv()">
@@ -644,15 +634,15 @@
                         <polyline points="7 10 12 15 17 10"/>
                         <line x1="12" y1="15" x2="12" y2="3"/>
                       </svg>
-                      Download
+                      {{ 'apply.download' | translate }}
                     </button>
                   }
-                  <button type="button" class="btn-review-edit" (click)="goToStep(3)">Edit</button>
+                  <button type="button" class="btn-review-edit" (click)="goToStep(3)">{{ 'apply.edit' | translate }}</button>
                 </div>
               </div>
               <div class="review-fields">
                 <div class="review-field">
-                  <span class="review-field-label">Attached CV</span>
+                  <span class="review-field-label">{{ 'apply.attached_cv' | translate }}</span>
                   <div class="review-cv-file">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -667,33 +657,33 @@
             <!-- ── Employer Questions ── -->
             <div class="review-section">
               <div class="review-section-header">
-                <h3 class="review-section-title">Employer Questions</h3>
-                <button type="button" class="btn-review-edit" (click)="goToStep(4)">Edit</button>
+                <h3 class="review-section-title">{{ 'apply.employer_questions' | translate }}</h3>
+                <button type="button" class="btn-review-edit" (click)="goToStep(4)">{{ 'apply.edit' | translate }}</button>
               </div>
               <div class="review-fields">
                 <div class="review-field">
-                  <span class="review-field-label">Salary expectations</span>
+                  <span class="review-field-label">{{ 'apply.review_salary' | translate }}</span>
                   <span class="review-field-value">{{ questionsForm.get('salaryExpectations')?.value || '—' }}</span>
                 </div>
                 <div class="review-field-divider"></div>
                 <div class="review-field">
-                  <span class="review-field-label">Current salary and notice period</span>
+                  <span class="review-field-label">{{ 'apply.review_current_salary' | translate }}</span>
                   <span class="review-field-value">{{ questionsForm.get('currentSalaryAndNotice')?.value || '—' }}</span>
                 </div>
                 <div class="review-field-divider"></div>
                 <div class="review-field">
-                  <span class="review-field-label">Previously worked with us</span>
-                  <span class="review-field-value">{{ questionsForm.get('previouslyWorked')?.value === 'yes' ? 'Yes' : 'No' }}</span>
+                  <span class="review-field-label">{{ 'apply.review_previously_worked' | translate }}</span>
+                  <span class="review-field-value">{{ questionsForm.get('previouslyWorked')?.value === 'yes' ? ('apply.yes' | translate) : ('apply.no' | translate) }}</span>
                 </div>
                 @if (questionsForm.get('previouslyWorked')?.value === 'yes') {
                   <div class="review-field-divider"></div>
                   <div class="review-field">
-                    <span class="review-field-label">Previous work date</span>
+                    <span class="review-field-label">{{ 'apply.review_prev_date' | translate }}</span>
                     <span class="review-field-value">{{ questionsForm.get('previousWorkDate')?.value || '—' }}</span>
                   </div>
                   <div class="review-field-divider"></div>
                   <div class="review-field">
-                    <span class="review-field-label">Previous experience</span>
+                    <span class="review-field-label">{{ 'apply.review_prev_experience' | translate }}</span>
                     <span class="review-field-value">{{ questionsForm.get('previousWorkExperience')?.value || '—' }}</span>
                   </div>
                 }
@@ -711,13 +701,13 @@
             <div class="review-submit-area">
               <div class="review-actions-row">
                 <button type="button" class="btn-withdraw-application" (click)="withdrawApplication()" [disabled]="submitting()">
-                  Withdraw Application
+                  {{ 'apply.withdraw' | translate }}
                 </button>
                 <button type="button" class="btn-submit-application" (click)="onSubmitApplication()" [disabled]="submitting()">
                   @if (submitting()) {
-                    Submitting...
+                    {{ 'apply.submitting' | translate }}
                   } @else {
-                    Submit Application
+                    {{ 'apply.submit' | translate }}
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polyline points="9 6 15 12 9 18"/>
                     </svg>
@@ -736,7 +726,7 @@
             <!-- Job Title & Company -->
             <h2 class="summary-job-title">{{ mission()!.jobTitle }}</h2>
             <p class="summary-company-info">
-              {{ mission()!.companyName || 'Company' }}
+              {{ mission()!.companyName || ('apply.the_company' | translate) }}
               @if (mission()!.location) {
                 <span class="summary-dot">&middot;</span>
                 {{ mission()!.location }}
@@ -747,7 +737,7 @@
 
             <!-- About Company -->
             @if (mission()!.companyName || mission()!.companyDescription) {
-              <h3 class="summary-section-title">About {{ mission()!.companyName || 'the Company' }}</h3>
+              <h3 class="summary-section-title">{{ 'apply.about_company' | translate }} {{ mission()!.companyName || ('apply.the_company' | translate) }}</h3>
               @if (mission()!.companyDescription) {
                 <p class="summary-description">
                   @if (showFullDescription()) {
@@ -759,10 +749,10 @@
                 @if (mission()!.companyDescription!.length > 200) {
                   <button class="btn-toggle-desc" (click)="toggleDescription()">
                     @if (showFullDescription()) {
-                      Show less
+                      {{ 'apply.show_less' | translate }}
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
                     } @else {
-                      View full job description
+                      {{ 'apply.view_full_desc' | translate }}
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                     }
                   </button>
@@ -797,7 +787,7 @@
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                     <polyline points="22 4 12 14.01 9 11.01"/>
                   </svg>
-                  <span>{{ mission()!.yearsOfExperience }}+ years experience</span>
+                  <span>{{ 'apply.years_exp' | translate:{ years: mission()!.yearsOfExperience } }}</span>
                 </div>
               }
             </div>
@@ -813,7 +803,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="20 6 9 17 4 12"/>
         </svg>
-        Application withdrawn successfully
+        {{ 'apply.withdrawn_success' | translate }}
       </div>
     }
 

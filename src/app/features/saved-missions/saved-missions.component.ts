@@ -1,6 +1,8 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MissionTranslationService } from '../../core/services/mission-translation.service';
 import { SavedMissionsService } from '../../core/services/saved-missions.service';
 import { ApplicationService } from '../../core/services/application.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -10,7 +12,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-saved-missions',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './saved-missions.component.html',
   styleUrl: './saved-missions.component.css',
 })
@@ -26,15 +28,26 @@ export class SavedMissionsComponent implements OnInit {
     private applicationService: ApplicationService,
     private toastService: ToastService,
     public router: Router,
+    private translate: TranslateService,
+    private missionTranslation: MissionTranslationService,
   ) {}
 
   ngOnInit(): void {
     this.savedMissionsService.load();
     this.loading.set(true);
     this.savedMissionsService.getSavedMissions().subscribe({
-      next: (missions) => {
+      next: async (missions) => {
         this.missions.set(missions);
         this.loading.set(false);
+        const lang = this.missionTranslation.getCurrentLang();
+        if (lang === 'fr' && missions.length > 0) {
+          // Sequential to respect MyMemory rate limits
+          const translated: any[] = [];
+          for (const m of missions) {
+            translated.push(await this.missionTranslation.translateMissionFields(m, 'fr'));
+          }
+          this.missions.set(translated);
+        }
       },
       error: () => this.loading.set(false),
     });
@@ -72,7 +85,7 @@ export class SavedMissionsComponent implements OnInit {
     this.savedMissionsService.toggle(missionId).subscribe({
       next: () => {
         this.missions.update(list => list.filter(m => m.id !== missionId));
-        this.toastService.show('Mission removed from favourites.', 'success');
+        this.toastService.show(this.translate.instant('saved_page.unsave_toast'), 'success');
       },
     });
   }
@@ -88,7 +101,8 @@ export class SavedMissionsComponent implements OnInit {
 
   formatDate(dateStr: string | undefined): string {
     if (!dateStr) return '—';
-    return new Date(dateStr).toLocaleDateString('en-GB', {
+    const locale = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-GB';
+    return new Date(dateStr).toLocaleDateString(locale, {
       day: '2-digit', month: 'short', year: 'numeric',
     });
   }

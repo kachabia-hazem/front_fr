@@ -1,7 +1,7 @@
 <div class="customize-card-page">
   <div class="page-header">
-    <h1>Customize My Card</h1>
-    <p>Personalize how your freelancer card appears to clients on the Freelancers page.</p>
+    <h1>{{ 'customize_card.title' | translate }}</h1>
+    <p>{{ 'customize_card.subtitle' | translate }}</p>
   </div>
 
   @if (message(); as msg) {
@@ -15,43 +15,43 @@
     <div class="controls-section">
       <!-- Card Background -->
       <div class="upload-section">
-        <h3>Card Background</h3>
-        <p class="section-desc">This image appears behind your card when no portfolio images are set.</p>
+        <h3>{{ 'customize_card.bg_title' | translate }}</h3>
+        <p class="section-desc">{{ 'customize_card.bg_hint' | translate }}</p>
         @if (cardBackground()) {
           <div class="uploaded-preview">
             <img [src]="getFileUrl(cardBackground())" alt="Card background" />
             <button class="btn-remove" (click)="removeBackground()">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              Remove
+              {{ 'customize_card.remove' | translate }}
             </button>
           </div>
         } @else {
           <label class="upload-area" [class.disabled]="uploading()">
             <input type="file" accept="image/*" (change)="onBackgroundUpload($event)" hidden />
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            <span>Click to upload background</span>
-            <span class="upload-hint">JPG, PNG, WebP - Max 5MB</span>
+            <span>{{ 'customize_card.upload_bg' | translate }}</span>
+            <span class="upload-hint">{{ 'customize_card.bg_formats' | translate }}</span>
           </label>
         }
       </div>
 
       <!-- Portfolio Images -->
       <div class="upload-section">
-        <h3>Portfolio Images</h3>
-        <p class="section-desc">Upload up to {{ maxPortfolioImages }} project screenshots. The first image will be your card's main visual.</p>
+        <h3>{{ 'customize_card.portfolio_title' | translate }}</h3>
+        <p class="section-desc">{{ 'customize_card.portfolio_hint' | translate: { max: maxPortfolioImages } }}</p>
 
         <div class="portfolio-grid">
           @for (img of portfolioImages(); track img; let i = $index) {
             <div class="portfolio-item">
-              <img [src]="getFileUrl(img)" alt="Portfolio image {{ i + 1 }}" />
+              <img [src]="getFileUrl(img)" [alt]="('customize_card.portfolio_img_alt' | translate) + ' ' + (i + 1)" />
               <div class="portfolio-item-actions">
-                <button class="btn-icon" (click)="moveImage(i, -1)" [disabled]="i === 0" title="Move left">
+                <button class="btn-icon" (click)="moveImage(i, -1)" [disabled]="i === 0" [title]="'customize_card.move_left' | translate">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
                 </button>
-                <button class="btn-icon btn-icon-danger" (click)="removePortfolioImage(i)" title="Remove">
+                <button class="btn-icon btn-icon-danger" (click)="removePortfolioImage(i)" [title]="'customize_card.remove' | translate">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
-                <button class="btn-icon" (click)="moveImage(i, 1)" [disabled]="i === portfolioImages().length - 1" title="Move right">
+                <button class="btn-icon" (click)="moveImage(i, 1)" [disabled]="i === portfolioImages().length - 1" [title]="'customize_card.move_right' | translate">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
                 </button>
               </div>
@@ -62,7 +62,7 @@
             <label class="upload-area upload-area-small" [class.disabled]="uploading()">
               <input type="file" accept="image/*" (change)="onPortfolioUpload($event)" hidden />
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              <span>Add Image</span>
+              <span>{{ 'customize_card.add_image' | translate }}</span>
             </label>
           }
         </div>
@@ -70,16 +70,16 @@
 
       <button class="btn-save" (click)="save()" [disabled]="saving() || uploading()">
         @if (saving()) {
-          Saving...
+          {{ 'customize_card.saving' | translate }}
         } @else {
-          Save Changes
+          {{ 'customize_card.save' | translate }}
         }
       </button>
     </div>
 
     <!-- Right: Live Card Preview -->
     <div class="preview-section">
-      <h3>Live Preview</h3>
+      <h3>{{ 'customize_card.preview' | translate }}</h3>
       <div class="card-preview">
         <div class="card-image-area" [style.backgroundImage]="cardPreviewImage ? 'url(' + cardPreviewImage + ')' : ''">
           @if (!cardPreviewImage) {
@@ -96,8 +96,8 @@
               </div>
             }
           </div>
-          <h4 class="card-name">{{ freelancer()?.firstName || 'First' }} {{ freelancer()?.lastName || 'Last' }}</h4>
-          <p class="card-position">{{ freelancer()?.currentPosition || 'Your Position' }}</p>
+          <h4 class="card-name">{{ freelancer()?.firstName || ('customize_card.first_ph' | translate) }} {{ freelancer()?.lastName || ('customize_card.last_ph' | translate) }}</h4>
+          <p class="card-position">{{ freelancer()?.currentPosition || ('customize_card.position_ph' | translate) }}</p>
           <div class="card-skills">
             @for (skill of (freelancer()?.skills || []).slice(0, 3); track skill) {
               <span class="skill-tag">{{ skill }}</span>
@@ -108,7 +108,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               <span>{{ freelancer()?.rating || 0 | number:'1.1-1' }}</span>
             </div>
-            <span class="card-tjm">{{ freelancer()?.tjm || 0 }} DT/day</span>
+            <span class="card-tjm">{{ freelancer()?.tjm || 0 }} DT/{{ 'customize_card.day' | translate }}</span>
           </div>
         </div>
       </div>
@@ -116,7 +116,7 @@
   </div>
 </div>
 
-<!-- ═══ Success Toast ═══ -->
+<!-- Success Toast -->
 @if (showToast()) {
   <div class="toast-overlay">
     <div class="toast-success">
@@ -124,7 +124,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       </div>
       <div class="toast-content">
-        <span class="toast-title">Success</span>
+        <span class="toast-title">{{ 'customize_card.success_title' | translate }}</span>
         <span class="toast-msg">{{ toastMessage() }}</span>
       </div>
     </div>

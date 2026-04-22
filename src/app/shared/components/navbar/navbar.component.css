@@ -385,6 +385,75 @@
   color: #fff;
 }
 
+/* ── Language Switcher ── */
+
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.lang-flag-btn {
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  padding: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  opacity: 0.55;
+}
+
+.lang-flag-btn:hover {
+  opacity: 1;
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.lang-flag-btn.active {
+  opacity: 1;
+  border-color: #3793B0;
+  box-shadow: 0 2px 8px rgba(55, 147, 176, 0.35);
+}
+
+/* Flag icons using CSS (no external library needed) */
+.flag-icon {
+  display: block;
+  width: 34px;
+  height: 24px;
+  border-radius: 2px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+/* France flag — blue | white | red vertical stripes */
+.flag-fr {
+  background: linear-gradient(to right, #002395 33.33%, #fff 33.33%, #fff 66.66%, #ED2939 66.66%);
+}
+
+/* USA flag — simplified red & white stripes with blue canton */
+.flag-us {
+  background:
+    /* Blue canton top-left */
+    linear-gradient(to right, #3C3B6E 40%, transparent 40%) 0 0 / 100% 38% no-repeat,
+    /* Red and white stripes */
+    repeating-linear-gradient(
+      to bottom,
+      #B22234 0px,
+      #B22234 calc(100% / 13),
+      #fff calc(100% / 13),
+      #fff calc(200% / 13)
+    );
+}
+
+:host-context(body.dark-theme) .lang-flag-btn.active {
+  border-color: #3793B0;
+  box-shadow: 0 2px 8px rgba(55, 147, 176, 0.4);
+}
+
 /* ── Guest Links ── */
 
 .nav-guest {

@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { MissionService, AiSearchResult, MatchMissionResult } from '../../core/services/mission.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
@@ -12,11 +13,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
 import { getProfileCompletion } from '../../core/utils/profile-completion';
 import { SECTOR_OPTIONS, SPECIALITY_OPTIONS, CATEGORY_OPTIONS } from '../../core/constants/mission-options';
+import { MissionTranslationService } from '../../core/services/mission-translation.service';
 
 @Component({
   selector: 'app-missions',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, UpperCasePipe],
+  imports: [CommonModule, FormsModule, RouterLink, UpperCasePipe, TranslateModule],
   templateUrl: './missions.component.html',
   styleUrl: './missions.component.css',
 })
@@ -44,10 +46,10 @@ export class MissionsComponent implements OnInit {
   readonly bucketCount = 20;
 
   employmentTypes = [
-    { label: 'Full-time', value: 'Full-time', checked: false },
-    { label: 'Part-time', value: 'Part-time', checked: false },
-    { label: 'Remote', value: 'Remote', checked: false },
-    { label: 'Freelance', value: 'Freelance', checked: false },
+    { label: 'missions_page.filter_fulltime',  value: 'Full-time', checked: false },
+    { label: 'missions_page.filter_parttime',  value: 'Part-time', checked: false },
+    { label: 'missions_page.filter_remote',    value: 'Remote',    checked: false },
+    { label: 'missions_page.filter_freelance', value: 'Freelance', checked: false },
   ];
 
   categories = CATEGORY_OPTIONS.map(c => ({ ...c, checked: false }));
@@ -60,9 +62,9 @@ export class MissionsComponent implements OnInit {
   showAllSpecialities = false;
 
   experienceLevels = [
-    { label: '0-2 years', min: 0, max: 2, checked: false },
-    { label: '3-7 years', min: 3, max: 7, checked: false },
-    { label: '8-15 years', min: 8, max: 15, checked: false },
+    { label: 'missions_page.filter_exp_0_2',  min: 0,  max: 2,  checked: false },
+    { label: 'missions_page.filter_exp_3_7',  min: 3,  max: 7,  checked: false },
+    { label: 'missions_page.filter_exp_8_15', min: 8,  max: 15, checked: false },
   ];
 
   // ── AI Search ─────────────────────────────────────────────────────────────
@@ -94,6 +96,32 @@ export class MissionsComponent implements OnInit {
   applicationStatusMap = new Map<string, 'PENDING' | 'ACCEPTED' | 'REJECTED'>();
   cancellingMissionIds = new Set<string>();
 
+  // Translated dynamic content (title + description per mission id)
+  translatedFieldsMap = new Map<string, { jobTitle?: string; description?: string }>();
+
+  getDisplayTitle(mission: Mission): string {
+    return this.translatedFieldsMap.get(mission.id!)?.jobTitle || mission.jobTitle || '';
+  }
+
+  getDisplayDescription(mission: Mission): string {
+    const desc = this.translatedFieldsMap.get(mission.id!)?.description || mission.description || '';
+    return this.getTruncatedDescription(desc);
+  }
+
+  private async translateAllMissions(missions: Mission[]): Promise<void> {
+    const lang = this.missionTranslation.getCurrentLang();
+    if (lang !== 'fr') return;
+    // Sequential: avoids hitting MyMemory free-tier rate limit
+    for (const m of missions) {
+      if (!m.id) continue;
+      const entry: { jobTitle?: string; description?: string } = {};
+      if (m.jobTitle) entry.jobTitle = await this.missionTranslation.translate(m.jobTitle, 'fr');
+      if (m.description) entry.description = await this.missionTranslation.translate(m.description, 'fr');
+      this.translatedFieldsMap.set(m.id, entry);
+      this.cdr.detectChanges(); // update UI as each mission is translated
+    }
+  }
+
   private profileCompletion: number | null = null;
 
   constructor(
@@ -106,6 +134,8 @@ export class MissionsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
+    private translate: TranslateService,
+    private missionTranslation: MissionTranslationService,
   ) {}
 
   @HostListener('document:click')
@@ -124,6 +154,15 @@ export class MissionsComponent implements OnInit {
     this.modalClosing = false;
     this.similarMissions = this.computeSimilarMissions(mission);
     document.body.style.overflow = 'hidden';
+    this.translateSelectedMission(mission);
+  }
+
+  private async translateSelectedMission(mission: Mission): Promise<void> {
+    const lang = this.translate.currentLang || 'en';
+    if (lang === 'en') return;
+    const translated = await this.missionTranslation.translateMissionFields(mission, lang);
+    this.selectedMission = { ...translated };
+    this.cdr.detectChanges();
   }
 
   switchToMission(mission: Mission): void {
@@ -131,6 +170,7 @@ export class MissionsComponent implements OnInit {
     this.similarMissions = this.computeSimilarMissions(mission);
     const body = document.querySelector('.modal-body');
     if (body) body.scrollTop = 0;
+    this.translateSelectedMission(mission);
   }
 
   private computeSimilarMissions(mission: Mission): Mission[] {
@@ -259,19 +299,19 @@ export class MissionsComponent implements OnInit {
     const chips: { type: string; label: string; key: string }[] = [];
 
     this.employmentTypes.filter(t => t.checked).forEach(t =>
-      chips.push({ type: 'Employment', label: t.label, key: `employment:${t.value}` })
+      chips.push({ type: 'Employment', label: this.translate.instant(t.label), key: `employment:${t.value}` })
     );
     this.categories.filter(c => c.checked).forEach(c =>
-      chips.push({ type: 'Category', label: c.label, key: `category:${c.value}` })
+      chips.push({ type: 'Category', label: this.translate.instant(c.labelKey), key: `category:${c.value}` })
     );
     this.sectors.filter(s => s.checked).forEach(s =>
-      chips.push({ type: 'Sector', label: s.label, key: `sector:${s.value}` })
+      chips.push({ type: 'Sector', label: this.translate.instant(s.labelKey), key: `sector:${s.value}` })
     );
     this.specialities.filter(s => s.checked).forEach(s =>
       chips.push({ type: 'Skill', label: s.label, key: `speciality:${s.value}` })
     );
     this.experienceLevels.filter(l => l.checked).forEach(l =>
-      chips.push({ type: 'Experience', label: l.label, key: `experience:${l.label}` })
+      chips.push({ type: 'Experience', label: this.translate.instant(l.label), key: `experience:${l.label}` })
     );
 
     return chips;
@@ -465,6 +505,7 @@ export class MissionsComponent implements OnInit {
         this.buildHistogram();
         this.applyFilters();
         this.cdr.detectChanges();
+        this.translateAllMissions(missions);
 
         // Si on vient de la home avec mode AI, déclencher la recherche
         if (this.aiSearchMode && this.aiSearchPrompt) {
@@ -753,16 +794,17 @@ export class MissionsComponent implements OnInit {
   }
 
   getMissionStatus(mission: any): string {
-    if (mission.status === 'CLOSED' || this.isDeadlinePassed(mission)) return 'CLOSED';
-    return mission.status || 'OPEN';
+    if (mission.status === 'CLOSED' || this.isDeadlinePassed(mission)) return 'missions_page.status_closed';
+    return 'missions_page.status_open';
   }
 
   formatCreatedAt(dateStr: string): string {
     try {
       const d = new Date(dateStr);
       if (isNaN(d.getTime())) return '';
-      return d.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })
-        + ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      const locale = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-US';
+      return d.toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' })
+        + ' ' + d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
     } catch {
       return '';
     }
@@ -773,13 +815,13 @@ export class MissionsComponent implements OnInit {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffMins < 60) return this.translate.instant('missions_page.time_min_ago', { n: diffMins });
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffHours < 24) return this.translate.instant('missions_page.time_h_ago', { n: diffHours });
     const diffDays = Math.floor(diffHours / 24);
-    if (diffDays < 30) return `${diffDays}d ago`;
+    if (diffDays < 30) return this.translate.instant('missions_page.time_d_ago', { n: diffDays });
     const diffMonths = Math.floor(diffDays / 30);
-    return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+    return this.translate.instant('missions_page.time_month_ago', { n: diffMonths });
   }
 
   getSkillsList(skills: string): string[] {
@@ -803,7 +845,8 @@ export class MissionsComponent implements OnInit {
       // Handle string format "2025-06-15"
       const d = new Date(date);
       if (isNaN(d.getTime())) return String(date);
-      return d.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+      const locale = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-US';
+      return d.toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' });
     } catch {
       return String(date);
     }

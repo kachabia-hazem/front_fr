@@ -1,12 +1,12 @@
 <!-- Hero Banner -->
 <div class="hero-banner">
-  <h1>Company Profile Details</h1>
+  <h1>{{ 'view_company.title' | translate }}</h1>
 </div>
 
 @if (loading()) {
   <div class="loading-container">
     <div class="spinner"></div>
-    <p>Loading profile...</p>
+    <p>{{ 'view_company.loading' | translate }}</p>
   </div>
 } @else if (error()) {
   <div class="error-container">
@@ -46,7 +46,7 @@
             @if (company()!.websiteUrl) {
               <a [href]="company()!.websiteUrl" target="_blank" class="btn-website">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                Visit Website
+                {{ 'view_company.visit_website' | translate }}
               </a>
             }
             @if (company()!.legalForm) {
@@ -61,7 +61,7 @@
         <!-- Description -->
         @if (company()!.description) {
           <div class="bio-section">
-            <label class="section-label">About the Company</label>
+            <label class="section-label">{{ 'view_company.about' | translate }}</label>
             <p class="bio-text">{{ company()!.description }}</p>
           </div>
         }
@@ -70,14 +70,14 @@
         <div class="info-row">
           @if (company()!.tradeRegister) {
             <div class="info-column">
-              <label class="section-label">Trade Register</label>
+              <label class="section-label">{{ 'view_company.trade_register' | translate }}</label>
               <p class="info-value">{{ company()!.tradeRegister }}</p>
             </div>
           }
 
           @if (company()!.foundationDate) {
             <div class="info-column">
-              <label class="section-label">Founded</label>
+              <label class="section-label">{{ 'view_company.founded' | translate }}</label>
               <p class="info-value">{{ formatDate(company()!.foundationDate) }}</p>
             </div>
           }
@@ -91,49 +91,49 @@
         <div class="card-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
-        <h4>Employees</h4>
-        <p>{{ company()!.numberOfEmployees || 'Not specified' }}</p>
+        <h4>{{ 'view_company.employees' | translate }}</h4>
+        <p>{{ company()!.numberOfEmployees || ('view_company.not_specified' | translate) }}</p>
       </div>
 
       <div class="info-card">
         <div class="card-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         </div>
-        <h4>Posted Missions</h4>
-        <p>{{ missionCount() }} {{ missionCount() === 1 ? 'mission' : 'missions' }}</p>
+        <h4>{{ 'view_company.posted_missions' | translate }}</h4>
+        <p>{{ missionCount() }} {{ missionCount() === 1 ? ('view_company.mission_singular' | translate) : ('view_company.mission_plural' | translate) }}</p>
       </div>
 
       <div class="info-card">
         <div class="card-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
         </div>
-        <h4>Sector</h4>
-        <p>{{ company()!.businessSector || 'Not specified' }}</p>
+        <h4>{{ 'view_company.sector' | translate }}</h4>
+        <p>{{ company()!.businessSector || ('view_company.not_specified' | translate) }}</p>
       </div>
     </section>
 
     <!-- Manager Information Section -->
     <section class="manager-section">
-      <h3>Manager Information</h3>
+      <h3>{{ 'view_company.manager_info' | translate }}</h3>
       <div class="manager-card">
         <div class="manager-info">
           <div class="manager-row">
             <div class="manager-field">
-              <label class="section-label">Name</label>
+              <label class="section-label">{{ 'view_company.name' | translate }}</label>
               <p class="manager-value">{{ company()!.managerName }}</p>
             </div>
             <div class="manager-field">
-              <label class="section-label">Position</label>
+              <label class="section-label">{{ 'view_company.position' | translate }}</label>
               <p class="manager-value">{{ company()!.managerPosition }}</p>
             </div>
           </div>
           <div class="manager-row">
             <div class="manager-field">
-              <label class="section-label">Email</label>
+              <label class="section-label">{{ 'view_company.email' | translate }}</label>
               <a [href]="'mailto:' + company()!.managerEmail" class="manager-link">{{ company()!.managerEmail }}</a>
             </div>
             <div class="manager-field">
-              <label class="section-label">Phone</label>
+              <label class="section-label">{{ 'view_company.phone' | translate }}</label>
               <a [href]="'tel:' + company()!.managerPhoneNumber" class="manager-link">{{ company()!.managerPhoneNumber }}</a>
             </div>
           </div>
@@ -144,7 +144,7 @@
     <!-- Contact Section -->
     @if (company()!.websiteUrl || company()!.email) {
       <section class="contact-section">
-        <h3>Contact</h3>
+        <h3>{{ 'view_company.contact' | translate }}</h3>
         <div class="contact-list">
           @if (company()!.email) {
             <a [href]="'mailto:' + company()!.email" class="contact-item">

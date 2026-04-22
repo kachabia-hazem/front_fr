@@ -1,3 +1,4 @@
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
@@ -14,7 +15,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-freelancer-applications',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, TranslateModule],
   templateUrl: './freelancer-applications.component.html',
   styleUrl: './freelancer-applications.component.css',
 })
@@ -107,6 +108,7 @@ export class FreelancerApplicationsComponent implements OnInit {
     public themeService: ThemeService,
     private router: Router,
     private location: Location,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -199,7 +201,7 @@ export class FreelancerApplicationsComponent implements OnInit {
   }
 
   withdrawApp(app: Application): void {
-    if (confirm(`Withdraw application for "${app.missionTitle}"?`)) {
+    if (confirm(this.translate.instant('freelancer_apps.withdraw_confirm', { title: app.missionTitle }))) {
       this.applicationService.withdrawApplication(app.missionId).subscribe({
         next: () => {
           this.allApplications.update(apps =>

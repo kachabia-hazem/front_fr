@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MissionService } from '../../core/services/mission.service';
 import { CreateMissionRequest } from '../../core/models/mission.model';
 import { SECTOR_OPTIONS, SPECIALITY_OPTIONS } from '../../core/constants/mission-options';
@@ -10,7 +11,7 @@ import { SECTOR_OPTIONS, SPECIALITY_OPTIONS } from '../../core/constants/mission
 @Component({
   selector: 'app-post-job',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, TranslateModule],
   templateUrl: './post-job.component.html',
   styleUrl: './post-job.component.css',
 })
@@ -53,6 +54,7 @@ export class PostJobComponent implements OnInit {
     private route: ActivatedRoute,
     private elRef: ElementRef,
     private cdr: ChangeDetectorRef,
+    private translate: TranslateService,
   ) {
     this.missionForm = this.fb.group({
       jobTitle: ['', [Validators.required]],
@@ -124,7 +126,7 @@ export class PostJobComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.errorMessage = 'Failed to load mission.';
+        this.errorMessage = this.translate.instant('post_job.error_load');
         this.loading = false;
       },
     });
@@ -156,11 +158,11 @@ export class PostJobComponent implements OnInit {
     const control = this.missionForm.get(field);
     if (!control || !control.errors) return '';
 
-    if (control.errors['required']) return 'This field is required';
-    if (control.errors['endBeforeStart']) return 'End date must be after the start date';
-    if (control.errors['min']) return `Minimum value is ${control.errors['min'].min}`;
-    if (control.errors['minlength']) return `Minimum ${control.errors['minlength'].requiredLength} characters`;
-    return 'Invalid value';
+    if (control.errors['required']) return this.translate.instant('post_job.err_required');
+    if (control.errors['endBeforeStart']) return this.translate.instant('post_job.err_end_before_start');
+    if (control.errors['min']) return this.translate.instant('post_job.err_min', { min: control.errors['min'].min });
+    if (control.errors['minlength']) return this.translate.instant('post_job.err_minlength', { len: control.errors['minlength'].requiredLength });
+    return this.translate.instant('post_job.err_invalid');
   }
 
   onStartDateChange(): void {
@@ -348,7 +350,7 @@ export class PostJobComponent implements OnInit {
     const start = this.missionForm.value.startDate;
     const end = this.missionForm.value.endDate;
     if (start && end && new Date(end) <= new Date(start)) {
-      this.errorMessage = 'End date must be after start date.';
+      this.errorMessage = this.translate.instant('post_job.error_dates');
       return;
     }
 
@@ -362,22 +364,22 @@ export class PostJobComponent implements OnInit {
       this.missionService.updateMission(this.missionId, request).subscribe({
         next: () => {
           this.loading = false;
-          this.showSuccessToast('Mission updated successfully!');
+          this.showSuccessToast(this.translate.instant('post_job.success_update'));
         },
         error: (err) => {
           this.loading = false;
-          this.errorMessage = err.error?.message || 'An error occurred while updating the mission.';
+          this.errorMessage = err.error?.message || this.translate.instant('post_job.error_update');
         },
       });
     } else {
       this.missionService.createMission(request).subscribe({
         next: () => {
           this.loading = false;
-          this.showSuccessToast('Mission posted successfully!');
+          this.showSuccessToast(this.translate.instant('post_job.success_create'));
         },
         error: (err) => {
           this.loading = false;
-          this.errorMessage = err.error?.message || 'An error occurred while posting the mission.';
+          this.errorMessage = err.error?.message || this.translate.instant('post_job.error_create');
         },
       });
     }

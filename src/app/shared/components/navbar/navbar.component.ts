@@ -1,8 +1,10 @@
 import { Component, OnInit, HostListener, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
+import { LanguageService, AppLanguage } from '../../../core/services/language.service';
 import { FreelancerService } from '../../../core/services/freelancer.service';
 import { CompanyService } from '../../../core/services/company.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -13,7 +15,7 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
@@ -113,6 +115,7 @@ export class NavbarComponent implements OnInit {
   constructor(
     public authService: AuthService,
     public themeService: ThemeService,
+    public languageService: LanguageService,
     private freelancerService: FreelancerService,
     private companyService: CompanyService,
     private notificationService: NotificationService,
@@ -231,5 +234,9 @@ export class NavbarComponent implements OnInit {
 
   toggleTheme(): void {
     this.themeService.toggle();
+  }
+
+  setLang(lang: AppLanguage): void {
+    this.languageService.setLanguage(lang);
   }
 }

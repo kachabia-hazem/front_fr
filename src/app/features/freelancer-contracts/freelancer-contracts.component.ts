@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import {
   Component, OnInit, signal, computed, ViewChild, ElementRef, AfterViewInit
 } from '@angular/core';
@@ -18,7 +19,7 @@ import { Freelancer } from '../../core/models';
 @Component({
   selector: 'app-freelancer-contracts',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, SafeUrlPipe],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, SafeUrlPipe, TranslateModule],
   templateUrl: './freelancer-contracts.component.html',
   styleUrl: './freelancer-contracts.component.css',
 })

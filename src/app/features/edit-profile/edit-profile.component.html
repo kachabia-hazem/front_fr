@@ -1,23 +1,23 @@
 <!-- Hero Banner -->
 <div class="hero-banner">
-  <h1>Build Your Profile</h1>
-  <p>Complete your profile to attract more clients and opportunities</p>
+  <h1>{{ 'edit_profile.title' | translate }}</h1>
+  <p>{{ 'edit_profile.subtitle' | translate }}</p>
 </div>
 
 <!-- Profile Completion Bar -->
 @if (!loading() && freelancer()) {
   <div class="completion-section">
     <div class="completion-header">
-      <span class="completion-label">Profile Completion</span>
+      <span class="completion-label">{{ 'edit_profile.completion_label' | translate }}</span>
       <span class="completion-percent" [class.complete]="isProfileComplete">{{ profileCompletion }}%</span>
     </div>
     <div class="completion-bar">
       <div class="completion-fill" [class.complete]="isProfileComplete" [style.width.%]="profileCompletion"></div>
     </div>
     @if (!isProfileComplete) {
-      <p class="completion-hint">Complete your profile to increase visibility and attract more clients</p>
+      <p class="completion-hint">{{ 'edit_profile.completion_hint' | translate }}</p>
     } @else {
-      <p class="completion-hint complete">Your profile is complete! You're ready to get hired.</p>
+      <p class="completion-hint complete">{{ 'edit_profile.completion_done' | translate }}</p>
     }
   </div>
 }
@@ -25,7 +25,7 @@
 @if (loading()) {
   <div class="loading-container">
     <div class="spinner"></div>
-    <p>Loading your profile...</p>
+    <p>{{ 'edit_profile.loading' | translate }}</p>
   </div>
 } @else {
   <div class="edit-profile-container">
@@ -67,11 +67,11 @@
             @if (uploadingPhoto()) {
               <div class="upload-loading">
                 <span class="btn-spinner"></span>
-                Uploading...
+                {{ 'edit_profile.uploading' | translate }}
               </div>
             } @else {
               <app-file-upload
-                label="Upload Photo"
+                [label]="'edit_profile.upload_photo' | translate"
                 accept=".jpg,.jpeg,.png,.gif,.webp"
                 [maxSizeMB]="5"
                 (fileSelected)="onProfilePictureSelected($event)">
@@ -81,13 +81,13 @@
 
           <!-- Current Position -->
           <div class="sidebar-section">
-            <label class="sidebar-label">Current Position</label>
-            <input type="text" formControlName="currentPosition" class="sidebar-input" placeholder="e.g. Full Stack Developer" />
+            <label class="sidebar-label">{{ 'edit_profile.current_position' | translate }}</label>
+            <input type="text" formControlName="currentPosition" class="sidebar-input" [placeholder]="'edit_profile.current_position_ph' | translate" />
           </div>
 
           <!-- Languages -->
           <div class="sidebar-section">
-            <label class="sidebar-label">Languages</label>
+            <label class="sidebar-label">{{ 'edit_profile.languages' | translate }}</label>
             <div class="checkbox-group compact">
               @for (lang of languageOptions; track lang) {
                 <label class="checkbox-item">
@@ -104,41 +104,41 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px;vertical-align:middle;">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
               </svg>
-              Upload Intelligent
+              {{ 'edit_profile.upload_cv_ai' | translate }}
             </label>
 
             @if (uploadingCv()) {
               <div class="upload-loading">
                 <span class="btn-spinner"></span>
-                Saving CV...
+                {{ 'edit_profile.saving_cv' | translate }}
               </div>
             } @else {
               <app-file-upload
-                label="Upload CV"
+                [label]="'edit_profile.upload_cv' | translate"
                 accept=".pdf"
                 [maxSizeMB]="10"
                 (fileSelected)="onIntelligentUpload($event)">
               </app-file-upload>
             }
 
-            <p class="cv-upload-desc">Uploadez votre CV PDF et l'AI remplit automatiquement votre profil</p>
+            <p class="cv-upload-desc">{{ 'edit_profile.cv_ai_desc' | translate }}</p>
 
             @if (freelancer()?.cvUrl) {
-              <a [href]="getFileUrl(freelancer()!.cvUrl)" target="_blank" class="cv-link">View current CV</a>
+              <a [href]="getFileUrl(freelancer()!.cvUrl)" target="_blank" class="cv-link">{{ 'edit_profile.view_cv' | translate }}</a>
             }
           </div>
 
           <!-- CV Manuel -->
           <div class="sidebar-section">
-            <label class="sidebar-label">CV Manuel</label>
+            <label class="sidebar-label">{{ 'edit_profile.cv_manual' | translate }}</label>
             <button type="button" class="btn-cv-manual" (click)="openCvWizard()">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
               </svg>
-              Remplir manuellement
+              {{ 'edit_profile.fill_manually' | translate }}
             </button>
-            <p class="cv-hint">Créez ou modifiez votre CV étape par étape</p>
+            <p class="cv-hint">{{ 'edit_profile.cv_manual_hint' | translate }}</p>
           </div>
         </aside>
 
@@ -146,34 +146,34 @@
         <main class="profile-main">
           <!-- Personal Information -->
           <section class="form-section">
-            <h2 class="section-title">Personal Information</h2>
+            <h2 class="section-title">{{ 'edit_profile.personal_info' | translate }}</h2>
             <div class="form-grid">
               <div class="form-group">
-                <label>First Name</label>
-                <input type="text" formControlName="firstName" placeholder="First name" />
+                <label>{{ 'edit_profile.first_name' | translate }}</label>
+                <input type="text" formControlName="firstName" [placeholder]="'edit_profile.first_name_ph' | translate" />
               </div>
               <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" formControlName="lastName" placeholder="Last name" />
+                <label>{{ 'edit_profile.last_name' | translate }}</label>
+                <input type="text" formControlName="lastName" [placeholder]="'edit_profile.last_name_ph' | translate" />
               </div>
               <div class="form-group">
-                <label>Email</label>
-                <input type="email" formControlName="email" placeholder="Email" />
+                <label>{{ 'edit_profile.email' | translate }}</label>
+                <input type="email" formControlName="email" [placeholder]="'edit_profile.email' | translate" />
               </div>
               <div class="form-group">
-                <label>Phone Number</label>
-                <input type="tel" formControlName="phoneNumber" placeholder="+216 XX XXX XXX" />
+                <label>{{ 'edit_profile.phone' | translate }}</label>
+                <input type="tel" formControlName="phoneNumber" [placeholder]="'edit_profile.phone_ph' | translate" />
               </div>
               <div class="form-group">
-                <label>Location</label>
-                <input type="text" formControlName="location" placeholder="e.g. Tunis, Tunisia" />
+                <label>{{ 'edit_profile.location' | translate }}</label>
+                <input type="text" formControlName="location" [placeholder]="'edit_profile.location_ph' | translate" />
               </div>
               <div class="form-group">
-                <label>Date of Birth</label>
+                <label>{{ 'edit_profile.dob' | translate }}</label>
                 <input type="date" formControlName="dateOfBirth" />
               </div>
               <div class="form-group">
-                <label>Gender</label>
+                <label>{{ 'edit_profile.gender' | translate }}</label>
                 <div class="radio-group">
                   @for (g of genderOptions; track g) {
                     <label class="radio-item">
@@ -187,7 +187,7 @@
 
             <!-- Profile Types -->
             <div class="form-group full-width">
-              <label>Profile Type(s)</label>
+              <label>{{ 'edit_profile.profile_types' | translate }}</label>
               <div class="checkbox-group">
                 @for (type of profileTypeOptions; track type) {
                   <label class="checkbox-item">
@@ -201,34 +201,34 @@
 
           <!-- Skills, Projects & Work Experience -->
           <section class="form-section">
-            <h2 class="section-title">Skills, Projects & Work Experience</h2>
+            <h2 class="section-title">{{ 'edit_profile.skills_section' | translate }}</h2>
             <div class="form-grid">
               <div class="form-group">
-                <label>Years of Experience</label>
+                <label>{{ 'edit_profile.years_exp' | translate }}</label>
                 <input type="number" formControlName="yearsOfExperience" min="0" placeholder="0" />
               </div>
               <div class="form-group">
-                <label>Portfolio URL</label>
-                <input type="url" formControlName="portfolioUrl" placeholder="https://your-portfolio.com" />
+                <label>{{ 'edit_profile.portfolio_url' | translate }}</label>
+                <input type="url" formControlName="portfolioUrl" [placeholder]="'edit_profile.portfolio_ph' | translate" />
               </div>
             </div>
             <div class="form-group full-width">
-              <label>Skills</label>
-              <textarea formControlName="skills" rows="3" placeholder="e.g. Angular, Java, Spring Boot, MongoDB (comma-separated)"></textarea>
+              <label>{{ 'edit_profile.skills' | translate }}</label>
+              <textarea formControlName="skills" rows="3" [placeholder]="'edit_profile.skills_ph' | translate"></textarea>
             </div>
             <div class="form-group full-width">
-              <label>Bio / About Me</label>
-              <textarea formControlName="bio" rows="4" placeholder="Tell clients about yourself, your experience, and what makes you stand out..."></textarea>
+              <label>{{ 'edit_profile.bio' | translate }}</label>
+              <textarea formControlName="bio" rows="4" [placeholder]="'edit_profile.bio_ph' | translate"></textarea>
             </div>
           </section>
 
           <!-- Other -->
           <section class="form-section">
-            <h2 class="section-title">Other</h2>
+            <h2 class="section-title">{{ 'edit_profile.other' | translate }}</h2>
             <div class="form-grid">
               <div class="form-group">
-                <label>TJM (Daily Rate in DT)</label>
-                <input type="number" formControlName="tjm" min="0" placeholder="e.g. 300" />
+                <label>{{ 'edit_profile.tjm' | translate }}</label>
+                <input type="number" formControlName="tjm" min="0" [placeholder]="'edit_profile.tjm_ph' | translate" />
               </div>
             </div>
           </section>
@@ -246,9 +246,9 @@
             <button type="submit" class="btn-update" [disabled]="saving()">
               @if (saving()) {
                 <span class="btn-spinner"></span>
-                Saving...
+                {{ 'edit_profile.saving' | translate }}
               } @else {
-                Update Profile
+                {{ 'edit_profile.update' | translate }}
               }
             </button>
           </div>
@@ -269,15 +269,15 @@
           <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
         </svg>
       </div>
-      <h3 class="ai-extraction-title">AI is analyzing your CV...</h3>
-      <p class="ai-extraction-subtitle">Extracting your experience, skills, education and languages</p>
+      <h3 class="ai-extraction-title">{{ 'edit_profile.ai_analyzing' | translate }}</h3>
+      <p class="ai-extraction-subtitle">{{ 'edit_profile.ai_extracting' | translate }}</p>
       <p class="ai-extraction-warning">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="12" y1="8" x2="12" y2="12"></line>
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
-        Please don't navigate away or close this page
+        {{ 'edit_profile.ai_wait' | translate }}
       </p>
     </div>
   </div>

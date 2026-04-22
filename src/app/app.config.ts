@@ -22,8 +22,9 @@ class HttpTranslateLoader implements TranslateLoader {
 
 function initTranslations(translate: TranslateService): () => Promise<void> {
   return async () => {
+    const isAuthenticated = !!localStorage.getItem('auth');
     const saved = localStorage.getItem('wl_lang') as 'en' | 'fr' | null;
-    const lang = saved === 'fr' ? 'fr' : 'en';
+    const lang = isAuthenticated && saved === 'fr' ? 'fr' : 'en';
     translate.setDefaultLang('en');
     await firstValueFrom(translate.use(lang));
   };

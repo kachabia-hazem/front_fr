@@ -1,6 +1,8 @@
 import { Component, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MissionTranslationService } from '../../core/services/mission-translation.service';
 import { MissionService, MatchMissionResult } from '../../core/services/mission.service';
 import { ApplicationService } from '../../core/services/application.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
@@ -13,7 +15,7 @@ import { getProfileCompletion } from '../../core/utils/profile-completion';
 @Component({
   selector: 'app-mission-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, UpperCasePipe],
+  imports: [CommonModule, RouterLink, UpperCasePipe, TranslateModule],
   templateUrl: './mission-detail.component.html',
   styleUrl: './mission-detail.component.css',
 })
@@ -41,6 +43,8 @@ export class MissionDetailComponent implements OnInit {
     private toastService: ToastService,
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
+    private translate: TranslateService,
+    private missionTranslation: MissionTranslationService,
   ) {}
 
   get isFreelancer(): boolean {
@@ -53,7 +57,7 @@ export class MissionDetailComponent implements OnInit {
     if (id) {
       this.loadMission(id);
     } else {
-      this.error.set('Mission not found');
+      this.error.set(this.translate.instant('detail_page.mission_not_found'));
       this.loading.set(false);
     }
     if (this.isFreelancer) {
@@ -65,15 +69,20 @@ export class MissionDetailComponent implements OnInit {
 
   private loadMission(id: string): void {
     this.missionService.getMissionById(id).subscribe({
-      next: (mission) => {
+      next: async (mission) => {
         this.mission.set(mission);
         this.loading.set(false);
         if (this.isFreelancer) {
           this.checkApplicationStatus(id);
         }
+        if (this.missionTranslation.getCurrentLang() === 'fr') {
+          const translated = await this.missionTranslation.translateMissionFields(mission, 'fr');
+          this.mission.set(translated);
+          this.cdr.detectChanges();
+        }
       },
       error: () => {
-        this.error.set('Mission not found');
+        this.error.set(this.translate.instant('detail_page.mission_not_found'));
         this.loading.set(false);
       },
     });
@@ -82,7 +91,6 @@ export class MissionDetailComponent implements OnInit {
   private readonly APP_STATUS_CACHE_KEY = 'wl_app_status_cache';
 
   private checkApplicationStatus(missionId: string): void {
-    // Restore from cache immediately (no network lag)
     try {
       const raw = localStorage.getItem(this.APP_STATUS_CACHE_KEY);
       if (raw) {
@@ -95,7 +103,6 @@ export class MissionDetailComponent implements OnInit {
       }
     } catch { /* ignore */ }
 
-    // Refresh from API to ensure accuracy
     this.applicationService.getMyApplications().subscribe({
       next: (applications) => {
         const app = applications.find(a => a.missionId === missionId && a.status !== 'WITHDRAWN');
@@ -129,7 +136,8 @@ export class MissionDetailComponent implements OnInit {
       }
       const d = new Date(date);
       if (isNaN(d.getTime())) return String(date);
-      return d.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+      const locale = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-GB';
+      return d.toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' });
     } catch {
       return String(date);
     }
@@ -140,13 +148,25 @@ export class MissionDetailComponent implements OnInit {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffMins < 60) return this.translate.instant('missions_page.time_min_ago', { n: diffMins });
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffHours < 24) return this.translate.instant('missions_page.time_h_ago', { n: diffHours });
     const diffDays = Math.floor(diffHours / 24);
-    if (diffDays < 30) return `${diffDays}d ago`;
+    if (diffDays < 30) return this.translate.instant('missions_page.time_d_ago', { n: diffDays });
     const diffMonths = Math.floor(diffDays / 30);
-    return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+    return this.translate.instant('missions_page.time_month_ago', { n: diffMonths });
+  }
+
+  getStatusLabel(status: string): string {
+    if (status === 'OPEN') return this.translate.instant('missions_page.status_open');
+    if (status === 'CLOSED') return this.translate.instant('missions_page.status_closed');
+    return status;
+  }
+
+  getRecommendationLabel(rec: string): string {
+    if (rec === 'APPLY') return this.translate.instant('detail_page.rec_apply');
+    if (rec === 'APPLY WITH RESERVATIONS') return this.translate.instant('detail_page.rec_with_reservations');
+    return this.translate.instant('detail_page.rec_do_not_apply');
   }
 
   getSkillsList(skills: string): string[] {
@@ -162,7 +182,7 @@ export class MissionDetailComponent implements OnInit {
   applyToMission(): void {
     if (this.profileCompletion !== null && this.profileCompletion < 80) {
       this.toastService.show(
-        `Your profile is ${this.profileCompletion}% complete. Please complete at least 80% of your profile before applying.`,
+        this.translate.instant('detail_page.profile_incomplete', { pct: this.profileCompletion }),
         'warning'
       );
       return;
@@ -182,11 +202,11 @@ export class MissionDetailComponent implements OnInit {
         this.hasApplied.set(false);
         this.applicationStatus.set(null);
         this.withdrawing.set(false);
-        this.toastService.show('Your application has been withdrawn successfully.', 'success');
+        this.toastService.show(this.translate.instant('detail_page.withdraw_success'), 'success');
       },
       error: () => {
         this.withdrawing.set(false);
-        this.toastService.show('Failed to withdraw application.', 'error');
+        this.toastService.show(this.translate.instant('detail_page.withdraw_error'), 'error');
       },
     });
   }
@@ -194,7 +214,7 @@ export class MissionDetailComponent implements OnInit {
   checkMatching(): void {
     const id = this.mission()?.id ?? this.route.snapshot.paramMap.get('id');
     if (!id) {
-      this.toastService.show('Mission ID not found.', 'error');
+      this.toastService.show(this.translate.instant('detail_page.mission_not_found'), 'error');
       return;
     }
     this.matchingLoading.set(true);
@@ -203,14 +223,12 @@ export class MissionDetailComponent implements OnInit {
     this.matchingError.set('');
     this.explanationLoading.set(false);
 
-    // Phase 1: résultats rapides (~2s, sans LLM)
     this.missionService.matchMission(id).subscribe({
       next: (result) => {
         this.matchingResult.set(result);
         this.matchingLoading.set(false);
         this.cdr.detectChanges();
 
-        // Phase 2: explication IA en arrière-plan (~30s, avec LLM)
         this.explanationLoading.set(true);
         this.cdr.detectChanges();
         this.missionService.matchMissionExplain(id).subscribe({

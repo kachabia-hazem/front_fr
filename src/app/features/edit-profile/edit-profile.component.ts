@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FreelancerService, UpdateFreelancerRequest } from '../../core/services/freelancer.service';
 import { CvService } from '../../core/services/cv.service';
 import { Freelancer, Gender, ProfileType, Language } from '../../core/models';
@@ -13,7 +14,7 @@ import { ExtractedCvData } from '../../core/services/cv.service';
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ManualCvWizardComponent, FileUploadComponent],
+  imports: [CommonModule, ReactiveFormsModule, ManualCvWizardComponent, FileUploadComponent, TranslateModule],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.css',
 })
@@ -39,6 +40,7 @@ export class EditProfileComponent implements OnInit {
     private freelancerService: FreelancerService,
     private cvService: CvService,
     private router: Router,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {

@@ -20,82 +20,82 @@
         @if (isFreelancer) {
           <a routerLink="/" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            Home
+            {{ 'nav.home' | translate }}
           </a>
           <a routerLink="/freelancer-dashboard" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-            Dashboard
+            {{ 'nav.dashboard' | translate }}
           </a>
           <a routerLink="/freelancer-applications" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Applications
+            {{ 'nav.applications' | translate }}
           </a>
           <a routerLink="/freelancer-missions" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-            Active Missions
+            {{ 'nav.active_missions' | translate }}
           </a>
           <a routerLink="/messaging" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Messaging
+            {{ 'nav.messaging' | translate }}
             @if (chatService.totalUnread() > 0) {
               <span class="nav-sb-badge">{{ chatService.totalUnread() > 99 ? '99+' : chatService.totalUnread() }}</span>
             }
           </a>
           <a routerLink="/freelancer-contracts" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            Contracts
+            {{ 'nav.contracts' | translate }}
           </a>
           <a routerLink="/freelancer-balance" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            My Balance
+            {{ 'nav.my_balance' | translate }}
           </a>
           <a routerLink="/freelancer-notifications" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            Notifications
+            {{ 'nav.notifications' | translate }}
           </a>
-          <a routerLink="/edit-profile" class="nav-sb-link">
+          <a routerLink="/settings" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            Settings
+            {{ 'nav.settings' | translate }}
           </a>
         } @else {
           <a routerLink="/" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            Home
+            {{ 'nav.home' | translate }}
           </a>
           <a routerLink="/company-dashboard" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-            Dashboard
+            {{ 'nav.dashboard' | translate }}
           </a>
           <a routerLink="/company-missions" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-            My Missions
+            {{ 'nav.my_missions' | translate }}
           </a>
           <a routerLink="/company-applications" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Applications
+            {{ 'nav.applications' | translate }}
           </a>
           <a routerLink="/company-contracts" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            Contracts
+            {{ 'nav.contracts' | translate }}
           </a>
           <a routerLink="/company-mission-control" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
-            Mission Tracking
+            {{ 'nav.mission_tracking' | translate }}
           </a>
           <a routerLink="/messaging" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Messaging
+            {{ 'nav.messaging' | translate }}
             @if (chatService.totalUnread() > 0) {
               <span class="nav-sb-badge">{{ chatService.totalUnread() > 99 ? '99+' : chatService.totalUnread() }}</span>
             }
           </a>
           <a routerLink="/company-notifications" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            Notifications
+            {{ 'nav.notifications' | translate }}
           </a>
-          <a routerLink="/edit-company-profile" class="nav-sb-link">
+          <a routerLink="/settings" routerLinkActive="active" class="nav-sb-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            Settings
+            {{ 'nav.settings' | translate }}
           </a>
         }
       </nav>
@@ -111,7 +111,7 @@
         }
         <div class="nav-sb-user-info">
           <span class="nav-sb-user-name">{{ sidebarUserName }}</span>
-          <span class="nav-sb-user-role">{{ isCompany ? 'Company' : 'Freelancer' }}</span>
+          <span class="nav-sb-user-role">{{ isCompany ? ('sidebar.company' | translate) : ('sidebar.freelancer' | translate) }}</span>
         </div>
       </div>
     </div>
@@ -127,7 +127,7 @@
     <div class="sidebar-header">
       <div class="sidebar-title-row">
         @if (!convSidebarCollapsed()) {
-          <h2 class="sidebar-title">Messages</h2>
+          <h2 class="sidebar-title">{{ 'messaging.title' | translate }}</h2>
           @if (isCompany) {
             <button class="new-chat-btn" (click)="showNewChat = !showNewChat" title="New conversation">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -149,7 +149,7 @@
         <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input
           type="text"
-          placeholder="Search conversations..."
+          [placeholder]="'messaging.search_ph' | translate"
           [(ngModel)]="searchQuery"
           class="search-input"
         />
@@ -161,13 +161,13 @@
           <div class="new-chat-header">
             <p class="new-chat-label">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              Search a freelancer by name
+              {{ 'messaging.new_chat_label' | translate }}
             </p>
             <button class="new-chat-close" (click)="showNewChat = false; searchNameQuery = ''; searchResults = []">✕</button>
           </div>
           <input
             type="text"
-            placeholder="e.g. Ahmed Ben Ali..."
+            [placeholder]="'messaging.new_chat_ph' | translate"
             [(ngModel)]="searchNameQuery"
             (ngModelChange)="onSearchNameChange()"
             class="new-chat-input"
@@ -178,7 +178,7 @@
           @if (searchLoading) {
             <div class="search-loading">
               <div class="spinner-sm" style="border-color: rgba(55,147,176,0.3); border-top-color: #3793B0;"></div>
-              Searching...
+              {{ 'messaging.searching' | translate }}
             </div>
           } @else if (searchResults.length > 0) {
             <div class="search-results">
@@ -206,7 +206,7 @@
               }
             </div>
           } @else if (searchNameQuery.trim() && !searchLoading) {
-            <p class="no-results">No freelancers found for "{{ searchNameQuery }}"</p>
+            <p class="no-results">{{ 'messaging.no_freelancers' | translate:{ query: searchNameQuery } }}</p>
           }
         </div>
       }
@@ -229,11 +229,11 @@
       } @else if (filteredConversations.length === 0) {
         <div class="empty-convs">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <p>No conversations yet</p>
+          <p>{{ 'messaging.no_conversations' | translate }}</p>
           @if (isCompany) {
-            <span>Click + to start a new chat</span>
+            <span>{{ 'messaging.no_conv_company' | translate }}</span>
           } @else {
-            <span>Conversations with companies will appear here once you have a signed contract</span>
+            <span>{{ 'messaging.no_conv_freelancer' | translate }}</span>
           }
         </div>
       } @else {
@@ -254,7 +254,7 @@
                 class="conv-presence-dot"
                 [class.online]="isContactOnlineInList(conv)"
                 [class.offline]="!isContactOnlineInList(conv)"
-                [title]="isContactOnlineInList(conv) ? 'Online' : 'Offline'"
+                [title]="isContactOnlineInList(conv) ? ('messaging.online' | translate) : ('messaging.offline' | translate)"
               ></span>
             </div>
 
@@ -265,7 +265,7 @@
                 <span class="conv-time">{{ formatTime(conv.lastMessageTime) }}</span>
               </div>
               <div class="conv-bottom">
-                <span class="conv-last-msg">{{ conv.lastMessage || 'Start chatting...' }}</span>
+                <span class="conv-last-msg">{{ conv.lastMessage || ('messaging.start_chatting' | translate) }}</span>
                 @if (getUnreadCount(conv) > 0) {
                   <span class="unread-badge">{{ getUnreadCount(conv) > 99 ? '99+' : getUnreadCount(conv) }}</span>
                 }
@@ -304,17 +304,17 @@
             @if (contactIsTyping()) {
               <span class="typing-status">
                 <span class="typing-dots"><span></span><span></span><span></span></span>
-                typing…
+                {{ 'messaging.typing' | translate }}
               </span>
             } @else if (contactOnline()) {
-              <span class="online-status">Online</span>
+              <span class="online-status">{{ 'messaging.online' | translate }}</span>
             } @else {
-              <span class="offline-status">last seen {{ formatLastSeen(contactLastSeen()) }}</span>
+              <span class="offline-status">{{ 'messaging.last_seen' | translate:{ time: formatLastSeen(contactLastSeen()) } }}</span>
             }
             @if (conv.hasContract) {
               <span class="contract-badge-sm">
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Signed
+                {{ 'messaging.signed' | translate }}
               </span>
             }
           </div>
@@ -330,8 +330,8 @@
         } @else if (messages().length === 0) {
           <div class="msgs-empty">
             <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            <p>No messages yet.</p>
-            <span>Say hello 👋</span>
+            <p>{{ 'messaging.no_messages' | translate }}</p>
+            <span>{{ 'messaging.say_hello' | translate }}</span>
           </div>
         } @else {
           <div class="messages-list">
@@ -409,12 +409,12 @@
         @if (!conv.hasContract && isFreelancer) {
           <div class="locked-banner">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Messaging is locked until a contract is signed.
+            {{ 'messaging.locked' | translate }}
           </div>
         } @else if (isFreelancer && !companyHasStarted) {
           <div class="locked-banner waiting-banner">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Waiting for the company to start the conversation…
+            {{ 'messaging.waiting' | translate }}
           </div>
         } @else {
           <div class="input-row">
@@ -423,7 +423,7 @@
             </button>
             <textarea
               class="msg-input"
-              placeholder="Write a message..."
+              [placeholder]="'messaging.write_message' | translate"
               [(ngModel)]="messageText"
               (keydown)="onKeyDown($event)"
               (input)="onMessageInput()"
@@ -442,7 +442,7 @@
               }
             </button>
           </div>
-          <p class="input-hint">Press Enter to send · Shift+Enter for new line</p>
+          <p class="input-hint">{{ 'messaging.input_hint' | translate }}</p>
         }
       </div>
 
@@ -453,12 +453,12 @@
         <div class="no-conv-icon">
           <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         </div>
-        <h3>Your Messages</h3>
-        <p>Select a conversation to start chatting</p>
+        <h3>{{ 'messaging.your_messages' | translate }}</h3>
+        <p>{{ 'messaging.select_conv' | translate }}</p>
         @if (isCompany) {
           <button class="start-chat-cta" (click)="showNewChat = true">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            New Conversation
+            {{ 'messaging.new_conversation' | translate }}
           </button>
         }
       </div>

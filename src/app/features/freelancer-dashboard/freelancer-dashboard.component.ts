@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, DecimalPipe, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +23,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-freelancer-dashboard',
   standalone: true,
-  imports: [CommonModule, DecimalPipe, FormsModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, DecimalPipe, FormsModule, RouterLink, RouterLinkActive, TranslateModule],
   templateUrl: './freelancer-dashboard.component.html',
   styleUrl: './freelancer-dashboard.component.css',
 })

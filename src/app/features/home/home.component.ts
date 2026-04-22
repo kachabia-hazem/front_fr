@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
@@ -21,7 +22,7 @@ interface StatItem {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, FormsModule, CommonModule, DecimalPipe, NavbarComponent, FooterComponent],
+  imports: [RouterLink, FormsModule, CommonModule, DecimalPipe, NavbarComponent, FooterComponent, TranslateModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -145,34 +146,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   openFaqIndex = -1;
 
   faqs = [
-    {
-      q: 'Who can access Worklink?',
-      a: 'Worklink is designed for verified freelancers and companies. Access is limited to professional users to ensure quality, trust, and meaningful collaborations.'
-    },
-    {
-      q: 'What makes Worklink different from other platforms?',
-      a: 'Worklink focuses on quality over quantity. Unlike traditional platforms, it connects verified freelancers with serious clients, reduces noise, and offers tools designed to improve visibility and real work opportunities.'
-    },
-    {
-      q: 'Is Worklink free to use?',
-      a: 'Yes, Worklink offers a free version with basic access. However, premium plans are available to unlock advanced features and the full potential of the platform.'
-    },
-    {
-      q: 'How does Worklink help freelancers find work?',
-      a: 'Worklink helps freelancers by matching their skills with relevant projects, improving their visibility to companies, and providing tools to connect directly with potential clients.'
-    },
-    {
-      q: 'Are there limits on messages or applications?',
-      a: 'Yes, the free plan includes limited messages and applications. Upgrading to a premium plan removes these limits and allows unlimited interactions.'
-    },
-    {
-      q: 'Can we post job offers or projects?',
-      a: 'Yes, companies can post job offers and projects to reach qualified freelancers quickly and efficiently.'
-    },
-    {
-      q: 'Is there a rating or feedback system?',
-      a: 'Yes, Worklink includes a rating and feedback system to promote transparency, build trust, and help users make informed decisions.'
-    },
+    { q: 'home.faq_q1', a: 'home.faq_a1' },
+    { q: 'home.faq_q2', a: 'home.faq_a2' },
+    { q: 'home.faq_q3', a: 'home.faq_a3' },
+    { q: 'home.faq_q4', a: 'home.faq_a4' },
+    { q: 'home.faq_q5', a: 'home.faq_a5' },
+    { q: 'home.faq_q6', a: 'home.faq_a6' },
+    { q: 'home.faq_q7', a: 'home.faq_a7' },
   ];
 
   toggleFaq(index: number): void {
@@ -210,10 +190,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   stats: StatItem[] = [
-    { target: 1200, suffix: '+', label: 'Freelancers',       current: 0 },
-    { target: 350,  suffix: '+', label: 'Companies',         current: 0 },
-    { target: 2500, suffix: '+', label: 'Missions Posted',   current: 0 },
-    { target: 98,   suffix: '%', label: 'Satisfaction Rate', current: 0 },
+    { target: 1200, suffix: '+', label: 'home.stats_freelancers', current: 0 },
+    { target: 350,  suffix: '+', label: 'home.stats_companies',   current: 0 },
+    { target: 2500, suffix: '+', label: 'home.stats_missions',    current: 0 },
+    { target: 98,   suffix: '%', label: 'home.stats_satisfaction',current: 0 },
   ];
 
   constructor(

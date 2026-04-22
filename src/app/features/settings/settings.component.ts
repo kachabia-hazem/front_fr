@@ -41,6 +41,9 @@ export class SettingsComponent implements OnInit {
   passwordLoading = false;
   passwordSuccess = '';
   passwordError = '';
+  showCurrentPwd = false;
+  showNewPwd = false;
+  showConfirmPwd = false;
 
   // ── Security ──
   devices = signal<DeviceSession[]>([]);
@@ -92,8 +95,25 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     this.notificationService.getUnreadCount().subscribe();
 
-    // Load saved language preference
-    this.selectedLanguage.set(this.languageService.currentLang());
+    // Load saved notification preferences
+    this.notifEmailMarketing.set(this.loadNotifPref('wl_notif_marketing', true));
+    this.notifEmailUpdates.set(this.loadNotifPref('wl_notif_updates', true));
+    this.notifEmailNewMission.set(this.loadNotifPref('wl_notif_new_mission', true));
+    this.notifEmailApplication.set(this.loadNotifPref('wl_notif_application', true));
+    this.notifEmailContract.set(this.loadNotifPref('wl_notif_contract', false));
+
+    // Load saved language preference and re-apply to translate service
+    const savedLang = this.languageService.currentLang();
+    this.selectedLanguage.set(savedLang);
+    this.languageService.setLanguage(savedLang);
+
+    // Load saved timezone preference
+    const savedTz = localStorage.getItem('wl_timezone');
+    if (savedTz) this.selectedTimezone.set(savedTz);
+
+    // Restore last active section
+    const savedSection = localStorage.getItem('wl_settings_section') as Section | null;
+    if (savedSection) this.activeSection.set(savedSection);
 
     // Load real devices
     this.devices.set(this.deviceService.getSessions());
@@ -119,6 +139,7 @@ export class SettingsComponent implements OnInit {
 
   setSection(s: Section): void {
     this.activeSection.set(s);
+    localStorage.setItem('wl_settings_section', s);
     this.passwordSuccess = '';
     this.passwordError = '';
     this.disconnectSuccess = '';
@@ -214,9 +235,19 @@ export class SettingsComponent implements OnInit {
   }
 
   // ── Notifications ──
+  private loadNotifPref(key: string, defaultValue: boolean): boolean {
+    const stored = localStorage.getItem(key);
+    return stored !== null ? stored === 'true' : defaultValue;
+  }
+
   saveNotifications(): void {
     this.notifSaving = true;
     this.notifSuccess = '';
+    localStorage.setItem('wl_notif_marketing', String(this.notifEmailMarketing()));
+    localStorage.setItem('wl_notif_updates', String(this.notifEmailUpdates()));
+    localStorage.setItem('wl_notif_new_mission', String(this.notifEmailNewMission()));
+    localStorage.setItem('wl_notif_application', String(this.notifEmailApplication()));
+    localStorage.setItem('wl_notif_contract', String(this.notifEmailContract()));
     setTimeout(() => {
       this.notifSaving = false;
       this.notifSuccess = this.translate.instant('settings.notifications.success');
@@ -227,7 +258,6 @@ export class SettingsComponent implements OnInit {
   savePreferences(): void {
     this.prefSaving = true;
     this.prefSuccess = '';
-    // Apply language immediately
     this.languageService.setLanguage(this.selectedLanguage());
     localStorage.setItem('wl_timezone', this.selectedTimezone());
     setTimeout(() => {

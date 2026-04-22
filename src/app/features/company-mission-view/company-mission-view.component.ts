@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
@@ -15,7 +16,7 @@ import { FeedbackModalComponent } from '../../shared/components/feedback-modal/f
 @Component({
   selector: 'app-company-mission-view',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, FeedbackModalComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, FeedbackModalComponent, TranslateModule],
   templateUrl: './company-mission-view.component.html',
   styleUrl: './company-mission-view.component.css',
 })

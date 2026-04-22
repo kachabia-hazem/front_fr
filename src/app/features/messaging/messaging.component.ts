@@ -1,3 +1,4 @@
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   Component,
   OnInit,
@@ -18,7 +19,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-messaging',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, TranslateModule],
   templateUrl: './messaging.component.html',
   styleUrl: './messaging.component.css',
 })
@@ -73,6 +74,7 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
     public chatService: ChatService,
     private router: Router,
     private route: ActivatedRoute,
+    private translate: TranslateService,
   ) {}
 
   // ── Getters ────────────────────────────────────────────────────────────────
@@ -381,7 +383,7 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
     const now = new Date();
     const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
     if (diffDays === 0) return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    if (diffDays === 1) return 'Yesterday';
+    if (diffDays === 1) return this.translate.instant('messaging.yesterday');
     if (diffDays < 7) return date.toLocaleDateString([], { weekday: 'short' });
     return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
   }
@@ -394,8 +396,8 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
     const date = new Date(dateStr);
     const now = new Date();
     const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Yesterday';
+    if (diffDays === 0) return this.translate.instant('messaging.today');
+    if (diffDays === 1) return this.translate.instant('messaging.yesterday');
     return date.toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' });
   }
 
@@ -417,17 +419,17 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   formatLastSeen(dateStr: string | null): string {
-    if (!dateStr) return 'recently';
+    if (!dateStr) return this.translate.instant('messaging.recently');
     const date = new Date(dateStr);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMin = Math.floor(diffMs / 60000);
-    if (diffMin < 1) return 'just now';
+    if (diffMin < 1) return this.translate.instant('messaging.just_now');
     if (diffMin < 60) return `${diffMin}m ago`;
     const diffH = Math.floor(diffMin / 60);
     if (diffH < 24) return `${diffH}h ago`;
     const diffD = Math.floor(diffH / 24);
-    if (diffD === 1) return 'yesterday';
+    if (diffD === 1) return this.translate.instant('messaging.yesterday');
     return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
   }
 

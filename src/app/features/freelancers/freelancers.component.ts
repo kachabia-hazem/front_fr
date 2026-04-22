@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, computed, HostListener, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
@@ -49,7 +50,7 @@ const EXPERIENCE_RANGES = [
 @Component({
   selector: 'app-freelancers',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   templateUrl: './freelancers.component.html',
   styleUrl: './freelancers.component.css',
 })
@@ -94,12 +95,12 @@ export class FreelancersComponent implements OnInit {
   readonly languageKeys = Object.keys(LANGUAGE_LABELS);
   readonly languageLabels = LANGUAGE_LABELS;
   readonly experienceRanges = EXPERIENCE_RANGES;
-  readonly sortOptions: { value: SortOption; label: string }[] = [
-    { value: 'rating',     label: 'Best Rated' },
-    { value: 'tjm_desc',   label: 'Rate: Highest' },
-    { value: 'tjm_asc',    label: 'Rate: Lowest' },
-    { value: 'experience', label: 'Most Experienced' },
-    { value: 'projects',   label: 'Most Projects' },
+  readonly sortOptions: { value: SortOption; labelKey: string }[] = [
+    { value: 'rating',     labelKey: 'freelancers_page.sort_best_rated' },
+    { value: 'tjm_desc',   labelKey: 'freelancers_page.sort_rate_high' },
+    { value: 'tjm_asc',    labelKey: 'freelancers_page.sort_rate_low' },
+    { value: 'experience', labelKey: 'freelancers_page.sort_experienced' },
+    { value: 'projects',   labelKey: 'freelancers_page.sort_projects' },
   ];
 
   readonly quickTags = ['React', 'Python', 'UI/UX', 'Node.js', 'Flutter', 'DevOps'];
@@ -239,6 +240,7 @@ export class FreelancersComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
+    private translate: TranslateService,
   ) {
     const destroyRef = inject(DestroyRef);
 
@@ -399,38 +401,44 @@ export class FreelancersComponent implements OnInit {
   }
 
   get currentSortLabel(): string {
-    return this.sortOptions.find((o) => o.value === this.sortBy())?.label || '';
+    const key = this.sortOptions.find((o) => o.value === this.sortBy())?.labelKey || '';
+    return key ? this.translate.instant(key) : '';
   }
 
   // ─── Filter dropdown labels with count ───
   profileTypeLabel(): string {
     const count = this.selectedProfileTypes().size;
-    return count > 0 ? `Profile Type (${count})` : 'Profile Type';
+    const base = this.translate.instant('freelancers_page.filter_profile_type');
+    return count > 0 ? `${base} (${count})` : base;
   }
 
   skillsLabel(): string {
     const count = this.selectedSkills().size;
-    return count > 0 ? `Skills (${count})` : 'Skills';
+    const base = this.translate.instant('freelancers_page.filter_skills');
+    return count > 0 ? `${base} (${count})` : base;
   }
 
   languageLabel(): string {
     const count = this.selectedLanguages().size;
-    return count > 0 ? `Language (${count})` : 'Language';
+    const base = this.translate.instant('freelancers_page.filter_language');
+    return count > 0 ? `${base} (${count})` : base;
   }
 
   budgetLabel(): string {
     const min = this.budgetMin();
     const max = this.budgetMax();
-    if (min !== null && max !== null) return `Rate: ${min} – ${max} DT`;
-    if (min !== null) return `Rate: ${min}+ DT`;
-    if (max !== null) return `Rate: ≤${max} DT`;
-    return 'Daily Rate';
+    const base = this.translate.instant('freelancers_page.filter_budget');
+    if (min !== null && max !== null) return `${base}: ${min} – ${max} DT`;
+    if (min !== null) return `${base}: ${min}+ DT`;
+    if (max !== null) return `${base}: ≤${max} DT`;
+    return base;
   }
 
   experienceLabel(): string {
     const idx = this.selectedExperience();
-    if (idx !== null) return `Experience: ${EXPERIENCE_RANGES[idx].label}`;
-    return 'Experience';
+    const base = this.translate.instant('freelancers_page.filter_experience');
+    if (idx !== null) return `${base}: ${EXPERIENCE_RANGES[idx].label}`;
+    return base;
   }
 
   clearAllFilters(): void {

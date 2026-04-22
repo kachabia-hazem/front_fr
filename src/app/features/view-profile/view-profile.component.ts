@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Freelancer, Review } from '../../core/models';
@@ -9,7 +10,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-view-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './view-profile.component.html',
   styleUrl: './view-profile.component.css',
 })
@@ -34,6 +35,7 @@ export class ViewProfileComponent implements OnInit {
     private route: ActivatedRoute,
     private freelancerService: FreelancerService,
     private authService: AuthService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -59,7 +61,7 @@ export class ViewProfileComponent implements OnInit {
         this.loadReviews(id);
       },
       error: () => {
-        this.error.set('Freelancer not found');
+        this.error.set(this.translate.instant('view_profile.not_found'));
         this.loading.set(false);
       },
     });
@@ -81,7 +83,7 @@ export class ViewProfileComponent implements OnInit {
         this.loadReviews(freelancer.id);
       },
       error: () => {
-        this.error.set('Failed to load profile');
+        this.error.set(this.translate.instant('view_profile.load_error'));
         this.loading.set(false);
       },
     });
@@ -159,7 +161,8 @@ export class ViewProfileComponent implements OnInit {
 
   formatDate(date: string | undefined): string {
     if (!date) return '';
-    return new Date(date).toLocaleDateString('en-US', {
+    const locale = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-US';
+    return new Date(date).toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
     });

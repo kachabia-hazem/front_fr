@@ -200,6 +200,35 @@
 .s-select:focus { border-color: #3793B0; }
 :host-context(body.dark-theme) .s-select { background: #111622; border-color: #2a3040; color: #f1f5f9; }
 
+/* Password input wrapper + toggle */
+.s-input-wrap {
+  position: relative;
+  max-width: 440px;
+}
+.s-input-wrap .s-input {
+  max-width: 100%;
+  width: 100%;
+  padding-right: 44px;
+}
+.pwd-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.18s;
+}
+.pwd-toggle:hover { color: #3793B0; }
+:host-context(body.dark-theme) .pwd-toggle { color: #64748b; }
+:host-context(body.dark-theme) .pwd-toggle:hover { color: #5ab4d4; }
+
 /* Password Strength */
 .pwd-strength { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
 .pwd-bars { display: flex; gap: 4px; }

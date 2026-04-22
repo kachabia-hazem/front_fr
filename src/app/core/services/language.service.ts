@@ -27,6 +27,8 @@ export class LanguageService {
   }
 
   private getSavedLang(): AppLanguage {
+    const isAuthenticated = !!localStorage.getItem('auth');
+    if (!isAuthenticated) return 'en';
     const saved = localStorage.getItem(this.STORAGE_KEY) as AppLanguage | null;
     return saved === 'fr' ? 'fr' : 'en';
   }

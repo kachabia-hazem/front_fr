@@ -9,12 +9,12 @@
         </svg>
       </div>
       <div>
-        <h1 class="page-title">Saved Missions</h1>
-        <p class="page-subtitle">Missions you bookmarked to apply to later</p>
+        <h1 class="page-title">{{ 'saved_page.title' | translate }}</h1>
+        <p class="page-subtitle">{{ 'saved_page.subtitle' | translate }}</p>
       </div>
     </div>
     @if (!loading() && missions().length > 0) {
-      <span class="page-count">{{ missions().length }} saved</span>
+      <span class="page-count">{{ missions().length }} {{ 'saved_page.count' | translate }}</span>
     }
   </div>
 
@@ -22,7 +22,7 @@
   @if (loading()) {
     <div class="page-loading">
       <div class="spinner"></div>
-      <p>Loading your saved missions...</p>
+      <p>{{ 'saved_page.loading' | translate }}</p>
     </div>
   }
 
@@ -34,11 +34,11 @@
           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
         </svg>
       </div>
-      <h2 class="empty-title">No saved missions yet</h2>
-      <p class="empty-sub">Browse missions and click the ♥ icon to save them here for later.</p>
+      <h2 class="empty-title">{{ 'saved_page.empty_title' | translate }}</h2>
+      <p class="empty-sub">{{ 'saved_page.empty_sub' | translate }}</p>
       <button class="btn-browse" (click)="router.navigate(['/missions'])">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Browse Missions
+        {{ 'saved_page.browse_btn' | translate }}
       </button>
     </div>
   }
@@ -56,17 +56,17 @@
                 @if (mission.companyLogo) {
                   <img [src]="getFileUrl(mission.companyLogo)" [alt]="mission.companyName" />
                 } @else {
-                  <span class="avatar-letter">{{ (mission.companyName || 'C').charAt(0) }}</span>
+                  <span class="avatar-letter">{{ (mission.companyName || ('saved_page.company_fallback' | translate)).charAt(0) }}</span>
                 }
               </div>
               <div>
-                <span class="company-name">{{ mission.companyName || 'Company' }}</span>
+                <span class="company-name">{{ mission.companyName || ('saved_page.company_fallback' | translate) }}</span>
                 @if (mission.businessSector) {
                   <span class="company-sector">{{ mission.businessSector }}</span>
                 }
               </div>
             </div>
-            <button class="btn-unsave" (click)="unsave(mission.id!)" title="Remove from saved">
+            <button class="btn-unsave" (click)="unsave(mission.id!)" [title]="'saved_page.unsave_title' | translate">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
               </svg>
@@ -90,7 +90,7 @@
               <span class="badge bdg-field">{{ mission.field }}</span>
             }
             @if (isDeadlinePassed(mission)) {
-              <span class="badge bdg-expired">Expired</span>
+              <span class="badge bdg-expired">{{ 'saved_page.expired' | translate }}</span>
             }
           </div>
 
@@ -109,7 +109,7 @@
               </span>
             }
             @if (mission.yearsOfExperience) {
-              <span class="info-chip">{{ mission.yearsOfExperience }} yrs exp.</span>
+              <span class="info-chip">{{ mission.yearsOfExperience }} {{ 'saved_page.yrs_exp' | translate }}</span>
             }
           </div>
 
@@ -126,26 +126,26 @@
           <div class="card-footer">
             <button class="btn-view" (click)="router.navigate(['/missions', mission.id], { queryParams: { from: 'favorites' } })">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              See details
+              {{ 'saved_page.see_details' | translate }}
             </button>
             @if (getApplicationStatus(mission.id) === 'ACCEPTED') {
               <span class="app-status-badge badge-accepted">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                Accepted
+                {{ 'missions_page.accepted' | translate }}
               </span>
             } @else if (getApplicationStatus(mission.id) === 'REJECTED') {
               <span class="app-status-badge badge-rejected">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                Rejected
+                {{ 'missions_page.rejected' | translate }}
               </span>
             } @else if (getApplicationStatus(mission.id) === 'PENDING') {
               <span class="app-status-badge badge-pending">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                Pending
+                {{ 'saved_page.pending' | translate }}
               </span>
             } @else if (!isDeadlinePassed(mission)) {
               <button class="btn-apply" (click)="applyNow(mission.id)">
-                Apply now
+                {{ 'saved_page.apply_now' | translate }}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
               </button>
             }

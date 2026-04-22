@@ -2,8 +2,8 @@
 <div class="hero-banner">
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <h1>{{ isEditMode ? 'Edit Mission' : 'Create An Offer' }}</h1>
-    <p>{{ isEditMode ? 'Update your mission details' : 'Publish your mission and find the perfect freelancer for your project' }}</p>
+    <h1>{{ isEditMode ? ('post_job.title_edit' | translate) : ('post_job.title_create' | translate) }}</h1>
+    <p>{{ isEditMode ? ('post_job.subtitle_edit' | translate) : ('post_job.subtitle_create' | translate) }}</p>
   </div>
 </div>
 
@@ -16,20 +16,20 @@
         <div class="section-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
         </div>
-        <h2>Basic Offer Information</h2>
+        <h2>{{ 'post_job.section_basic' | translate }}</h2>
       </div>
       <div class="section-card">
         <div class="form-row">
           <div class="form-field" [class.has-error]="hasError('jobTitle')">
-            <label>Job Title <span class="required">*</span></label>
-            <input type="text" formControlName="jobTitle" placeholder="e.g Developpeur Java , Designer UX/UI .... etc" />
+            <label>{{ 'post_job.job_title' | translate }} <span class="required">*</span></label>
+            <input type="text" formControlName="jobTitle" [placeholder]="'post_job.job_title_ph' | translate" />
             @if (hasError('jobTitle')) {
               <div class="field-error">{{ getError('jobTitle') }}</div>
             }
           </div>
           <div class="form-field" [class.has-error]="hasError('field')">
-            <label>Field <span class="required">*</span></label>
-            <input type="text" formControlName="field" placeholder="e.g Network , Development , Design etc...." />
+            <label>{{ 'post_job.field' | translate }} <span class="required">*</span></label>
+            <input type="text" formControlName="field" [placeholder]="'post_job.field_ph' | translate" />
             @if (hasError('field')) {
               <div class="field-error">{{ getError('field') }}</div>
             }
@@ -37,10 +37,10 @@
         </div>
 
         <div class="form-field form-field-half" [class.has-error]="hasError('location')">
-          <label>Location <span class="required">*</span></label>
+          <label>{{ 'post_job.location' | translate }} <span class="required">*</span></label>
           <div class="icon-input">
             <svg class="field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <input type="text" formControlName="location" placeholder="e.g Monastir ...." />
+            <input type="text" formControlName="location" [placeholder]="'post_job.location_ph' | translate" />
           </div>
           @if (hasError('location')) {
             <div class="field-error">{{ getError('location') }}</div>
@@ -55,27 +55,27 @@
         <div class="section-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
-        <h2>Working Conditions</h2>
+        <h2>{{ 'post_job.section_conditions' | translate }}</h2>
       </div>
       <div class="section-card">
         <div class="form-row">
           <div class="form-field" [class.has-error]="hasError('missionType')">
-            <label>Employment Type <span class="required">*</span></label>
+            <label>{{ 'post_job.employment_type' | translate }} <span class="required">*</span></label>
             <select formControlName="missionType">
-              <option value="" disabled>Select employment type</option>
-              <option value="Full-time">Full-time</option>
-              <option value="Part-time">Part-time</option>
-              <option value="Remote">Remote</option>
-              <option value="Freelance">Freelance</option>
+              <option value="" disabled>{{ 'post_job.employment_type_ph' | translate }}</option>
+              <option value="Full-time">{{ 'post_job.full_time' | translate }}</option>
+              <option value="Part-time">{{ 'post_job.part_time' | translate }}</option>
+              <option value="Remote">{{ 'post_job.remote' | translate }}</option>
+              <option value="Freelance">{{ 'post_job.freelance' | translate }}</option>
             </select>
             @if (hasError('missionType')) {
               <div class="field-error">{{ getError('missionType') }}</div>
             }
           </div>
           <div class="form-field" [class.has-error]="hasError('yearsOfExperience')">
-            <label>Years of Experience <span class="required">*</span></label>
+            <label>{{ 'post_job.years_exp' | translate }} <span class="required">*</span></label>
             <div class="experience-wrapper">
-              <span class="experience-label">Level</span>
+              <span class="experience-label">{{ 'post_job.level' | translate }}</span>
               <input type="number" formControlName="yearsOfExperience" min="0" placeholder="0" />
             </div>
             @if (hasError('yearsOfExperience')) {
@@ -86,14 +86,14 @@
 
         <div class="form-row">
           <div class="form-field" [class.has-error]="hasError('startDate')">
-            <label>Start Time <span class="required">*</span></label>
+            <label>{{ 'post_job.start_date' | translate }} <span class="required">*</span></label>
             <input type="date" formControlName="startDate" (change)="onStartDateChange()" />
             @if (hasError('startDate')) {
               <div class="field-error">{{ getError('startDate') }}</div>
             }
           </div>
           <div class="form-field" [class.has-error]="hasError('endDate')">
-            <label>End Time <span class="required">*</span></label>
+            <label>{{ 'post_job.end_date' | translate }} <span class="required">*</span></label>
             <input type="date" formControlName="endDate" (change)="onEndDateChange()" />
             @if (hasError('endDate')) {
               <div class="field-error">{{ getError('endDate') }}</div>
@@ -103,13 +103,12 @@
 
         <div class="form-row">
           <div class="form-field">
-            <label>Application Deadline</label>
+            <label>{{ 'post_job.deadline' | translate }}</label>
             <input type="date" formControlName="applicationDeadline" />
           </div>
           <div class="form-field sector-field">
-            <label>Business Sector</label>
+            <label>{{ 'post_job.business_sector' | translate }}</label>
 
-            <!-- Selected chips -->
             @if (selectedSectors.length > 0) {
               <div class="sector-chips">
                 @for (sector of selectedSectors; track sector) {
@@ -123,7 +122,6 @@
               </div>
             }
 
-            <!-- Dropdown trigger -->
             <div class="sector-dropdown-wrapper">
               <input
                 type="text"
@@ -131,7 +129,7 @@
                 [(ngModel)]="sectorSearch"
                 [ngModelOptions]="{standalone: true}"
                 (focus)="sectorDropdownOpen = true"
-                placeholder="Search or select sectors..."
+                [placeholder]="'post_job.sector_search_ph' | translate"
               />
               <button type="button" class="sector-toggle" (click)="toggleSectorDropdown()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline [attr.points]="sectorDropdownOpen ? '18 15 12 9 6 15' : '6 9 12 15 18 9'"/></svg>
@@ -148,14 +146,13 @@
               }
             </div>
 
-            <!-- Custom input -->
             <div class="custom-sector-row">
               <input
                 type="text"
                 [(ngModel)]="customSectorInput"
                 [ngModelOptions]="{standalone: true}"
                 (keydown)="onCustomSectorKeydown($event)"
-                placeholder="Or type a custom sector and press Enter"
+                [placeholder]="'post_job.sector_custom_ph' | translate"
                 class="custom-sector-input"
               />
               <button type="button" class="btn-add-sector" (click)="addCustomSector()" [disabled]="!customSectorInput.trim()">
@@ -167,9 +164,8 @@
 
         <div class="form-row">
           <div class="form-field speciality-field">
-            <label>Speciality</label>
+            <label>{{ 'post_job.speciality' | translate }}</label>
 
-            <!-- Selected chips -->
             @if (selectedSpecialities.length > 0) {
               <div class="sector-chips">
                 @for (spec of selectedSpecialities; track spec) {
@@ -183,7 +179,6 @@
               </div>
             }
 
-            <!-- Dropdown trigger -->
             <div class="sector-dropdown-wrapper">
               <input
                 type="text"
@@ -191,7 +186,7 @@
                 [(ngModel)]="specialitySearch"
                 [ngModelOptions]="{standalone: true}"
                 (focus)="specialityDropdownOpen = true"
-                placeholder="Search or select specialities..."
+                [placeholder]="'post_job.spec_search_ph' | translate"
               />
               <button type="button" class="sector-toggle" (click)="toggleSpecialityDropdown()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline [attr.points]="specialityDropdownOpen ? '18 15 12 9 6 15' : '6 9 12 15 18 9'"/></svg>
@@ -208,14 +203,13 @@
               }
             </div>
 
-            <!-- Custom input -->
             <div class="custom-sector-row">
               <input
                 type="text"
                 [(ngModel)]="customSpecialityInput"
                 [ngModelOptions]="{standalone: true}"
                 (keydown)="onCustomSpecialityKeydown($event)"
-                placeholder="Or type a custom speciality and press Enter"
+                [placeholder]="'post_job.spec_custom_ph' | translate"
                 class="custom-sector-input"
               />
               <button type="button" class="btn-add-sector" (click)="addCustomSpeciality()" [disabled]="!customSpecialityInput.trim()">
@@ -233,11 +227,11 @@
         <div class="section-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         </div>
-        <h2>Job Description</h2>
+        <h2>{{ 'post_job.section_description' | translate }}</h2>
       </div>
       <div class="section-card">
         <div class="form-field" [class.has-error]="hasError('description')">
-          <label>Description <span class="required">*</span></label>
+          <label>{{ 'post_job.description' | translate }} <span class="required">*</span></label>
           <div class="editor-wrapper">
             <div class="textarea-toolbar">
               <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'bold')"><strong>B</strong></button>
@@ -260,7 +254,7 @@
               #descriptionEditor
               (input)="onEditorInput('description', descriptionEditor)"
               (paste)="onEditorPaste($event)"
-              data-placeholder="Add your job description..."
+              [attr.data-placeholder]="'post_job.description_ph' | translate"
             ></div>
           </div>
           @if (hasError('description')) {
@@ -276,11 +270,11 @@
         <div class="section-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         </div>
-        <h2>Required Skills & Technical Environment</h2>
+        <h2>{{ 'post_job.section_skills' | translate }}</h2>
       </div>
       <div class="section-card">
         <div class="form-field" [class.has-error]="hasError('requiredSkills')">
-          <label>Required Skills <span class="required">*</span></label>
+          <label>{{ 'post_job.required_skills' | translate }} <span class="required">*</span></label>
           <div class="editor-wrapper">
             <div class="textarea-toolbar">
               <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'bold')"><strong>B</strong></button>
@@ -303,7 +297,7 @@
               #requiredSkillsEditor
               (input)="onEditorInput('requiredSkills', requiredSkillsEditor)"
               (paste)="onEditorPaste($event)"
-              data-placeholder="Add your job professional skills ..."
+              [attr.data-placeholder]="'post_job.skills_ph' | translate"
             ></div>
           </div>
           @if (hasError('requiredSkills')) {
@@ -312,7 +306,7 @@
         </div>
 
         <div class="form-field">
-          <label>Technical Environment</label>
+          <label>{{ 'post_job.tech_env' | translate }}</label>
           <div class="editor-wrapper">
             <div class="textarea-toolbar">
               <button type="button" class="toolbar-btn" (mousedown)="execFormat($event, 'bold')"><strong>B</strong></button>
@@ -335,7 +329,7 @@
               #technicalEnvironmentEditor
               (input)="onEditorInput('technicalEnvironment', technicalEnvironmentEditor)"
               (paste)="onEditorPaste($event)"
-              data-placeholder="Add your technical environment..."
+              [attr.data-placeholder]="'post_job.tech_env_ph' | translate"
             ></div>
           </div>
         </div>
@@ -348,12 +342,12 @@
         <div class="section-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
         </div>
-        <h2>Budget</h2>
+        <h2>{{ 'post_job.section_budget' | translate }}</h2>
       </div>
       <div class="section-card">
         <div class="form-field form-field-half" [class.has-error]="hasError('tjm')">
           <label>TJM <span class="required">*</span></label>
-          <input type="number" formControlName="tjm" placeholder="salary..." min="0" />
+          <input type="number" formControlName="tjm" [placeholder]="'post_job.tjm_ph' | translate" min="0" />
           @if (hasError('tjm')) {
             <div class="field-error">{{ getError('tjm') }}</div>
           }
@@ -368,9 +362,9 @@
 
     <!-- ═══ Submit ═══ -->
     <div class="form-actions">
-      <button type="button" class="btn-cancel" routerLink="/missions">Cancel</button>
+      <button type="button" class="btn-cancel" routerLink="/missions">{{ 'post_job.cancel' | translate }}</button>
       <button type="submit" class="btn-post" [disabled]="loading">
-        {{ loading ? (isEditMode ? 'Updating...' : 'Posting...') : (isEditMode ? 'Update Mission' : 'Post ') }}
+        {{ loading ? (isEditMode ? ('post_job.updating' | translate) : ('post_job.posting' | translate)) : (isEditMode ? ('post_job.update' | translate) : ('post_job.post' | translate)) }}
         @if (!loading) {
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         }
@@ -388,7 +382,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       </div>
       <div class="toast-content">
-        <span class="toast-title">Success</span>
+        <span class="toast-title">{{ 'post_job.toast_title' | translate }}</span>
         <span class="toast-message">{{ toastMessage }}</span>
       </div>
     </div>

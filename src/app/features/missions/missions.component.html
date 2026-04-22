@@ -20,15 +20,15 @@
         </svg>
       </div>
 
-      <h2 class="login-prompt-title">Log in to continue</h2>
+      <h2 class="login-prompt-title">{{ 'missions_page.login_title' | translate }}</h2>
       <p class="login-prompt-msg">
-        Please log in to view mission details<br/>
-        You need an active account on <strong>WorkLink</strong> to submit an application.
+        {{ 'missions_page.login_msg' | translate }}<br/>
+        {{ 'missions_page.login_msg2' | translate }}
       </p>
 
       <div class="login-prompt-actions">
-        <a routerLink="/auth/login" class="btn-login-prompt">Log In</a>
-        <a routerLink="/auth/register" class="btn-register-prompt">Create an Account</a>
+        <a routerLink="/auth/login" class="btn-login-prompt">{{ 'missions_page.login_btn' | translate }}</a>
+        <a routerLink="/auth/register" class="btn-register-prompt">{{ 'missions_page.register_btn' | translate }}</a>
       </div>
     </div>
   </div>
@@ -45,19 +45,19 @@
     <div class="search-bar">
       <div class="search-input-group">
         <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" [(ngModel)]="searchQuery" placeholder="Search for missions, companies..." (keyup.enter)="onSearch()" />
+        <input type="text" [(ngModel)]="searchQuery" [placeholder]="'missions_page.search_placeholder' | translate" (keyup.enter)="onSearch()" />
       </div>
       <div class="search-input-group location-group">
         <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <input type="text" [(ngModel)]="locationQuery" placeholder="Lieu de la mission..." (keyup.enter)="onSearch()" />
+        <input type="text" [(ngModel)]="locationQuery" [placeholder]="'missions_page.location_placeholder' | translate" (keyup.enter)="onSearch()" />
       </div>
-      <button class="btn-search" (click)="onSearch()">Rechercher</button>
-      <span class="search-divider">ou</span>
+      <button class="btn-search" (click)="onSearch()">{{ 'missions_page.search_btn' | translate }}</button>
+      <span class="search-divider">{{ 'missions_page.or' | translate }}</span>
       <button class="btn-ai-search" (click)="toggleAiMode()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
         </svg>
-        AI Search
+        {{ 'missions_page.ai_search' | translate }}
       </button>
     </div>
   }
@@ -69,14 +69,14 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
         </svg>
-        AI Search
+        {{ 'missions_page.ai_search' | translate }}
       </div>
       <input
         type="text"
         class="ai-prompt-input"
         [(ngModel)]="aiSearchPrompt"
         (keydown)="onAiSearchKeydown($event)"
-        placeholder="Décrivez la mission que vous cherchez... ex: développeur Spring Boot senior en remote"
+        placeholder='Décrivez la mission que vous cherchez... ex: développeur Spring Boot senior en remote'
         [disabled]="aiSearchLoading"
         autofocus
       />
@@ -91,7 +91,7 @@
           </svg>
         }
       </button>
-      <button class="btn-ai-close" (click)="toggleAiMode()" title="Retour à la recherche normale">
+      <button class="btn-ai-close" (click)="toggleAiMode()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
              stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -108,8 +108,8 @@
   <!-- ═══ Sidebar Filters ═══ -->
   <aside class="sidebar">
     <div class="filter-header">
-      <h3>Filter</h3>
-      <button class="btn-reset" (click)="resetFilters()">Reset</button>
+      <h3>{{ 'missions_page.filter_title' | translate }}</h3>
+      <button class="btn-reset" (click)="resetFilters()">{{ 'missions_page.filter_reset' | translate }}</button>
     </div>
 
     <!-- Active Filter Chips -->
@@ -128,7 +128,7 @@
 
     <!-- TJM Range (Dual) -->
     <div class="filter-section">
-      <h4>Tarif / Jour</h4>
+      <h4>{{ 'missions_page.filter_tjm' | translate }}</h4>
 
       <!-- Histogram -->
       <div class="histogram">
@@ -169,30 +169,30 @@
 
     <!-- Employment Type -->
     <div class="filter-section">
-      <h4>Employment type</h4>
+      <h4>{{ 'missions_page.filter_employment' | translate }}</h4>
       @for (type of employmentTypes; track type.value) {
         <label class="filter-checkbox">
           <input type="checkbox" [(ngModel)]="type.checked" (change)="applyFilters()" />
           <span class="checkmark"></span>
-          {{ type.label }}
+          {{ type.label | translate }}
         </label>
       }
     </div>
 
     <!-- Category -->
     <div class="filter-section">
-      <h4>Category</h4>
+      <h4>{{ 'missions_page.filter_category' | translate }}</h4>
       @for (cat of visibleCategories; track cat.value) {
         <label class="filter-checkbox">
           <input type="checkbox" [(ngModel)]="cat.checked" (change)="applyFilters()" />
           <span class="checkmark"></span>
-          <span class="filter-label-text">{{ cat.label }}</span>
+          <span class="filter-label-text">{{ cat.labelKey | translate }}</span>
           <span class="filter-count">{{ getCategoryCount(cat.value) }}</span>
         </label>
       }
       @if (categories.length > 6) {
         <button class="btn-see-more" (click)="showAllCategories = !showAllCategories">
-          {{ showAllCategories ? 'See less' : 'See more' }}
+          {{ showAllCategories ? ('missions_page.see_less' | translate) : ('missions_page.see_more' | translate) }}
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
             [style.transform]="showAllCategories ? 'rotate(180deg)' : 'rotate(0)'">
             <polyline points="6 9 12 15 18 9"/>
@@ -203,18 +203,18 @@
 
     <!-- Business Sector -->
     <div class="filter-section">
-      <h4>Business Sector</h4>
+      <h4>{{ 'missions_page.filter_sector' | translate }}</h4>
       @for (sector of visibleSectors; track sector.value) {
         <label class="filter-checkbox">
           <input type="checkbox" [(ngModel)]="sector.checked" (change)="applyFilters()" />
           <span class="checkmark"></span>
-          <span class="filter-label-text">{{ sector.label }}</span>
+          <span class="filter-label-text">{{ sector.labelKey | translate }}</span>
           <span class="filter-count">{{ getSectorCount(sector.value) }}</span>
         </label>
       }
       @if (sectors.length > 6) {
         <button class="btn-see-more" (click)="showAllSectors = !showAllSectors">
-          {{ showAllSectors ? 'See less' : 'See more' }}
+          {{ showAllSectors ? ('missions_page.see_less' | translate) : ('missions_page.see_more' | translate) }}
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
             [style.transform]="showAllSectors ? 'rotate(180deg)' : 'rotate(0)'">
             <polyline points="6 9 12 15 18 9"/>
@@ -225,7 +225,7 @@
 
     <!-- Speciality -->
     <div class="filter-section">
-      <h4>Speciality</h4>
+      <h4>{{ 'missions_page.filter_speciality' | translate }}</h4>
       @for (spec of visibleSpecialities; track spec.value) {
         <label class="filter-checkbox">
           <input type="checkbox" [(ngModel)]="spec.checked" (change)="applyFilters()" />
@@ -235,7 +235,7 @@
       }
       @if (specialities.length > 6) {
         <button class="btn-see-more" (click)="showAllSpecialities = !showAllSpecialities">
-          {{ showAllSpecialities ? 'See less' : 'See more' }}
+          {{ showAllSpecialities ? ('missions_page.see_less' | translate) : ('missions_page.see_more' | translate) }}
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
             [style.transform]="showAllSpecialities ? 'rotate(180deg)' : 'rotate(0)'">
             <polyline points="6 9 12 15 18 9"/>
@@ -246,12 +246,12 @@
 
     <!-- Experience Level -->
     <div class="filter-section">
-      <h4>Experience Level</h4>
+      <h4>{{ 'missions_page.filter_experience' | translate }}</h4>
       @for (level of experienceLevels; track level.label) {
         <label class="filter-checkbox">
           <input type="checkbox" [(ngModel)]="level.checked" (change)="applyFilters()" />
           <span class="checkmark"></span>
-          {{ level.label }}
+          {{ level.label | translate }}
         </label>
       }
     </div>
@@ -261,15 +261,15 @@
   <main class="content">
     <!-- Hero Headline -->
     <div class="missions-headline">
-      <h1 class="headline-title">Find the Best Jobs with <span class="headline-brand">WorkLink</span></h1>
-      <p class="headline-subtitle">Connect with top companies, land freelance missions that match your skills, and build the career you deserve.</p>
+      <h1 class="headline-title">{{ 'missions_page.headline_title' | translate }} <span class="headline-brand">WorkLink</span></h1>
+      <p class="headline-subtitle">{{ 'missions_page.headline_subtitle' | translate }}</p>
     </div>
 
     <!-- Tabs + View Toggle -->
     <div class="content-header">
       <div class="tabs">
-        <button class="tab" [class.active]="activeTab === 'freelancers'" (click)="activeTab = 'freelancers'" routerLink="/freelancers">Freelancers</button>
-        <button class="tab" [class.active]="activeTab === 'missions'" (click)="activeTab = 'missions'">Missions</button>
+        <button class="tab" [class.active]="activeTab === 'freelancers'" (click)="activeTab = 'freelancers'" routerLink="/freelancers">{{ 'missions_page.tab_freelancers' | translate }}</button>
+        <button class="tab" [class.active]="activeTab === 'missions'" (click)="activeTab = 'missions'">{{ 'missions_page.tab_missions' | translate }}</button>
       </div>
       <div class="view-toggle">
         <button class="view-btn" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
@@ -328,7 +328,7 @@
     @if (aiSearchLoading) {
       <div class="loading-state">
         <div class="spinner"></div>
-        <p>L'IA analyse votre demande...</p>
+        <p>{{ 'missions_page.ai_analyzing' | translate }}</p>
       </div>
     }
 
@@ -350,13 +350,13 @@
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c0c0c0" stroke-width="1.5">
             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
           </svg>
-          <h3>Aucun résultat AI</h3>
-          <p>Reformulez votre demande ou utilisez des termes plus généraux</p>
+          <h3>{{ 'missions_page.no_ai_results' | translate }}</h3>
+          <p>{{ 'missions_page.no_ai_results_desc' | translate }}</p>
         } @else {
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c0c0c0" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <h3>No missions found</h3>
-          <p>Try adjusting your search or filters</p>
-          <button class="btn-reset-empty" (click)="resetFilters()">Reset all filters</button>
+          <h3>{{ 'missions_page.no_missions' | translate }}</h3>
+          <p>{{ 'missions_page.no_missions_desc' | translate }}</p>
+          <button class="btn-reset-empty" (click)="resetFilters()">{{ 'missions_page.reset_filters' | translate }}</button>
         }
       </div>
     }
@@ -378,7 +378,7 @@
           @if (isDeadlineUrgent(mission)) {
             <div class="urgent-banner">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Last Day to Apply !
+              {{ 'missions_page.last_day' | translate }}
             </div>
           }
           <!-- Company Header -->
@@ -409,14 +409,14 @@
                 </div>
               }
               <span class="badge badge-status" [class.badge-status-closed]="isDeadlinePassed(mission)">
-                {{ getMissionStatus(mission) }}
+                {{ getMissionStatus(mission) | translate }}
               </span>
               <!-- Save to favourites (freelancer only) -->
               @if (isFreelancer) {
                 <button class="btn-save-heart"
                         (click)="toggleSave($event, mission)"
                         [class.saved]="savedMissionsService.isSaved(mission.id!)"
-                        [title]="savedMissionsService.isSaved(mission.id!) ? 'Remove from saved' : 'Save mission'">
+                        [title]="savedMissionsService.isSaved(mission.id!) ? ('missions_page.remove_saved' | translate) : ('missions_page.save_mission' | translate)">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -433,12 +433,12 @@
                     <div class="card-dropdown" (click)="$event.stopPropagation()">
                       <button class="card-dropdown-item" (click)="editMission($event, mission)">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                        Edit mission
+                        {{ 'missions_page.edit_mission' | translate }}
                       </button>
                       <div class="card-dropdown-divider"></div>
                       <button class="card-dropdown-item card-dropdown-item-danger" (click)="deleteMission($event, mission)">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                        Delete mission
+                        {{ 'missions_page.delete_mission' | translate }}
                       </button>
                     </div>
                   }
@@ -449,7 +449,7 @@
 
           <!-- Job Title & Badges -->
           <div class="card-body">
-            <h3 class="job-title">{{ mission.jobTitle }}</h3>
+            <h3 class="job-title">{{ getDisplayTitle(mission) }}</h3>
 
             <div class="badges-row">
               @if (mission.location) {
@@ -465,7 +465,7 @@
                 <span class="badge badge-field">{{ mission.field }}</span>
               }
               @if (mission.yearsOfExperience) {
-                <span class="badge badge-exp">{{ mission.yearsOfExperience }} ans exp.</span>
+                <span class="badge badge-exp">{{ 'missions_page.badge_exp' | translate:{ n: mission.yearsOfExperience } }}</span>
               }
             </div>
 
@@ -485,14 +485,14 @@
               @if (mission.numberOfEmployees) {
                 <div class="info-item">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                  <span>{{ mission.numberOfEmployees }} employ&eacute;s</span>
+                  <span>{{ 'missions_page.badge_employees' | translate:{ n: mission.numberOfEmployees } }}</span>
                 </div>
               }
             </div>
 
             <!-- Description -->
             <p class="card-description">
-              {{ stripHtml(mission.description) }}
+              {{ getDisplayDescription(mission) }}
             </p>
 
             <!-- Skills Tags -->
@@ -508,33 +508,33 @@
           <!-- Card Footer -->
           <div class="card-footer">
             <button class="btn-voir-plus" (click)="openDetail(mission)">
-              SEE MORE
+              {{ 'missions_page.see_more_btn' | translate }}
             </button>
             <div class="card-actions">
               @if (isFreelancer) {
                 @if (!hasApplied(mission)) {
                   <button class="btn-matching" (click)="checkMatching($event, mission)">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
-                    Matching IA
+                    {{ 'missions_page.matching_ia' | translate }}
                   </button>
                 }
                 @if (getApplicationStatus(mission) === 'PENDING') {
                   <button class="btn-cancel-application" (click)="cancelApplication($event, mission)" [disabled]="cancellingMissionIds.has(mission.id!)">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    {{ cancellingMissionIds.has(mission.id!) ? 'Cancelling...' : 'Cancel Application' }}
+                    {{ cancellingMissionIds.has(mission.id!) ? ('missions_page.cancelling' | translate) : ('missions_page.cancel_app' | translate) }}
                   </button>
                 } @else if (getApplicationStatus(mission) === 'ACCEPTED') {
                   <span class="application-status-badge status-accepted">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    Accepted
+                    {{ 'missions_page.accepted' | translate }}
                   </span>
                 } @else if (getApplicationStatus(mission) === 'REJECTED') {
                   <span class="application-status-badge status-rejected">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    Rejected
+                    {{ 'missions_page.rejected' | translate }}
                   </span>
                 } @else {
-                  <button class="btn-postuler" (click)="applyToMission($event, mission)">Apply</button>
+                  <button class="btn-postuler" (click)="applyToMission($event, mission)">{{ 'missions_page.apply_btn' | translate }}</button>
                 }
               }
             </div>
@@ -548,9 +548,9 @@
       <div class="results-count">
         @if (aiSearchMode) {
           <svg width="13" height="13" viewBox="0 0 24 24" fill="#6366f1"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-          {{ filteredMissions.length }} résultat(s) AI
+          {{ 'missions_page.results_ai_count' | translate:{ n: filteredMissions.length } }}
         } @else {
-          {{ filteredMissions.length }} mission{{ filteredMissions.length > 1 ? 's' : '' }} found
+          {{ 'missions_page.results_found' | translate:{ n: filteredMissions.length } }}
         }
       </div>
     }
@@ -572,7 +572,7 @@
             <button class="btn-save-heart modal-save-btn"
                     (click)="toggleSave($event, selectedMission)"
                     [class.saved]="savedMissionsService.isSaved(selectedMission.id)"
-                    [title]="savedMissionsService.isSaved(selectedMission.id) ? 'Remove from saved' : 'Save mission'">
+                    [title]="savedMissionsService.isSaved(selectedMission.id) ? ('missions_page.remove_saved' | translate) : ('missions_page.save_mission' | translate)">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -591,7 +591,7 @@
         <!-- Status + Time -->
         <div class="modal-meta">
           <span class="badge badge-status" [class.badge-status-closed]="isDeadlinePassed(selectedMission)">
-            {{ getMissionStatus(selectedMission) }}
+            {{ getMissionStatus(selectedMission) | translate }}
           </span>
           @if (selectedMission.createdAt) {
             <span class="meta-date">
@@ -616,7 +616,7 @@
             <span class="badge badge-field">{{ selectedMission.field }}</span>
           }
           @if (selectedMission.yearsOfExperience) {
-            <span class="badge badge-exp">{{ selectedMission.yearsOfExperience }} yrs exp.</span>
+            <span class="badge badge-exp">{{ 'missions_page.badge_exp' | translate:{ n: selectedMission.yearsOfExperience } }}</span>
           }
         </div>
 
@@ -634,7 +634,7 @@
             <div class="m-info-card">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               <div>
-                <span class="m-info-label">Duration</span>
+                <span class="m-info-label">{{ 'missions_page.modal_duration' | translate }}</span>
                 <span class="m-info-value">{{ formatDate(selectedMission.startDate) }}@if (selectedMission.endDate) { — {{ formatDate(selectedMission.endDate) }}}</span>
               </div>
             </div>
@@ -643,8 +643,8 @@
             <div class="m-info-card">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
               <div>
-                <span class="m-info-label">Experience</span>
-                <span class="m-info-value">{{ selectedMission.yearsOfExperience }} ans</span>
+                <span class="m-info-label">{{ 'missions_page.modal_experience' | translate }}</span>
+                <span class="m-info-value">{{ 'missions_page.badge_years_exp' | translate:{ n: selectedMission.yearsOfExperience } }}</span>
               </div>
             </div>
           }
@@ -652,7 +652,7 @@
             <div class="m-info-card">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
               <div>
-                <span class="m-info-label">Type</span>
+                <span class="m-info-label">{{ 'missions_page.modal_type' | translate }}</span>
                 <span class="m-info-value">{{ selectedMission.missionType }}</span>
               </div>
             </div>
@@ -663,7 +663,7 @@
         <div class="modal-section">
           <h3 class="modal-section-title">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Description
+            {{ 'missions_page.modal_description' | translate }}
           </h3>
           <p class="modal-description" [innerHTML]="selectedMission.description"></p>
         </div>
@@ -673,7 +673,7 @@
           <div class="modal-section">
             <h3 class="modal-section-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-              Required Skills
+              {{ 'missions_page.modal_skills' | translate }}
             </h3>
             <div class="modal-skills">
               @for (skill of getAllSkillsList(selectedMission.requiredSkills); track skill) {
@@ -688,7 +688,7 @@
           <div class="modal-section">
             <h3 class="modal-section-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-              Technical Environment
+              {{ 'missions_page.modal_tech_env' | translate }}
             </h3>
             <p class="modal-text" [innerHTML]="selectedMission.technicalEnvironment"></p>
           </div>
@@ -699,7 +699,7 @@
           <div class="modal-section">
             <h3 class="modal-section-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-              Business Sector / Field
+              {{ 'missions_page.modal_sector_field' | translate }}
             </h3>
             <div class="modal-badges">
               @if (selectedMission.missionBusinessSector) {
@@ -717,7 +717,7 @@
           <div class="modal-section">
             <h3 class="modal-section-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              Application Deadline
+              {{ 'missions_page.modal_deadline' | translate }}
             </h3>
             <span class="modal-deadline">{{ formatDate(selectedMission.applicationDeadline) }}</span>
           </div>
@@ -728,7 +728,7 @@
           <div class="modal-company">
             <h3 class="modal-section-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-              About the Company
+              {{ 'missions_page.modal_about_company' | translate }}
             </h3>
             <div class="modal-company-card">
               <div class="modal-company-header">
@@ -752,12 +752,12 @@
               @if (selectedMission.numberOfEmployees) {
                 <div class="modal-company-stat">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                  {{ selectedMission.numberOfEmployees }} employees
+                  {{ selectedMission.numberOfEmployees }} {{ 'missions_page.modal_employees' | translate }}
                 </div>
               }
               @if (selectedMission.companyId) {
                 <a class="modal-company-link" [routerLink]="['/company-profile', selectedMission.companyId]" (click)="closeDetail()">
-                  View Company Profile
+                  {{ 'missions_page.modal_view_company' | translate }}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
                 </a>
               }
@@ -768,18 +768,15 @@
         <div class="modal-section similar-section">
           <h3 class="modal-section-title">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-            Similar Missions
+            {{ 'missions_page.modal_similar' | translate }}
           </h3>
 
           @if (similarMissions.length > 0) {
             <div class="similar-grid">
               @for (sim of similarMissions; track sim.id) {
                 <div class="similar-card" (click)="switchToMission(sim)">
-                  <!-- Accent top bar -->
                   <div class="similar-card-accent"></div>
-                  <!-- Card body -->
                   <div class="similar-card-body">
-                    <!-- Header: logo + info -->
                     <div class="similar-card-top">
                       <div class="similar-logo">
                         @if (sim.companyLogo) {
@@ -796,7 +793,6 @@
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                       </div>
                     </div>
-                    <!-- Badges row -->
                     <div class="similar-badges">
                       @if (sim.location) {
                         <span class="similar-badge similar-badge-location">
@@ -808,12 +804,9 @@
                         <span class="similar-badge similar-badge-type">{{ sim.missionType }}</span>
                       }
                       @if (sim.tjm) {
-                        <span class="similar-badge similar-badge-tjm">
-                          {{ sim.tjm }} DT/j
-                        </span>
+                        <span class="similar-badge similar-badge-tjm">{{ sim.tjm }} DT/j</span>
                       }
                     </div>
-                    <!-- Skills -->
                     @if (sim.requiredSkills) {
                       <div class="similar-skills">
                         @for (skill of getSkillsList(sim.requiredSkills).slice(0, 3); track skill) {
@@ -833,8 +826,8 @@
               <div class="similar-empty-icon">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
               </div>
-              <p class="similar-empty-title">This is the only mission like this!</p>
-              <p class="similar-empty-text">Don't miss out — apply fast before it's gone.</p>
+              <p class="similar-empty-title">{{ 'missions_page.modal_similar_only' | translate }}</p>
+              <p class="similar-empty-text">{{ 'missions_page.modal_similar_desc' | translate }}</p>
             </div>
           }
         </div>
@@ -847,22 +840,22 @@
           @if (getApplicationStatus(selectedMission!) === 'PENDING') {
             <button class="btn-cancel-application-modal" (click)="cancelApplication($event, selectedMission!)" [disabled]="cancellingMissionIds.has(selectedMission!.id!)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              {{ cancellingMissionIds.has(selectedMission!.id!) ? 'Cancelling...' : 'Cancel Application' }}
+              {{ cancellingMissionIds.has(selectedMission!.id!) ? ('missions_page.cancelling' | translate) : ('missions_page.modal_cancel_app' | translate) }}
             </button>
           } @else if (getApplicationStatus(selectedMission!) === 'ACCEPTED') {
             <span class="application-status-badge-modal status-accepted-modal">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              Your application has been Accepted
+              {{ 'missions_page.modal_app_accepted' | translate }}
             </span>
           } @else if (getApplicationStatus(selectedMission!) === 'REJECTED') {
             <span class="application-status-badge-modal status-rejected-modal">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              Your application has been Rejected
+              {{ 'missions_page.modal_app_rejected' | translate }}
             </span>
           } @else {
             <button class="btn-postuler-modal" (click)="applyToMission($event, selectedMission!)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-              Apply
+              {{ 'missions_page.modal_apply' | translate }}
             </button>
           }
           @if (!hasApplied(selectedMission!)) {
@@ -886,7 +879,7 @@
       <div class="matching-modal-header">
         <div class="matching-modal-title">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          AI Compatibility Analysis
+          {{ 'missions_page.modal_ai_analysis' | translate }}
           @if (matchingMission) {
             <span class="matching-mission-name">— {{ matchingMission.jobTitle }}</span>
           }
@@ -900,8 +893,8 @@
       @if (matchingLoading) {
         <div class="matching-loading">
           <div class="matching-spinner"></div>
-          <p>Analyzing your profile...</p>
-          <span>Comparing your skills with the mission...</span>
+          <p>{{ 'missions_page.modal_analyzing' | translate }}</p>
+          <span>{{ 'missions_page.modal_comparing' | translate }}</span>
         </div>
       }
 
@@ -911,7 +904,7 @@
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <p>{{ matchingError }}</p>
           @if (matchingMission) {
-            <button class="btn-retry" (click)="checkMatching($event, matchingMission!)">Retry</button>
+            <button class="btn-retry" (click)="checkMatching($event, matchingMission!)">{{ 'missions_page.modal_retry' | translate }}</button>
           }
         </div>
       }
@@ -964,14 +957,14 @@
           <div class="score-breakdown">
             <div class="breakdown-item">
               <div class="breakdown-header">
-                <span class="breakdown-label">Technical Skills</span>
+                <span class="breakdown-label">{{ 'missions_page.modal_skills_tech' | translate }}</span>
                 <span class="breakdown-value">{{ matchingResult.skillScore }}%</span>
               </div>
               <div class="breakdown-bar"><div class="breakdown-fill skill-fill" [style.width.%]="matchingResult.skillScore"></div></div>
             </div>
             <div class="breakdown-item">
               <div class="breakdown-header">
-                <span class="breakdown-label">Semantic Similarity</span>
+                <span class="breakdown-label">{{ 'missions_page.modal_skills_semantic' | translate }}</span>
                 <span class="breakdown-value">{{ matchingResult.semanticScore }}%</span>
               </div>
               <div class="breakdown-bar"><div class="breakdown-fill semantic-fill" [style.width.%]="matchingResult.semanticScore"></div></div>
@@ -984,7 +977,7 @@
               <div class="skills-group">
                 <div class="skills-group-title skills-matched-title">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Matched ({{ matchingResult.matchedSkills.length }})
+                  {{ 'missions_page.modal_skills_matched' | translate }} ({{ matchingResult.matchedSkills.length }})
                 </div>
                 <div class="skills-tags">
                   @for (skill of matchingResult.matchedSkills; track skill) {
@@ -997,7 +990,7 @@
               <div class="skills-group">
                 <div class="skills-group-title skills-missing-title">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                  Missing ({{ matchingResult.missingSkills.length }})
+                  {{ 'missions_page.modal_skills_missing' | translate }} ({{ matchingResult.missingSkills.length }})
                 </div>
                 <div class="skills-tags">
                   @for (skill of matchingResult.missingSkills; track skill) {
@@ -1013,7 +1006,7 @@
             <div class="matching-actions">
               <button class="btn-postuler-from-match" (click)="applyToMission($event, matchingMission!); closeMatchingModal()">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-                Apply Now
+                {{ 'missions_page.modal_apply_now' | translate }}
               </button>
             </div>
           }
