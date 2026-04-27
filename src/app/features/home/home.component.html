@@ -607,7 +607,7 @@
             {{ 'home.pricing_feat_pay' | translate }}
           </li>
         </ul>
-        <a routerLink="/offers" [class.pricing-btn-outline]="i === 0" [class.pricing-btn-filled]="i === 1" class="pricing-btn">
+        <a [routerLink]="(isFreelancer || isCompany) ? '/offers' : '/auth/login'" [class.pricing-btn-outline]="i === 0" [class.pricing-btn-filled]="i === 1" class="pricing-btn">
           {{ 'home.pricing_get_started' | translate }}
         </a>
       </div>
@@ -634,7 +634,7 @@
             {{ 'home.pricing_feat_pay' | translate }}
           </li>
         </ul>
-        <a routerLink="/offers" class="pricing-btn pricing-btn-outline">{{ 'home.pricing_get_started' | translate }}</a>
+        <a [routerLink]="(isFreelancer || isCompany) ? '/offers' : '/auth/login'" class="pricing-btn pricing-btn-outline">{{ 'home.pricing_get_started' | translate }}</a>
       </div>
       <div class="pricing-card pricing-card-popular">
         <span class="popular-badge">{{ 'home.pricing_popular' | translate }}</span>
@@ -658,7 +658,7 @@
             {{ 'home.pricing_feat_teams' | translate }}
           </li>
         </ul>
-        <a routerLink="/offers" class="pricing-btn pricing-btn-filled">{{ 'home.pricing_get_started' | translate }}</a>
+        <a [routerLink]="(isFreelancer || isCompany) ? '/offers' : '/auth/login'" class="pricing-btn pricing-btn-filled">{{ 'home.pricing_get_started' | translate }}</a>
       </div>
     }
   </div>
