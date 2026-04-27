@@ -27,6 +27,8 @@ export class MissionApplicationsComponent implements OnInit {
   sidebarCollapsed = signal(false);
   updatingId = signal<string | null>(null);
   isRanking = signal(false);
+  rankingError = signal('');
+  showRankConfirm = signal(false);
   rankedApplications = signal<RankedApplication[]>([]);
   rankedView = signal(false);
 
@@ -133,16 +135,31 @@ export class MissionApplicationsComponent implements OnInit {
     this.router.navigate(['/profile', freelancerId]);
   }
 
+  openRankConfirm(): void { this.showRankConfirm.set(true); }
+  cancelRankConfirm(): void { this.showRankConfirm.set(false); }
+
   onAiSort(): void {
+    this.showRankConfirm.set(false);
     if (this.isRanking()) return;
     this.isRanking.set(true);
+    this.rankingError.set('');
     this.applicationService.getRankedApplications(this.missionId).subscribe({
       next: (results) => {
         this.rankedApplications.set(results);
         this.rankedView.set(true);
         this.isRanking.set(false);
       },
-      error: () => this.isRanking.set(false),
+      error: (err) => {
+        this.isRanking.set(false);
+        if (err.status === 402) {
+          this.rankingError.set(
+            (err.error?.message ?? 'Solde insuffisant.') +
+            ' Rechargez vos points sur la page Offres.'
+          );
+        } else {
+          this.rankingError.set('Erreur lors du classement IA. Veuillez réessayer.');
+        }
+      },
     });
   }
 

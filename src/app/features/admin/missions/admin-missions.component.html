@@ -1,0 +1,125 @@
+<div class="missions-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Missions Supervision</h1>
+      <p class="page-subtitle">All platform missions — admin view</p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-row">
+    <div class="search-bar">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" type="text" placeholder="Search missions..."
+        [value]="searchQuery()"
+        (input)="searchQuery.set($any($event.target).value)" />
+    </div>
+    <div class="status-tabs">
+      <button *ngFor="let s of ['ALL','OPEN','IN_PROGRESS','CLOSED','CANCELLED']"
+        [class.active]="statusFilter() === s"
+        (click)="statusFilter.set(s)">
+        {{ s === 'ALL' ? 'All' : s === 'IN_PROGRESS' ? 'In Progress' : s.charAt(0) + s.slice(1).toLowerCase() }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loading()">
+    <div class="spinner"></div> Loading missions...
+  </div>
+
+  <!-- Table -->
+  <div class="table-card" *ngIf="!loading()">
+    <div class="table-meta">
+      <span>{{ filteredMissions().length }} mission{{ filteredMissions().length !== 1 ? 's' : '' }} found</span>
+    </div>
+    <table class="missions-table">
+      <thead>
+        <tr>
+          <th>Job Title</th>
+          <th>Company</th>
+          <th>Field</th>
+          <th>Location</th>
+          <th>Budget (TJM)</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of filteredMissions()">
+          <td class="title-cell">{{ m.jobTitle }}</td>
+          <td class="secondary-cell">{{ m.companyName ?? '—' }}</td>
+          <td><span class="field-tag">{{ m.field }}</span></td>
+          <td class="secondary-cell">{{ m.location ?? '—' }}</td>
+          <td class="secondary-cell">{{ m.tjm ? (m.tjm | number:'1.0-0') + ' €/j' : '—' }}</td>
+          <td>
+            <span class="status-badge" [class]="m.status?.toLowerCase()">{{ m.status }}</span>
+          </td>
+          <td class="secondary-cell">{{ m.createdAt | date:'dd/MM/yy' }}</td>
+          <td>
+            <button class="btn-delete" (click)="openDeleteModal(m)" title="Delete mission">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+              </svg>
+              Delete
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredMissions().length === 0">
+          <td colspan="8" class="empty-cell">No missions found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ── Delete Confirmation Modal ── -->
+<div class="modal-overlay" *ngIf="deleteTarget()" (click)="closeDeleteModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <div class="modal-icon-wrap danger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+        </svg>
+      </div>
+      <div>
+        <h2 class="modal-title">Delete Mission</h2>
+        <p class="modal-sub">This action is permanent and cannot be undone.</p>
+      </div>
+    </div>
+
+    <div class="modal-mission-info">
+      <span class="modal-mission-label">Mission</span>
+      <span class="modal-mission-name">{{ deleteTarget()?.jobTitle }}</span>
+      <span class="modal-mission-company">{{ deleteTarget()?.companyName ?? '' }}</span>
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Reason / Motif <span class="required">*</span></label>
+      <textarea
+        class="modal-textarea"
+        rows="3"
+        placeholder="Explain why this mission is being removed..."
+        [value]="deleteReason()"
+        (input)="deleteReason.set($any($event.target).value)">
+      </textarea>
+      <p class="modal-hint">The company will receive a notification with this reason.</p>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeDeleteModal()" [disabled]="deleting()">Cancel</button>
+      <button class="btn-confirm-delete"
+        (click)="confirmDelete()"
+        [disabled]="!deleteReason().trim() || deleting()">
+        <span *ngIf="!deleting()">Delete Mission</span>
+        <span *ngIf="deleting()">Deleting...</span>
+      </button>
+    </div>
+
+  </div>
+</div>

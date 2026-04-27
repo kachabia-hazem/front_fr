@@ -1,0 +1,109 @@
+<div class="review-page">
+  <!-- Background blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="review-card" [class.rejected]="status === 'REJECTED'">
+
+    <!-- ── PENDING state ── -->
+    <ng-container *ngIf="status === 'PENDING'">
+
+      <!-- Animated scanner -->
+      <div class="scanner-wrap">
+        <div class="scanner-ring ring-1"></div>
+        <div class="scanner-ring ring-2"></div>
+        <div class="scanner-ring ring-3"></div>
+        <div class="scanner-core">
+          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+        </div>
+        <div class="scan-line"></div>
+      </div>
+
+      <h1 class="review-title">Account Under Review</h1>
+      <p class="review-subtitle">
+        Our team is carefully verifying your company information
+      </p>
+
+      <!-- Progress steps -->
+      <div class="progress-steps">
+        <div class="step-row" *ngFor="let step of steps; let i = index"
+          [class.done]="step.done" [class.active]="step.active">
+          <div class="step-icon">
+            <svg *ngIf="step.done" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <div *ngIf="step.active && !step.done" class="dot-loader">
+              <span></span><span></span><span></span>
+            </div>
+            <span *ngIf="!step.done && !step.active" class="step-num">{{ i + 1 }}</span>
+          </div>
+          <span class="step-label">{{ step.label }}</span>
+        </div>
+      </div>
+
+      <!-- Time info -->
+      <div class="time-chip">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Decision within <strong>3 business days</strong>
+      </div>
+
+      <p class="email-note">
+        We'll send you an email once the review is complete.
+      </p>
+
+    </ng-container>
+
+    <!-- ── REJECTED state ── -->
+    <ng-container *ngIf="status === 'REJECTED'">
+      <div class="rejected-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="15" y1="9" x2="9" y2="15"/>
+          <line x1="9" y1="9" x2="15" y2="15"/>
+        </svg>
+      </div>
+      <h1 class="review-title">Registration Not Approved</h1>
+      <p class="review-subtitle">
+        Unfortunately, your company registration was not approved.<br>
+        You should have received an email with the reason.
+      </p>
+      <div class="rejected-box">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        Check your inbox for the rejection reason and next steps
+      </div>
+    </ng-container>
+
+    <!-- CTA -->
+    <button class="btn-back" (click)="goToLogin()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      Back to Login
+    </button>
+
+    <!-- Logo -->
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <span>WorkLink</span>
+    </div>
+
+  </div>
+</div>

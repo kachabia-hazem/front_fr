@@ -1,4 +1,4 @@
-import { Gender, Language, LegalForm, ProfileType, Role } from './enums.model';
+import { CompanyStatus, Gender, Language, LegalForm, ProfileType, Role } from './enums.model';
 import { Education, Project, Certification, WorkExperience } from './cv.model';
 
 export interface User {
@@ -44,11 +44,13 @@ export interface Freelancer extends User {
   projects?: Project[];
   certifications?: Certification[];
   workExperience?: WorkExperience[];
+  // Points
+  pointsBalance?: number;
 }
 
 export interface Company extends User {
   companyName: string;
-  address: string;
+  address?: string;
   websiteUrl?: string;
   legalForm: LegalForm;
   tradeRegister: string;
@@ -62,6 +64,15 @@ export interface Company extends User {
   description?: string;
   numberOfEmployees?: number;
   postedProjects: number;
+  verificationStatus?: CompanyStatus;
+  rejectionReason?: string;
+  verifiedAt?: string;
+  trustScore?: number;
+  // Points & subscription
+  pointsBalance?: number;
+  subscriptionPlanId?: string;
+  subscriptionStartDate?: string;
+  subscriptionExpiresAt?: string;
 }
 
 export interface Review {

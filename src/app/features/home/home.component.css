@@ -1131,9 +1131,21 @@
   font-weight: 600;
   color: #111;
   margin: 0 0 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pricing-fee-old {
+  text-decoration: line-through;
+  color: #9ca3af;
+  font-weight: 400;
+  font-size: 0.8rem;
 }
 
 :host-context(body.dark-theme) .pricing-fee { color: #e4e4ef; }
+:host-context(body.dark-theme) .pricing-fee-old { color: #6b7280; }
 
 .pricing-includes-label {
   font-size: 0.82rem;

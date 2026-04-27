@@ -13,11 +13,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { Contract } from '../../core/models/contract.model';
 import { Company } from '../../core/models/user.model';
+import { PaymentModalComponent } from '../../shared/payment-modal/payment-modal.component';
 
 @Component({
   selector: 'app-company-contracts',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, SafeUrlPipe, TranslateModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, SafeUrlPipe, TranslateModule, PaymentModalComponent],
   templateUrl: './company-contracts.component.html',
   styleUrl: './company-contracts.component.css',
 })
@@ -46,6 +47,10 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
   // Rejection reason modal
   showRejectionModal   = signal(false);
   rejectionContract    = signal<Contract | null>(null);
+
+  // Payment modal
+  showPaymentModal     = signal(false);
+  paymentContract      = signal<Contract | null>(null);
 
   toggleMenu(id: string): void {
     this.openMenuId.update(cur => cur === id ? null : id);
@@ -339,6 +344,41 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
   closeRejectionModal(): void {
     this.showRejectionModal.set(false);
     this.rejectionContract.set(null);
+  }
+
+  // Payment
+  openPaymentModal(contract: Contract): void {
+    this.paymentContract.set(contract);
+    this.showPaymentModal.set(true);
+  }
+
+  closePaymentModal(): void {
+    this.showPaymentModal.set(false);
+    this.paymentContract.set(null);
+  }
+
+  onPaymentSuccess(): void {
+    this.closePaymentModal();
+    // Refresh contracts list to show AUTHORIZED status
+    this.contractService.getCompanyContracts().subscribe({
+      next: list => this.contracts.set(list),
+    });
+  }
+
+  paymentStatusLabel(status: string | null): string {
+    if (!status || status === 'UNPAID') return 'Non payé';
+    if (status === 'AUTHORIZED') return 'En escrow';
+    if (status === 'CAPTURED') return 'Libéré';
+    if (status === 'FAILED') return 'Échec';
+    return status;
+  }
+
+  paymentBadgeClass(status: string | null): string {
+    if (!status || status === 'UNPAID') return 'badge-unpaid';
+    if (status === 'AUTHORIZED') return 'badge-authorized';
+    if (status === 'CAPTURED') return 'badge-captured';
+    if (status === 'FAILED') return 'badge-failed';
+    return '';
   }
 
   logout(): void { this.authService.logout(); this.router.navigate(['/auth/login']); }

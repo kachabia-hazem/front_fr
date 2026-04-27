@@ -47,9 +47,8 @@ export class AuthService {
   }
 
   registerCompany(request: RegisterCompanyRequest): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${this.apiUrl}/register/company`, request)
-      .pipe(tap((response) => this.handleAuthSuccess(response)));
+    // Do NOT call handleAuthSuccess — company accounts are PENDING until admin approves
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register/company`, request);
   }
 
   registerAdmin(request: RegisterAdminRequest): Observable<AuthResponse> {
@@ -123,6 +122,11 @@ export class AuthService {
 
   setAuthenticated(response: AuthResponse): void {
     this.handleAuthSuccess(response);
+  }
+
+  clearAuth(): void {
+    localStorage.removeItem('auth');
+    this.currentUserSignal.set(null);
   }
 
   // ── Private helpers ──

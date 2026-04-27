@@ -1,0 +1,237 @@
+<!-- Toast -->
+<div class="toast" *ngIf="toastMessage()" [class]="toastMessage()!.type">
+  {{ toastMessage()!.text }}
+</div>
+
+<div class="verif-page" [class.panel-open]="selectedCompany()">
+
+  <!-- ── Header ── -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Company Verifications</h1>
+      <p class="page-subtitle">Review and validate company registrations</p>
+    </div>
+    <button class="btn-refresh" (click)="loadCompanies()">↻ Refresh</button>
+  </div>
+
+  <!-- ── Filter Tabs ── -->
+  <div class="filter-tabs">
+    <button [class.active]="filter() === 'PENDING'" (click)="setFilter('PENDING')">Pending</button>
+    <button [class.active]="filter() === 'APPROVED'" (click)="setFilter('APPROVED')">Approved</button>
+    <button [class.active]="filter() === 'REJECTED'" (click)="setFilter('REJECTED')">Rejected</button>
+    <button [class.active]="filter() === 'ALL'" (click)="setFilter('ALL')">All</button>
+  </div>
+
+  <!-- ── Table ── -->
+  <div class="table-card">
+    <div class="loading-row" *ngIf="loading()">
+      <div class="spinner"></div> Loading...
+    </div>
+
+    <div class="empty-state" *ngIf="!loading() && companies().length === 0">
+      <div class="empty-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <p>No companies in this category</p>
+    </div>
+
+    <table class="verif-table" *ngIf="!loading() && companies().length > 0">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Sector</th>
+          <th>Manager</th>
+          <th>Trust Score</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of companies()"
+            [class.selected]="selectedCompany()?.id === c.id"
+            (click)="selectCompany(c)">
+          <td>
+            <div class="company-cell">
+              <div class="company-avatar">{{ c.companyName.charAt(0).toUpperCase() }}</div>
+              <div>
+                <div class="company-name">{{ c.companyName }}</div>
+                <div class="company-email">{{ c.email }}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="sector-tag">{{ c.businessSector }}</span></td>
+          <td>{{ c.managerName }}</td>
+          <td>
+            <div class="trust-badge" [class]="getTrustClass(c.trustScore)">
+              <span class="trust-score">{{ c.trustScore ?? '—' }}</span>
+              <span class="trust-label" *ngIf="c.trustScore !== undefined && c.trustScore !== null">{{ getTrustLabel(c.trustScore) }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="status-badge" [class]="c.verificationStatus?.toLowerCase()">
+              {{ c.verificationStatus ?? 'PENDING' }}
+            </span>
+          </td>
+          <td (click)="$event.stopPropagation()">
+            <div class="action-btns" *ngIf="(c.verificationStatus ?? 'PENDING') === 'PENDING'">
+              <button class="btn-approve" (click)="approve(c)"
+                [disabled]="actionLoading() === c.id">
+                ✓ Approve
+              </button>
+              <button class="btn-reject" (click)="openRejectModal(c)"
+                [disabled]="actionLoading() === c.id">
+                ✕ Reject
+              </button>
+            </div>
+            <span class="decided" *ngIf="(c.verificationStatus ?? 'PENDING') !== 'PENDING'">
+              Decided
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ── Detail Side Panel ── -->
+<div class="side-panel" *ngIf="selectedCompany() as c">
+  <div class="panel-header">
+    <div class="panel-company-info">
+      <div class="panel-avatar">{{ c.companyName.charAt(0).toUpperCase() }}</div>
+      <div>
+        <h2>{{ c.companyName }}</h2>
+        <span class="panel-header-sub">{{ c.businessSector }}</span>
+      </div>
+    </div>
+    <button class="close-btn" (click)="closePanel()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="panel-body">
+
+    <!-- Trust Score -->
+    <div class="panel-trust" [class]="getTrustClass(c.trustScore)">
+      <div class="trust-score-big">{{ c.trustScore ?? '—' }}<span>/100</span></div>
+      <div class="trust-info">
+        <span class="trust-label-big">{{ getTrustLabel(c.trustScore) }}</span>
+        <button class="btn-rescore" (click)="refreshScore(c)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Re-analyse
+        </button>
+      </div>
+    </div>
+
+    <!-- Info Grid -->
+    <div class="panel-section">
+      <p class="panel-section-title">Company Info</p>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-key">Email</span>
+          <span class="info-val">{{ c.email }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Website</span>
+          <span class="info-val">{{ c.websiteUrl ?? '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Legal Form</span>
+          <span class="info-val">{{ c.legalForm }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Trade Register</span>
+          <span class="info-val">{{ c.tradeRegister }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Foundation</span>
+          <span class="info-val">{{ c.foundationDate | date:'mediumDate' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Employees</span>
+          <span class="info-val">{{ c.numberOfEmployees ?? '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Sector</span>
+          <span class="info-val">{{ c.businessSector }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Address</span>
+          <span class="info-val">{{ c.address ?? '—' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section" *ngIf="c.description">
+      <p class="panel-section-title">Description</p>
+      <p class="desc-text">{{ c.description }}</p>
+    </div>
+
+    <div class="panel-section">
+      <p class="panel-section-title">Manager</p>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-key">Name</span>
+          <span class="info-val">{{ c.managerName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Email</span>
+          <span class="info-val">{{ c.managerEmail }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Position</span>
+          <span class="info-val">{{ c.managerPosition }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Phone</span>
+          <span class="info-val">{{ c.managerPhoneNumber }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="panel-actions" *ngIf="(c.verificationStatus ?? 'PENDING') === 'PENDING'">
+      <button class="btn-approve-lg" (click)="approve(c)" [disabled]="actionLoading() === c.id">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Approve
+      </button>
+      <button class="btn-reject-lg" (click)="openRejectModal(c)" [disabled]="actionLoading() === c.id">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Reject
+      </button>
+    </div>
+
+    <!-- Rejection reason display -->
+    <div class="rejection-info" *ngIf="c.verificationStatus === 'REJECTED' && c.rejectionReason">
+      <strong>Rejection reason:</strong>
+      <p>{{ c.rejectionReason }}</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Overlay ── -->
+<div class="overlay" *ngIf="selectedCompany()" (click)="closePanel()"></div>
+
+<!-- ── Reject Modal ── -->
+<div class="modal-overlay" *ngIf="showRejectModal()">
+  <div class="modal">
+    <h3>Reject Company</h3>
+    <p class="modal-sub">Rejecting: <strong>{{ companyToReject()?.companyName }}</strong></p>
+    <label>Reason (required)</label>
+    <textarea
+      class="reason-input"
+      rows="4"
+      placeholder="e.g. Incomplete trade register, suspicious email domain..."
+      [value]="rejectReason()"
+      (input)="rejectReason.set($any($event.target).value)">
+    </textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="cancelReject()">Cancel</button>
+      <button class="btn-confirm-reject"
+        (click)="confirmReject()"
+        [disabled]="!rejectReason().trim() || actionLoading() !== null">
+        Confirm Rejection
+      </button>
+    </div>
+  </div>
+</div>

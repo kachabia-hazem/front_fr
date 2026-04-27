@@ -752,3 +752,22 @@
 :host-context(body.dark-theme) .btn-cancel-selection { background: #252a3a; border-color: #3a4050; color: #9ca3af; }
 :host-context(body.dark-theme) .contract-card.card-selected { background: rgba(55,147,176,.1); border-color: #3793B0; }
 :host-context(body.dark-theme) .btn-select-mode { background: #252a3a; border-color: #3a4050; color: #9ca3af; }
+
+/* ── Payment status badges ── */
+.payment-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.badge-unpaid     { background: #fef3c7; color: #92400e; }
+.badge-authorized { background: #dbeafe; color: #1e40af; }
+.badge-captured   { background: #dcfce7; color: #166534; }
+.badge-failed     { background: #fee2e2; color: #991b1b; }
+
+:host-context(body.dark-theme) .badge-unpaid     { background: rgba(234,179,8,.15); color: #fbbf24; }
+:host-context(body.dark-theme) .badge-authorized { background: rgba(59,130,246,.15); color: #93c5fd; }
+:host-context(body.dark-theme) .badge-captured   { background: rgba(34,197,94,.15); color: #86efac; }
+:host-context(body.dark-theme) .badge-failed     { background: rgba(239,68,68,.15); color: #fca5a5; }

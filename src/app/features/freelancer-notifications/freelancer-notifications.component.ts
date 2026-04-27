@@ -235,7 +235,7 @@ export class FreelancerNotificationsComponent implements OnInit {
   }
 
   getTypeIcon(type: NotificationType): string {
-    const icons: Record<NotificationType, string> = {
+    const icons: Partial<Record<NotificationType, string>> = {
       WELCOME: '👋',
       APPLICATION_SUBMITTED: '📤',
       APPLICATION_ACCEPTED: '✅',
@@ -249,7 +249,7 @@ export class FreelancerNotificationsComponent implements OnInit {
   }
 
   getTypeClass(type: NotificationType): string {
-    const classes: Record<NotificationType, string> = {
+    const classes: Partial<Record<NotificationType, string>> = {
       WELCOME: 'type-welcome',
       APPLICATION_SUBMITTED: 'type-submitted',
       APPLICATION_ACCEPTED: 'type-accepted',

@@ -1,0 +1,594 @@
+<!-- Toast -->
+<div class="toast" *ngIf="toast()" [class]="toast()!.type">{{ toast()!.text }}</div>
+
+<div class="offers-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-title-block">
+      <h1 class="page-title">Offers Management</h1>
+      <p class="page-subtitle">Configure point packs, subscriptions and promotions</p>
+    </div>
+    <button class="btn-new" *ngIf="activeTab() === 'packs'" (click)="openCreatePack()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Pack
+    </button>
+    <button class="btn-new" *ngIf="activeTab() === 'subscriptions'" (click)="openCreateSub()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Subscription
+    </button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab() === 'packs'" (click)="activeTab.set('packs')">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+      </svg>
+      One-time Packs
+    </button>
+    <button [class.active]="activeTab() === 'subscriptions'" (click)="activeTab.set('subscriptions')">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </svg>
+      Subscriptions
+    </button>
+  </div>
+
+  <div class="loading-state" *ngIf="loading()">
+    <div class="spinner"></div> Loading offers...
+  </div>
+
+  <!-- ══ ONE-TIME PACKS TAB ════════════════════════════════════════════════ -->
+  <ng-container *ngIf="!loading() && activeTab() === 'packs'">
+
+    <ng-container *ngFor="let cat of categories">
+      <div class="category-section" *ngIf="packsForCategory(cat.key).length > 0">
+
+        <div class="category-header">
+          <span class="cat-pill" [class]="'cat-' + cat.key.toLowerCase()">{{ cat.label }}</span>
+          <div class="cat-line"></div>
+        </div>
+
+        <div class="packs-grid">
+          <div class="pack-card"
+            *ngFor="let pack of packsForCategory(cat.key)"
+            [class.promo-active]="isPackPromoActive(pack.id)"
+            [class.inactive]="!pack.active">
+
+            <!-- Top strip: promo + badge -->
+            <div class="pack-card-top">
+              <span class="promo-chip" *ngIf="isPackPromoActive(pack.id)">
+                −{{ packPromoDiscountPct(pack.id) }}%
+              </span>
+              <span class="pack-badge-chip" *ngIf="pack.badge && !isPackPromoActive(pack.id)">{{ pack.badge }}</span>
+              <span class="inactive-chip" *ngIf="!pack.active">Inactif</span>
+              <span class="spacer"></span>
+              <button class="btn-edit-inline" (click)="openEditPack(pack)" title="Edit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button class="btn-delete-inline" (click)="confirmDeletePackId.set(pack.id)" title="Delete">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              </button>
+            </div>
+
+            <!-- Points -->
+            <div class="pack-points-row">
+              <span class="pack-pts-number">{{ pack.points }}</span>
+              <span class="pack-pts-label">pts</span>
+            </div>
+
+            <!-- Pricing -->
+            <div class="pack-price-row">
+              <ng-container *ngIf="isPackPromoActive(pack.id) && computedPackPromoPrice(pack) !== null">
+                <span class="price-strike">{{ formatTND(pack.price) }}</span>
+                <span class="price-promo-main">{{ formatTND(computedPackPromoPrice(pack)!) }}</span>
+              </ng-container>
+              <ng-container *ngIf="!isPackPromoActive(pack.id) || computedPackPromoPrice(pack) === null">
+                <span class="price-normal">{{ formatTND(pack.price) }}</span>
+              </ng-container>
+            </div>
+
+            <!-- Meta -->
+            <div class="pack-meta-row">
+              <span class="ppp-label">{{ formatTND(pack.pricePerPoint) }}/pt</span>
+              <span class="savings-chip" *ngIf="pack.savingsPercent > 0">−{{ pack.savingsPercent }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ── Promotions Panel ─────────────────────────────────────────────────── -->
+    <div class="promo-panel" *ngIf="packs().length > 0">
+      <div class="promo-panel-header">
+        <div class="promo-panel-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Promotions
+        </div>
+        <span class="promo-panel-hint">Enable a promo, set the %, then save.</span>
+      </div>
+
+      <div class="promo-table-head">
+        <span>Pack</span>
+        <span>Active</span>
+        <span>Discount</span>
+        <span>Promo price</span>
+        <span>Label</span>
+        <span>Expires</span>
+        <span></span>
+      </div>
+
+      <div class="promo-rows">
+        <div class="promo-row" *ngFor="let pack of packs()" [class.promo-on]="packPromoEnabled(pack.id)">
+
+          <div class="pr-name">
+            <span class="pr-dot" [class]="'dot-' + pack.category.toLowerCase()"></span>
+            <div>
+              <div class="pr-pack-name">{{ pack.name }}</div>
+              <div class="pr-pack-base">{{ formatTND(pack.price) }}</div>
+            </div>
+          </div>
+
+          <div class="pr-toggle">
+            <label class="toggle-switch">
+              <input type="checkbox" [(ngModel)]="packPromos[pack.id].promoEnabled" (ngModelChange)="markPackPromoDirty(pack.id)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="pr-percent" [class.disabled]="!packPromoEnabled(pack.id)">
+            <div class="pct-bar">
+              <div class="pct-fill" [style.width.%]="packPromoDiscountPct(pack.id)"></div>
+              <input type="range" min="0" max="80" step="1" class="pct-slider"
+                [(ngModel)]="packPromos[pack.id].promoDiscountPercent"
+                (ngModelChange)="markPackPromoDirty(pack.id)"
+                [disabled]="!packPromoEnabled(pack.id)">
+            </div>
+            <span class="pct-num">{{ packPromoDiscountPct(pack.id) }}%</span>
+          </div>
+
+          <div class="pr-result">
+            <ng-container *ngIf="isPackPromoActive(pack.id) && computedPackPromoPrice(pack) !== null">
+              <span class="pr-new-price">{{ formatTND(computedPackPromoPrice(pack)!) }}</span>
+              <span class="pr-save-tag">−{{ formatTND(pack.price - computedPackPromoPrice(pack)!) }}</span>
+            </ng-container>
+            <span class="pr-dash" *ngIf="!isPackPromoActive(pack.id) || computedPackPromoPrice(pack) === null">—</span>
+          </div>
+
+          <input class="pr-input" type="text" placeholder="Ex: Soldes été"
+            [(ngModel)]="packPromos[pack.id].promoLabel"
+            (ngModelChange)="markPackPromoDirty(pack.id)"
+            [disabled]="!packPromoEnabled(pack.id)">
+
+          <input class="pr-input pr-date" type="date"
+            [(ngModel)]="packPromos[pack.id].promoExpiresAt"
+            (ngModelChange)="markPackPromoDirty(pack.id)"
+            [disabled]="!packPromoEnabled(pack.id)">
+
+          <button class="btn-save-promo"
+            (click)="savePackPromo(pack)"
+            [disabled]="!packPromoDirty(pack.id) || savingId() === pack.id + '_promo'"
+            [class.saving]="savingId() === pack.id + '_promo'">
+            <div *ngIf="savingId() === pack.id + '_promo'" class="mini-spinner"></div>
+            <svg *ngIf="savingId() !== pack.id + '_promo'" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ══ SUBSCRIPTIONS TAB ══════════════════════════════════════════════════ -->
+  <ng-container *ngIf="!loading() && activeTab() === 'subscriptions'">
+
+    <div class="subs-grid">
+      <div class="sub-card"
+        *ngFor="let sub of subscriptions()"
+        [class.promo-active]="isSubPromoActive(sub.id)"
+        [class.inactive]="!sub.active"
+        [class]="'sub-card plan-' + sub.name.toLowerCase()">
+
+        <!-- Top row -->
+        <div class="sub-card-top">
+          <span class="promo-chip" *ngIf="isSubPromoActive(sub.id)">−{{ subPromoDiscountPct(sub.id) }}%</span>
+          <span class="inactive-chip" *ngIf="!sub.active">Inactif</span>
+          <span class="spacer"></span>
+          <button class="btn-edit-inline" (click)="openEditSub(sub)" title="Edit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="btn-delete-inline" (click)="confirmDeleteSubId.set(sub.id)" title="Delete">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
+        </div>
+
+        <div class="sub-name">{{ sub.name }}</div>
+
+        <div class="sub-price-row">
+          <ng-container *ngIf="isSubPromoActive(sub.id) && computedSubPromoPrice(sub) !== null">
+            <span class="price-strike">{{ formatTND(sub.pricePerMonth) }}</span>
+            <span class="price-promo-main">{{ formatTND(computedSubPromoPrice(sub)!) }}</span>
+          </ng-container>
+          <ng-container *ngIf="!isSubPromoActive(sub.id) || computedSubPromoPrice(sub) === null">
+            <span class="price-normal">{{ formatTND(sub.pricePerMonth) }}</span>
+          </ng-container>
+          <span class="sub-period">/mois</span>
+        </div>
+
+        <div class="sub-pts-row">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          {{ sub.pointsPerMonth }} points / mois
+        </div>
+
+        <ul class="sub-adv-list">
+          <li *ngFor="let adv of sub.advantages">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ adv }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── Subscriptions Promotions Panel ───────────────────────────────────── -->
+    <div class="promo-panel" *ngIf="subscriptions().length > 0">
+      <div class="promo-panel-header">
+        <div class="promo-panel-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Promotions
+        </div>
+        <span class="promo-panel-hint">Enable a promo, set the %, then save.</span>
+      </div>
+
+      <div class="promo-table-head">
+        <span>Plan</span>
+        <span>Active</span>
+        <span>Discount</span>
+        <span>Promo price</span>
+        <span>Label</span>
+        <span>Expires</span>
+        <span></span>
+      </div>
+
+      <div class="promo-rows">
+        <div class="promo-row" *ngFor="let sub of subscriptions()" [class.promo-on]="subPromoEnabled(sub.id)">
+
+          <div class="pr-name">
+            <span class="pr-dot" [class]="'dot-sub-' + sub.name.toLowerCase()"></span>
+            <div>
+              <div class="pr-pack-name">{{ sub.name }}</div>
+              <div class="pr-pack-base">{{ formatTND(sub.pricePerMonth) }}/mois</div>
+            </div>
+          </div>
+
+          <div class="pr-toggle">
+            <label class="toggle-switch">
+              <input type="checkbox" [(ngModel)]="subPromos[sub.id].promoEnabled" (ngModelChange)="markSubPromoDirty(sub.id)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="pr-percent" [class.disabled]="!subPromoEnabled(sub.id)">
+            <div class="pct-bar">
+              <div class="pct-fill" [style.width.%]="subPromoDiscountPct(sub.id)"></div>
+              <input type="range" min="0" max="80" step="1" class="pct-slider"
+                [(ngModel)]="subPromos[sub.id].promoDiscountPercent"
+                (ngModelChange)="markSubPromoDirty(sub.id)"
+                [disabled]="!subPromoEnabled(sub.id)">
+            </div>
+            <span class="pct-num">{{ subPromoDiscountPct(sub.id) }}%</span>
+          </div>
+
+          <div class="pr-result">
+            <ng-container *ngIf="isSubPromoActive(sub.id) && computedSubPromoPrice(sub) !== null">
+              <span class="pr-new-price">{{ formatTND(computedSubPromoPrice(sub)!) }}</span>
+              <span class="pr-save-tag">−{{ formatTND(sub.pricePerMonth - computedSubPromoPrice(sub)!) }}</span>
+            </ng-container>
+            <span class="pr-dash" *ngIf="!isSubPromoActive(sub.id) || computedSubPromoPrice(sub) === null">—</span>
+          </div>
+
+          <input class="pr-input" type="text" placeholder="Ex: Soldes été"
+            [(ngModel)]="subPromos[sub.id].promoLabel"
+            (ngModelChange)="markSubPromoDirty(sub.id)"
+            [disabled]="!subPromoEnabled(sub.id)">
+
+          <input class="pr-input pr-date" type="date"
+            [(ngModel)]="subPromos[sub.id].promoExpiresAt"
+            (ngModelChange)="markSubPromoDirty(sub.id)"
+            [disabled]="!subPromoEnabled(sub.id)">
+
+          <button class="btn-save-promo"
+            (click)="saveSubPromo(sub)"
+            [disabled]="!subPromoDirty(sub.id) || savingId() === sub.id + '_promo'"
+            [class.saving]="savingId() === sub.id + '_promo'">
+            <div *ngIf="savingId() === sub.id + '_promo'" class="mini-spinner"></div>
+            <svg *ngIf="savingId() !== sub.id + '_promo'" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+</div>
+
+<!-- ══ CREATE PACK MODAL ════════════════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="showCreatePack()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>New Pack</h3>
+      <button class="modal-close" (click)="showCreatePack.set(false)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-field">
+          <label>Name</label>
+          <input type="text" [(ngModel)]="createPackForm.name" placeholder="Pack Starter">
+        </div>
+        <div class="form-field">
+          <label>Category</label>
+          <select [(ngModel)]="createPackForm.category">
+            <option *ngFor="let cat of categories" [value]="cat.key">{{ cat.label }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Points</label>
+          <div class="input-addon-wrap">
+            <input type="number" min="1" [(ngModel)]="createPackForm.points">
+            <span class="input-addon">pts</span>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Price</label>
+          <div class="input-addon-wrap">
+            <input type="number" min="0" step="0.001" [(ngModel)]="createPackForm.price">
+            <span class="input-addon">DT</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Badge <span class="opt-label">(optional)</span></label>
+          <input type="text" [(ngModel)]="createPackForm.badge" placeholder="Le plus vendu">
+        </div>
+        <div class="form-field">
+          <label>Display order</label>
+          <input type="number" min="1" [(ngModel)]="createPackForm.displayOrder">
+        </div>
+      </div>
+      <div class="preview-row" *ngIf="createPackForm.points > 0 && createPackForm.price > 0">
+        <span class="preview-label">Price per point</span>
+        <strong class="preview-value">{{ (createPackForm.price / createPackForm.points).toFixed(3) }} DT</strong>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle-switch">
+          <input type="checkbox" [(ngModel)]="createPackForm.active">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-row-label">Active — visible to users</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="showCreatePack.set(false)">Cancel</button>
+      <button class="btn-primary" (click)="submitCreatePack()"
+        [disabled]="!createPackForm.name || createPackForm.points <= 0 || createPackForm.price <= 0 || savingId() === 'new_pack'">
+        <div class="mini-spinner" *ngIf="savingId() === 'new_pack'"></div>
+        Create Pack
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CREATE SUBSCRIPTION MODAL ════════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="showCreateSub()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>New Subscription</h3>
+      <button class="modal-close" (click)="showCreateSub.set(false)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-field">
+          <label>Plan name</label>
+          <input type="text" [(ngModel)]="createSubForm.name" placeholder="Premium">
+        </div>
+        <div class="form-field">
+          <label>Price / month</label>
+          <div class="input-addon-wrap">
+            <input type="number" min="0" step="0.001" [(ngModel)]="createSubForm.pricePerMonth">
+            <span class="input-addon">DT/mois</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Points / month</label>
+          <div class="input-addon-wrap">
+            <input type="number" min="1" [(ngModel)]="createSubForm.pointsPerMonth">
+            <span class="input-addon">pts/mois</span>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Display order</label>
+          <input type="number" min="1" [(ngModel)]="createSubForm.displayOrder">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Advantages <span class="opt-label">(one per line)</span></label>
+        <textarea rows="4" [(ngModel)]="createSubAdvantagesRaw" placeholder="100 points offerts/mois&#10;-10% sur tous les packs"></textarea>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle-switch">
+          <input type="checkbox" [(ngModel)]="createSubForm.active">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-row-label">Active — visible to users</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="showCreateSub.set(false)">Cancel</button>
+      <button class="btn-primary" (click)="submitCreateSub()"
+        [disabled]="!createSubForm.name || createSubForm.pricePerMonth <= 0 || createSubForm.pointsPerMonth <= 0 || savingId() === 'new_sub'">
+        <div class="mini-spinner" *ngIf="savingId() === 'new_sub'"></div>
+        Create Subscription
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DELETE PACK CONFIRM ══════════════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="confirmDeletePackId()">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3>Delete Pack</h3>
+    </div>
+    <div class="modal-body">
+      <p class="confirm-text">This pack will be permanently deleted. This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="confirmDeletePackId.set(null)">Cancel</button>
+      <button class="btn-danger" (click)="deletePack(confirmDeletePackId()!)"
+        [disabled]="savingId() === 'del_' + confirmDeletePackId()">
+        <div class="mini-spinner" *ngIf="savingId() === 'del_' + confirmDeletePackId()"></div>
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DELETE SUBSCRIPTION CONFIRM ══════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="confirmDeleteSubId()">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3>Delete Subscription</h3>
+    </div>
+    <div class="modal-body">
+      <p class="confirm-text">This subscription plan will be permanently deleted. This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="confirmDeleteSubId.set(null)">Cancel</button>
+      <button class="btn-danger" (click)="deleteSub(confirmDeleteSubId()!)"
+        [disabled]="savingId() === 'del_' + confirmDeleteSubId()">
+        <div class="mini-spinner" *ngIf="savingId() === 'del_' + confirmDeleteSubId()"></div>
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EDIT PACK MODAL ══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="editPack()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Edit Pack <span class="modal-badge">{{ editPack()?.name }}</span></h3>
+      <button class="modal-close" (click)="editPack.set(null)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-field">
+          <label>Name</label>
+          <input type="text" [(ngModel)]="editPackForm.name">
+        </div>
+        <div class="form-field">
+          <label>Badge <span class="opt-label">(optional)</span></label>
+          <input type="text" [(ngModel)]="editPackForm.badge" placeholder="Le plus vendu">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Points</label>
+          <div class="input-addon-wrap">
+            <input type="number" min="1" [(ngModel)]="editPackForm.points">
+            <span class="input-addon">pts</span>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Price</label>
+          <div class="input-addon-wrap">
+            <input type="number" min="0" step="0.001" [(ngModel)]="editPackForm.price">
+            <span class="input-addon">DT</span>
+          </div>
+        </div>
+      </div>
+      <div class="preview-row" *ngIf="editPackForm.points > 0 && editPackForm.price > 0">
+        <span class="preview-label">Price per point</span>
+        <strong class="preview-value">{{ (editPackForm.price / editPackForm.points).toFixed(3) }} DT</strong>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle-switch">
+          <input type="checkbox" [(ngModel)]="editPackForm.active">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-row-label">Active — visible to users</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="editPack.set(null)">Cancel</button>
+      <button class="btn-primary" (click)="savePackEdit()" [disabled]="savingId() === editPack()?.id">
+        <div class="mini-spinner" *ngIf="savingId() === editPack()?.id"></div>
+        Save changes
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EDIT SUBSCRIPTION MODAL ═══════════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="editSub()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Edit Subscription <span class="modal-badge">{{ editSub()?.name }}</span></h3>
+      <button class="modal-close" (click)="editSub.set(null)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-field">
+          <label>Plan name</label>
+          <input type="text" [(ngModel)]="editSubForm.name">
+        </div>
+        <div class="form-field">
+          <label>Price / month</label>
+          <div class="input-addon-wrap">
+            <input type="number" min="0" step="0.001" [(ngModel)]="editSubForm.pricePerMonth">
+            <span class="input-addon">DT/mois</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label>Points / month</label>
+          <div class="input-addon-wrap">
+            <input type="number" min="1" [(ngModel)]="editSubForm.pointsPerMonth">
+            <span class="input-addon">pts/mois</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Advantages <span class="opt-label">(one per line)</span></label>
+        <textarea rows="5" [(ngModel)]="editSubAdvantagesRaw" placeholder="100 points offerts/mois&#10;-10% sur tous les packs"></textarea>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle-switch">
+          <input type="checkbox" [(ngModel)]="editSubForm.active">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-row-label">Active — visible to users</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="editSub.set(null)">Cancel</button>
+      <button class="btn-primary" (click)="saveSubEdit()" [disabled]="savingId() === editSub()?.id">
+        <div class="mini-spinner" *ngIf="savingId() === editSub()?.id"></div>
+        Save changes
+      </button>
+    </div>
+  </div>
+</div>

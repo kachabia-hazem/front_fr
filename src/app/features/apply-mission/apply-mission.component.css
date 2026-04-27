@@ -1159,6 +1159,14 @@
   box-shadow: 0 3px 10px rgba(90, 170, 158, 0.25);
 }
 
+.apply-cost-badge {
+  background: rgba(255,255,255,.25);
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
 /* ══════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════ */

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   // Public landing page — shown when app opens without auth
@@ -56,6 +57,16 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/freelancer-balance/freelancer-balance.component').then(
         (m) => m.FreelancerBalanceComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Freelancer transactions — standalone (no navbar/footer)
+  {
+    path: 'freelancer-transactions',
+    loadComponent: () =>
+      import('./features/freelancer-transactions/freelancer-transactions.component').then(
+        (m) => m.FreelancerTransactionsComponent,
       ),
     canActivate: [authGuard],
   },
@@ -128,6 +139,34 @@ export const routes: Routes = [
         (m) => m.CompanyContractsComponent,
       ),
     canActivate: [authGuard],
+  },
+
+  {
+    path: 'company-subscription',
+    loadComponent: () =>
+      import('./features/company-subscription/company-subscription.component').then(
+        (m) => m.CompanySubscriptionComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Company balance — standalone (no navbar/footer)
+  {
+    path: 'company-balance',
+    loadComponent: () =>
+      import('./features/company-balance/company-balance.component').then(
+        (m) => m.CompanyBalanceComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Offers / pricing page — standalone (no navbar/footer)
+  {
+    path: 'offers',
+    loadComponent: () =>
+      import('./features/offers/offers.component').then(
+        (m) => m.OffersComponent,
+      ),
   },
 
   // Freelancer missions list — standalone (no navbar/footer)
@@ -349,6 +388,22 @@ export const routes: Routes = [
     ],
   },
 
+  // Payment result pages
+  {
+    path: 'payment/success',
+    loadComponent: () =>
+      import('./features/payment-success/payment-success.component').then(
+        (m) => m.PaymentSuccessComponent,
+      ),
+  },
+  {
+    path: 'payment/cancel',
+    loadComponent: () =>
+      import('./features/payment-cancel/payment-cancel.component').then(
+        (m) => m.PaymentCancelComponent,
+      ),
+  },
+
   // Settings — standalone (no navbar/footer)
   {
     path: 'settings',
@@ -357,6 +412,16 @@ export const routes: Routes = [
         (m) => m.SettingsComponent,
       ),
     canActivate: [authGuard],
+  },
+
+  // Admin Dashboard — layout séparé, protégé par adminGuard
+  {
+    path: 'admin',
+    loadComponent: () =>
+      import('./features/admin/layout/admin-layout.component').then(m => m.AdminLayoutComponent),
+    canActivate: [adminGuard],
+    loadChildren: () =>
+      import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES),
   },
 
   // Fallback

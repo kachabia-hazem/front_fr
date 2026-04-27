@@ -93,4 +93,5 @@ export interface AuthResponse {
   message: string;
   needsRegistration?: boolean;
   oauthProfile?: OAuthProfile;
+  verificationStatus?: string;
 }

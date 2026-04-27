@@ -41,6 +41,10 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           {{ 'nav.messaging' | translate }}
         </a>
+        <a routerLink="/company-balance" routerLinkActive="active" class="sidebar-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          {{ 'nav.my_balance' | translate }}
+        </a>
         <a routerLink="/company-notifications" routerLinkActive="active" class="sidebar-link">
           <span class="notif-icon-wrapper">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
@@ -88,6 +92,15 @@
           <p class="dashboard-subtitle">{{ 'dashboard.subtitle_company' | translate }}</p>
         </div>
         <div class="header-actions">
+          <!-- Report button -->
+          <button class="header-report-btn" (click)="reportModalOpen.set(true)" title="Soumettre un signalement">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+              <line x1="4" y1="22" x2="4" y2="15"/>
+            </svg>
+            <span>Signalement</span>
+          </button>
           <button class="header-theme-btn" (click)="themeService.toggle()" [title]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
             @if (themeService.isDark()) {
               <!-- Sun icon — switch to light -->
@@ -505,3 +518,11 @@
     }
   </main>
 </div>
+
+@if (reportModalOpen()) {
+  <app-report-modal
+    userRole="COMPANY"
+    (closed)="reportModalOpen.set(false)"
+    (submitted)="reportModalOpen.set(false)">
+  </app-report-modal>
+}

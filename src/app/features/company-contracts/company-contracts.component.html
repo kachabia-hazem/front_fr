@@ -160,9 +160,16 @@
                   </span>
                 </td>
                 <td>
-                  <span class="status-badge" [class]="'badge-' + contract.status.toLowerCase()">
-                    {{ statusLabel(contract.status) }}
-                  </span>
+                  <div class="status-cell">
+                    <span class="status-badge" [class]="'badge-' + contract.status.toLowerCase()">
+                      {{ statusLabel(contract.status) }}
+                    </span>
+                    @if (contract.status === 'SIGNED' || contract.status === 'FINISHED') {
+                      <span class="payment-badge" [class]="paymentBadgeClass(contract.paymentStatus)">
+                        {{ paymentStatusLabel(contract.paymentStatus) }}
+                      </span>
+                    }
+                  </div>
                 </td>
                 <td>
                   <span class="date-text" [class.date-rejected]="contract.status === 'REJECTED'">
@@ -170,29 +177,36 @@
                   </span>
                 </td>
                 <td>
-                  <div class="action-menu-wrapper" (click)="$event.stopPropagation()">
-                    <button class="btn-dots" (click)="toggleMenu(contract.id)">
-                      <span></span><span></span><span></span>
-                    </button>
-                    @if (openMenuId() === contract.id) {
-                      <div class="dropdown-menu">
-                        <button class="dropdown-item" (click)="viewPdf(contract); closeMenu()">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                          View Contract
-                        </button>
-                        @if (contract.status === 'REJECTED') {
-                          <button class="dropdown-item dropdown-item-rejected" (click)="openRejectionModal(contract); closeMenu()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                            View Reason
-                          </button>
-                        } @else {
-                          <button class="dropdown-item" (click)="downloadPdf(contract); closeMenu()" [disabled]="contract.status !== 'SIGNED'">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            Download PDF
-                          </button>
-                        }
-                      </div>
+                  <div class="action-cell">
+                    @if (contract.status === 'SIGNED' && (!contract.paymentStatus || contract.paymentStatus === 'UNPAID' || contract.paymentStatus === 'FAILED')) {
+                      <button class="btn-pay" (click)="openPaymentModal(contract)">
+                        💳 Payer
+                      </button>
                     }
+                    <div class="action-menu-wrapper" (click)="$event.stopPropagation()">
+                      <button class="btn-dots" (click)="toggleMenu(contract.id)">
+                        <span></span><span></span><span></span>
+                      </button>
+                      @if (openMenuId() === contract.id) {
+                        <div class="dropdown-menu">
+                          <button class="dropdown-item" (click)="viewPdf(contract); closeMenu()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            View Contract
+                          </button>
+                          @if (contract.status === 'REJECTED') {
+                            <button class="dropdown-item dropdown-item-rejected" (click)="openRejectionModal(contract); closeMenu()">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                              View Reason
+                            </button>
+                          } @else {
+                            <button class="dropdown-item" (click)="downloadPdf(contract); closeMenu()" [disabled]="contract.status !== 'SIGNED'">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                              Download PDF
+                            </button>
+                          }
+                        </div>
+                      }
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -378,6 +392,16 @@
 
     </div>
   </div>
+}
+
+<!-- ── Payment modal ─────────────────────────────────────────────────────── -->
+@if (showPaymentModal() && paymentContract(); as contract) {
+  <app-payment-modal
+    [contractId]="contract.id"
+    [missionTitle]="contract.missionTitle"
+    (closed)="closePaymentModal()"
+    (paid)="onPaymentSuccess()"
+  />
 }
 
 <!-- ── Toast ──────────────────────────────────────────────────────────────── -->

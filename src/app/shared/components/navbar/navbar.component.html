@@ -1,3 +1,6 @@
+<!-- Offer toast -->
+<div class="offer-toast" *ngIf="offerToast()" [class]="offerToast()!.type">{{ offerToast()!.text }}</div>
+
 <nav class="navbar">
   <div class="nav-left">
     <a routerLink="/" class="logo">
@@ -13,7 +16,9 @@
       }
     </div>
   </div>
+
   <div class="nav-right">
+
     @if (isCompany) {
       <a routerLink="/post-job" class="btn-post-job">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -21,34 +26,26 @@
       </a>
     }
 
+    <!-- ── Points balance + buy button ── -->
+    @if ((isFreelancer || isCompany) && hasProfile) {
+      <div class="nav-balance-wrap">
+        <div class="nav-balance-pill" [routerLink]="isFreelancer ? '/freelancer-balance' : '/company-balance'" title="Voir mon solde">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>{{ pointsBalance() }} pts</span>
+        </div>
+        <a class="nav-plus-btn" routerLink="/offers" title="Voir les offres">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </a>
+      </div>
+    }
+
     @if (authService.isAuthenticated()) {
       @if (hasProfile) {
-        <!-- Profile Section (Freelancer or Company) -->
         <div class="profile-section" (click)="toggleDropdown($event)">
           <div class="avatar-wrapper" [class.company-wrapper]="isCompany">
-            <!-- Progress Ring SVG -->
             <svg class="progress-ring" viewBox="0 0 50 50">
-              <!-- Background circle -->
-              <circle
-                class="progress-ring-bg"
-                cx="25"
-                cy="25"
-                r="22"
-                fill="none"
-                stroke-width="3"
-              />
-              <!-- Progress circle -->
-              <circle
-                class="progress-ring-circle"
-                [class.complete]="isProfileComplete"
-                cx="25"
-                cy="25"
-                r="22"
-                fill="none"
-                stroke-width="3"
-                [style.strokeDasharray]="progressCircumference"
-                [style.strokeDashoffset]="progressOffset"
-              />
+              <circle class="progress-ring-bg" cx="25" cy="25" r="22" fill="none" stroke-width="3"/>
+              <circle class="progress-ring-circle" [class.complete]="isProfileComplete" cx="25" cy="25" r="22" fill="none" stroke-width="3" [style.strokeDasharray]="progressCircumference" [style.strokeDashoffset]="progressOffset"/>
             </svg>
             @if (profilePicture) {
               <img [src]="getFileUrl(profilePicture)" alt="Profile" class="profile-avatar" [class.company-avatar]="isCompany" />
@@ -129,30 +126,17 @@
           </div>
         }
       } @else {
-        <!-- Non-freelancer/company authenticated user fallback -->
         <span class="user-email">{{ authService.currentUser()?.email }}</span>
         <span class="user-role">{{ authService.currentUser()?.role }}</span>
         <button class="btn-logout" (click)="logout()">Logout</button>
       }
     } @else {
       <div class="nav-guest">
-        <button class="theme-toggle-guest" (click)="toggleTheme()" [title]="themeService.isDark() ? 'Light Mode' : 'Dark Mode'">
+        <button class="theme-toggle-guest" (click)="toggleTheme()">
           @if (themeService.isDark()) {
-            <!-- Sun icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"/>
-              <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           } @else {
-            <!-- Moon icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           }
         </button>
         <a routerLink="/auth/login" class="nav-link">{{ 'nav.login' | translate }}</a>
@@ -161,3 +145,208 @@
     }
   </div>
 </nav>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     OFFERS MODAL  (dark, premium, ChatGPT-style)
+══════════════════════════════════════════════════════════════════════════ -->
+<div class="offers-overlay" *ngIf="showOffersModal()" (click)="closeOffersModal()">
+  <div class="offers-modal" (click)="$event.stopPropagation()">
+
+    <!-- Close -->
+    <button class="offers-close" (click)="closeOffersModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <!-- Header -->
+    <div class="offers-header">
+      <h2 class="offers-title">
+        {{ isFreelancer ? 'Acheter des points' : 'Passer au forfait supérieur' }}
+      </h2>
+      <p class="offers-subtitle">
+        {{ isFreelancer ? 'Utilisez vos points pour postuler aux missions et accélérer votre carrière.' : 'Accédez à des avantages exclusifs et des points mensuels.' }}
+      </p>
+      <!-- Current balance -->
+      <div class="offers-current-balance">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Solde actuel : <strong>{{ pointsBalance() }} pts</strong>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="offers-loading" *ngIf="offersLoading()">
+      <div class="offers-spinner"></div>
+    </div>
+
+    <!-- ── FREELANCER: Packs grid ─────────────────────────────────────────── -->
+    <ng-container *ngIf="isFreelancer && !offersLoading() && !confirmPack()">
+      <div class="offers-cards">
+        <div class="offer-card"
+          *ngFor="let pack of catalogPacks(); let i = index"
+          [class.offer-card-highlight]="pack.savingsPercent >= 20"
+          [class.offer-card-promo]="pack.promoEnabled && pack.promoPrice !== null">
+
+          <!-- Popular badge -->
+          <div class="offer-card-badge" *ngIf="pack.savingsPercent >= 20">POPULAIRE</div>
+
+          <!-- Name -->
+          <div class="offer-card-name">{{ pack.name }}</div>
+
+          <!-- Category pill -->
+          <div class="offer-cat-pill" [class]="'cat-' + pack.category.toLowerCase()">
+            {{ pack.category }}
+          </div>
+
+          <!-- Points -->
+          <div class="offer-pts-big">
+            <span class="offer-pts-num">{{ pack.points }}</span>
+            <div class="offer-pts-unit">
+              <span>pts</span>
+              <span class="offer-ppp">{{ formatTND(pack.pricePerPoint) }}/pt</span>
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div class="offer-price-wrap">
+            <ng-container *ngIf="pack.promoEnabled && pack.promoPrice !== null">
+              <span class="offer-price-strike">{{ formatTND(pack.price) }}</span>
+              <div class="offer-price-main promo">{{ formatTND(pack.promoPrice!) }}</div>
+            </ng-container>
+            <ng-container *ngIf="!(pack.promoEnabled && pack.promoPrice !== null)">
+              <div class="offer-price-main">{{ formatTND(pack.price) }}</div>
+            </ng-container>
+          </div>
+
+          <!-- Promo label -->
+          <div class="offer-promo-lbl" *ngIf="pack.promoEnabled && pack.promoLabel">{{ pack.promoLabel }}</div>
+
+          <!-- Savings -->
+          <div class="offer-savings" *ngIf="pack.savingsPercent > 0">
+            Économie −{{ pack.savingsPercent }}% vs pack de base
+          </div>
+
+          <!-- CTA -->
+          <button class="offer-cta" (click)="askConfirmPack(pack)"
+            [class.offer-cta-highlight]="pack.savingsPercent >= 20">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Acheter ce pack
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ── COMPANY: Subscriptions grid ───────────────────────────────────── -->
+    <ng-container *ngIf="isCompany && !offersLoading() && !confirmSub()">
+      <div class="offers-cards">
+        <div class="offer-card"
+          *ngFor="let sub of catalogSubs()"
+          [class.offer-card-highlight]="isPopularSub(sub)"
+          [class.offer-card-current]="isCurrentSub(sub.id)">
+
+          <!-- Popular badge -->
+          <div class="offer-card-badge" *ngIf="isPopularSub(sub)">POPULAIRE</div>
+          <div class="offer-card-badge badge-active" *ngIf="isCurrentSub(sub.id)">ACTIF</div>
+
+          <div class="offer-card-name">{{ sub.name }}</div>
+
+          <!-- Points -->
+          <div class="offer-pts-big">
+            <span class="offer-pts-num">{{ sub.pointsPerMonth }}</span>
+            <div class="offer-pts-unit">
+              <span>pts</span>
+              <span class="offer-ppp">/mois</span>
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div class="offer-price-wrap">
+            <ng-container *ngIf="sub.promoEnabled && sub.promoPrice !== null">
+              <span class="offer-price-strike">{{ formatTND(sub.pricePerMonth) }}</span>
+              <div class="offer-price-main promo">{{ formatTND(sub.promoPrice!) }}</div>
+            </ng-container>
+            <ng-container *ngIf="!(sub.promoEnabled && sub.promoPrice !== null)">
+              <div class="offer-price-main">{{ formatTND(sub.pricePerMonth) }}</div>
+            </ng-container>
+            <span class="offer-period">/mois</span>
+          </div>
+
+          <div class="offer-promo-lbl" *ngIf="sub.promoEnabled && sub.promoLabel">{{ sub.promoLabel }}</div>
+
+          <!-- Advantages -->
+          <ul class="offer-adv-list">
+            <li *ngFor="let adv of sub.advantages">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              {{ adv }}
+            </li>
+          </ul>
+
+          <!-- CTA -->
+          <button class="offer-cta"
+            [class.offer-cta-highlight]="isPopularSub(sub)"
+            [class.offer-cta-current]="isCurrentSub(sub.id)"
+            [disabled]="isCurrentSub(sub.id)"
+            (click)="askConfirmSub(sub)">
+            {{ isCurrentSub(sub.id) ? 'Forfait actuel' : "Passer à " + sub.name }}
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ── Confirmation Pack ──────────────────────────────────────────────── -->
+    <ng-container *ngIf="confirmPack() as pack">
+      <div class="offer-confirm">
+        <button class="offer-confirm-back" (click)="confirmPack.set(null)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Retour
+        </button>
+        <div class="offer-confirm-card">
+          <div class="offer-confirm-pts">{{ pack.points }}<span>pts</span></div>
+          <div class="offer-confirm-name">{{ pack.name }}</div>
+          <div class="offer-confirm-price">
+            <ng-container *ngIf="pack.promoEnabled && pack.promoPrice !== null">
+              <span class="strike">{{ formatTND(pack.price) }}</span>
+              <strong class="promo">{{ formatTND(pack.promoPrice!) }}</strong>
+            </ng-container>
+            <strong *ngIf="!(pack.promoEnabled && pack.promoPrice !== null)">{{ formatTND(pack.price) }}</strong>
+          </div>
+        </div>
+        <p class="offer-confirm-note">
+          Après confirmation, <strong>{{ pack.points }} points</strong> seront immédiatement crédités sur votre solde. Le paiement sera intégré prochainement.
+        </p>
+        <button class="offer-confirm-btn" (click)="doPurchasePack()" [disabled]="purchasing()">
+          <div class="offer-confirm-spin" *ngIf="purchasing()"></div>
+          <span *ngIf="!purchasing()">Confirmer l'achat</span>
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- ── Confirmation Subscription ─────────────────────────────────────── -->
+    <ng-container *ngIf="confirmSub() as sub">
+      <div class="offer-confirm">
+        <button class="offer-confirm-back" (click)="confirmSub.set(null)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Retour
+        </button>
+        <div class="offer-confirm-card">
+          <div class="offer-confirm-pts">{{ sub.pointsPerMonth }}<span>pts/mois</span></div>
+          <div class="offer-confirm-name">{{ sub.name }}</div>
+          <div class="offer-confirm-price">
+            <ng-container *ngIf="sub.promoEnabled && sub.promoPrice !== null">
+              <span class="strike">{{ formatTND(sub.pricePerMonth) }}</span>
+              <strong class="promo">{{ formatTND(sub.promoPrice!) }}</strong>
+            </ng-container>
+            <strong *ngIf="!(sub.promoEnabled && sub.promoPrice !== null)">{{ formatTND(sub.pricePerMonth) }}</strong>
+            <span class="per">/mois</span>
+          </div>
+        </div>
+        <p class="offer-confirm-note">
+          Votre abonnement <strong>{{ sub.name }}</strong> sera actif pour <strong>30 jours</strong> et <strong>{{ sub.pointsPerMonth }} points</strong> seront crédités. Le paiement sera intégré prochainement.
+        </p>
+        <button class="offer-confirm-btn" (click)="doSubscribe()" [disabled]="purchasing()">
+          <div class="offer-confirm-spin" *ngIf="purchasing()"></div>
+          <span *ngIf="!purchasing()">Confirmer l'abonnement</span>
+        </button>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

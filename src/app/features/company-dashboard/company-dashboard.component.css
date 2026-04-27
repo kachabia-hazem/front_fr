@@ -422,6 +422,38 @@
   gap: 16px;
 }
 
+/* ── Report Button ── */
+.header-report-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 16px;
+  height: 42px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 10px rgba(239, 68, 68, 0.35);
+  animation: reportPulse 2.5s ease-in-out infinite;
+  white-space: nowrap;
+}
+.header-report-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+  animation: none;
+}
+@keyframes reportPulse {
+  0%, 100% { box-shadow: 0 3px 10px rgba(239, 68, 68, 0.35); }
+  50%       { box-shadow: 0 3px 20px rgba(239, 68, 68, 0.55); }
+}
+:host-context(body.dark-theme) .header-report-btn {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
 /* ── Header Bell Button ── */
 .header-actions {
   display: flex;

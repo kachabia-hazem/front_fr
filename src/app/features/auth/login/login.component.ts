@@ -135,13 +135,30 @@ export class LoginComponent implements OnInit, AfterViewInit {
     const { email, password } = this.loginForm.value;
 
     this.authService.login({ email, password }).subscribe({
-      next: () => {
+      next: (res) => {
+        if (res.role === 'ADMIN') {
+          this.router.navigate(['/admin/overview']);
+          return;
+        }
+        if (res.role === 'COMPANY' && res.verificationStatus !== 'APPROVED') {
+          // Company not yet approved — do NOT store token, redirect to review page
+          this.authService.clearAuth();
+          this.router.navigate(['/auth/company-under-review'], {
+            state: { status: res.verificationStatus ?? 'PENDING' }
+          });
+          return;
+        }
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
         this.router.navigateByUrl(returnUrl);
       },
       error: (err) => {
         this.loading = false;
-        if (err.error?.message) {
+        if (err.status === 403 && err.error?.message) {
+          this.authService.clearAuth();
+          this.router.navigate(['/auth/banned'], {
+            state: { banReason: err.error.banReason ?? '' },
+          });
+        } else if (err.error?.message) {
           this.errorMessage = err.error.message;
         } else if (err.error?.error) {
           this.errorMessage = err.error.error;

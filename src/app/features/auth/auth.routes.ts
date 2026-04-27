@@ -29,6 +29,25 @@ export const AUTH_ROUTES: Routes = [
       ),
   },
   {
+    path: 'company-pending',
+    loadComponent: () =>
+      import('./company-pending/company-pending.component').then(
+        (m) => m.CompanyPendingComponent,
+      ),
+  },
+  {
+    path: 'company-under-review',
+    loadComponent: () =>
+      import('./company-under-review/company-under-review.component').then(
+        (m) => m.CompanyUnderReviewComponent,
+      ),
+  },
+  {
+    path: 'banned',
+    loadComponent: () =>
+      import('./banned/banned.component').then((m) => m.BannedComponent),
+  },
+  {
     path: 'oauth/role-selection',
     loadComponent: () =>
       import('./oauth-role-selection/oauth-role-selection.component').then(

@@ -1,0 +1,83 @@
+.toast { position: fixed; top: 20px; right: 20px; z-index: 9999; padding: 11px 18px; border-radius: 10px; font-size: 0.875rem; font-weight: 600; box-shadow: 0 4px 16px rgba(0,0,0,0.1); animation: slideIn 0.3s ease; }
+.toast.success { background: #d1fae5; color: #065f46; }
+.toast.error { background: #fee2e2; color: #991b1b; }
+@keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.users-page { max-width: 1080px; }
+.page-header { margin-bottom: 20px; }
+.page-title { font-size: 1.2rem; font-weight: 700; color: #1a1a2e; margin: 0 0 4px; }
+.page-subtitle { font-size: 0.8rem; color: #9ca3af; margin: 0; }
+
+.tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+.tabs button { padding: 8px 18px; border-radius: 9px; border: 1px solid #e8eaed; background: #ffffff; color: #6b7280; cursor: pointer; font-size: 0.8rem; font-weight: 500; transition: all 0.2s; }
+.tabs button.active { background: #3793B0; color: #fff; border-color: #3793B0; }
+
+.search-bar { display: flex; align-items: center; gap: 10px; background: #ffffff; border: 1px solid #e8eaed; border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+.search-bar svg { color: #9ca3af; flex-shrink: 0; }
+.search-input { border: none; outline: none; font-size: 0.875rem; color: #374151; flex: 1; background: transparent; }
+
+.loading-state { display: flex; align-items: center; gap: 10px; padding: 40px 0; color: #9ca3af; font-size: 0.875rem; }
+.spinner { width: 20px; height: 20px; border: 2px solid #e8eaed; border-top-color: #3793B0; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.table-card { background: #ffffff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; }
+.users-table { width: 100%; border-collapse: collapse; }
+.users-table th { padding: 11px 16px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9ca3af; background: #f8f9fb; border-bottom: 1px solid #e8eaed; text-align: left; }
+.users-table td { padding: 13px 16px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+.users-table tr:last-child td { border-bottom: none; }
+.users-table tbody tr:hover { background: #f8f9fb; }
+
+.user-cell { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: #3793B0; color: #fff; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.company-av { border-radius: 10px; }
+.user-name { font-weight: 600; font-size: 0.875rem; color: #1a1a2e; }
+.user-sub { font-size: 0.75rem; color: #9ca3af; }
+.email-cell { font-size: 0.8rem; color: #6b7280; }
+
+.skills-wrap { display: flex; gap: 4px; flex-wrap: wrap; }
+.skill-tag { background: #f0f2f5; color: #374151; border-radius: 5px; padding: 2px 7px; font-size: 0.7rem; font-weight: 500; }
+.more-tag { background: rgba(55,147,176,0.1); color: #3793B0; border-radius: 5px; padding: 2px 7px; font-size: 0.7rem; font-weight: 600; }
+
+.rating { font-size: 0.8rem; color: #f59e0b; font-weight: 600; }
+.na { color: #d1d5db; font-size: 0.8rem; }
+
+.sector-tag { background: #f0f2f5; color: #374151; border-radius: 6px; padding: 3px 8px; font-size: 0.75rem; font-weight: 500; }
+
+.verif-badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+.verif-badge.pending { background: #fef3c7; color: #92400e; }
+.verif-badge.approved { background: #d1fae5; color: #065f46; }
+.verif-badge.rejected { background: #fee2e2; color: #991b1b; }
+
+.status-dot { font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+.status-dot.active { background: #d1fae5; color: #065f46; }
+.status-dot.banned { background: #fee2e2; color: #991b1b; }
+
+.row-actions { display: flex; gap: 6px; }
+.btn-ban { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 7px; border: 1px solid #e8eaed; background: #ffffff; color: #6b7280; cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: all 0.2s; }
+.btn-ban:hover { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+.btn-ban.unban { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
+.btn-delete { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 7px; border: 1px solid #fca5a5; background: #fff5f5; color: #991b1b; cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: background 0.2s; }
+.btn-delete:hover { background: #fecaca; }
+
+.empty-cell { text-align: center; color: #9ca3af; padding: 40px; font-size: 0.875rem; }
+
+.modal-overlay { position: fixed; inset: 0; z-index: 600; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; }
+.modal { background: #fff; border-radius: 16px; padding: 28px; width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.14); }
+.modal h3 { font-size: 1.1rem; font-weight: 700; margin: 0 0 10px; color: #1a1a2e; }
+.modal p { font-size: 0.875rem; color: #6b7280; margin: 0 0 6px; }
+.warning-text { color: #ef4444; font-weight: 600; }
+.modal-actions { display: flex; gap: 8px; margin-top: 20px; justify-content: flex-end; }
+.btn-cancel { padding: 9px 18px; border-radius: 9px; border: 1px solid #e8eaed; background: #fff; color: #6b7280; cursor: pointer; font-size: 0.875rem; font-weight: 600; }
+.btn-confirm-delete { padding: 9px 18px; border-radius: 9px; background: #ef4444; color: #fff; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 700; transition: background 0.2s; }
+.btn-confirm-delete:hover { background: #dc2626; }
+
+.modal-icon { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 50%; margin-bottom: 14px; }
+.ban-icon { background: #fff7ed; color: #ea580c; }
+.ban-reason-field { margin-top: 14px; }
+.ban-reason-field label { display: block; font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
+.ban-reason-field .required { color: #ef4444; }
+.ban-reason-field textarea { width: 100%; border: 1px solid #e8eaed; border-radius: 9px; padding: 10px 12px; font-size: 0.875rem; color: #374151; resize: vertical; outline: none; font-family: inherit; box-sizing: border-box; }
+.ban-reason-field textarea:focus { border-color: #3793B0; box-shadow: 0 0 0 3px rgba(55,147,176,0.12); }
+.btn-confirm-ban { padding: 9px 18px; border-radius: 9px; background: #ea580c; color: #fff; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 700; transition: background 0.2s; }
+.btn-confirm-ban:hover:not(:disabled) { background: #c2410c; }
+.btn-confirm-ban:disabled { opacity: 0.5; cursor: not-allowed; }

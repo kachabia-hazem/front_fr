@@ -1,0 +1,190 @@
+<!-- Toast -->
+<div class="toast" *ngIf="toastMessage()" [class]="toastMessage()!.type">{{ toastMessage()!.text }}</div>
+
+<div class="users-page">
+  <div class="page-header">
+    <h1 class="page-title">User Management</h1>
+    <p class="page-subtitle">Manage all platform users</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab() === 'freelancers'" (click)="setTab('freelancers')">
+      Freelancers ({{ freelancers().length }})
+    </button>
+    <button [class.active]="activeTab() === 'companies'" (click)="setTab('companies')">
+      Companies ({{ companies().length }})
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input
+      class="search-input"
+      type="text"
+      [placeholder]="activeTab() === 'freelancers' ? 'Search freelancers...' : 'Search companies...'"
+      [value]="searchQuery()"
+      (input)="searchQuery.set($any($event.target).value)"
+    />
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loading()">
+    <div class="spinner"></div> Loading users...
+  </div>
+
+  <!-- ── Freelancers Table ── -->
+  <div class="table-card" *ngIf="!loading() && activeTab() === 'freelancers'">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Skills</th>
+          <th>Rating</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let f of filteredFreelancers()">
+          <td>
+            <div class="user-cell">
+              <div class="avatar">{{ f.firstName.charAt(0) }}{{ f.lastName.charAt(0) }}</div>
+              <div>
+                <div class="user-name">{{ f.firstName }} {{ f.lastName }}</div>
+                <div class="user-sub">{{ f.currentPosition ?? '—' }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="email-cell">{{ f.email }}</td>
+          <td>
+            <div class="skills-wrap">
+              <span class="skill-tag" *ngFor="let s of (f.skills ?? []).slice(0, 3)">{{ s }}</span>
+              <span class="more-tag" *ngIf="(f.skills?.length ?? 0) > 3">+{{ (f.skills?.length ?? 0) - 3 }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="rating" *ngIf="f.rating">★ {{ f.rating | number:'1.1-1' }}</span>
+            <span class="na" *ngIf="!f.rating">—</span>
+          </td>
+          <td>
+            <span class="status-dot" [class.active]="f.isActive" [class.banned]="!f.isActive">
+              {{ f.isActive ? 'Active' : 'Banned' }}
+            </span>
+          </td>
+          <td>
+            <div class="row-actions">
+              <button class="btn-ban" (click)="toggleFreelancerBan(f)" [class.unban]="!f.isActive">
+                <svg *ngIf="f.isActive" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                <svg *ngIf="!f.isActive" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                {{ f.isActive ? 'Ban' : 'Unban' }}
+              </button>
+              <button class="btn-delete" (click)="confirmDelete(f.id, f.firstName + ' ' + f.lastName, 'freelancers')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="filteredFreelancers().length === 0">
+          <td colspan="6" class="empty-cell">No freelancers found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── Companies Table ── -->
+  <div class="table-card" *ngIf="!loading() && activeTab() === 'companies'">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Email</th>
+          <th>Sector</th>
+          <th>Verification</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of filteredCompanies()">
+          <td>
+            <div class="user-cell">
+              <div class="avatar company-av">{{ c.companyName.charAt(0) }}</div>
+              <div>
+                <div class="user-name">{{ c.companyName }}</div>
+                <div class="user-sub">{{ c.legalForm }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="email-cell">{{ c.email }}</td>
+          <td><span class="sector-tag">{{ c.businessSector }}</span></td>
+          <td>
+            <span class="verif-badge" [class]="c.verificationStatus?.toLowerCase()">
+              {{ c.verificationStatus ?? 'PENDING' }}
+            </span>
+          </td>
+          <td>
+            <span class="status-dot" [class.active]="c.isActive" [class.banned]="!c.isActive">
+              {{ c.isActive ? 'Active' : 'Banned' }}
+            </span>
+          </td>
+          <td>
+            <div class="row-actions">
+              <button class="btn-ban" (click)="toggleCompanyBan(c)" [class.unban]="!c.isActive">
+                <svg *ngIf="c.isActive" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                <svg *ngIf="!c.isActive" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                {{ c.isActive ? 'Ban' : 'Unban' }}
+              </button>
+              <button class="btn-delete" (click)="confirmDelete(c.id, c.companyName, 'companies')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="filteredCompanies().length === 0">
+          <td colspan="6" class="empty-cell">No companies found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── Ban Confirmation Modal ── -->
+<div class="modal-overlay" *ngIf="showBanModal()">
+  <div class="modal">
+    <div class="modal-icon ban-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+    </div>
+    <h3>Ban User</h3>
+    <p>You are about to ban <strong>{{ showBanModal()?.name }}</strong>.</p>
+    <div class="ban-reason-field">
+      <label>Reason for ban <span class="required">*</span></label>
+      <textarea
+        [(ngModel)]="banReason"
+        placeholder="Enter the reason for banning this user..."
+        rows="3"
+      ></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="showBanModal.set(null)">Cancel</button>
+      <button class="btn-confirm-ban" (click)="executeBan()" [disabled]="!banReason.trim()">Confirm Ban</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Delete Confirmation Modal ── -->
+<div class="modal-overlay" *ngIf="showDeleteModal()">
+  <div class="modal">
+    <h3>Confirm Deletion</h3>
+    <p>Are you sure you want to permanently delete <strong>{{ showDeleteModal()?.name }}</strong>?</p>
+    <p class="warning-text">This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="showDeleteModal.set(null)">Cancel</button>
+      <button class="btn-confirm-delete" (click)="executeDelete()">Delete</button>
+    </div>
+  </div>
+</div>

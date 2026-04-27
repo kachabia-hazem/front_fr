@@ -30,6 +30,7 @@ export class MissionDetailComponent implements OnInit {
   matchingLoading = signal(false);
   matchingResult = signal<MatchMissionResult | null>(null);
   showMatchingModal = signal(false);
+  showMatchConfirm = signal(false);
   matchingError = signal('');
   explanationLoading = signal(false);
   private profileCompletion: number | null = null;
@@ -211,7 +212,16 @@ export class MissionDetailComponent implements OnInit {
     });
   }
 
+  openMatchConfirm(): void {
+    this.showMatchConfirm.set(true);
+  }
+
+  cancelMatchConfirm(): void {
+    this.showMatchConfirm.set(false);
+  }
+
   checkMatching(): void {
+    this.showMatchConfirm.set(false);
     const id = this.mission()?.id ?? this.route.snapshot.paramMap.get('id');
     if (!id) {
       this.toastService.show(this.translate.instant('detail_page.mission_not_found'), 'error');
@@ -246,7 +256,12 @@ export class MissionDetailComponent implements OnInit {
       error: (err) => {
         this.matchingLoading.set(false);
         const status = err?.status;
-        if (status === 403) {
+        if (status === 402) {
+          this.matchingError.set(
+            (err.error?.message ?? 'Solde insuffisant.') +
+            ' Rechargez vos points sur la page Offres.'
+          );
+        } else if (status === 403) {
           this.matchingError.set('Access denied (403). Make sure you are logged in as a freelancer and the backend has been restarted.');
         } else if (status === 500) {
           this.matchingError.set('Server error (500). The AI service may still be starting up, please try again.');

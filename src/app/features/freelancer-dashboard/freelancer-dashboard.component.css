@@ -439,6 +439,41 @@
   gap: 16px;
 }
 
+/* ── Report Button ── */
+.header-report-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 16px;
+  height: 42px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 10px rgba(239, 68, 68, 0.35);
+  animation: reportPulse 2.5s ease-in-out infinite;
+  white-space: nowrap;
+}
+
+.header-report-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45);
+  animation: none;
+}
+
+@keyframes reportPulse {
+  0%, 100% { box-shadow: 0 3px 10px rgba(239, 68, 68, 0.35); }
+  50%       { box-shadow: 0 3px 20px rgba(239, 68, 68, 0.55); }
+}
+
+:host-context(body.dark-theme) .header-report-btn {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
 /* ── Header Bell Button ── */
 .header-actions {
   display: flex;
@@ -2287,6 +2322,110 @@
 :host-context(body.dark-theme) .payment-contract-badge {
   background: rgba(52, 211, 153, 0.12);
   color: #34d399;
+}
+
+/* Payment status badge variants */
+.ps-escrow  { background: rgba(245,158,11,0.12) !important; color: #d97706 !important; }
+.ps-earned  { background: rgba(16,185,129,0.12) !important; color: #059669 !important; }
+.ps-failed  { background: rgba(239,68,68,0.12)  !important; color: #dc2626 !important; }
+.ps-refunded{ background: rgba(99,102,241,0.12)  !important; color: #6366f1 !important; }
+.ps-unpaid  { background: rgba(107,114,128,0.12) !important; color: #6b7280 !important; }
+
+:host-context(body.dark-theme) .ps-escrow   { background: rgba(245,158,11,0.18) !important; color: #fbbf24 !important; }
+:host-context(body.dark-theme) .ps-earned   { background: rgba(52,211,153,0.14) !important; color: #34d399 !important; }
+:host-context(body.dark-theme) .ps-failed   { background: rgba(248,113,113,0.14)!important; color: #f87171 !important; }
+:host-context(body.dark-theme) .ps-refunded { background: rgba(129,140,248,0.14)!important; color: #818cf8 !important; }
+:host-context(body.dark-theme) .ps-unpaid   { background: rgba(156,163,175,0.14)!important; color: #9ca3af !important; }
+
+/* Balance row */
+.ps-balance-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 600px) {
+  .ps-balance-row { grid-template-columns: 1fr; }
+}
+
+.ps-balance-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+}
+
+.ps-balance-card--escrow {
+  background: rgba(245,158,11,0.07);
+  border-color: rgba(245,158,11,0.2);
+}
+
+.ps-balance-card--earned {
+  background: rgba(16,185,129,0.07);
+  border-color: rgba(16,185,129,0.2);
+}
+
+:host-context(body.dark-theme) .ps-balance-card--escrow {
+  background: rgba(245,158,11,0.1);
+  border-color: rgba(245,158,11,0.25);
+}
+
+:host-context(body.dark-theme) .ps-balance-card--earned {
+  background: rgba(52,211,153,0.1);
+  border-color: rgba(52,211,153,0.25);
+}
+
+.ps-balance-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.ps-balance-card--escrow .ps-balance-icon {
+  background: rgba(245,158,11,0.15);
+  color: #d97706;
+}
+
+.ps-balance-card--earned .ps-balance-icon {
+  background: rgba(16,185,129,0.15);
+  color: #059669;
+}
+
+:host-context(body.dark-theme) .ps-balance-card--escrow .ps-balance-icon { color: #fbbf24; }
+:host-context(body.dark-theme) .ps-balance-card--earned  .ps-balance-icon { color: #34d399; }
+
+.ps-balance-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ps-balance-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ps-balance-amount {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+}
+
+:host-context(body.dark-theme) .ps-balance-amount { color: #f1f5f9; }
+
+.ps-balance-sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #6b7280);
 }
 
 /* ── Recommended Missions Section ── */

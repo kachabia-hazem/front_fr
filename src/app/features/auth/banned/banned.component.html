@@ -1,0 +1,65 @@
+<div class="banned-page">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <div class="banned-card">
+
+    <div class="ban-icon-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+      </svg>
+    </div>
+
+    <h1 class="banned-title">Account Suspended</h1>
+    <p class="banned-subtitle">
+      Your account has been suspended by an administrator and you can no longer access the platform.
+    </p>
+
+    <div class="reason-box" *ngIf="banReason">
+      <div class="reason-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Reason for suspension
+      </div>
+      <p class="reason-text">{{ banReason }}</p>
+    </div>
+
+    <div class="reason-box no-reason" *ngIf="!banReason">
+      <div class="reason-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        No reason provided
+      </div>
+      <p class="reason-text muted">The administrator did not specify a reason.</p>
+    </div>
+
+    <div class="contact-hint">
+      If you believe this is a mistake, please contact our support team.
+    </div>
+
+    <button class="btn-back" (click)="goToLogin()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      Back to Login
+    </button>
+
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <span>WorkLink</span>
+    </div>
+
+  </div>
+</div>

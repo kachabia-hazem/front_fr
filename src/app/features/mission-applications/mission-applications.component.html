@@ -1,3 +1,34 @@
+<!-- ═══ AI Ranking Confirm Dialog ═══ -->
+@if (showRankConfirm()) {
+  <div class="ai-confirm-overlay" (click)="cancelRankConfirm()">
+    <div class="ai-confirm-dialog" (click)="$event.stopPropagation()">
+      <div class="ai-confirm-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </div>
+      <h3 class="ai-confirm-title">Classement IA des candidats</h3>
+      <p class="ai-confirm-desc">
+        L'IA va analyser et classer tous les candidats selon leurs compétences, leur expérience et leur adéquation au profil recherché.
+      </p>
+      <div class="ai-confirm-cost-row">
+        <span class="ai-confirm-cost-label">Coût de l'opération</span>
+        <span class="ai-confirm-cost-value">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          5 points
+        </span>
+      </div>
+      <div class="ai-confirm-actions">
+        <button class="ai-confirm-cancel" (click)="cancelRankConfirm()">Annuler</button>
+        <button class="ai-confirm-ok" (click)="onAiSort()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Confirmer et classer
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
 <div class="dashboard-layout">
   <!-- Sidebar -->
   <aside class="sidebar" [class.collapsed]="sidebarCollapsed()">
@@ -228,16 +259,22 @@
         <!-- AI Sort Button -->
         @if (!rankedView()) {
           <div class="ai-sort-footer">
-            <button class="ai-sort-btn" (click)="onAiSort()" [disabled]="isRanking()">
+            <button class="ai-sort-btn" (click)="openRankConfirm()" [disabled]="isRanking()">
               @if (isRanking()) {
                 <span class="btn-spinner"></span>
                 Analysing candidates...
               } @else {
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                Sort by AI
+                Sort by AI <span class="ai-cost-badge">5 pts</span>
               }
             </button>
             <p class="ai-sort-hint">AI ranks candidates by skills, experience and profile match</p>
+            @if (rankingError()) {
+              <p class="ai-sort-error">
+                {{ rankingError() }}
+                <a routerLink="/offers" class="ai-sort-offers-link">Voir les offres →</a>
+              </p>
+            }
           </div>
         }
 

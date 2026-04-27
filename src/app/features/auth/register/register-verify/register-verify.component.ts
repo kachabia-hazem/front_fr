@@ -156,7 +156,7 @@ export class RegisterVerifyComponent implements OnInit {
       this.authService.registerCompany(request).subscribe({
         next: () => {
           this.clearSessionData();
-          this.router.navigate(['/']);
+          this.router.navigate(['/auth/company-pending']);
         },
         error: (err) => {
           this.loading = false;

@@ -1,4 +1,5 @@
-export type ContractStatus = 'PENDING_SIGNATURE' | 'SIGNED' | 'CANCELLED' | 'REJECTED';
+export type ContractStatus = 'PENDING_SIGNATURE' | 'SIGNED' | 'FINISHED' | 'CANCELLED' | 'REJECTED';
+export type PaymentStatus = 'UNPAID' | 'AUTHORIZED' | 'CAPTURED' | 'FAILED' | 'REFUNDED';
 
 export interface Contract {
   id: string;
@@ -21,5 +22,15 @@ export interface Contract {
   companySignedAt: string | null;
   rejectedAt: string | null;
   rejectionReason: string | null;
+  finishedAt: string | null;
+  cancelledAt: string | null;
+  cancellationReason: string | null;
   createdAt: string;
+  // Payment fields
+  paymentStatus: PaymentStatus | null;
+  totalAmount: number | null;
+  platformFee: number | null;
+  freelancerAmount: number | null;
+  paidAt: string | null;
+  capturedAt: string | null;
 }

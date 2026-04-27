@@ -1,0 +1,172 @@
+<div class="report-modal-overlay" (click)="overlayClick($event)">
+  <div class="report-modal">
+
+    <!-- Header -->
+    <div class="report-modal-header">
+      <div class="report-modal-title-row">
+        <div class="report-icon-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+            <line x1="4" y1="22" x2="4" y2="15"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="report-modal-title">Signalement</h2>
+          <p class="report-modal-subtitle">Signalez un comportement inapproprié à l'équipe WorkLink</p>
+        </div>
+      </div>
+      <button class="report-modal-close" (click)="close()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Success state -->
+    @if (success()) {
+      <div class="report-success">
+        <div class="report-success-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <h3>Signalement envoyé</h3>
+        <p>Votre signalement a été transmis à l'équipe WorkLink. Nous l'examinerons dans les plus brefs délais.</p>
+      </div>
+    } @else {
+
+    <!-- Form -->
+    <div class="report-modal-body">
+
+      <!-- Status (read-only display) -->
+      <div class="report-field">
+        <label class="report-label">Statut</label>
+        <div class="report-status-badge report-status-en-attente">
+          <span class="report-status-dot"></span>
+          En attente
+        </div>
+      </div>
+
+      <!-- Type -->
+      <div class="report-field">
+        <label class="report-label">Type de signalement <span class="report-required">*</span></label>
+        <select class="report-select" [ngModel]="type()" (ngModelChange)="type.set($event)">
+          @for (t of REPORT_TYPES; track t.value) {
+            <option [value]="t.value">{{ t.label }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Reported against -->
+      <div class="report-field">
+        <label class="report-label">
+          Signalé contre
+          <span class="report-role-tag">{{ userRole === 'FREELANCER' ? 'Entreprise' : 'Freelancer' }}</span>
+          <span class="report-required">*</span>
+        </label>
+        @if (loading()) {
+          <div class="report-loading-line"></div>
+        } @else {
+          <select class="report-select" [ngModel]="reportedAgainstId()" (ngModelChange)="onPartyChange($event)">
+            <option value="">— Sélectionner —</option>
+            @for (p of parties(); track p.id) {
+              <option [value]="p.id">{{ p.name }}</option>
+            }
+          </select>
+        }
+      </div>
+
+      <!-- Reported by (auto-filled, read-only info) -->
+      <div class="report-field">
+        <label class="report-label">Signalé par</label>
+        <div class="report-info-row">
+          <div class="report-role-chip">
+            {{ userRole === 'FREELANCER' ? 'Freelancer' : 'Entreprise' }}
+          </div>
+          <span class="report-info-text">Vous (compte connecté)</span>
+        </div>
+      </div>
+
+      <!-- Linked contract (filtered by selected party) -->
+      <div class="report-field">
+        <label class="report-label">
+          Contrat lié
+          <span class="report-optional">(optionnel)</span>
+        </label>
+        @if (!reportedAgainstId()) {
+          <div class="report-contract-hint">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            Sélectionnez d'abord la partie signalée pour voir les contrats communs
+          </div>
+        } @else if (filteredContracts().length === 0) {
+          <div class="report-contract-empty">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+            Aucun contrat en commun avec cette partie
+          </div>
+        } @else {
+          <select class="report-select" [ngModel]="contractId()" (ngModelChange)="contractId.set($event)">
+            <option value="">— Aucun contrat —</option>
+            @for (c of filteredContracts(); track c.id) {
+              <option [value]="c.id">{{ c.missionTitle }} — {{ c.status }}</option>
+            }
+          </select>
+          <p class="report-contract-count">
+            {{ filteredContracts().length }} contrat{{ filteredContracts().length > 1 ? 's' : '' }} en commun
+          </p>
+        }
+      </div>
+
+      <!-- Description -->
+      <div class="report-field">
+        <label class="report-label">Description <span class="report-required">*</span></label>
+        <textarea
+          class="report-textarea"
+          rows="4"
+          placeholder="Décrivez précisément les faits que vous souhaitez signaler..."
+          [ngModel]="description()"
+          (ngModelChange)="description.set($event)">
+        </textarea>
+      </div>
+
+      <!-- Error -->
+      @if (error()) {
+        <div class="report-error-msg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          {{ error() }}
+        </div>
+      }
+    </div>
+
+    <!-- Footer -->
+    <div class="report-modal-footer">
+      <button class="report-btn-cancel" (click)="close()" [disabled]="submitting()">Annuler</button>
+      <button class="report-btn-submit" (click)="submit()" [disabled]="submitting()">
+        @if (submitting()) {
+          <span class="report-spinner"></span>
+          Envoi en cours...
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Envoyer le signalement
+        }
+      </button>
+    </div>
+
+    }
+  </div>
+</div>

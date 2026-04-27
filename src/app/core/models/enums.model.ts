@@ -44,3 +44,9 @@ export enum LegalForm {
   SUARL = 'SUARL',
   OTHER = 'OTHER',
 }
+
+export enum CompanyStatus {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+}

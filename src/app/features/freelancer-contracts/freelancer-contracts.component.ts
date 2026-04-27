@@ -408,6 +408,22 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
     return status;
   }
 
+  paymentStatusLabel(status: string | null): string {
+    if (!status || status === 'UNPAID') return 'Non payé';
+    if (status === 'AUTHORIZED') return 'Paiement sécurisé';
+    if (status === 'CAPTURED') return 'Payé';
+    if (status === 'FAILED') return 'Échec paiement';
+    return status;
+  }
+
+  paymentBadgeClass(status: string | null): string {
+    if (!status || status === 'UNPAID') return 'badge-unpaid';
+    if (status === 'AUTHORIZED') return 'badge-authorized';
+    if (status === 'CAPTURED') return 'badge-captured';
+    if (status === 'FAILED') return 'badge-failed';
+    return '';
+  }
+
   viewPdf(contract: Contract): void {
     const url = contract.signedPdfUrl || contract.pdfUrl;
     if (url) window.open(this.getFileUrl(url), '_blank');

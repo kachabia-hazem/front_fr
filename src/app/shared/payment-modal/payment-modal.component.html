@@ -1,0 +1,78 @@
+<div class="pm-backdrop" (click)="close()"></div>
+
+<div class="pm-modal">
+  <!-- Header -->
+  <div class="pm-header">
+    <div class="pm-header-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+        <line x1="1" y1="10" x2="23" y2="10"/>
+      </svg>
+    </div>
+    <div>
+      <h2 class="pm-title">Paiement sécurisé</h2>
+      <p class="pm-subtitle">{{ missionTitle }}</p>
+    </div>
+    <button class="pm-close-btn" (click)="close()" [disabled]="submitting()">✕</button>
+  </div>
+
+  <!-- Amount summary -->
+  @if (!loading() && !successMsg()) {
+    <div class="pm-summary">
+      <div class="pm-summary-row">
+        <span>Montant total mission</span>
+        <strong>{{ totalAmount() | number:'1.2-2' }} {{ currency() }}</strong>
+      </div>
+      <div class="pm-summary-row pm-fee-row">
+        <span>Commission plateforme (7%)</span>
+        <span class="pm-fee">-{{ platformFee() | number:'1.2-2' }} {{ currency() }}</span>
+      </div>
+      <div class="pm-summary-divider"></div>
+      <div class="pm-summary-row pm-total-row">
+        <span>Freelancer recevra</span>
+        <strong class="pm-freelancer-amt">{{ freelancerAmt() | number:'1.2-2' }} {{ currency() }}</strong>
+      </div>
+      <p class="pm-escrow-note">
+        💡 Les fonds seront <strong>bloqués en escrow</strong> et libérés au freelancer uniquement après validation de la mission.
+      </p>
+    </div>
+  }
+
+  <!-- Stripe Payment Element -->
+  <div class="pm-body">
+    @if (loading()) {
+      <div class="pm-loading">
+        <div class="pm-spinner"></div>
+        <p>Initialisation du paiement…</p>
+      </div>
+    }
+
+    @if (successMsg()) {
+      <div class="pm-success">
+        <div class="pm-success-icon">✓</div>
+        <p>{{ successMsg() }}</p>
+      </div>
+    }
+
+    @if (errorMessage() && !loading()) {
+      <div class="pm-error">{{ errorMessage() }}</div>
+    }
+
+    <div id="stripe-payment-element" [class.pm-hidden]="loading() || !!successMsg()"></div>
+  </div>
+
+  <!-- Footer -->
+  @if (!loading() && !successMsg()) {
+    <div class="pm-footer">
+      <button class="pm-cancel-btn" (click)="close()" [disabled]="submitting()">Annuler</button>
+      <button class="pm-pay-btn" (click)="confirmPayment()" [disabled]="submitting()">
+        @if (submitting()) {
+          <span class="pm-btn-spinner"></span>
+          Traitement…
+        } @else {
+          🔒 Payer {{ totalAmount() | number:'1.2-2' }} {{ currency() }}
+        }
+      </button>
+    </div>
+  }
+</div>

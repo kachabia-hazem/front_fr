@@ -53,6 +53,16 @@ export class MissionService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
+  adminGetAllMissions(): Observable<Mission[]> {
+    return this.http.get<Mission[]>(`${environment.apiUrl}/admin/missions`);
+  }
+
+  adminDeleteMission(id: string, reason: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/admin/missions/${id}`, {
+      body: { reason }
+    });
+  }
+
   /**
    * Recherche sémantique par AI — retourne les missions triées par pertinence avec score
    */

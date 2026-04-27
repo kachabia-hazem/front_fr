@@ -894,3 +894,48 @@
 :host-context(body.dark-theme) .rejection-reason-text  { color: #c5cad8; }
 :host-context(body.dark-theme) .btn-close-rejection    { background: #252a3a; color: #9ca3af; }
 :host-context(body.dark-theme) .btn-close-rejection:hover { background: #2f3545; }
+
+/* ── Payment badges & Pay button ── */
+.status-cell { display: flex; flex-direction: column; gap: 4px; }
+
+.payment-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.badge-unpaid    { background: #fef3c7; color: #92400e; }
+.badge-authorized { background: #dbeafe; color: #1e40af; }
+.badge-captured  { background: #dcfce7; color: #166534; }
+.badge-failed    { background: #fee2e2; color: #991b1b; }
+
+.action-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-pay {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity .2s, transform .15s;
+}
+.btn-pay:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-pay:active { transform: translateY(0); }
+
+:host-context(body.dark-theme) .badge-unpaid     { background: rgba(234,179,8,.15); color: #fbbf24; }
+:host-context(body.dark-theme) .badge-authorized { background: rgba(59,130,246,.15); color: #93c5fd; }
+:host-context(body.dark-theme) .badge-captured   { background: rgba(34,197,94,.15); color: #86efac; }
+:host-context(body.dark-theme) .badge-failed     { background: rgba(239,68,68,.15); color: #fca5a5; }

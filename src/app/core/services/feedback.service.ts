@@ -37,6 +37,14 @@ export class FeedbackService {
     return this.http.put<Feedback>(`${this.adminUrl}/${id}/validate`, {});
   }
 
+  rejectFeedback(id: string, reason: string): Observable<Feedback> {
+    return this.http.put<Feedback>(`${this.adminUrl}/${id}/reject`, { reason });
+  }
+
+  getStats(): Observable<Record<string, number>> {
+    return this.http.get<Record<string, number>>(`${this.adminUrl}/stats`);
+  }
+
   deleteFeedback(id: string): Observable<void> {
     return this.http.delete<void>(`${this.adminUrl}/${id}`);
   }

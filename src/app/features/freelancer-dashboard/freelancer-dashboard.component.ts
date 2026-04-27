@@ -9,6 +9,8 @@ import { ApplicationService } from '../../core/services/application.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ContractService } from '../../core/services/contract.service';
 import { ActiveMissionService } from '../../core/services/active-mission.service';
+import { PaymentService } from '../../core/services/payment.service';
+import { FreelancerPaymentSummary } from '../../core/models/payment.model';
 import { ChatService } from '../../core/services/chat.service';
 import { Contract } from '../../core/models/contract.model';
 import { ActiveMission } from '../../core/models/active-mission.model';
@@ -19,11 +21,12 @@ import { Application } from '../../core/models/application.model';
 import { Notification as AppNotification, NotificationType } from '../../core/models/notification.model';
 import { ChatConversation, ChatMessage } from '../../core/models/chat.model';
 import { environment } from '../../../environments/environment';
+import { ReportModalComponent } from '../../shared/report-modal/report-modal.component';
 
 @Component({
   selector: 'app-freelancer-dashboard',
   standalone: true,
-  imports: [CommonModule, DecimalPipe, FormsModule, RouterLink, RouterLinkActive, TranslateModule],
+  imports: [CommonModule, DecimalPipe, FormsModule, RouterLink, RouterLinkActive, TranslateModule, ReportModalComponent],
   templateUrl: './freelancer-dashboard.component.html',
   styleUrl: './freelancer-dashboard.component.css',
 })
@@ -37,6 +40,7 @@ export class FreelancerDashboardComponent implements OnInit {
   activeContractsCount = computed(() => this.contracts().filter(c => c.status === 'SIGNED').length);
   activeMissionsCount = computed(() => this.activeMissions().filter(m => m.status === 'ACTIVE').length);
   loading = signal(true);
+  reportModalOpen = signal(false);
 
   unreadNotifCount = computed(() => this.notificationService.unreadCount());
 
@@ -241,6 +245,9 @@ export class FreelancerDashboardComponent implements OnInit {
   expandedPaymentChart = signal(false);
   togglePaymentChart(): void { this.expandedPaymentChart.update(v => !v); }
 
+  // ─── Stripe Payment Summary ───────────────────────────────────────────────
+  paymentSummary = signal<FreelancerPaymentSummary | null>(null);
+
   constructor(
     private dashboardService: DashboardService,
     private freelancerService: FreelancerService,
@@ -248,6 +255,7 @@ export class FreelancerDashboardComponent implements OnInit {
     private notificationService: NotificationService,
     private contractService: ContractService,
     private activeMissionService: ActiveMissionService,
+    private paymentService: PaymentService,
     public chatService: ChatService,
     public authService: AuthService,
     public themeService: ThemeService,
@@ -287,6 +295,11 @@ export class FreelancerDashboardComponent implements OnInit {
     this.notificationService.getMyNotifications().subscribe();
 
     this.chatService.getConversations().subscribe();
+
+    this.paymentService.getFreelancerPaymentSummary().subscribe({
+      next: (s) => this.paymentSummary.set(s),
+      error: () => {},
+    });
   }
 
   toggleSidebar(): void {
@@ -481,6 +494,33 @@ export class FreelancerDashboardComponent implements OnInit {
   appNextPage(): void      { this.appPage.update(p => Math.min(this.appTotalPages() - 1, p + 1)); }
   contractPrevPage(): void { this.contractPage.update(p => Math.max(0, p - 1)); }
   contractNextPage(): void { this.contractPage.update(p => Math.min(this.contractTotalPages() - 1, p + 1)); }
+
+  formatTND(amount: number | null | undefined): string {
+    if (amount == null) return '0,000 DT';
+    return amount.toFixed(3).replace('.', ',') + ' DT';
+  }
+
+  paymentStatusLabel(status: string): string {
+    const map: Record<string, string> = {
+      UNPAID: 'Non payé',
+      AUTHORIZED: 'En escrow',
+      CAPTURED: 'Versé',
+      FAILED: 'Échoué',
+      REFUNDED: 'Remboursé',
+    };
+    return map[status] ?? status;
+  }
+
+  paymentStatusClass(status: string): string {
+    const map: Record<string, string> = {
+      AUTHORIZED: 'ps-escrow',
+      CAPTURED:   'ps-earned',
+      FAILED:     'ps-failed',
+      REFUNDED:   'ps-refunded',
+      UNPAID:     'ps-unpaid',
+    };
+    return map[status] ?? 'ps-unpaid';
+  }
 
   private formatCompact(value: number): string {
     if (value >= 1000) return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'k';

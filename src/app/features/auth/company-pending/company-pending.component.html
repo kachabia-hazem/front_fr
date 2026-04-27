@@ -1,0 +1,104 @@
+<div class="pending-page">
+  <!-- Background decoration -->
+  <div class="bg-circle bg-circle-top"></div>
+  <div class="bg-circle bg-circle-bottom"></div>
+
+  <div class="pending-card">
+
+    <!-- Icon -->
+    <div class="icon-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11l3 3L22 4"/>
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+      </svg>
+    </div>
+
+    <!-- Title -->
+    <h1 class="pending-title">Registration Submitted</h1>
+    <p class="pending-subtitle">Your company account request has been received</p>
+
+    <!-- Info box -->
+    <div class="info-box">
+      <div class="info-row">
+        <div class="info-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="info-text">
+          <span class="info-label">Review period</span>
+          <span class="info-value">Up to <strong>3 business days</strong></span>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <div class="info-text">
+          <span class="info-label">Decision sent by email</span>
+          <span class="info-value">Approval or rejection reason will be emailed to you</span>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+        </div>
+        <div class="info-text">
+          <span class="info-label">What happens next</span>
+          <span class="info-value">Once approved, you can log in and start posting missions</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps">
+      <div class="step done">
+        <div class="step-dot">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <span>Account created</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step active">
+        <div class="step-dot pulse"></div>
+        <span>Admin review</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step">
+        <div class="step-dot"></div>
+        <span>Access granted</span>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <button class="btn-login" (click)="goToLogin()">
+      Go to Login
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+
+    <p class="help-text">
+      Questions? Contact us at
+      <a href="mailto:support@worklink.com">support&#64;worklink.com</a>
+    </p>
+
+  </div>
+</div>

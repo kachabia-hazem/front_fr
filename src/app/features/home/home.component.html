@@ -571,56 +571,96 @@
   <h2 class="pricing-title">{{ 'home.pricing_title' | translate }}</h2>
 
   <div class="pricing-grid">
-    <!-- Basic -->
-    <div class="pricing-card">
-      <div class="pricing-card-top">
-        <span class="pricing-plan-name">{{ 'home.pricing_basic_name' | translate }}</span>
-        <span class="pricing-plan-sub">{{ 'home.pricing_basic_sub' | translate }}</span>
+    @for (pack of homePacks(); track pack.id; let i = $index) {
+      <div class="pricing-card" [class.pricing-card-popular]="i === 1">
+        @if (i === 1) {
+          <span class="popular-badge">{{ 'home.pricing_popular' | translate }}</span>
+        }
+        <div class="pricing-card-top">
+          <span class="pricing-plan-name">{{ pack.name }}</span>
+          <span class="pricing-plan-sub">{{ pack.points | number }} {{ 'home.pricing_points' | translate }}</span>
+        </div>
+        @if (pack.promoEnabled && pack.promoPrice) {
+          <p class="pricing-fee">
+            <span class="pricing-fee-old">{{ formatTND(pack.price) }}</span>
+            {{ formatTND(pack.promoPrice) }}
+          </p>
+        } @else {
+          <p class="pricing-fee">{{ formatTND(pack.price) }}</p>
+        }
+        @if (pack.savingsPercent > 0) {
+          <p class="pricing-includes-label">{{ 'home.pricing_save' | translate }} {{ pack.savingsPercent }}%</p>
+        } @else {
+          <p class="pricing-includes-label">{{ formatTND(pack.pricePerPoint) }} / {{ 'home.pricing_point' | translate }}</p>
+        }
+        <ul class="pricing-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ 'home.pricing_feat_ai' | translate }}
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ 'home.pricing_feat_collab' | translate }}
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ 'home.pricing_feat_pay' | translate }}
+          </li>
+        </ul>
+        <a routerLink="/offers" [class.pricing-btn-outline]="i === 0" [class.pricing-btn-filled]="i === 1" class="pricing-btn">
+          {{ 'home.pricing_get_started' | translate }}
+        </a>
       </div>
-      <p class="pricing-fee">{{ 'home.pricing_basic_fee' | translate }}</p>
-      <p class="pricing-includes-label">{{ 'home.pricing_basic_includes' | translate }}</p>
-      <ul class="pricing-features">
-        <li>
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          {{ 'home.pricing_feat_ai' | translate }}
-        </li>
-        <li>
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          {{ 'home.pricing_feat_collab' | translate }}
-        </li>
-        <li>
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          {{ 'home.pricing_feat_pay' | translate }}
-        </li>
-      </ul>
-      <a routerLink="/auth/register" class="pricing-btn pricing-btn-outline">{{ 'home.pricing_get_started' | translate }}</a>
-    </div>
-
-    <!-- Business Plus -->
-    <div class="pricing-card pricing-card-popular">
-      <span class="popular-badge">{{ 'home.pricing_popular' | translate }}</span>
-      <div class="pricing-card-top">
-        <span class="pricing-plan-name">{{ 'home.pricing_plus_name' | translate }}</span>
-        <span class="pricing-plan-sub">{{ 'home.pricing_plus_sub' | translate }}</span>
+    }
+    @if (homePacks().length === 0) {
+      <div class="pricing-card">
+        <div class="pricing-card-top">
+          <span class="pricing-plan-name">{{ 'home.pricing_basic_name' | translate }}</span>
+          <span class="pricing-plan-sub">{{ 'home.pricing_basic_sub' | translate }}</span>
+        </div>
+        <p class="pricing-fee">{{ 'home.pricing_basic_fee' | translate }}</p>
+        <p class="pricing-includes-label">{{ 'home.pricing_basic_includes' | translate }}</p>
+        <ul class="pricing-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ 'home.pricing_feat_ai' | translate }}
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ 'home.pricing_feat_collab' | translate }}
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ 'home.pricing_feat_pay' | translate }}
+          </li>
+        </ul>
+        <a routerLink="/offers" class="pricing-btn pricing-btn-outline">{{ 'home.pricing_get_started' | translate }}</a>
       </div>
-      <p class="pricing-fee">{{ 'home.pricing_plus_fee' | translate }}</p>
-      <p class="pricing-includes-label">{{ 'home.pricing_plus_includes' | translate }}</p>
-      <ul class="pricing-features">
-        <li>
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          {{ 'home.pricing_feat_talent' | translate }}
-        </li>
-        <li>
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          {{ 'home.pricing_feat_recruiter' | translate }}
-        </li>
-        <li>
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          {{ 'home.pricing_feat_teams' | translate }}
-        </li>
-      </ul>
-      <a routerLink="/auth/register" class="pricing-btn pricing-btn-filled">{{ 'home.pricing_get_started' | translate }}</a>
-    </div>
+      <div class="pricing-card pricing-card-popular">
+        <span class="popular-badge">{{ 'home.pricing_popular' | translate }}</span>
+        <div class="pricing-card-top">
+          <span class="pricing-plan-name">{{ 'home.pricing_plus_name' | translate }}</span>
+          <span class="pricing-plan-sub">{{ 'home.pricing_plus_sub' | translate }}</span>
+        </div>
+        <p class="pricing-fee">{{ 'home.pricing_plus_fee' | translate }}</p>
+        <p class="pricing-includes-label">{{ 'home.pricing_plus_includes' | translate }}</p>
+        <ul class="pricing-features">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ 'home.pricing_feat_talent' | translate }}
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ 'home.pricing_feat_recruiter' | translate }}
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ 'home.pricing_feat_teams' | translate }}
+          </li>
+        </ul>
+        <a routerLink="/offers" class="pricing-btn pricing-btn-filled">{{ 'home.pricing_get_started' | translate }}</a>
+      </div>
+    }
   </div>
 </section>
 

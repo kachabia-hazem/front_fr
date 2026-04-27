@@ -15,11 +15,12 @@ import { Contract } from '../../core/models/contract.model';
 import { Notification as AppNotification, NotificationType } from '../../core/models/notification.model';
 import { ChatConversation, ChatMessage } from '../../core/models/chat.model';
 import { environment } from '../../../environments/environment';
+import { ReportModalComponent } from '../../shared/report-modal/report-modal.component';
 
 @Component({
   selector: 'app-company-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, TranslateModule],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, TranslateModule, ReportModalComponent],
   templateUrl: './company-dashboard.component.html',
   styleUrl: './company-dashboard.component.css',
 })
@@ -30,6 +31,7 @@ export class CompanyDashboardComponent implements OnInit {
 
   activeContractsCount = computed(() => this.contracts().filter(c => c.status === 'SIGNED').length);
   loading = signal(true);
+  reportModalOpen = signal(false);
   sidebarCollapsed = signal(false);
   notifPanelOpen = signal(false);
   recentNotifications = computed(() => this.notificationService.notifications().slice(0, 8));

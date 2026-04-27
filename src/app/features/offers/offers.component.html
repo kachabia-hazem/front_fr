@@ -1,0 +1,224 @@
+<!-- Toast -->
+@if (toast()) {
+  <div class="toast" [class.toast-ok]="toast()!.type==='success'" [class.toast-err]="toast()!.type==='error'">
+    {{ toast()!.text }}
+  </div>
+}
+
+<div class="off-wrap">
+
+  <!-- ── Header ──────────────────────────────────────────────────── -->
+  <header class="off-head">
+    <button class="off-back" (click)="goBack()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Retour
+    </button>
+    <div class="off-head-logo">
+      <img src="assets/images/logo.png" alt="WorkLink" />
+      <span>WorkLink</span>
+    </div>
+    @if (isAuth) {
+      <div class="off-head-bal">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="#f59e0b"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        {{ pointsBalance() }} pts
+      </div>
+    }
+  </header>
+
+  <!-- ── Hero ────────────────────────────────────────────────────── -->
+  <section class="off-hero">
+    <h1>Choisissez votre offre</h1>
+    <p>Points pour postuler, booster votre profil et accéder aux missions premium</p>
+
+    <!-- Toggle -->
+    <div class="off-tabs">
+      <button class="off-tab" [class.active]="activeTab()==='packs'" (click)="setTab('packs')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Packs de points
+      </button>
+      <button class="off-tab" [class.active]="activeTab()==='plans'" (click)="setTab('plans')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Abonnements
+      </button>
+    </div>
+  </section>
+
+  <!-- ── Loading ──────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="off-loading">
+      <div class="spin"></div>
+    </div>
+  }
+
+  <!-- ════════════════ PACKS ════════════════ -->
+  @if (!loading() && activeTab()==='packs' && !confirmPack()) {
+    <section class="off-section">
+      <div class="off-grid">
+        @for (pack of packs(); track pack.id) {
+          <div class="off-card" [class.off-card-star]="isPopularPack(pack)">
+
+            @if (isPopularPack(pack)) {
+              <div class="off-star-badge">⭐ Populaire</div>
+            }
+            @if (pack.promoEnabled && pack.promoLabel) {
+              <div class="off-promo-tag">{{ pack.promoLabel }}</div>
+            }
+
+            <div class="off-card-cat" [class]="'cat-'+pack.category.toLowerCase()">{{ packLabel(pack) }}</div>
+            <div class="off-card-name">{{ pack.name }}</div>
+
+            <div class="off-pts">
+              <span class="off-pts-n">{{ pack.points }}</span>
+              <span class="off-pts-u">points</span>
+            </div>
+
+            <div class="off-price">
+              @if (pack.promoEnabled && pack.promoPrice !== null) {
+                <span class="off-price-old">{{ formatTND(pack.price) }}</span>
+                <span class="off-price-now promo">{{ formatTND(pack.promoPrice!) }}</span>
+              } @else {
+                <span class="off-price-now">{{ formatTND(pack.price) }}</span>
+              }
+            </div>
+
+            @if (pack.savingsPercent > 0) {
+              <div class="off-save">Économie −{{ pack.savingsPercent }}%</div>
+            }
+
+            <div class="off-ppp">{{ formatTND(pack.pricePerPoint) }} / point</div>
+
+            <button class="off-btn" [class.off-btn-star]="isPopularPack(pack)" (click)="askConfirmPack(pack)">
+              Acheter ce pack
+            </button>
+          </div>
+        }
+        @if (packs().length === 0) {
+          <p class="off-empty">Aucun pack disponible.</p>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ════════════════ PLANS ════════════════ -->
+  @if (!loading() && activeTab()==='plans' && !confirmPlan()) {
+    <section class="off-section">
+      <div class="off-grid">
+        @for (plan of plans(); track plan.id) {
+          <div class="off-card" [class.off-card-star]="isPopularPlan(plan)" [class.off-card-active]="isCurrentPlan(plan.id)">
+
+            @if (isCurrentPlan(plan.id)) {
+              <div class="off-star-badge active-badge">✓ Actif</div>
+            } @else if (isPopularPlan(plan)) {
+              <div class="off-star-badge">⭐ Populaire</div>
+            }
+            @if (plan.promoEnabled && plan.promoLabel) {
+              <div class="off-promo-tag">{{ plan.promoLabel }}</div>
+            }
+
+            <div class="off-card-name">{{ plan.name }}</div>
+
+            <div class="off-pts">
+              <span class="off-pts-n">{{ plan.pointsPerMonth }}</span>
+              <span class="off-pts-u">pts / mois</span>
+            </div>
+
+            <div class="off-price">
+              @if (plan.promoEnabled && plan.promoPrice !== null) {
+                <span class="off-price-old">{{ formatTND(plan.pricePerMonth) }}</span>
+                <span class="off-price-now promo">{{ formatTND(plan.promoPrice!) }}</span>
+              } @else {
+                <span class="off-price-now">{{ formatTND(plan.pricePerMonth) }}</span>
+              }
+              <span class="off-per">/ mois</span>
+            </div>
+
+            <ul class="off-adv">
+              @for (adv of plan.advantages; track adv) {
+                <li>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  {{ adv }}
+                </li>
+              }
+            </ul>
+
+            <button class="off-btn" [class.off-btn-star]="isPopularPlan(plan)" [class.off-btn-active]="isCurrentPlan(plan.id)" [disabled]="isCurrentPlan(plan.id)" (click)="askConfirmPlan(plan)">
+              {{ isCurrentPlan(plan.id) ? 'Abonnement actuel' : 'Souscrire — ' + plan.name }}
+            </button>
+          </div>
+        }
+        @if (plans().length === 0) {
+          <p class="off-empty">Aucun abonnement disponible.</p>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ════════════════ CONFIRM PACK ════════════════ -->
+  @if (confirmPack(); as pack) {
+    <section class="off-confirm-wrap">
+      <button class="off-back-sm" (click)="confirmPack.set(null)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Retour
+      </button>
+      <div class="off-confirm">
+        <div class="off-confirm-cat" [class]="'cat-'+pack.category.toLowerCase()">{{ packLabel(pack) }}</div>
+        <div class="off-confirm-name">{{ pack.name }}</div>
+        <div class="off-confirm-pts">{{ pack.points }} <span>points</span></div>
+        <div class="off-confirm-price">
+          @if (pack.promoEnabled && pack.promoPrice !== null) {
+            <s>{{ formatTND(pack.price) }}</s>
+            <strong class="promo">{{ formatTND(pack.promoPrice!) }}</strong>
+          } @else {
+            <strong>{{ formatTND(pack.price) }}</strong>
+          }
+        </div>
+        <p class="off-confirm-note">
+          {{ pack.points }} points seront immédiatement crédités sur votre compte.
+        </p>
+        <button class="off-confirm-btn" (click)="doPurchasePack()" [disabled]="purchasing()">
+          @if (purchasing()) { <div class="spin sm"></div> } @else { Confirmer l'achat }
+        </button>
+      </div>
+    </section>
+  }
+
+  <!-- ════════════════ CONFIRM PLAN ════════════════ -->
+  @if (confirmPlan(); as plan) {
+    <section class="off-confirm-wrap">
+      <button class="off-back-sm" (click)="confirmPlan.set(null)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Retour
+      </button>
+      <div class="off-confirm">
+        <div class="off-confirm-name">{{ plan.name }}</div>
+        <div class="off-confirm-pts">{{ plan.pointsPerMonth }} <span>pts / mois</span></div>
+        <div class="off-confirm-price">
+          @if (plan.promoEnabled && plan.promoPrice !== null) {
+            <s>{{ formatTND(plan.pricePerMonth) }}</s>
+            <strong class="promo">{{ formatTND(plan.promoPrice!) }}</strong>
+          } @else {
+            <strong>{{ formatTND(plan.pricePerMonth) }}</strong>
+          }
+          <span class="off-per">/ mois</span>
+        </div>
+        @if (plan.advantages.length > 0) {
+          <ul class="off-confirm-adv">
+            @for (adv of plan.advantages; track adv) {
+              <li>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                {{ adv }}
+              </li>
+            }
+          </ul>
+        }
+        <p class="off-confirm-note">
+          L'abonnement sera actif pendant 30 jours et {{ plan.pointsPerMonth }} points seront crédités immédiatement.
+        </p>
+        <button class="off-confirm-btn" (click)="doSubscribe()" [disabled]="purchasing()">
+          @if (purchasing()) { <div class="spin sm"></div> } @else { Confirmer l'abonnement }
+        </button>
+      </div>
+    </section>
+  }
+
+</div>

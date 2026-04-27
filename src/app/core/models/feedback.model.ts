@@ -14,10 +14,15 @@ export interface Feedback {
   missionTitle: string;
   userId: string;
   userRole: 'COMPANY' | 'FREELANCER';
+  userName?: string;
+  userPhoto?: string;
   rating: number;
   comment?: string;
-  status: 'PENDING' | 'VALIDATED' | 'DELETED';
+  status: 'PENDING' | 'VALIDATED' | 'REJECTED';
   createdAt: string;
+  validatedAt?: string | null;
+  rejectedAt?: string | null;
+  rejectionReason?: string | null;
 }
 
 export interface SubmitFeedbackRequest {

@@ -10,6 +10,7 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
 import { MissionService, AiSearchResult } from '../../core/services/mission.service';
 import { FeedbackService } from '../../core/services/feedback.service';
 import { FeedbackPublicDto } from '../../core/models/feedback.model';
+import { OffersService, PointPack } from '../../core/services/offers.service';
 import { environment } from '../../../environments/environment';
 
 interface StatItem {
@@ -109,6 +110,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   recommendedMissions = signal<AiSearchResult[]>([]);
   recommendedLoading = signal(false);
 
+  // ─── Home Packs (pricing section) ────────────────────────────────────────
+  homePacks = signal<PointPack[]>([]);
+
   // Marquee uniquement si les cartes dépassent la largeur de l'écran (~5 cartes × 340px = 1700px)
   get useMarquee(): boolean {
     return this.recommendedMissions().length >= 5;
@@ -202,9 +206,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private ngZone: NgZone,
     private missionService: MissionService,
     private feedbackService: FeedbackService,
+    private offersService: OffersService,
   ) {}
 
+  formatTND(amount: number): string {
+    return amount.toFixed(3).replace('.', ',') + ' DT';
+  }
+
   ngOnInit(): void {
+    this.offersService.getCatalogPacks().subscribe({
+      next: (packs) => this.homePacks.set(packs.slice(0, 2)),
+    });
+
     this.feedbackService.getPublicFeedbacks().subscribe({
       next: (list) => {
         this.companyFeedbacks.set(list.filter(f => f.userRole === 'COMPANY'));

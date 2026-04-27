@@ -43,4 +43,16 @@ export class ContractService {
     const baseUrl = environment.apiUrl.replace(/\/api$/, '');
     return baseUrl + relativePath;
   }
+
+  adminGetAllContracts(): Observable<Contract[]> {
+    return this.http.get<Contract[]>(`${environment.apiUrl}/admin/contracts`);
+  }
+
+  adminGetContractStats(): Observable<Record<string, number>> {
+    return this.http.get<Record<string, number>>(`${environment.apiUrl}/admin/contracts/stats`);
+  }
+
+  adminCancelContract(id: string, reason: string): Observable<Contract> {
+    return this.http.post<Contract>(`${environment.apiUrl}/admin/contracts/${id}/cancel`, { reason });
+  }
 }

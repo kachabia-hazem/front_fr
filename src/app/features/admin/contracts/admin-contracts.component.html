@@ -1,0 +1,355 @@
+<!-- Toast -->
+<div class="toast" *ngIf="toast()" [class]="toast()!.type">{{ toast()!.msg }}</div>
+
+<div class="contracts-page" [class.panel-open]="selectedContract()">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Contracts Management</h1>
+      <p class="page-subtitle">Supervise and manage all platform contracts</p>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="stats-row" *ngIf="!loading()">
+    <div class="stat-card">
+      <span class="stat-value">{{ statVal('TOTAL') }}</span>
+      <span class="stat-label">Total</span>
+    </div>
+    <div class="stat-card signed">
+      <span class="stat-value">{{ statVal('SIGNED') }}</span>
+      <span class="stat-label">Signed</span>
+    </div>
+    <div class="stat-card pending">
+      <span class="stat-value">{{ statVal('PENDING_SIGNATURE') }}</span>
+      <span class="stat-label">Pending</span>
+    </div>
+    <div class="stat-card finished">
+      <span class="stat-value">{{ statVal('FINISHED') }}</span>
+      <span class="stat-label">Finished</span>
+    </div>
+    <div class="stat-card rejected">
+      <span class="stat-value">{{ statVal('REJECTED') }}</span>
+      <span class="stat-label">Rejected</span>
+    </div>
+    <div class="stat-card cancelled">
+      <span class="stat-value">{{ statVal('CANCELLED') }}</span>
+      <span class="stat-label">Cancelled</span>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-row">
+    <div class="search-bar">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" type="text" placeholder="Search by mission, freelancer, company..."
+        [value]="searchQuery()"
+        (input)="searchQuery.set($any($event.target).value)" />
+    </div>
+    <div class="status-tabs">
+      <button *ngFor="let s of STATUS_TABS"
+        [class.active]="statusFilter() === s"
+        (click)="statusFilter.set(s)">{{ tabLabel(s) }}</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loading()">
+    <div class="spinner"></div> Loading contracts...
+  </div>
+
+  <!-- Table -->
+  <div class="table-card" *ngIf="!loading()">
+    <div class="table-meta">
+      <span>{{ filteredContracts().length }} contract{{ filteredContracts().length !== 1 ? 's' : '' }}</span>
+    </div>
+    <table class="contracts-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Freelancer</th>
+          <th>Entreprise</th>
+          <th>Mission</th>
+          <th class="col-right">Montant total</th>
+          <th class="col-right">Commission (7%)</th>
+          <th class="col-right">Net freelance</th>
+          <th>Statut contrat</th>
+          <th>Paiement escrow</th>
+          <th>Créé le</th>
+          <th>Validé le</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of filteredContracts()"
+            (click)="selectContract(c)"
+            [class.selected]="selectedContract()?.id === c.id">
+          <td class="id-cell" [title]="c.id">…{{ c.id.slice(-6) }}</td>
+          <td>
+            <div class="person-cell">
+              <div class="avatar freelancer-av">{{ c.freelancerName.charAt(0) }}</div>
+              <div>
+                <div class="person-name">{{ c.freelancerName }}</div>
+                <div class="person-sub">{{ c.freelancerEmail }}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="person-cell">
+              <div class="avatar company-av">{{ c.companyName.charAt(0) }}</div>
+              <div>
+                <div class="person-name">{{ c.companyName }}</div>
+                <div class="person-sub">{{ c.companyEmail }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="title-cell">{{ c.missionTitle }}</td>
+          <td class="col-right amount-cell">{{ formatTND(c.totalAmount) }}</td>
+          <td class="col-right fee-cell">{{ formatTND(c.platformFee) }}</td>
+          <td class="col-right net-cell">{{ formatTND(c.freelancerAmount) }}</td>
+          <td>
+            <span class="status-badge" [class]="c.status.toLowerCase()">
+              {{ tabLabel(c.status) }}
+            </span>
+          </td>
+          <td>
+            <span class="pay-badge" [ngClass]="paymentClass(c.paymentStatus)">
+              {{ paymentLabel(c.paymentStatus) }}
+            </span>
+          </td>
+          <td class="secondary-cell">{{ c.createdAt | date:'dd/MM/yy' }}</td>
+          <td class="secondary-cell">{{ c.capturedAt ? (c.capturedAt | date:'dd/MM/yy') : (c.paidAt ? (c.paidAt | date:'dd/MM/yy') : '—') }}</td>
+          <td>
+            <button *ngIf="canCancel(c)"
+              class="btn-cancel-action"
+              (click)="openCancelModal(c, $event)"
+              title="Force cancel this contract">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Cancel
+            </button>
+            <span *ngIf="!canCancel(c)" class="no-action">—</span>
+          </td>
+        </tr>
+        <tr *ngIf="filteredContracts().length === 0">
+          <td colspan="12" class="empty-cell">No contracts found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── Side Panel Overlay ── -->
+<div class="overlay" *ngIf="selectedContract()" (click)="closePanel()"></div>
+
+<!-- ── Side Panel ── -->
+<div class="side-panel" *ngIf="selectedContract() as c">
+
+  <div class="panel-header">
+    <div>
+      <p class="panel-id">#{{ c.id }}</p>
+      <h2 class="panel-title">{{ c.missionTitle }}</h2>
+    </div>
+    <div class="panel-header-right">
+      <span class="status-badge" [class]="c.status.toLowerCase()">{{ tabLabel(c.status) }}</span>
+      <button class="close-btn" (click)="closePanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="panel-body">
+
+    <!-- Parties -->
+    <div class="panel-section">
+      <p class="section-title">Parties</p>
+      <div class="parties-grid">
+        <div class="party-card">
+          <span class="party-role">Freelancer</span>
+          <div class="avatar freelancer-av lg">{{ c.freelancerName.charAt(0) }}</div>
+          <span class="party-name">{{ c.freelancerName }}</span>
+          <span class="party-email">{{ c.freelancerEmail }}</span>
+        </div>
+        <div class="party-divider">↔</div>
+        <div class="party-card">
+          <span class="party-role">Company</span>
+          <div class="avatar company-av lg">{{ c.companyName.charAt(0) }}</div>
+          <span class="party-name">{{ c.companyName }}</span>
+          <span class="party-email">{{ c.companyEmail }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contract details -->
+    <div class="panel-section">
+      <p class="section-title">Contract Details</p>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-key">Daily Rate (TJM)</span>
+          <span class="info-val">{{ c.salary ? (c.salary | number:'1.0-0') + ' €/jour' : '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Start Date</span>
+          <span class="info-val">{{ c.startDate ? (c.startDate | date:'dd MMM yyyy') : '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">End Date</span>
+          <span class="info-val">{{ c.endDate ? (c.endDate | date:'dd MMM yyyy') : '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Company Signed</span>
+          <span class="info-val">{{ c.companySignedAt ? (c.companySignedAt | date:'dd/MM/yy HH:mm') : '—' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Freelancer Signed</span>
+          <span class="info-val">{{ c.signedAt ? (c.signedAt | date:'dd/MM/yy HH:mm') : 'Not yet' }}</span>
+        </div>
+      </div>
+      <div class="terms-box" *ngIf="c.terms">
+        <p class="info-key">Terms</p>
+        <p class="terms-text">{{ c.terms }}</p>
+      </div>
+    </div>
+
+    <!-- Payment Information -->
+    <div class="panel-section" *ngIf="c.paymentStatus && c.paymentStatus !== 'UNPAID'">
+      <p class="section-title">Paiement Stripe</p>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-key">Statut</span>
+          <span class="pay-badge" [ngClass]="paymentClass(c.paymentStatus)">{{ paymentLabel(c.paymentStatus) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Montant total</span>
+          <span class="info-val">{{ formatTND(c.totalAmount) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Commission plateforme (7%)</span>
+          <span class="info-val fee-cell">{{ formatTND(c.platformFee) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Net freelance (93%)</span>
+          <span class="info-val net-cell">{{ formatTND(c.freelancerAmount) }}</span>
+        </div>
+        <div class="info-item" *ngIf="c.paidAt">
+          <span class="info-key">Autorisé le</span>
+          <span class="info-val">{{ c.paidAt | date:'dd MMM yyyy, HH:mm' }}</span>
+        </div>
+        <div class="info-item" *ngIf="c.capturedAt">
+          <span class="info-key">Libéré le</span>
+          <span class="info-val">{{ c.capturedAt | date:'dd MMM yyyy, HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PDF Documents -->
+    <div class="panel-section">
+      <p class="section-title">Documents</p>
+      <div class="docs-row">
+        <button class="doc-btn" [disabled]="!c.pdfUrl" (click)="openPdf(c.pdfUrl)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Original PDF
+        </button>
+        <button class="doc-btn signed-doc" [disabled]="!c.signedPdfUrl" (click)="openPdf(c.signedPdfUrl)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>
+          Signed PDF
+          <span class="doc-unavailable" *ngIf="!c.signedPdfUrl">(not yet)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Timeline / History -->
+    <div class="panel-section">
+      <p class="section-title">History</p>
+      <div class="timeline">
+        <div *ngFor="let ev of getTimeline(c); let last = last" class="timeline-item">
+          <div class="tl-line" [class.last]="last"></div>
+          <div class="tl-dot" [class]="ev.icon"></div>
+          <div class="tl-content">
+            <p class="tl-label">{{ ev.label }}</p>
+            <p class="tl-date">{{ ev.date | date:'dd MMM yyyy, HH:mm' }}</p>
+          </div>
+        </div>
+        <div *ngIf="getTimeline(c).length === 0" class="tl-empty">No events recorded.</div>
+      </div>
+    </div>
+
+    <!-- Finished info -->
+    <div class="panel-section finished-section" *ngIf="c.status === 'FINISHED'">
+      <p class="section-title finished-title">Mission Completed</p>
+      <p class="finished-body">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Contract closed on {{ c.finishedAt | date:'dd MMM yyyy, HH:mm' }}.
+      </p>
+    </div>
+
+    <!-- Rejection / Cancellation info -->
+    <div class="panel-section alert-section" *ngIf="c.status === 'REJECTED'">
+      <p class="section-title alert-title rejected">Rejection Reason</p>
+      <p class="alert-body">{{ c.rejectionReason || 'No reason provided.' }}</p>
+    </div>
+    <div class="panel-section alert-section" *ngIf="c.status === 'CANCELLED' && c.cancellationReason">
+      <p class="section-title alert-title cancelled">Cancellation Reason (Admin)</p>
+      <p class="alert-body">{{ c.cancellationReason }}</p>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="panel-section danger-zone" *ngIf="canCancel(c)">
+      <p class="section-title danger-title">Admin Actions</p>
+      <button class="btn-force-cancel" (click)="openCancelModal(c, $event)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Force Cancel Contract
+      </button>
+      <p class="danger-hint">Notifies both the freelancer and the company with the reason.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Cancel Confirmation Modal ── -->
+<div class="modal-overlay" *ngIf="cancelTarget()" (click)="closeCancelModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <div class="modal-icon-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+      <div>
+        <h2 class="modal-title">Force Cancel Contract</h2>
+        <p class="modal-sub">Both parties will be notified by email and in-app.</p>
+      </div>
+    </div>
+
+    <div class="modal-contract-info">
+      <span class="modal-info-label">Mission</span>
+      <span class="modal-info-name">{{ cancelTarget()?.missionTitle }}</span>
+      <div class="modal-info-parties">
+        <span>{{ cancelTarget()?.freelancerName }}</span>
+        <span class="separator">↔</span>
+        <span>{{ cancelTarget()?.companyName }}</span>
+      </div>
+    </div>
+
+    <div class="modal-field">
+      <label class="modal-label">Reason / Motif <span class="required">*</span></label>
+      <textarea
+        class="modal-textarea"
+        rows="3"
+        placeholder="Explain why this contract is being cancelled..."
+        [value]="cancelReason()"
+        (input)="cancelReason.set($any($event.target).value)">
+      </textarea>
+      <p class="modal-hint">This reason will be included in notifications sent to both parties.</p>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" (click)="closeCancelModal()" [disabled]="cancelling()">Close</button>
+      <button class="btn-modal-confirm"
+        (click)="confirmCancel()"
+        [disabled]="!cancelReason().trim() || cancelling()">
+        {{ cancelling() ? 'Cancelling...' : 'Confirm Cancellation' }}
+      </button>
+    </div>
+
+  </div>
+</div>

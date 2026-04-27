@@ -191,6 +191,11 @@
                     Completed
                   </div>
                 }
+                @if (contract.status === 'SIGNED' || contract.status === 'FINISHED') {
+                  <div class="payment-status-badge" [class]="paymentBadgeClass(contract.paymentStatus)">
+                    {{ paymentStatusLabel(contract.paymentStatus) }}
+                  </div>
+                }
               </div>
               <span class="contract-date">{{ formatDate(contract.createdAt) }}</span>
             </div>

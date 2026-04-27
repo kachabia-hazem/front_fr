@@ -1,0 +1,463 @@
+<div class="overview-page">
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loading()">
+    <div class="spinner"></div>
+    <p>Loading statistics...</p>
+  </div>
+
+  <ng-container *ngIf="stats() as s">
+
+    <!-- Alert if pending -->
+    <div class="alert-banner" *ngIf="s.pendingCompanies > 0" routerLink="/admin/verifications">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span><strong>{{ s.pendingCompanies }}</strong> company registration{{ s.pendingCompanies > 1 ? 's' : '' }} awaiting verification</span>
+      <span class="alert-cta">Review now
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </span>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap blue">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-num">{{ s.totalFreelancers }}</span>
+          <span class="kpi-lbl">Freelancers</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap teal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-num">{{ s.approvedCompanies }}</span>
+          <span class="kpi-lbl">Companies</span>
+          <span class="kpi-sub pending" *ngIf="s.pendingCompanies > 0">{{ s.pendingCompanies }} pending</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap orange">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-num">{{ s.totalMissions }}</span>
+          <span class="kpi-lbl">Missions</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap purple">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-num">{{ s.totalContracts }}</span>
+          <span class="kpi-lbl">Contracts</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon-wrap green">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="kpi-body">
+          <span class="kpi-num">{{ s.totalApplications }}</span>
+          <span class="kpi-lbl">Applications</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Verification Overview -->
+    <div class="section-grid">
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Company Verification Status</h3>
+        </div>
+        <div class="card-body">
+          <div class="status-row">
+            <div class="status-info">
+              <span class="dot approved"></span>
+              <span class="status-name">Approved</span>
+            </div>
+            <div class="status-bar-track">
+              <div class="status-bar-fill approved"
+                [style.width.%]="s.totalCompanies > 0 ? (s.approvedCompanies / s.totalCompanies) * 100 : 0">
+              </div>
+            </div>
+            <span class="status-num">{{ s.approvedCompanies }}</span>
+          </div>
+
+          <div class="status-row">
+            <div class="status-info">
+              <span class="dot pending"></span>
+              <span class="status-name">Pending</span>
+            </div>
+            <div class="status-bar-track">
+              <div class="status-bar-fill pending"
+                [style.width.%]="s.totalCompanies > 0 ? (s.pendingCompanies / s.totalCompanies) * 100 : 0">
+              </div>
+            </div>
+            <span class="status-num">{{ s.pendingCompanies }}</span>
+          </div>
+
+          <div class="status-row">
+            <div class="status-info">
+              <span class="dot rejected"></span>
+              <span class="status-name">Rejected</span>
+            </div>
+            <div class="status-bar-track">
+              <div class="status-bar-fill rejected"
+                [style.width.%]="s.totalCompanies > 0 ? (s.rejectedCompanies / s.totalCompanies) * 100 : 0">
+              </div>
+            </div>
+            <span class="status-num">{{ s.rejectedCompanies }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Quick Actions</h3>
+        </div>
+        <div class="card-body actions-list">
+          <a routerLink="/admin/verifications" class="action-item">
+            <div class="action-icon-wrap blue">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <div class="action-text">
+              <span class="action-title">Review Verifications</span>
+              <span class="action-sub">{{ s.pendingCompanies }} awaiting</span>
+            </div>
+            <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+
+          <a routerLink="/admin/users" class="action-item">
+            <div class="action-icon-wrap teal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="action-text">
+              <span class="action-title">Manage Users</span>
+              <span class="action-sub">{{ s.totalFreelancers + s.totalCompanies }} total</span>
+            </div>
+            <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+
+          <a routerLink="/admin/missions" class="action-item">
+            <div class="action-icon-wrap orange">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <div class="action-text">
+              <span class="action-title">View Missions</span>
+              <span class="action-sub">{{ s.totalMissions }} published</span>
+            </div>
+            <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+  <!-- ── Charts Section ─────────────────────────────────────────── -->
+  <div class="charts-header">
+    <h2 class="charts-section-title">Platform Evolution</h2>
+    <div class="period-tabs">
+      <button class="period-btn" [class.active]="period() === 6"  (click)="setPeriod(6)">6M</button>
+      <button class="period-btn" [class.active]="period() === 12" (click)="setPeriod(12)">12M</button>
+    </div>
+  </div>
+
+  <!-- Chart loading skeleton -->
+  <div class="chart-skeleton-row" *ngIf="chartLoading()">
+    <div class="chart-skeleton"></div>
+    <div class="chart-skeleton"></div>
+  </div>
+
+  <div class="charts-grid" *ngIf="!chartLoading()">
+
+    <!-- ── User Evolution Chart ─────────────────────────────────── -->
+    <div class="chart-card" *ngIf="usersChart() as c">
+      <div class="chart-card-header">
+        <div>
+          <h3 class="chart-title">User Growth</h3>
+          <p class="chart-subtitle">New registrations per month</p>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:#1a1a2e"></span>Total</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#3793B0"></span>Freelancers</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#4a9a8e"></span>Companies</span>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <svg [attr.viewBox]="'0 0 ' + VW + ' ' + VH" class="chart-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="ugTotal" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stop-color="#1a1a2e" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0.01"/>
+            </linearGradient>
+            <linearGradient id="ugFreel" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stop-color="#3793B0" stop-opacity="0.22"/>
+              <stop offset="100%" stop-color="#3793B0" stop-opacity="0.01"/>
+            </linearGradient>
+            <linearGradient id="ugComp" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stop-color="#4a9a8e" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#4a9a8e" stop-opacity="0.01"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Grid lines -->
+          <g class="chart-grid">
+            <line *ngFor="let yl of c.yLabels"
+              [attr.x1]="PL" [attr.y1]="yl.y"
+              [attr.x2]="VW - PR" [attr.y2]="yl.y"
+              class="grid-line"/>
+          </g>
+
+          <!-- Y-axis labels -->
+          <g class="y-labels">
+            <text *ngFor="let yl of c.yLabels"
+              [attr.x]="PL - 8" [attr.y]="yl.y + 4"
+              class="axis-label" text-anchor="end">{{ yl.label }}</text>
+          </g>
+
+          <!-- Area fills -->
+          <path [attr.d]="c.totalArea"      fill="url(#ugTotal)" class="area-path"/>
+          <path [attr.d]="c.freelancerArea" fill="url(#ugFreel)" class="area-path"/>
+          <path [attr.d]="c.companyArea"    fill="url(#ugComp)"  class="area-path"/>
+
+          <!-- Lines -->
+          <path [attr.d]="c.totalPath"      fill="none" stroke="#1a1a2e" stroke-width="2"   class="line-path"/>
+          <path [attr.d]="c.freelancerPath" fill="none" stroke="#3793B0" stroke-width="2"   class="line-path"/>
+          <path [attr.d]="c.companyPath"    fill="none" stroke="#4a9a8e" stroke-width="1.5" class="line-path"/>
+
+          <!-- Data points -->
+          <g *ngFor="let pt of c.totalPts">
+            <circle [attr.cx]="pt.x" [attr.cy]="pt.y" r="3.5" fill="#1a1a2e" class="data-dot"/>
+          </g>
+          <g *ngFor="let pt of c.freelancerPts">
+            <circle [attr.cx]="pt.x" [attr.cy]="pt.y" r="3.5" fill="#3793B0" class="data-dot"/>
+          </g>
+          <g *ngFor="let pt of c.companyPts">
+            <circle [attr.cx]="pt.x" [attr.cy]="pt.y" r="3" fill="#4a9a8e" class="data-dot"/>
+          </g>
+
+          <!-- X-axis labels -->
+          <g class="x-labels">
+            <text *ngFor="let xl of c.xLabels" [class.hidden-label]="!xl.show"
+              [attr.x]="xl.x" [attr.y]="VH - 10"
+              class="axis-label" text-anchor="middle">{{ xl.label }}</text>
+          </g>
+
+          <!-- Hover zones (invisible) -->
+          <g *ngFor="let z of c.hoverZones">
+            <rect
+              [attr.x]="z.x" [attr.y]="PT"
+              [attr.width]="z.width" [attr.height]="IH"
+              fill="transparent" class="hover-zone"
+              (mouseenter)="onUserHover(z)"
+              (mouseleave)="onUserLeave()"/>
+          </g>
+
+          <!-- Hover crosshair line -->
+          <line *ngIf="userTooltip().visible"
+            [attr.x1]="userTooltip().x" [attr.y1]="PT"
+            [attr.x2]="userTooltip().x" [attr.y2]="PT + IH"
+            class="crosshair-line"/>
+
+          <!-- Tooltip -->
+          <g *ngIf="userTooltip().visible" class="tooltip-group"
+            [attr.transform]="'translate(' + (userTooltip().x > VW - 140 ? userTooltip().x - 138 : userTooltip().x + 12) + ',' + (PT + 4) + ')'">
+            <rect x="0" y="0" width="126" [attr.height]="userTooltip().lines.length * 20 + 28" rx="8" class="tooltip-bg"/>
+            <text x="8" y="16" class="tooltip-month">{{ userTooltip().month }}</text>
+            <g *ngFor="let line of userTooltip().lines; let li = index"
+              [attr.transform]="'translate(0,' + (28 + li * 20) + ')'">
+              <circle cx="12" cy="-5" r="4.5" [attr.fill]="line.color"/>
+              <text x="22" y="0" class="tooltip-val">{{ line.label }}: <tspan font-weight="700">{{ line.value }}</tspan></text>
+            </g>
+          </g>
+
+        </svg>
+      </div>
+    </div>
+
+    <!-- ── Contract Evolution Chart ────────────────────────────── -->
+    <div class="chart-card" *ngIf="contractsChart() as c">
+      <div class="chart-card-header">
+        <div>
+          <h3 class="chart-title">Contract Activity</h3>
+          <p class="chart-subtitle">New contracts per month</p>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Total</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Signed</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#3793B0"></span>Finished</span>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <svg [attr.viewBox]="'0 0 ' + VW + ' ' + VH" class="chart-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="cgTotal" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stop-color="#8b5cf6" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.01"/>
+            </linearGradient>
+            <linearGradient id="cgSigned" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stop-color="#10b981" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#10b981" stop-opacity="0.01"/>
+            </linearGradient>
+            <linearGradient id="cgFinished" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stop-color="#3793B0" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#3793B0" stop-opacity="0.01"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Grid lines -->
+          <g class="chart-grid">
+            <line *ngFor="let yl of c.yLabels"
+              [attr.x1]="PL" [attr.y1]="yl.y"
+              [attr.x2]="VW - PR" [attr.y2]="yl.y"
+              class="grid-line"/>
+          </g>
+
+          <!-- Y-axis labels -->
+          <g class="y-labels">
+            <text *ngFor="let yl of c.yLabels"
+              [attr.x]="PL - 8" [attr.y]="yl.y + 4"
+              class="axis-label" text-anchor="end">{{ yl.label }}</text>
+          </g>
+
+          <!-- Area fills -->
+          <path [attr.d]="c.totalArea"    fill="url(#cgTotal)"    class="area-path"/>
+          <path [attr.d]="c.signedArea"   fill="url(#cgSigned)"   class="area-path"/>
+          <path [attr.d]="c.finishedArea" fill="url(#cgFinished)" class="area-path"/>
+
+          <!-- Lines -->
+          <path [attr.d]="c.totalPath"    fill="none" stroke="#8b5cf6" stroke-width="2"   class="line-path"/>
+          <path [attr.d]="c.signedPath"   fill="none" stroke="#10b981" stroke-width="2"   class="line-path"/>
+          <path [attr.d]="c.finishedPath" fill="none" stroke="#3793B0" stroke-width="1.5" class="line-path"/>
+
+          <!-- Data points -->
+          <g *ngFor="let pt of c.totalPts">
+            <circle [attr.cx]="pt.x" [attr.cy]="pt.y" r="3.5" fill="#8b5cf6" class="data-dot"/>
+          </g>
+          <g *ngFor="let pt of c.signedPts">
+            <circle [attr.cx]="pt.x" [attr.cy]="pt.y" r="3.5" fill="#10b981" class="data-dot"/>
+          </g>
+          <g *ngFor="let pt of c.finishedPts">
+            <circle [attr.cx]="pt.x" [attr.cy]="pt.y" r="3" fill="#3793B0" class="data-dot"/>
+          </g>
+
+          <!-- X-axis labels -->
+          <g class="x-labels">
+            <text *ngFor="let xl of c.xLabels" [class.hidden-label]="!xl.show"
+              [attr.x]="xl.x" [attr.y]="VH - 10"
+              class="axis-label" text-anchor="middle">{{ xl.label }}</text>
+          </g>
+
+          <!-- Hover zones -->
+          <g *ngFor="let z of c.hoverZones">
+            <rect
+              [attr.x]="z.x" [attr.y]="PT"
+              [attr.width]="z.width" [attr.height]="IH"
+              fill="transparent" class="hover-zone"
+              (mouseenter)="onContractHover(z)"
+              (mouseleave)="onContractLeave()"/>
+          </g>
+
+          <!-- Hover crosshair line -->
+          <line *ngIf="contractTooltip().visible"
+            [attr.x1]="contractTooltip().x" [attr.y1]="PT"
+            [attr.x2]="contractTooltip().x" [attr.y2]="PT + IH"
+            class="crosshair-line"/>
+
+          <!-- Tooltip -->
+          <g *ngIf="contractTooltip().visible" class="tooltip-group"
+            [attr.transform]="'translate(' + (contractTooltip().x > VW - 140 ? contractTooltip().x - 138 : contractTooltip().x + 12) + ',' + (PT + 4) + ')'">
+            <rect x="0" y="0" width="126" [attr.height]="contractTooltip().lines.length * 20 + 28" rx="8" class="tooltip-bg"/>
+            <text x="8" y="16" class="tooltip-month">{{ contractTooltip().month }}</text>
+            <g *ngFor="let line of contractTooltip().lines; let li = index"
+              [attr.transform]="'translate(0,' + (28 + li * 20) + ')'">
+              <circle cx="12" cy="-5" r="4.5" [attr.fill]="line.color"/>
+              <text x="22" y="0" class="tooltip-val">{{ line.label }}: <tspan font-weight="700">{{ line.value }}</tspan></text>
+            </g>
+          </g>
+
+        </svg>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="chart-empty" *ngIf="!usersChart() && !contractsChart()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <p>No evolution data available yet</p>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- ── Payment Tracking Section ──────────────────────────────────────── -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+
+  <div class="pay-section-header">
+    <h2 class="charts-section-title" style="margin:0">Suivi financier de la plateforme</h2>
+    <p class="pay-section-sub">Escrow, commissions et transactions</p>
+  </div>
+
+  <!-- ── 4 KPI Cards ── -->
+  <div class="pay-kpi-grid" *ngIf="paymentOverview() as po">
+    <div class="pay-kpi-card pay-kpi-escrow">
+      <div class="pay-kpi-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div class="pay-kpi-body">
+        <span class="pay-kpi-val">{{ formatTND(po.totalEscrow) }}</span>
+        <span class="pay-kpi-lbl">Total séquestré</span>
+        <span class="pay-kpi-sub">{{ po.escrowContractCount }} contrat(s) en attente</span>
+      </div>
+    </div>
+
+    <div class="pay-kpi-card pay-kpi-released">
+      <div class="pay-kpi-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="pay-kpi-body">
+        <span class="pay-kpi-val">{{ formatTND(po.releasedThisMonth) }}</span>
+        <span class="pay-kpi-lbl">Libéré ce mois</span>
+        <span class="pay-kpi-sub">{{ po.capturedThisMonthCount }} contrat(s) validé(s)</span>
+      </div>
+    </div>
+
+    <div class="pay-kpi-card pay-kpi-commission">
+      <div class="pay-kpi-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div class="pay-kpi-body">
+        <span class="pay-kpi-val">{{ formatTND(po.totalPlatformCommission) }}</span>
+        <span class="pay-kpi-lbl">Commission totale</span>
+        <span class="pay-kpi-sub">{{ po.totalCapturedContracts }} contrat(s) complété(s)</span>
+      </div>
+    </div>
+
+    <div class="pay-kpi-card pay-kpi-total">
+      <div class="pay-kpi-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div class="pay-kpi-body">
+        <span class="pay-kpi-val">{{ po.totalCapturedContracts + po.escrowContractCount }}</span>
+        <span class="pay-kpi-lbl">Contrats avec paiement</span>
+        <span class="pay-kpi-sub">Escrow + libérés</span>
+      </div>
+    </div>
+  </div>
+
+
+</div>
