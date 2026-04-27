@@ -123,28 +123,14 @@
                   <span class="party-name">{{ r.reportedByName }}</span>
                   <span class="party-tag party-tag-{{ r.reportedByRole?.toLowerCase() }}">{{ r.reportedByRole === 'FREELANCER' ? 'Freelancer' : 'Entreprise' }}</span>
                 </div>
-                <div class="arrow-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                  </svg>
-                </div>
-                <div class="party">
-                  <span class="party-role">Signalé contre</span>
-                  <span class="party-name">{{ r.reportedAgainstName || '—' }}</span>
-                  <span class="party-tag party-tag-{{ r.reportedAgainstRole?.toLowerCase() }}">{{ r.reportedAgainstRole === 'FREELANCER' ? 'Freelancer' : 'Entreprise' }}</span>
-                </div>
               </div>
+
+              @if (r.type === 'AUTRE' && r.customType) {
+                <p class="report-custom-type">{{ r.customType }}</p>
+              }
 
               @if (r.description) {
                 <p class="report-desc">{{ r.description | slice:0:120 }}{{ (r.description?.length ?? 0) > 120 ? '...' : '' }}</p>
-              }
-
-              @if (r.contractTitle) {
-                <div class="contract-tag">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                  {{ r.contractTitle }}
-                </div>
               }
             </div>
 
@@ -199,24 +185,10 @@
             </div>
           </div>
 
-          <div class="detail-section">
-            <p class="detail-section-title">Signalé contre</p>
-            <div class="detail-user-row">
-              <div class="detail-user-avatar detail-user-avatar-red">{{ (selected()!.reportedAgainstName ?? 'U')[0] }}</div>
-              <div>
-                <p class="detail-user-name">{{ selected()!.reportedAgainstName ?? '—' }}</p>
-                <p class="detail-user-meta">{{ selected()!.reportedAgainstRole === 'FREELANCER' ? 'Freelancer' : 'Entreprise' }} · {{ selected()!.reportedAgainstEmail }}</p>
-              </div>
-            </div>
-          </div>
-
-          @if (selected()!.contractTitle) {
+          @if (selected()!.type === 'AUTRE' && selected()!.customType) {
             <div class="detail-section">
-              <p class="detail-section-title">Contrat lié</p>
-              <div class="detail-contract">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                {{ selected()!.contractTitle }}
-              </div>
+              <p class="detail-section-title">Problème signalé</p>
+              <p class="detail-desc">{{ selected()!.customType }}</p>
             </div>
           }
 
@@ -281,7 +253,7 @@
         <h3 class="modal-title">Envoyer un avertissement</h3>
       </div>
       <div class="modal-body">
-        <p class="modal-desc">Un email d'avertissement sera envoyé à <strong>{{ warnTarget()!.reportedAgainstName }}</strong>.</p>
+        <p class="modal-desc">Ajoutez une note administrative pour ce signalement. Elle sera enregistrée et le signalement sera marqué comme traité.</p>
         <label class="modal-label">Contenu de l'avertissement</label>
         <textarea class="modal-textarea" rows="4"
           placeholder="Décrivez l'avertissement et les règles enfreintes..."

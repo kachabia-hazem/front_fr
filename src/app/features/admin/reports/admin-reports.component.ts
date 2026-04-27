@@ -37,11 +37,18 @@ export class AdminReportsComponent implements OnInit {
   readonly TABS = ['ALL', 'EN_ATTENTE', 'EN_COURS', 'TRAITE', 'REJETE'];
 
   readonly TYPE_LABELS: Record<string, string> = {
-    FRAUDE: 'Fraude',
-    COMPORTEMENT: 'Comportement',
-    PAIEMENT: 'Paiement',
-    DOCUMENT_FALSIFIE: 'Document falsifié',
-    HORS_SUJET: 'Hors-sujet',
+    FRAUDE:                 'Fraude',
+    COMPORTEMENT:           'Comportement',
+    PAIEMENT:               'Paiement',
+    DOCUMENT_FALSIFIE:      'Document falsifié',
+    HORS_SUJET:             'Hors-sujet',
+    BUG_TECHNIQUE:          'Bug technique',
+    PROBLEME_NOTIFICATION:  'Notifications',
+    PROBLEME_MESSAGERIE:    'Messagerie',
+    ACCES_FONCTIONNALITE:   'Accès refusé',
+    CONTENU_INAPPROPRIE:    'Contenu inapproprié',
+    COMPTE_INJUSTE:         'Suspension injuste',
+    AUTRE:                  'Autre',
   };
 
   readonly STATUS_LABELS: Record<string, string> = {
@@ -56,8 +63,8 @@ export class AdminReportsComponent implements OnInit {
     const s = this.statusFilter();
     return this.reports().filter(r => {
       const matchQ = !q || [
-        r.reportedByName, r.reportedAgainstName,
-        this.TYPE_LABELS[r.type], r.description, r.contractTitle
+        r.reportedByName,
+        this.TYPE_LABELS[r.type], r.description, r.customType
       ].filter(Boolean).join(' ').toLowerCase().includes(q);
       const matchS = s === 'ALL' || r.status === s;
       return matchQ && matchS;

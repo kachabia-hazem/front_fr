@@ -127,6 +127,7 @@
 }
 
 .report-select,
+.report-input,
 .report-textarea {
   width: 100%;
   padding: 11px 14px;
@@ -141,6 +142,7 @@
   box-sizing: border-box;
 }
 .report-select:focus,
+.report-input:focus,
 .report-textarea:focus {
   border-color: #ef4444;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);

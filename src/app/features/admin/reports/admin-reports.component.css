@@ -231,6 +231,8 @@
 
 .report-desc { font-size: 13px; color: #6b7280; line-height: 1.5; margin: 0; }
 
+.report-custom-type { font-size: 12px; color: #374151; font-weight: 600; margin: 0 0 4px; }
+
 .contract-tag {
   display: inline-flex;
   align-items: center;
