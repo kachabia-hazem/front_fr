@@ -147,3 +147,52 @@
   text-decoration: none; transition: background 0.15s;
 }
 .btn-cta:hover { background: #2d7a94; }
+
+/* ── Dark mode ── */
+:host-context(body.dark-theme) .balance-pill {
+  background: rgba(245,158,11,0.15);
+  border-color: rgba(245,158,11,0.35);
+  color: #fbbf24;
+}
+
+:host-context(body.dark-theme) .tx-tab {
+  border-color: rgba(255,255,255,0.1);
+  background: #1a1d26;
+  color: #9ca3b0;
+}
+:host-context(body.dark-theme) .tx-tab:hover { border-color: #3793B0; color: #3793B0; }
+:host-context(body.dark-theme) .tx-tab.active { background: #3793B0; border-color: #3793B0; color: #fff; }
+:host-context(body.dark-theme) .tx-tab:not(.active) .tx-tab-count { background: rgba(55,147,176,0.15); color: #4baac7; }
+
+:host-context(body.dark-theme) .summary-escrow {
+  background: rgba(245,158,11,0.1);
+  border-color: rgba(245,158,11,0.25);
+}
+:host-context(body.dark-theme) .summary-earned {
+  background: rgba(16,185,129,0.1);
+  border-color: rgba(16,185,129,0.25);
+}
+
+:host-context(body.dark-theme) .tx-card-header {
+  border-bottom-color: rgba(255,255,255,0.07);
+}
+:host-context(body.dark-theme) .tx-row {
+  border-bottom-color: rgba(255,255,255,0.05);
+}
+:host-context(body.dark-theme) .tx-row:hover { background: rgba(255,255,255,0.04); }
+
+:host-context(body.dark-theme) .badge-escrow   { background: rgba(245,158,11,0.15);  color: #fbbf24; }
+:host-context(body.dark-theme) .badge-captured  { background: rgba(16,185,129,0.15);  color: #34d399; }
+:host-context(body.dark-theme) .badge-failed    { background: rgba(239,68,68,0.15);   color: #f87171; }
+:host-context(body.dark-theme) .badge-refunded  { background: rgba(99,102,241,0.15);  color: #a5b4fc; }
+:host-context(body.dark-theme) .badge-unpaid    { background: rgba(107,114,128,0.15); color: #9ca3af; }
+
+:host-context(body.dark-theme) .tx-pack     { background: rgba(55,147,176,0.18);  color: #4baac7; }
+:host-context(body.dark-theme) .tx-sub      { background: rgba(139,92,246,0.18);  color: #a78bfa; }
+:host-context(body.dark-theme) .tx-app      { background: rgba(249,115,22,0.18);  color: #fb923c; }
+:host-context(body.dark-theme) .tx-ai       { background: rgba(16,185,129,0.18);  color: #34d399; }
+:host-context(body.dark-theme) .tx-boost    { background: rgba(245,158,11,0.18);  color: #fbbf24; }
+:host-context(body.dark-theme) .tx-featured { background: rgba(236,72,153,0.18);  color: #f472b6; }
+
+:host-context(body.dark-theme) .tx-points-val.positive { color: #34d399; }
+:host-context(body.dark-theme) .tx-points-val.negative { color: #f87171; }

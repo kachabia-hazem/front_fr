@@ -708,7 +708,7 @@
                     {{ 'apply.submitting' | translate }}
                   } @else {
                     {{ 'apply.submit' | translate }}
-                    <span class="apply-cost-badge">3 pts</span>
+                    <span class="apply-cost-badge">{{ applicationCost() }} pts</span>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polyline points="9 6 15 12 9 18"/>
                     </svg>
@@ -810,4 +810,42 @@
 
   </div>
 
+}
+
+<!-- ── Confirmation Modal ── -->
+@if (showConfirmModal()) {
+  <div class="confirm-overlay" (click)="showConfirmModal.set(false)">
+    <div class="confirm-modal" (click)="$event.stopPropagation()">
+
+      <div class="confirm-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+
+      <h3 class="confirm-title">Submit Application</h3>
+      <p class="confirm-body">
+        This action will deduct
+        <strong class="confirm-pts">{{ applicationCost() }} points</strong>
+        from your balance.
+      </p>
+      <p class="confirm-sub">Do you want to proceed?</p>
+
+      <div class="confirm-actions">
+        <button class="confirm-btn-decline" (click)="declineApplication()">
+          Decline
+        </button>
+        <button class="confirm-btn-proceed" (click)="proceedApplication()">
+          Proceed
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 6 15 12 9 18"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
 }

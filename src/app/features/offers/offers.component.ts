@@ -1,3 +1,5 @@
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../../core/services/language.service';
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -9,7 +11,7 @@ import { PaymentService } from '../../core/services/payment.service';
 @Component({
   selector: 'app-offers',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './offers.component.html',
   styleUrl: './offers.component.css',
 })
@@ -39,6 +41,7 @@ export class OffersComponent implements OnInit {
     private offersService: OffersService,
     private router: Router,
     private paymentService: PaymentService,
+    private languageService: LanguageService,
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +60,7 @@ export class OffersComponent implements OnInit {
     // Load user balance
     if (this.isFreelancer) {
       this.offersService.getMyBalance().subscribe({ next: (b) => this.myBalance.set(b) });
+      this.offersService.getMyFreelancerSubscription().subscribe({ next: (s) => this.mySub.set(s) });
     }
     if (this.isCompany) {
       this.offersService.getMySubscription().subscribe({ next: (s) => this.mySub.set(s) });
@@ -79,7 +83,17 @@ export class OffersComponent implements OnInit {
 
   askConfirmPlan(plan: SubscriptionPlan): void {
     if (!this.isAuth) { this.router.navigate(['/auth/login']); return; }
-    this.confirmPlan.set(plan);
+    this.purchasing.set(true);
+    this.paymentService.createSubscriptionCheckout(plan.id, this.languageService.currentLang()).subscribe({
+      next: (res) => {
+        this.purchasing.set(false);
+        window.location.href = res.checkoutUrl;
+      },
+      error: () => {
+        this.purchasing.set(false);
+        this.showToast('Erreur lors de la création du paiement', 'error');
+      },
+    });
   }
 
   doPurchasePack(): void {
@@ -88,7 +102,7 @@ export class OffersComponent implements OnInit {
     this.purchasing.set(true);
 
     // Use Stripe Checkout for payment
-    this.paymentService.createPackCheckout(pack.id).subscribe({
+    this.paymentService.createPackCheckout(pack.id, this.languageService.currentLang()).subscribe({
       next: (res) => {
         this.purchasing.set(false);
         this.confirmPack.set(null);
@@ -106,14 +120,16 @@ export class OffersComponent implements OnInit {
     const plan = this.confirmPlan();
     if (!plan) return;
     this.purchasing.set(true);
-    this.offersService.subscribeToplan(plan.id).subscribe({
-      next: (s) => {
-        this.mySub.set(s);
-        this.confirmPlan.set(null);
+    this.paymentService.createSubscriptionCheckout(plan.id, this.languageService.currentLang()).subscribe({
+      next: (res) => {
         this.purchasing.set(false);
-        this.showToast(`Abonnement ${plan.name} activé !`, 'success');
+        this.confirmPlan.set(null);
+        window.location.href = res.checkoutUrl;
       },
-      error: () => { this.purchasing.set(false); this.showToast('Erreur abonnement', 'error'); },
+      error: () => {
+        this.purchasing.set(false);
+        this.showToast('Erreur lors de la création du paiement', 'error');
+      },
     });
   }
 
@@ -131,12 +147,7 @@ export class OffersComponent implements OnInit {
   }
 
   packLabel(pack: PointPack): string {
-    const labels: Record<string, string> = {
-      DECOUVERTE: 'Découverte',
-      POPULAIRE: 'Populaire',
-      PRO: 'Pro',
-    };
-    return labels[pack.category] ?? pack.category;
+    return 'offers.cat_' + pack.category;
   }
 
   isPopularPack(pack: PointPack): boolean {

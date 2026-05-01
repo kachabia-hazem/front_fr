@@ -5,7 +5,7 @@
 @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: none; opacity: 1; } }
 
 /* Page */
-.verif-page { max-width: 1000px; transition: margin-right 0.3s ease; }
+.verif-page { width: 100%; transition: margin-right 0.3s ease; }
 .verif-page.panel-open { margin-right: 430px; }
 
 .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
@@ -136,3 +136,46 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-confirm-reject { padding: 9px 18px; border-radius: 9px; background: #ef4444; color: #fff; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 700; transition: background 0.2s; }
 .btn-confirm-reject:hover:not(:disabled) { background: #dc2626; }
 .btn-confirm-reject:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Dark Mode ── */
+:host-context(body.dark-theme) .page-title { color: #e4e4ef; }
+:host-context(body.dark-theme) .btn-refresh { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+:host-context(body.dark-theme) .filter-tabs button { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+:host-context(body.dark-theme) .filter-tabs button.active { background: #3793B0; border-color: #3793B0; color: #fff; }
+:host-context(body.dark-theme) .table-card { background: #1a1d26; border-color: rgba(255,255,255,0.07); box-shadow: 0 4px 24px rgba(0,0,0,0.25); }
+:host-context(body.dark-theme) .verif-table th { background: #1e2435; border-bottom-color: rgba(255,255,255,0.08); }
+:host-context(body.dark-theme) .verif-table td { border-bottom-color: rgba(255,255,255,0.05); }
+:host-context(body.dark-theme) .verif-table tbody tr:hover { background: rgba(255,255,255,0.04); }
+:host-context(body.dark-theme) .verif-table tbody tr.selected { background: rgba(55,147,176,0.1); }
+:host-context(body.dark-theme) .company-name { color: #e4e4ef; }
+:host-context(body.dark-theme) .sector-tag { background: rgba(255,255,255,0.07); color: #c5cad8; }
+:host-context(body.dark-theme) .trust-badge.trusted    { background: rgba(16,185,129,0.15); color: #34d399; }
+:host-context(body.dark-theme) .trust-badge.review     { background: rgba(245,158,11,0.15); color: #fbbf24; }
+:host-context(body.dark-theme) .trust-badge.suspicious { background: rgba(239,68,68,0.15);  color: #f87171; }
+:host-context(body.dark-theme) .trust-badge.na         { background: rgba(107,114,128,0.12); color: #9ca3af; }
+:host-context(body.dark-theme) .status-badge.pending  { background: rgba(245,158,11,0.15); color: #fbbf24; }
+:host-context(body.dark-theme) .status-badge.approved { background: rgba(16,185,129,0.15); color: #34d399; }
+:host-context(body.dark-theme) .status-badge.rejected { background: rgba(239,68,68,0.15);  color: #f87171; }
+:host-context(body.dark-theme) .btn-approve { background: rgba(16,185,129,0.15); color: #34d399; }
+:host-context(body.dark-theme) .btn-reject  { background: rgba(239,68,68,0.1); color: #f87171; }
+:host-context(body.dark-theme) .side-panel { background: #1a1d26; border-left-color: rgba(255,255,255,0.08); }
+:host-context(body.dark-theme) .panel-header { border-bottom-color: rgba(255,255,255,0.07); }
+:host-context(body.dark-theme) .panel-header h2 { color: #e4e4ef; }
+:host-context(body.dark-theme) .close-btn { background: rgba(255,255,255,0.07); color: #9ca3b0; }
+:host-context(body.dark-theme) .panel-trust.trusted    { background: rgba(16,185,129,0.08); }
+:host-context(body.dark-theme) .panel-trust.review     { background: rgba(245,158,11,0.08); }
+:host-context(body.dark-theme) .panel-trust.suspicious { background: rgba(239,68,68,0.08); }
+:host-context(body.dark-theme) .panel-trust.na         { background: rgba(107,114,128,0.07); }
+:host-context(body.dark-theme) .trust-score-big { color: #e4e4ef; }
+:host-context(body.dark-theme) .btn-rescore { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+:host-context(body.dark-theme) .panel-section { border-bottom-color: rgba(255,255,255,0.06); }
+:host-context(body.dark-theme) .info-val { color: #c5cad8; }
+:host-context(body.dark-theme) .desc-text { color: #9ca3b0; }
+:host-context(body.dark-theme) .btn-reject-lg { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.25); }
+:host-context(body.dark-theme) .btn-reject-lg:hover:not(:disabled) { background: rgba(239,68,68,0.15); }
+:host-context(body.dark-theme) .rejection-info { background: rgba(239,68,68,0.08); color: #f87171; }
+:host-context(body.dark-theme) .modal { background: #1a1d26; }
+:host-context(body.dark-theme) .modal h3 { color: #e4e4ef; }
+:host-context(body.dark-theme) .modal label { color: #c5cad8; }
+:host-context(body.dark-theme) .reason-input { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }
+:host-context(body.dark-theme) .btn-cancel { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }

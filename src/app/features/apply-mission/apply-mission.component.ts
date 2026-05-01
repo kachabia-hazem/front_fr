@@ -8,6 +8,7 @@ import { MissionService } from '../../core/services/mission.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { CvService } from '../../core/services/cv.service';
 import { ApplicationService } from '../../core/services/application.service';
+import { OffersService } from '../../core/services/offers.service';
 import { Mission } from '../../core/models/mission.model';
 import { Freelancer, CreateApplicationRequest } from '../../core/models';
 import { PhoneInputComponent } from '../../shared/components/phone-input/phone-input.component';
@@ -34,6 +35,8 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
   submitError = signal('');
   showWithdrawToast = signal(false);
   showFullDescription = signal(false);
+  showConfirmModal = signal(false);
+  applicationCost = signal(3);
 
   currentStep = 1;
   totalSteps = 6;
@@ -76,6 +79,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
     private freelancerService: FreelancerService,
     private cvService: CvService,
     private applicationService: ApplicationService,
+    private offersService: OffersService,
   ) {}
 
   ngOnInit(): void {
@@ -123,6 +127,10 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
       this.loading.set(false);
       return;
     }
+
+    this.offersService.getPlatformCosts().subscribe({
+      next: (c) => this.applicationCost.set(c.applicationCost),
+    });
 
     forkJoin({
       mission: this.missionService.getMissionById(missionId),
@@ -496,7 +504,16 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
 
   onSubmitApplication(): void {
     if (this.submitting()) return;
+    this.showConfirmModal.set(true);
+  }
 
+  declineApplication(): void {
+    this.showConfirmModal.set(false);
+    this.router.navigate(['/missions']);
+  }
+
+  proceedApplication(): void {
+    this.showConfirmModal.set(false);
     this.submitting.set(true);
     this.submitError.set('');
 
@@ -507,19 +524,15 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // If freelancer uploaded a new CV, upload it first
     if (this.cvOption === 'upload' && this.uploadedCvFile) {
       this.cvService.uploadCv(this.uploadedCvFile).subscribe({
-        next: (res) => {
-          this.sendApplication(missionId, res.url);
-        },
+        next: (res) => this.sendApplication(missionId, res.url),
         error: () => {
           this.submitError.set('Failed to upload CV. Please try again.');
           this.submitting.set(false);
         },
       });
     } else {
-      // Use profile CV URL or no CV
       const cvUrl = this.cvOption === 'profile' ? this.freelancer()?.cvUrl || '' : '';
       this.sendApplication(missionId, cvUrl);
     }

@@ -1798,6 +1798,16 @@
   border-color: rgba(52, 211, 153, 0.2);
 }
 
+/* ── Loading state ── */
+.payment-loading-state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 20px;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.85rem;
+}
+
 /* ── Empty state ── */
 .payment-empty {
   display: flex;

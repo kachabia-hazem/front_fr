@@ -82,8 +82,8 @@
 
 /* ── Main ────────────────────────────────────────────────────────────────── */
 .dashboard-main {
-  flex:1; overflow-y:auto; padding:32px 36px;
-  background:#f5f7fa; display:flex; flex-direction:column; gap:0;
+  flex:1; min-height:0; overflow-y:auto; padding:32px 36px 48px;
+  background:#f5f7fa;
 }
 :host-context(body.dark-theme) .dashboard-main { background:#0f1117; }
 
@@ -96,10 +96,73 @@
 @keyframes spin { to { transform:rotate(360deg); } }
 
 /* ── Page header ─────────────────────────────────────────────────────────── */
-.bal-page-header { margin-bottom:24px; }
+.bal-page-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px; gap: 12px;
+}
 .bal-page-title  { font-size:1.35rem; font-weight:800; color:#111827; margin:0 0 4px; letter-spacing:-.02em; }
 :host-context(body.dark-theme) .bal-page-title { color:#f3f4f6; }
 .bal-page-sub    { font-size:.8rem; color:#9ca3af; margin:0; }
+
+.bal-btn-offers {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; background: linear-gradient(135deg,#3793B0,#2a7a96);
+  color: #fff; border-radius: 8px; font-size: .8rem; font-weight: 600;
+  text-decoration: none; white-space: nowrap; transition: opacity .2s;
+}
+.bal-btn-offers:hover { opacity: .85; }
+
+/* ── Subscription banner ─────────────────────────────────────────────────── */
+.bal-sub-banner {
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  border-radius:14px; padding:16px 20px; margin-bottom:20px; flex-wrap:wrap;
+}
+.bal-sub-banner.active  { background:linear-gradient(135deg,rgba(5,150,105,.1),rgba(4,120,87,.06)); border:1px solid rgba(5,150,105,.25); }
+.bal-sub-banner.inactive{ background:rgba(245,158,11,.06); border:1px solid rgba(245,158,11,.2); }
+.bal-sub-banner-left  { display:flex; align-items:center; gap:14px; }
+.bal-sub-banner-right { display:flex; align-items:center; gap:10px; }
+.bal-sub-icon {
+  width:40px; height:40px; border-radius:10px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+}
+.active   .bal-sub-icon { background:rgba(5,150,105,.15); color:#059669; }
+.inactive .bal-sub-icon { background:rgba(245,158,11,.12); color:#f59e0b; }
+.bal-sub-name   { font-size:.9rem; font-weight:700; color:#111827; margin-bottom:2px; }
+:host-context(body.dark-theme) .bal-sub-name { color:#f3f4f6; }
+.bal-sub-detail { font-size:.75rem; color:#6b7280; }
+.bal-sub-days-chip {
+  background:rgba(5,150,105,.15); color:#059669; border:1px solid rgba(5,150,105,.25);
+  border-radius:100px; padding:4px 14px; font-size:.8rem; font-weight:700; white-space:nowrap;
+}
+.bal-sub-cta {
+  background:linear-gradient(135deg,#3793B0,#2a7a96); color:#fff;
+  border-radius:8px; padding:8px 16px; font-size:.8rem; font-weight:600;
+  text-decoration:none; transition:opacity .2s; white-space:nowrap;
+}
+.bal-sub-cta:hover { opacity:.85; }
+
+.btn-cancel-sub {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:7px 14px; background:#ef4444; color:#fff;
+  border:none; border-radius:8px; font-size:.8rem; font-weight:600;
+  cursor:pointer; transition:background .2s; white-space:nowrap;
+}
+.btn-cancel-sub:hover:not(:disabled) { background:#dc2626; }
+.btn-cancel-sub:disabled { opacity:.65; cursor:not-allowed; }
+
+.cancel-spinner {
+  width:12px; height:12px;
+  border:2px solid rgba(255,255,255,.4); border-top-color:#fff;
+  border-radius:50%; animation:spin .7s linear infinite;
+}
+
+.cancel-toast {
+  position:fixed; top:20px; right:24px; z-index:9999;
+  padding:12px 20px; background:#059669; color:#fff;
+  border-radius:10px; font-size:.88rem; font-weight:600;
+  box-shadow:0 4px 16px rgba(0,0,0,.15);
+}
+.cancel-toast.cancel-toast-error { background:#ef4444; }
 
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 .bal-hero {

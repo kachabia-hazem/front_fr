@@ -1,5 +1,5 @@
 import {
-  Component, Input, Output, EventEmitter, OnInit, OnDestroy, signal
+  Component, Input, Output, EventEmitter, OnInit, OnDestroy, signal, computed
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { loadStripe, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
@@ -27,7 +27,10 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
   totalAmount    = signal(0);
   platformFee    = signal(0);
   freelancerAmt  = signal(0);
-  currency       = signal('EUR');
+  currency       = signal('DT');
+  feePercent     = computed(() =>
+    this.totalAmount() > 0 ? Math.round(this.platformFee() / this.totalAmount() * 100) : 0
+  );
 
   private stripe: Stripe | null = null;
   private elements: StripeElements | null = null;

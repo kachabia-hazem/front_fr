@@ -21,6 +21,8 @@ import { PaymentService } from '../../core/services/payment.service';
           <p class="ps-msg">
             @if (isPack()) {
               Votre pack de points a été crédité sur votre compte. Vous pouvez maintenant utiliser vos points.
+            } @else if (isPlan()) {
+              Votre abonnement a été activé avec succès. Les points ont été crédités sur votre compte.
             } @else {
               Le paiement a été sécurisé. Les fonds seront libérés au freelancer après validation de la mission.
             }
@@ -51,9 +53,10 @@ import { PaymentService } from '../../core/services/payment.service';
   `]
 })
 export class PaymentSuccessComponent implements OnInit {
-  verifying = signal(false);
-  isPack    = signal(false);
-  errorMsg  = signal('');
+  verifying   = signal(false);
+  isPack      = signal(false);
+  isPlan      = signal(false);
+  errorMsg    = signal('');
 
   constructor(
     private route: ActivatedRoute,
@@ -65,9 +68,9 @@ export class PaymentSuccessComponent implements OnInit {
   ngOnInit() {
     const sessionId = this.route.snapshot.queryParamMap.get('session_id');
     const pack      = this.route.snapshot.queryParamMap.get('pack');
+    const plan      = this.route.snapshot.queryParamMap.get('plan');
 
     if (sessionId && pack) {
-      // Pack purchase redirect from Stripe Checkout — verify & credit points
       this.isPack.set(true);
       this.verifying.set(true);
       this.paymentService.verifyPackPurchase(sessionId).subscribe({
@@ -75,9 +78,21 @@ export class PaymentSuccessComponent implements OnInit {
         error: (err) => {
           this.verifying.set(false);
           const msg = err?.error?.error || '';
-          // "already processed" is not an error — idempotency
           if (!msg.toLowerCase().includes('already')) {
             this.errorMsg.set('Les points seront crédités dans quelques instants.');
+          }
+        },
+      });
+    } else if (sessionId && plan) {
+      this.isPlan.set(true);
+      this.verifying.set(true);
+      this.paymentService.verifySubscriptionPurchase(sessionId).subscribe({
+        next: () => this.verifying.set(false),
+        error: (err) => {
+          this.verifying.set(false);
+          const msg = err?.error?.error || '';
+          if (!msg.toLowerCase().includes('already')) {
+            this.errorMsg.set("L'abonnement sera activé dans quelques instants.");
           }
         },
       });

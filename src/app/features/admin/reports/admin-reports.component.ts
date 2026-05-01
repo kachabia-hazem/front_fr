@@ -37,25 +37,25 @@ export class AdminReportsComponent implements OnInit {
   readonly TABS = ['ALL', 'EN_ATTENTE', 'EN_COURS', 'TRAITE', 'REJETE'];
 
   readonly TYPE_LABELS: Record<string, string> = {
-    FRAUDE:                 'Fraude',
-    COMPORTEMENT:           'Comportement',
-    PAIEMENT:               'Paiement',
-    DOCUMENT_FALSIFIE:      'Document falsifié',
-    HORS_SUJET:             'Hors-sujet',
-    BUG_TECHNIQUE:          'Bug technique',
+    FRAUDE:                 'Fraud',
+    COMPORTEMENT:           'Behavior',
+    PAIEMENT:               'Payment',
+    DOCUMENT_FALSIFIE:      'Forged Document',
+    HORS_SUJET:             'Off-topic',
+    BUG_TECHNIQUE:          'Technical Bug',
     PROBLEME_NOTIFICATION:  'Notifications',
-    PROBLEME_MESSAGERIE:    'Messagerie',
-    ACCES_FONCTIONNALITE:   'Accès refusé',
-    CONTENU_INAPPROPRIE:    'Contenu inapproprié',
-    COMPTE_INJUSTE:         'Suspension injuste',
-    AUTRE:                  'Autre',
+    PROBLEME_MESSAGERIE:    'Messaging',
+    ACCES_FONCTIONNALITE:   'Access Denied',
+    CONTENU_INAPPROPRIE:    'Inappropriate Content',
+    COMPTE_INJUSTE:         'Unjust Suspension',
+    AUTRE:                  'Other',
   };
 
   readonly STATUS_LABELS: Record<string, string> = {
-    EN_ATTENTE: 'En attente',
-    EN_COURS: 'En cours',
-    TRAITE: 'Traité',
-    REJETE: 'Rejeté',
+    EN_ATTENTE: 'Pending',
+    EN_COURS:   'In Progress',
+    TRAITE:     'Resolved',
+    REJETE:     'Rejected',
   };
 
   filteredReports = computed(() => {
@@ -99,8 +99,8 @@ export class AdminReportsComponent implements OnInit {
     if (this.processing()) return;
     this.processing.set(r.id);
     this.reportService.updateStatus(r.id, status).subscribe({
-      next: (updated) => { this.updateReport(updated); this.processing.set(null); this.showToast('Statut mis à jour.', 'success'); },
-      error: () => { this.processing.set(null); this.showToast('Erreur lors de la mise à jour.', 'error'); },
+      next: (updated) => { this.updateReport(updated); this.processing.set(null); this.showToast('Status updated.', 'success'); },
+      error: () => { this.processing.set(null); this.showToast('Failed to update status.', 'error'); },
     });
   }
 
@@ -121,9 +121,9 @@ export class AdminReportsComponent implements OnInit {
         this.updateReport(updated);
         this.warning.set(false);
         this.closeWarnModal();
-        this.showToast('Avertissement envoyé à la partie signalée.', 'success');
+        this.showToast('Warning sent to the reported party.', 'success');
       },
-      error: () => { this.warning.set(false); this.showToast('Erreur lors de l\'envoi.', 'error'); },
+      error: () => { this.warning.set(false); this.showToast('Failed to send warning.', 'error'); },
     });
   }
 
@@ -144,14 +144,14 @@ export class AdminReportsComponent implements OnInit {
         this.updateReport(updated);
         this.rejecting.set(false);
         this.closeRejectModal();
-        this.showToast('Signalement rejeté, l\'auteur a reçu un email d\'explication.', 'success');
+        this.showToast('Report rejected, the author received an explanation email.', 'success');
       },
-      error: () => { this.rejecting.set(false); this.showToast('Erreur lors du rejet.', 'error'); },
+      error: () => { this.rejecting.set(false); this.showToast('Failed to reject report.', 'error'); },
     });
   }
 
   tabLabel(s: string): string {
-    if (s === 'ALL') return 'Tous';
+    if (s === 'ALL') return 'All';
     return this.STATUS_LABELS[s] ?? s;
   }
 
@@ -159,7 +159,7 @@ export class AdminReportsComponent implements OnInit {
 
   formatDate(d: string): string {
     if (!d) return '';
-    return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+    return new Date(d).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
   private updateReport(updated: Report) {

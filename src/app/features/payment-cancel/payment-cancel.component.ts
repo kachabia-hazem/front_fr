@@ -10,10 +10,10 @@ import { Router } from '@angular/router';
     <div class="pc-page">
       <div class="pc-card">
         <div class="pc-icon">✕</div>
-        <h1 class="pc-title">Paiement annulé</h1>
-        <p class="pc-msg">Votre paiement a été annulé. Aucun montant n'a été débité. Vous pouvez réessayer à tout moment.</p>
+        <h1 class="pc-title">Payment Cancelled</h1>
+        <p class="pc-msg">Your payment has been cancelled. No amount has been charged. You can try again at any time.</p>
         <div class="pc-actions">
-          <button class="pc-btn" (click)="goBack()">Retour</button>
+          <button class="pc-btn" (click)="goBack()">Go Back</button>
         </div>
       </div>
     </div>

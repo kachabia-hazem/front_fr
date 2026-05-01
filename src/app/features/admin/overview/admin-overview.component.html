@@ -1,5 +1,13 @@
 <div class="overview-page">
 
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard Overview</h1>
+      <p class="page-subtitle">Platform activity and key metrics</p>
+    </div>
+  </div>
+
   <!-- Loading -->
   <div class="loading-state" *ngIf="loading()">
     <div class="spinner"></div>
@@ -79,45 +87,38 @@
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Company Verification Status</h3>
+          <span class="card-total-badge">{{ s.totalCompanies }} total</span>
         </div>
         <div class="card-body">
-          <div class="status-row">
-            <div class="status-info">
-              <span class="dot approved"></span>
-              <span class="status-name">Approved</span>
-            </div>
-            <div class="status-bar-track">
-              <div class="status-bar-fill approved"
-                [style.width.%]="s.totalCompanies > 0 ? (s.approvedCompanies / s.totalCompanies) * 100 : 0">
-              </div>
-            </div>
-            <span class="status-num">{{ s.approvedCompanies }}</span>
+
+          <!-- Segmented bar -->
+          <div class="verif-seg-bar">
+            <div class="seg approved" [style.flex]="s.approvedCompanies"></div>
+            <div class="seg pending"  [style.flex]="s.pendingCompanies"></div>
+            <div class="seg rejected" [style.flex]="s.rejectedCompanies"></div>
           </div>
 
-          <div class="status-row">
-            <div class="status-info">
-              <span class="dot pending"></span>
-              <span class="status-name">Pending</span>
-            </div>
-            <div class="status-bar-track">
-              <div class="status-bar-fill pending"
-                [style.width.%]="s.totalCompanies > 0 ? (s.pendingCompanies / s.totalCompanies) * 100 : 0">
-              </div>
-            </div>
-            <span class="status-num">{{ s.pendingCompanies }}</span>
-          </div>
+          <!-- 3 stat blocks -->
+          <div class="verif-stats-row">
 
-          <div class="status-row">
-            <div class="status-info">
-              <span class="dot rejected"></span>
-              <span class="status-name">Rejected</span>
+            <div class="verif-stat approved">
+              <span class="vs-num">{{ s.approvedCompanies }}</span>
+              <span class="vs-pct">{{ s.totalCompanies > 0 ? ((s.approvedCompanies / s.totalCompanies) * 100).toFixed(0) : 0 }}%</span>
+              <span class="vs-lbl">Approved</span>
             </div>
-            <div class="status-bar-track">
-              <div class="status-bar-fill rejected"
-                [style.width.%]="s.totalCompanies > 0 ? (s.rejectedCompanies / s.totalCompanies) * 100 : 0">
-              </div>
+
+            <div class="verif-stat pending">
+              <span class="vs-num">{{ s.pendingCompanies }}</span>
+              <span class="vs-pct">{{ s.totalCompanies > 0 ? ((s.pendingCompanies / s.totalCompanies) * 100).toFixed(0) : 0 }}%</span>
+              <span class="vs-lbl">Pending</span>
             </div>
-            <span class="status-num">{{ s.rejectedCompanies }}</span>
+
+            <div class="verif-stat rejected">
+              <span class="vs-num">{{ s.rejectedCompanies }}</span>
+              <span class="vs-pct">{{ s.totalCompanies > 0 ? ((s.rejectedCompanies / s.totalCompanies) * 100).toFixed(0) : 0 }}%</span>
+              <span class="vs-lbl">Rejected</span>
+            </div>
+
           </div>
         </div>
       </div>
@@ -408,8 +409,8 @@
   <!-- ══════════════════════════════════════════════════════════════════════ -->
 
   <div class="pay-section-header">
-    <h2 class="charts-section-title" style="margin:0">Suivi financier de la plateforme</h2>
-    <p class="pay-section-sub">Escrow, commissions et transactions</p>
+    <h2 class="charts-section-title" style="margin:0">Platform Financial Overview</h2>
+    <p class="pay-section-sub">Escrow, commissions and transactions</p>
   </div>
 
   <!-- ── 4 KPI Cards ── -->
@@ -420,8 +421,8 @@
       </div>
       <div class="pay-kpi-body">
         <span class="pay-kpi-val">{{ formatTND(po.totalEscrow) }}</span>
-        <span class="pay-kpi-lbl">Total séquestré</span>
-        <span class="pay-kpi-sub">{{ po.escrowContractCount }} contrat(s) en attente</span>
+        <span class="pay-kpi-lbl">Total Escrowed</span>
+        <span class="pay-kpi-sub">{{ po.escrowContractCount }} contract(s) pending</span>
       </div>
     </div>
 
@@ -431,8 +432,8 @@
       </div>
       <div class="pay-kpi-body">
         <span class="pay-kpi-val">{{ formatTND(po.releasedThisMonth) }}</span>
-        <span class="pay-kpi-lbl">Libéré ce mois</span>
-        <span class="pay-kpi-sub">{{ po.capturedThisMonthCount }} contrat(s) validé(s)</span>
+        <span class="pay-kpi-lbl">Released this month</span>
+        <span class="pay-kpi-sub">{{ po.capturedThisMonthCount }} contract(s) validated</span>
       </div>
     </div>
 
@@ -442,8 +443,8 @@
       </div>
       <div class="pay-kpi-body">
         <span class="pay-kpi-val">{{ formatTND(po.totalPlatformCommission) }}</span>
-        <span class="pay-kpi-lbl">Commission totale</span>
-        <span class="pay-kpi-sub">{{ po.totalCapturedContracts }} contrat(s) complété(s)</span>
+        <span class="pay-kpi-lbl">Total Commission</span>
+        <span class="pay-kpi-sub">{{ po.totalCapturedContracts }} contract(s) completed</span>
       </div>
     </div>
 
@@ -453,8 +454,8 @@
       </div>
       <div class="pay-kpi-body">
         <span class="pay-kpi-val">{{ po.totalCapturedContracts + po.escrowContractCount }}</span>
-        <span class="pay-kpi-lbl">Contrats avec paiement</span>
-        <span class="pay-kpi-sub">Escrow + libérés</span>
+        <span class="pay-kpi-lbl">Contracts with payment</span>
+        <span class="pay-kpi-sub">Escrowed + released</span>
       </div>
     </div>
   </div>

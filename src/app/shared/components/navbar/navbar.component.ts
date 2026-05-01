@@ -1,4 +1,5 @@
-import { Component, OnInit, HostListener, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, signal, computed } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -20,7 +21,8 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
+  private balanceSub?: Subscription;
   freelancer = signal<Freelancer | null>(null);
   company    = signal<Company | null>(null);
   showDropdown = false;
@@ -115,6 +117,14 @@ export class NavbarComponent implements OnInit {
       this.notificationService.getUnreadCount().subscribe();
       this.chatService.getConversations().subscribe({ error: () => {} });
     }
+
+    this.balanceSub = this.offersService.balanceDecremented$.subscribe((amount) => {
+      this.pointsBalance.update(v => Math.max(0, v - amount));
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.balanceSub?.unsubscribe();
   }
 
   // ── Offers modal ──────────────────────────────────────────────────────────

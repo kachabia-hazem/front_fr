@@ -1202,8 +1202,8 @@
 .card-description {
   font-size: 0.84rem;
   color: #6b7280;
-  line-height: 1.65;
-  margin: 0 0 0.65rem;
+  line-height: 1.6;
+  margin: 0 0 0.6rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -1214,18 +1214,17 @@
 .skills-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-top: 0.5rem;
+  gap: 0.4rem;
 }
 
 .skill-tag {
-  padding: 0.2rem 0.55rem;
+  padding: 0.22rem 0.7rem;
   background: #eef6fb;
   color: #3793B0;
-  border: 1px solid #d1ede8;
-  border-radius: 0.3rem;
-  font-size: 0.7rem;
-  font-weight: 600;
+  border: 1px solid #b8dded;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 500;
 }
 
 /* ── Card Footer ── */
@@ -1319,6 +1318,51 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+/* ── Matching Tooltip ── */
+.matching-btn-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.matching-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e2433;
+  color: #e4e4ef;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.matching-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1e2433;
+}
+
+.matching-tooltip--top {
+  bottom: calc(100% + 8px);
+  top: auto;
+}
+
+.matching-btn-wrapper:hover .matching-tooltip {
+  opacity: 1;
 }
 
 /* ── Application Status Badges (card) ── */
@@ -2586,8 +2630,8 @@
 }
 
 :host-context(body.dark-theme) .skill-tag {
-  background: #1a3a35;
-  border-color: #2d6b63;
+  background: rgba(55,147,176,0.12);
+  border-color: rgba(55,147,176,0.3);
   color: #6dc4b8;
 }
 

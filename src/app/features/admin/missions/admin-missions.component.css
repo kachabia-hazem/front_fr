@@ -1,4 +1,4 @@
-.missions-page { max-width: 1100px; }
+.missions-page { width: 100%; }
 .page-header { margin-bottom: 20px; }
 .page-title { font-size: 1.2rem; font-weight: 700; color: #1a1a2e; margin: 0 0 4px; }
 .page-subtitle { font-size: 0.8rem; color: #9ca3af; margin: 0; }
@@ -107,3 +107,30 @@
 }
 .btn-confirm-delete:hover:not(:disabled) { background: #b91c1c; }
 .btn-confirm-delete:disabled { background: #f87171; cursor: not-allowed; }
+
+/* ── Dark Mode ── */
+:host-context(body.dark-theme) .page-title { color: #e4e4ef; }
+:host-context(body.dark-theme) .search-bar { background: #1e2435; border-color: rgba(255,255,255,0.1); box-shadow: none; }
+:host-context(body.dark-theme) .search-input { color: #e4e4ef; }
+:host-context(body.dark-theme) .status-tabs button { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+:host-context(body.dark-theme) .status-tabs button.active { background: #3793B0; border-color: #3793B0; color: #fff; }
+:host-context(body.dark-theme) .table-card { background: #1a1d26; border-color: rgba(255,255,255,0.07); box-shadow: 0 4px 24px rgba(0,0,0,0.25); }
+:host-context(body.dark-theme) .table-meta { border-bottom-color: rgba(255,255,255,0.06); }
+:host-context(body.dark-theme) .missions-table th { background: #1e2435; border-bottom-color: rgba(255,255,255,0.08); }
+:host-context(body.dark-theme) .missions-table td { border-bottom-color: rgba(255,255,255,0.05); }
+:host-context(body.dark-theme) .missions-table tbody tr:hover { background: rgba(255,255,255,0.04); }
+:host-context(body.dark-theme) .title-cell { color: #e4e4ef; }
+:host-context(body.dark-theme) .field-tag { background: rgba(255,255,255,0.07); color: #c5cad8; }
+:host-context(body.dark-theme) .status-badge.open { background: rgba(16,185,129,0.15); color: #34d399; }
+:host-context(body.dark-theme) .status-badge.in_progress { background: rgba(55,147,176,0.15); color: #4baac7; }
+:host-context(body.dark-theme) .status-badge.closed { background: rgba(107,114,128,0.12); color: #9ca3af; }
+:host-context(body.dark-theme) .status-badge.cancelled { background: rgba(239,68,68,0.12); color: #f87171; }
+:host-context(body.dark-theme) .btn-delete { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.25); color: #f87171; }
+:host-context(body.dark-theme) .btn-delete:hover { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); }
+:host-context(body.dark-theme) .modal-card { background: #1a1d26; }
+:host-context(body.dark-theme) .modal-title { color: #e4e4ef; }
+:host-context(body.dark-theme) .modal-mission-info { background: #1e2435; border-color: rgba(255,255,255,0.08); }
+:host-context(body.dark-theme) .modal-mission-name { color: #e4e4ef; }
+:host-context(body.dark-theme) .modal-label { color: #c5cad8; }
+:host-context(body.dark-theme) .modal-textarea { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }
+:host-context(body.dark-theme) .btn-cancel { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }

@@ -72,7 +72,7 @@
           <th>Entreprise</th>
           <th>Mission</th>
           <th class="col-right">Montant total</th>
-          <th class="col-right">Commission (7%)</th>
+          <th class="col-right">Commission ({{ feePercent() }}%)</th>
           <th class="col-right">Net freelance</th>
           <th>Statut contrat</th>
           <th>Paiement escrow</th>
@@ -224,7 +224,7 @@
           <span class="info-val">{{ formatTND(c.totalAmount) }}</span>
         </div>
         <div class="info-item">
-          <span class="info-key">Commission plateforme (7%)</span>
+          <span class="info-key">Commission plateforme ({{ feePercent() }}%)</span>
           <span class="info-val fee-cell">{{ formatTND(c.platformFee) }}</span>
         </div>
         <div class="info-item">

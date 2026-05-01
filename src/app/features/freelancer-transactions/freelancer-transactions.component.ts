@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -51,6 +51,7 @@ export class FreelancerTransactionsComponent implements OnInit {
     private paymentService: PaymentService,
     public  authService: AuthService,
     public  themeService: ThemeService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -78,17 +79,18 @@ export class FreelancerTransactionsComponent implements OnInit {
 
   formatDate(d: string | null | undefined): string {
     if (!d) return '—';
-    return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    const locale = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-US';
+    return new Date(d).toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
   }
 
   txTypeLabel(type: string): string {
     const map: Record<string, string> = {
-      PURCHASE_PACK:  'Achat pack',
-      SUBSCRIBE_PLAN: 'Abonnement',
-      APPLICATION:    'Candidature',
-      AI_MATCHING:    'IA Matching',
-      BOOST:          'Boost',
-      FEATURED:       'Mis en avant',
+      PURCHASE_PACK:  'transactions.type_purchase_pack',
+      SUBSCRIBE_PLAN: 'transactions.type_subscribe_plan',
+      APPLICATION:    'transactions.type_application',
+      AI_MATCHING:    'transactions.type_ai_matching',
+      BOOST:          'transactions.type_boost',
+      FEATURED:       'transactions.type_featured',
     };
     return map[type] ?? type;
   }
@@ -107,8 +109,11 @@ export class FreelancerTransactionsComponent implements OnInit {
 
   paymentStatusLabel(status: string): string {
     const map: Record<string, string> = {
-      AUTHORIZED: 'En escrow', CAPTURED: 'Versé',
-      FAILED: 'Échoué',       REFUNDED: 'Remboursé', UNPAID: 'Non payé',
+      AUTHORIZED: 'transactions.status_escrow',
+      CAPTURED:   'transactions.status_earned',
+      FAILED:     'transactions.status_failed',
+      REFUNDED:   'transactions.status_refunded',
+      UNPAID:     'transactions.status_unpaid',
     };
     return map[status] ?? status;
   }

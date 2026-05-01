@@ -71,6 +71,16 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
+  // Company transactions — standalone (no navbar/footer)
+  {
+    path: 'company-transactions',
+    loadComponent: () =>
+      import('./features/company-transactions/company-transactions.component').then(
+        (m) => m.CompanyTransactionsComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
   // Company dashboard — standalone (no navbar/footer)
   {
     path: 'company-dashboard',

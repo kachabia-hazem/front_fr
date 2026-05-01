@@ -46,6 +46,10 @@ export interface Freelancer extends User {
   workExperience?: WorkExperience[];
   // Points
   pointsBalance?: number;
+  // Subscription
+  subscriptionPlanId?: string;
+  subscriptionStartDate?: string;
+  subscriptionExpiresAt?: string;
 }
 
 export interface Company extends User {

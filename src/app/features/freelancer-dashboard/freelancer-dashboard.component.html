@@ -46,7 +46,7 @@
         </a>
         <a routerLink="/freelancer-transactions" routerLinkActive="active" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-          Transactions
+          {{ 'nav.transactions' | translate }}
         </a>
         <a routerLink="/freelancer-notifications" routerLinkActive="active" class="sidebar-link">
           <span class="notif-icon-wrapper">
@@ -96,13 +96,13 @@
         </div>
         <div class="header-actions">
           <!-- Report button -->
-          <button class="header-report-btn" (click)="reportModalOpen.set(true)" title="Soumettre un signalement">
+          <button class="header-report-btn" (click)="reportModalOpen.set(true)">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
               <line x1="4" y1="22" x2="4" y2="15"/>
             </svg>
-            <span>Signalement</span>
+            <span>{{ 'dashboard.report_btn' | translate }}</span>
           </button>
           <button class="header-theme-btn" (click)="themeService.toggle()" [title]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
             @if (themeService.isDark()) {
@@ -557,23 +557,28 @@
 
           <div class="payment-card-header">
             <div>
-              <h2 class="section-title" style="margin:0">Suivi des paiements</h2>
-              <p class="payment-subtitle">Solde en escrow et gains reversés</p>
+              <h2 class="section-title" style="margin:0">{{ 'dashboard.payment_title' | translate }}</h2>
+              <p class="payment-subtitle">{{ 'dashboard.payment_subtitle' | translate }}</p>
             </div>
             <a routerLink="/freelancer-contracts" class="btn-see-stats">
-              Voir les contrats
+              {{ 'dashboard.payment_view_contracts' | translate }}
             </a>
           </div>
 
-          @if (!paymentSummary()) {
+          @if (paymentLoading()) {
+            <div class="payment-loading-state">
+              <div class="spinner-sm"></div>
+              <span>{{ 'dashboard.payment_loading' | translate }}</span>
+            </div>
+          } @else if (!paymentSummary()) {
             <div class="payment-empty">
               <div class="payment-empty-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                 </svg>
               </div>
-              <p class="payment-empty-title">Aucun paiement enregistré</p>
-              <p class="payment-empty-sub">Les paiements de vos contrats apparaîtront ici.</p>
+              <p class="payment-empty-title">{{ 'dashboard.payment_no_data' | translate }}</p>
+              <p class="payment-empty-sub">{{ 'dashboard.payment_no_data_sub' | translate }}</p>
             </div>
           } @else {
 
@@ -584,9 +589,9 @@
                   <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
                 <div class="ps-balance-content">
-                  <span class="ps-balance-label">Solde en escrow</span>
+                  <span class="ps-balance-label">{{ 'dashboard.payment_escrow_balance' | translate }}</span>
                   <span class="ps-balance-amount">{{ formatTND(paymentSummary()!.escrowBalance) }}</span>
-                  <span class="ps-balance-sub">{{ paymentSummary()!.escrowContractCount }} contrat(s) en attente</span>
+                  <span class="ps-balance-sub">{{ 'dashboard.payment_pending_contracts' | translate:{n: paymentSummary()!.escrowContractCount} }}</span>
                 </div>
               </div>
 
@@ -595,9 +600,9 @@
                   <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
                 <div class="ps-balance-content">
-                  <span class="ps-balance-label">Gains reversés</span>
+                  <span class="ps-balance-label">{{ 'dashboard.payment_earned' | translate }}</span>
                   <span class="ps-balance-amount">{{ formatTND(paymentSummary()!.earnedBalance) }}</span>
-                  <span class="ps-balance-sub">{{ paymentSummary()!.earnedContractCount }} contrat(s) complété(s)</span>
+                  <span class="ps-balance-sub">{{ 'dashboard.payment_completed_contracts' | translate:{n: paymentSummary()!.earnedContractCount} }}</span>
                 </div>
               </div>
             </div>
@@ -605,7 +610,7 @@
             <!-- Contract list -->
             @if (paymentSummary()!.contracts.length > 0) {
               <div class="payment-contracts">
-                <p class="payment-contracts-title">Détail des contrats</p>
+                <p class="payment-contracts-title">{{ 'dashboard.payment_contract_details' | translate }}</p>
                 <div class="payment-contracts-list">
                   @for (c of paymentSummary()!.contracts; track c.id) {
                     <div class="payment-contract-row">
@@ -620,7 +625,7 @@
                         }
                       </div>
                       <span class="payment-contract-badge" [ngClass]="paymentStatusClass(c.paymentStatus)">
-                        {{ paymentStatusLabel(c.paymentStatus) }}
+                        {{ paymentStatusLabel(c.paymentStatus) | translate }}
                       </span>
                     </div>
                   }

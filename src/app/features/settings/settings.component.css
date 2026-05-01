@@ -63,7 +63,7 @@
 :host-context(body.dark-theme) .settings-main { background: #111622; }
 
 /* ── Page ── */
-.settings-page { max-width: 1060px; margin: 0 auto; padding: 36px 40px 60px; }
+.settings-page { padding: 36px 40px 60px; }
 
 .settings-page-header { margin-bottom: 32px; }
 .settings-page-title { font-size: 1.75rem; font-weight: 800; color: #1a1a2e; letter-spacing: -0.02em; margin: 0 0 6px; }

@@ -24,7 +24,7 @@
         <strong>{{ totalAmount() | number:'1.2-2' }} {{ currency() }}</strong>
       </div>
       <div class="pm-summary-row pm-fee-row">
-        <span>Commission plateforme (7%)</span>
+        <span>Commission plateforme ({{ feePercent() }}%)</span>
         <span class="pm-fee">-{{ platformFee() | number:'1.2-2' }} {{ currency() }}</span>
       </div>
       <div class="pm-summary-divider"></div>

@@ -2,6 +2,7 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ContractService } from '../../../core/services/contract.service';
+import { AdminService } from '../../../core/services/admin.service';
 import { Contract } from '../../../core/models/contract.model';
 
 @Component({
@@ -27,6 +28,7 @@ export class AdminContractsComponent implements OnInit {
   cancelling = signal(false);
 
   toast = signal<{ msg: string; type: 'success' | 'error' } | null>(null);
+  feePercent = signal(7);
 
   readonly STATUS_TABS = ['ALL', 'PENDING_SIGNATURE', 'SIGNED', 'FINISHED', 'CANCELLED', 'REJECTED'];
 
@@ -40,10 +42,16 @@ export class AdminContractsComponent implements OnInit {
     });
   });
 
-  constructor(private contractService: ContractService) {}
+  constructor(
+    private contractService: ContractService,
+    private adminService: AdminService,
+  ) {}
 
   ngOnInit() {
     this.load();
+    this.adminService.getSettings().subscribe({
+      next: (s) => this.feePercent.set(s.platformFeePercent),
+    });
   }
 
   private load() {

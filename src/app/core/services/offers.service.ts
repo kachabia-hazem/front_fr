@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface PointPack {
@@ -107,7 +107,19 @@ export class OffersService {
   private readonly base = `${environment.apiUrl}/admin/offers`;
   private readonly userBase = `${environment.apiUrl}/offers`;
 
+  readonly balanceDecremented$ = new Subject<number>();
+
+  notifyBalanceDecremented(amount: number): void {
+    this.balanceDecremented$.next(amount);
+  }
+
   constructor(private http: HttpClient) {}
+
+  getPlatformCosts(): Observable<{ applicationCost: number; aiMatchingCost: number; aiRankingCost: number }> {
+    return this.http.get<{ applicationCost: number; aiMatchingCost: number; aiRankingCost: number }>(
+      `${environment.apiUrl}/public/platform-costs`
+    );
+  }
 
   // ── Packs ──────────────────────────────────────────────────────────────────
   getAllPacks(): Observable<PointPack[]> {
@@ -180,5 +192,22 @@ export class OffersService {
 
   getMySubscription(): Observable<CompanySubscriptionResponse> {
     return this.http.get<CompanySubscriptionResponse>(`${this.userBase}/my-subscription`);
+  }
+
+  cancelSubscription(): Observable<CompanySubscriptionResponse> {
+    return this.http.delete<CompanySubscriptionResponse>(`${this.userBase}/my-subscription`);
+  }
+
+  // ── Freelancer subscription ────────────────────────────────────────────────
+  subscribeFreelancerToPlan(planId: string): Observable<CompanySubscriptionResponse> {
+    return this.http.post<CompanySubscriptionResponse>(`${this.userBase}/subscriptions/${planId}/freelancer-subscribe`, {});
+  }
+
+  cancelFreelancerSubscription(): Observable<CompanySubscriptionResponse> {
+    return this.http.delete<CompanySubscriptionResponse>(`${this.userBase}/my-freelancer-subscription`);
+  }
+
+  getMyFreelancerSubscription(): Observable<CompanySubscriptionResponse> {
+    return this.http.get<CompanySubscriptionResponse>(`${this.userBase}/my-freelancer-subscription`);
   }
 }

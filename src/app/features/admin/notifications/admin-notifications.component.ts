@@ -61,9 +61,9 @@ export class AdminNotificationsComponent implements OnInit {
 
   getTypeLabel(type: NotificationType): string {
     switch (type) {
-      case 'ADMIN_COMPANY_VERIFICATION_REQUEST': return 'Vérification';
-      case 'ADMIN_NEW_FREELANCER_REGISTERED':    return 'Inscription';
-      case 'ADMIN_NEW_CONTRACT_SIGNED':          return 'Contrat';
+      case 'ADMIN_COMPANY_VERIFICATION_REQUEST': return 'Verification';
+      case 'ADMIN_NEW_FREELANCER_REGISTERED':    return 'Registration';
+      case 'ADMIN_NEW_CONTRACT_SIGNED':          return 'Contract';
       case 'ADMIN_NEW_MISSION_PUBLISHED':        return 'Mission';
       default:                                   return 'Info';
     }
@@ -82,12 +82,12 @@ export class AdminNotificationsComponent implements OnInit {
   timeAgo(dateStr: string): string {
     const diff = Date.now() - new Date(dateStr).getTime();
     const m = Math.floor(diff / 60000);
-    if (m < 1)  return 'À l\'instant';
-    if (m < 60) return `Il y a ${m} min`;
+    if (m < 1)  return 'Just now';
+    if (m < 60) return `${m}m ago`;
     const h = Math.floor(m / 60);
-    if (h < 24) return `Il y a ${h}h`;
+    if (h < 24) return `${h}h ago`;
     const d = Math.floor(h / 24);
-    if (d < 7)  return `Il y a ${d}j`;
-    return new Date(dateStr).toLocaleDateString('fr-FR');
+    if (d < 7)  return `${d}d ago`;
+    return new Date(dateStr).toLocaleDateString('en-US');
   }
 }

@@ -5,7 +5,7 @@
 @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
 /* ── Page shell ── */
-.offers-page { max-width: 1100px; padding-bottom: 48px; }
+.offers-page { width: 100%; padding-bottom: 48px; }
 
 .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
 .page-title-block {}
@@ -64,23 +64,26 @@
 ═══════════════════════════════════════════════════ */
 .packs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
 }
 
 .pack-card {
   position: relative;
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 16px 18px 18px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px 20px 22px;
   display: flex; flex-direction: column; gap: 10px;
-  transition: box-shadow .2s, border-color .2s;
+  transition: box-shadow .2s, border-color .2s, transform .2s;
   overflow: hidden;
 }
-.pack-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,.07); }
+.pack-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,.1); transform: translateY(-2px); }
 .pack-card.promo-active { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249,115,22,.08); }
 .pack-card.inactive { opacity: .5; }
+.pack-card.cat-decouverte { border-top: 3px solid #10b981; }
+.pack-card.cat-populaire  { border-top: 3px solid #f59e0b; }
+.pack-card.cat-pro        { border-top: 3px solid #3b82f6; }
 
 /* top strip */
 .pack-card-top { display: flex; align-items: center; gap: 6px; min-height: 22px; }
@@ -118,6 +121,8 @@
 }
 .btn-delete-inline:hover { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
 
+.pack-name { font-size: 0.82rem; font-weight: 600; color: #6b7280; margin-top: 2px; }
+
 /* points */
 .pack-points-row { display: flex; align-items: baseline; gap: 4px; }
 .pack-pts-number { font-size: 2rem; font-weight: 800; color: #111827; line-height: 1; }
@@ -130,7 +135,7 @@
 .price-promo-main{ font-size: 1.15rem; font-weight: 800; color: #ef4444; }
 
 /* meta */
-.pack-meta-row { display: flex; align-items: center; gap: 8px; }
+.pack-meta-row { display: flex; align-items: center; gap: 8px; padding-top: 10px; border-top: 1px solid #f3f4f6; margin-top: 2px; }
 .ppp-label    { font-size: 0.72rem; color: #9ca3af; }
 .savings-chip { font-size: 0.65rem; font-weight: 700; background: #ecfdf5; color: #059669; padding: 2px 7px; border-radius: 20px; }
 
@@ -140,39 +145,45 @@
 .subs-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 18px;
   margin-bottom: 32px;
 }
 
 .sub-card {
   position: relative;
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 18px 20px 20px;
-  display: flex; flex-direction: column; gap: 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 22px 22px 24px;
+  display: flex; flex-direction: column; gap: 14px;
   overflow: hidden;
-  transition: box-shadow .2s, border-color .2s;
+  transition: box-shadow .2s, border-color .2s, transform .2s;
 }
-.sub-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,.07); }
+.sub-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,.1); transform: translateY(-2px); }
 .sub-card.promo-active { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249,115,22,.08); }
 .sub-card.inactive { opacity: .5; }
-.sub-card.plan-premium { border-color: #c4b5fd; }
-.sub-card.plan-business{ border-color: #93c5fd; }
+.sub-card.plan-premium  { border-color: #c4b5fd; background: linear-gradient(160deg, #faf5ff 0%, #ffffff 55%); }
+.sub-card.plan-business { border-color: #93c5fd; background: linear-gradient(160deg, #eff6ff 0%, #ffffff 55%); }
 
 .sub-card-top { display: flex; align-items: center; gap: 6px; min-height: 22px; }
 
-.sub-name { font-size: 1rem; font-weight: 700; color: #111827; }
+.sub-name { font-size: 1.15rem; font-weight: 700; color: #374151; }
+.sub-card.plan-premium  .sub-name { color: #7c3aed; }
+.sub-card.plan-business .sub-name { color: #1d4ed8; }
 
 .sub-price-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
 .sub-period { font-size: 0.78rem; color: #9ca3af; }
+.sub-card.plan-premium  .price-normal { color: #7c3aed; }
+.sub-card.plan-business .price-normal { color: #1d4ed8; }
 
 .sub-pts-row { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; color: #374151; }
 .sub-pts-row svg { color: #f59e0b; flex-shrink: 0; }
 
-.sub-adv-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.sub-adv-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 7px; border-top: 1px solid #f3f4f6; padding-top: 12px; }
 .sub-adv-list li { display: flex; align-items: center; gap: 8px; font-size: 0.79rem; color: #4b5563; }
 .sub-adv-list li svg { color: #3793B0; flex-shrink: 0; }
+.sub-card.plan-premium  .sub-adv-list li svg { color: #7c3aed; }
+.sub-card.plan-business .sub-adv-list li svg { color: #1d4ed8; }
 
 /* ═══════════════════════════════════════════════════
    PROMO PANEL
@@ -342,3 +353,53 @@
   font-family:inherit; background:#fff; cursor:pointer;
 }
 .form-field select:focus { border-color:#3793B0; box-shadow:0 0 0 3px rgba(55,147,176,.1); }
+
+/* ── Dark Mode ── */
+:host-context(body.dark-theme) .page-title { color: #e4e4ef; }
+:host-context(body.dark-theme) .btn-new { background: #2d3748; }
+:host-context(body.dark-theme) .btn-new:hover { background: #374151; }
+:host-context(body.dark-theme) .tabs { border-bottom-color: rgba(255,255,255,0.08); }
+:host-context(body.dark-theme) .tabs button { color: #9ca3b0; }
+:host-context(body.dark-theme) .tabs button:hover { color: #c5cad8; }
+:host-context(body.dark-theme) .tabs button.active { color: #4baac7; border-bottom-color: #4baac7; }
+:host-context(body.dark-theme) .cat-line { background: rgba(255,255,255,0.08); }
+:host-context(body.dark-theme) .cat-pill.cat-decouverte { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.25); }
+:host-context(body.dark-theme) .cat-pill.cat-populaire  { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.25); }
+:host-context(body.dark-theme) .cat-pill.cat-pro        { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.25); }
+:host-context(body.dark-theme) .pack-card { background: #1a1d26; border-color: rgba(255,255,255,0.09); }
+:host-context(body.dark-theme) .pack-pts-number { color: #e4e4ef; }
+:host-context(body.dark-theme) .price-normal { color: #e4e4ef; }
+:host-context(body.dark-theme) .pack-meta-row { border-top-color: rgba(255,255,255,0.07); }
+:host-context(body.dark-theme) .btn-edit-inline { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+:host-context(body.dark-theme) .btn-delete-inline { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+:host-context(body.dark-theme) .sub-card { background: #1a1d26; border-color: rgba(255,255,255,0.09); }
+:host-context(body.dark-theme) .sub-card.plan-premium  { background: linear-gradient(160deg, rgba(139,92,246,0.08) 0%, #1a1d26 55%); border-color: rgba(139,92,246,0.3); }
+:host-context(body.dark-theme) .sub-card.plan-business { background: linear-gradient(160deg, rgba(59,130,246,0.08) 0%, #1a1d26 55%); border-color: rgba(59,130,246,0.3); }
+:host-context(body.dark-theme) .sub-adv-list { border-top-color: rgba(255,255,255,0.07); }
+:host-context(body.dark-theme) .sub-adv-list li { color: #c5cad8; }
+:host-context(body.dark-theme) .promo-panel { background: #1a1d26; border-color: rgba(255,255,255,0.07); }
+:host-context(body.dark-theme) .promo-panel-header { background: #1e2435; border-bottom-color: rgba(255,255,255,0.06); }
+:host-context(body.dark-theme) .promo-panel-title { color: #e4e4ef; }
+:host-context(body.dark-theme) .promo-table-head { border-bottom-color: rgba(255,255,255,0.06); background: #1e2435; }
+:host-context(body.dark-theme) .promo-row { border-bottom-color: rgba(255,255,255,0.05); }
+:host-context(body.dark-theme) .promo-row:hover { background: rgba(255,255,255,0.04); }
+:host-context(body.dark-theme) .promo-row.promo-on { background: rgba(249,115,22,0.06); }
+:host-context(body.dark-theme) .pr-pack-name { color: #e4e4ef; }
+:host-context(body.dark-theme) .pct-bar { background: rgba(255,255,255,0.1); }
+:host-context(body.dark-theme) .pct-num { color: #c5cad8; }
+:host-context(body.dark-theme) .pr-input { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }
+:host-context(body.dark-theme) .modal { background: #1a1d26; }
+:host-context(body.dark-theme) .modal-header { border-bottom-color: rgba(255,255,255,0.07); }
+:host-context(body.dark-theme) .modal-header h3 { color: #e4e4ef; }
+:host-context(body.dark-theme) .modal-footer { border-top-color: rgba(255,255,255,0.07); }
+:host-context(body.dark-theme) .form-field label { color: #c5cad8; }
+:host-context(body.dark-theme) .form-field input,
+:host-context(body.dark-theme) .form-field textarea,
+:host-context(body.dark-theme) .form-field select { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }
+:host-context(body.dark-theme) .input-addon-wrap { border-color: rgba(255,255,255,0.1); background: #1e2435; }
+:host-context(body.dark-theme) .input-addon-wrap input { background: #1e2435; color: #e4e4ef; }
+:host-context(body.dark-theme) .input-addon { background: #252d3e; border-left-color: rgba(255,255,255,0.1); }
+:host-context(body.dark-theme) .btn-secondary { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+:host-context(body.dark-theme) .btn-primary { background: #2d3748; }
+:host-context(body.dark-theme) .btn-primary:hover:not(:disabled) { background: #374151; }
+:host-context(body.dark-theme) .confirm-text { color: #c5cad8; }

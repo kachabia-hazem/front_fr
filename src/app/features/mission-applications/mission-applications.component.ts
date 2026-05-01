@@ -7,6 +7,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { MissionService } from '../../core/services/mission.service';
 import { ApplicationService } from '../../core/services/application.service';
+import { OffersService } from '../../core/services/offers.service';
 import { Application, RankedApplication } from '../../core/models/application.model';
 import { Mission } from '../../core/models/mission.model';
 import { Company } from '../../core/models/user.model';
@@ -29,6 +30,7 @@ export class MissionApplicationsComponent implements OnInit {
   isRanking = signal(false);
   rankingError = signal('');
   showRankConfirm = signal(false);
+  aiRankingCost = signal(5);
   rankedApplications = signal<RankedApplication[]>([]);
   rankedView = signal(false);
 
@@ -70,10 +72,15 @@ export class MissionApplicationsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private location: Location,
+    private offersService: OffersService,
   ) {}
 
   ngOnInit(): void {
     this.missionId = this.route.snapshot.paramMap.get('missionId') || '';
+
+    this.offersService.getPlatformCosts().subscribe({
+      next: (c) => this.aiRankingCost.set(c.aiRankingCost),
+    });
 
     this.companyService.getMyProfile().subscribe({
       next: (profile) => this.company.set(profile),

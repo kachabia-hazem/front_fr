@@ -166,4 +166,29 @@ export class AdminService {
   getPointTransactions(): Observable<AdminPointTransaction[]> {
     return this.http.get<AdminPointTransaction[]>(`${this.apiUrl}/payments/transactions/points`);
   }
+
+  // ─── Settings ─────────────────────────────────────────────────────────────
+  getSettings(): Observable<PlatformSettings> {
+    return this.http.get<PlatformSettings>(`${this.apiUrl}/settings`);
+  }
+
+  updatePlatformFee(percent: number): Observable<PlatformSettings> {
+    return this.http.put<PlatformSettings>(`${this.apiUrl}/settings/platform-fee`, { percent });
+  }
+
+  updatePointCosts(applicationCost: number, aiMatchingCost: number, aiRankingCost: number, welcomeBonus: number): Observable<PlatformSettings> {
+    return this.http.put<PlatformSettings>(`${this.apiUrl}/settings/point-costs`, { applicationCost, aiMatchingCost, aiRankingCost, welcomeBonus });
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(`${this.apiUrl}/settings/password`, { currentPassword, newPassword });
+  }
+}
+
+export interface PlatformSettings {
+  platformFeePercent: number;
+  applicationCost: number;
+  aiMatchingCost: number;
+  aiRankingCost: number;
+  welcomeBonus: number;
 }

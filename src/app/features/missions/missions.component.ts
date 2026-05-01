@@ -14,6 +14,7 @@ import { environment } from '../../../environments/environment';
 import { getProfileCompletion } from '../../core/utils/profile-completion';
 import { SECTOR_OPTIONS, SPECIALITY_OPTIONS, CATEGORY_OPTIONS } from '../../core/constants/mission-options';
 import { MissionTranslationService } from '../../core/services/mission-translation.service';
+import { OffersService } from '../../core/services/offers.service';
 
 @Component({
   selector: 'app-missions',
@@ -26,6 +27,7 @@ export class MissionsComponent implements OnInit {
   missions: Mission[] = [];
   filteredMissions: Mission[] = [];
   loading = true;
+  aiMatchingCost = 5;
 
   // Search
   searchQuery = '';
@@ -136,6 +138,7 @@ export class MissionsComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private translate: TranslateService,
     private missionTranslation: MissionTranslationService,
+    private offersService: OffersService,
   ) {}
 
   @HostListener('document:click')
@@ -401,6 +404,9 @@ export class MissionsComponent implements OnInit {
       this.aiSearchPrompt = prompt;
     }
 
+    this.offersService.getPlatformCosts().subscribe({
+      next: (c) => this.aiMatchingCost = c.aiMatchingCost,
+    });
     this.loadMissions();
     if (this.isFreelancer) {
       this.freelancerService.getMyProfile().subscribe({
@@ -873,6 +879,7 @@ export class MissionsComponent implements OnInit {
       next: (result) => {
         this.matchingResult = result;
         this.matchingLoading = false;
+        this.offersService.notifyBalanceDecremented(this.aiMatchingCost);
         this.cdr.detectChanges();
 
         // Phase 2: explication IA en arrière-plan (~30s, avec LLM)

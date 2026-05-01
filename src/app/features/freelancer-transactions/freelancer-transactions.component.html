@@ -44,7 +44,7 @@
         </a>
         <a routerLink="/freelancer-transactions" routerLinkActive="active" class="sidebar-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-          <span>Transactions</span>
+          <span>{{ 'nav.transactions' | translate }}</span>
         </a>
         <a routerLink="/freelancer-notifications" routerLinkActive="active" class="sidebar-link">
           <span class="notif-icon-wrapper">
@@ -82,8 +82,8 @@
 
     <div class="page-header">
       <div>
-        <h1 class="page-title">Journal des transactions</h1>
-        <p class="page-subtitle">Historique complet de vos transactions financières</p>
+        <h1 class="page-title">{{ 'transactions.title' | translate }}</h1>
+        <p class="page-subtitle">{{ 'transactions.subtitle' | translate }}</p>
       </div>
       <div class="header-balance">
         <div class="balance-pill">
@@ -97,12 +97,12 @@
     <div class="tx-tabs">
       <button class="tx-tab" [class.active]="tab() === 'points'" (click)="tab.set('points')">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Transactions de points
+        {{ 'transactions.tab_points' | translate }}
         <span class="tx-tab-count">{{ pointTransactions().length }}</span>
       </button>
       <button class="tx-tab" [class.active]="tab() === 'contracts'" (click)="tab.set('contracts')">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Paiements de contrats
+        {{ 'transactions.tab_contracts' | translate }}
         <span class="tx-tab-count">{{ paymentSummary()?.contracts?.length ?? 0 }}</span>
       </button>
     </div>
@@ -112,14 +112,14 @@
       @if (pointTransactions().length === 0) {
         <div class="empty-state">
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          <p>Aucune transaction de points pour l'instant.</p>
-          <a routerLink="/offers" class="btn-cta">Acheter des points</a>
+          <p>{{ 'transactions.no_points' | translate }}</p>
+          <a routerLink="/offers" class="btn-cta">{{ 'transactions.buy_points' | translate }}</a>
         </div>
       } @else {
         <div class="tx-card">
           <div class="tx-card-header">
-            <h2 class="tx-card-title">Transactions de points</h2>
-            <span class="tx-card-balance">Solde actuel : <strong>{{ pointsBalance() }} pts</strong></span>
+            <h2 class="tx-card-title">{{ 'transactions.card_points_title' | translate }}</h2>
+            <span class="tx-card-balance">{{ 'transactions.current_balance' | translate }} <strong>{{ pointsBalance() }} pts</strong></span>
           </div>
           <div class="tx-list">
             @for (tx of pointTransactions(); track tx.id) {
@@ -140,8 +140,8 @@
                   </svg>
                 </div>
                 <div class="tx-info">
-                  <span class="tx-type-badge" [ngClass]="txTypeClass(tx.type)">{{ txTypeLabel(tx.type) }}</span>
-                  <span class="tx-desc">{{ tx.description || txTypeLabel(tx.type) }}</span>
+                  <span class="tx-type-badge" [ngClass]="txTypeClass(tx.type)">{{ txTypeLabel(tx.type) | translate }}</span>
+                  <span class="tx-desc">{{ tx.description || (txTypeLabel(tx.type) | translate) }}</span>
                   <span class="tx-date">{{ formatDate(tx.createdAt) }}</span>
                 </div>
                 <div class="tx-right">
@@ -164,8 +164,8 @@
       @if (!paymentSummary() || paymentSummary()!.contracts.length === 0) {
         <div class="empty-state">
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <p>Aucun paiement de contrat enregistré.</p>
-          <a routerLink="/freelancer-contracts" class="btn-cta">Voir mes contrats</a>
+          <p>{{ 'transactions.no_contracts' | translate }}</p>
+          <a routerLink="/freelancer-contracts" class="btn-cta">{{ 'transactions.view_contracts' | translate }}</a>
         </div>
       } @else {
         <!-- Summary cards -->
@@ -173,17 +173,17 @@
           <div class="summary-card summary-escrow">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             <div>
-              <span class="summary-label">En escrow</span>
+              <span class="summary-label">{{ 'transactions.escrow' | translate }}</span>
               <span class="summary-val">{{ formatTND(paymentSummary()!.escrowBalance) }}</span>
-              <span class="summary-sub">{{ paymentSummary()!.escrowContractCount }} contrat(s)</span>
+              <span class="summary-sub">{{ 'transactions.contracts_count' | translate:{n: paymentSummary()!.escrowContractCount} }}</span>
             </div>
           </div>
           <div class="summary-card summary-earned">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             <div>
-              <span class="summary-label">Gagné</span>
+              <span class="summary-label">{{ 'transactions.earned' | translate }}</span>
               <span class="summary-val">{{ formatTND(paymentSummary()!.earnedBalance) }}</span>
-              <span class="summary-sub">{{ paymentSummary()!.earnedContractCount }} contrat(s)</span>
+              <span class="summary-sub">{{ 'transactions.contracts_count' | translate:{n: paymentSummary()!.earnedContractCount} }}</span>
             </div>
           </div>
         </div>
@@ -191,7 +191,7 @@
         <!-- Contract payment list -->
         <div class="tx-card">
           <div class="tx-card-header">
-            <h2 class="tx-card-title">Détail des paiements</h2>
+            <h2 class="tx-card-title">{{ 'transactions.payments_detail' | translate }}</h2>
           </div>
           <div class="tx-list">
             @for (c of paymentSummary()!.contracts; track c.id) {
@@ -212,9 +212,9 @@
                   <span class="tx-desc">{{ c.missionTitle }}</span>
                   <span class="tx-date">
                     @if (c.paymentStatus.toString() === 'CAPTURED' && c.capturedAt) {
-                      Versé le {{ formatDate(c.capturedAt) }}
+                      {{ 'transactions.paid_on' | translate:{date: formatDate(c.capturedAt)} }}
                     } @else if (c.paidAt) {
-                      Autorisé le {{ formatDate(c.paidAt) }}
+                      {{ 'transactions.authorized_on' | translate:{date: formatDate(c.paidAt)} }}
                     } @else {
                       —
                     }
@@ -223,7 +223,7 @@
                 <div class="tx-right">
                   <span class="tx-pay-amount">{{ c.freelancerAmount != null ? formatTND(c.freelancerAmount) : '—' }}</span>
                   <span class="tx-pay-badge" [ngClass]="paymentStatusClass(c.paymentStatus.toString())">
-                    {{ paymentStatusLabel(c.paymentStatus.toString()) }}
+                    {{ paymentStatusLabel(c.paymentStatus.toString()) | translate }}
                   </span>
                 </div>
               </div>

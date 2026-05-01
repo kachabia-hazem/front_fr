@@ -247,6 +247,7 @@ export class FreelancerDashboardComponent implements OnInit {
 
   // ─── Stripe Payment Summary ───────────────────────────────────────────────
   paymentSummary = signal<FreelancerPaymentSummary | null>(null);
+  paymentLoading = signal(true);
 
   constructor(
     private dashboardService: DashboardService,
@@ -297,8 +298,8 @@ export class FreelancerDashboardComponent implements OnInit {
     this.chatService.getConversations().subscribe();
 
     this.paymentService.getFreelancerPaymentSummary().subscribe({
-      next: (s) => this.paymentSummary.set(s),
-      error: () => {},
+      next: (s) => { this.paymentSummary.set(s); this.paymentLoading.set(false); },
+      error: () => { this.paymentLoading.set(false); },
     });
   }
 
@@ -502,11 +503,11 @@ export class FreelancerDashboardComponent implements OnInit {
 
   paymentStatusLabel(status: string): string {
     const map: Record<string, string> = {
-      UNPAID: 'Non payé',
-      AUTHORIZED: 'En escrow',
-      CAPTURED: 'Versé',
-      FAILED: 'Échoué',
-      REFUNDED: 'Remboursé',
+      UNPAID:     'dashboard.payment_status_unpaid',
+      AUTHORIZED: 'dashboard.payment_status_escrow',
+      CAPTURED:   'dashboard.payment_status_earned',
+      FAILED:     'dashboard.payment_status_failed',
+      REFUNDED:   'dashboard.payment_status_refunded',
     };
     return map[status] ?? status;
   }

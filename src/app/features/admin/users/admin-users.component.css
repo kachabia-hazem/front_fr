@@ -3,7 +3,7 @@
 .toast.error { background: #fee2e2; color: #991b1b; }
 @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: none; opacity: 1; } }
 
-.users-page { max-width: 1080px; }
+.users-page { width: 100%; }
 .page-header { margin-bottom: 20px; }
 .page-title { font-size: 1.2rem; font-weight: 700; color: #1a1a2e; margin: 0 0 4px; }
 .page-subtitle { font-size: 0.8rem; color: #9ca3af; margin: 0; }
@@ -81,3 +81,31 @@
 .btn-confirm-ban { padding: 9px 18px; border-radius: 9px; background: #ea580c; color: #fff; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 700; transition: background 0.2s; }
 .btn-confirm-ban:hover:not(:disabled) { background: #c2410c; }
 .btn-confirm-ban:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Dark Mode ── */
+:host-context(body.dark-theme) .page-title { color: #e4e4ef; }
+:host-context(body.dark-theme) .tabs button { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+:host-context(body.dark-theme) .tabs button.active { background: #3793B0; border-color: #3793B0; color: #fff; }
+:host-context(body.dark-theme) .search-bar { background: #1e2435; border-color: rgba(255,255,255,0.1); box-shadow: none; }
+:host-context(body.dark-theme) .search-input { color: #e4e4ef; }
+:host-context(body.dark-theme) .table-card { background: #1a1d26; border-color: rgba(255,255,255,0.07); box-shadow: 0 4px 24px rgba(0,0,0,0.25); }
+:host-context(body.dark-theme) .users-table th { background: #1e2435; border-bottom-color: rgba(255,255,255,0.08); }
+:host-context(body.dark-theme) .users-table td { border-bottom-color: rgba(255,255,255,0.05); }
+:host-context(body.dark-theme) .users-table tbody tr:hover { background: rgba(255,255,255,0.04); }
+:host-context(body.dark-theme) .user-name { color: #e4e4ef; }
+:host-context(body.dark-theme) .skill-tag { background: rgba(255,255,255,0.07); color: #c5cad8; }
+:host-context(body.dark-theme) .sector-tag { background: rgba(255,255,255,0.07); color: #c5cad8; }
+:host-context(body.dark-theme) .verif-badge.pending  { background: rgba(245,158,11,0.15); color: #fbbf24; }
+:host-context(body.dark-theme) .verif-badge.approved { background: rgba(16,185,129,0.15); color: #34d399; }
+:host-context(body.dark-theme) .verif-badge.rejected { background: rgba(239,68,68,0.15);  color: #f87171; }
+:host-context(body.dark-theme) .status-dot.active { background: rgba(16,185,129,0.15); color: #34d399; }
+:host-context(body.dark-theme) .status-dot.banned { background: rgba(239,68,68,0.15);  color: #f87171; }
+:host-context(body.dark-theme) .btn-ban { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+:host-context(body.dark-theme) .btn-ban:hover { background: rgba(245,158,11,0.12); color: #fbbf24; border-color: rgba(245,158,11,0.3); }
+:host-context(body.dark-theme) .btn-delete { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.25); color: #f87171; }
+:host-context(body.dark-theme) .btn-delete:hover { background: rgba(239,68,68,0.15); }
+:host-context(body.dark-theme) .modal { background: #1a1d26; }
+:host-context(body.dark-theme) .modal h3 { color: #e4e4ef; }
+:host-context(body.dark-theme) .modal p { color: #9ca3b0; }
+:host-context(body.dark-theme) .btn-cancel { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+:host-context(body.dark-theme) .ban-reason-field textarea { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }

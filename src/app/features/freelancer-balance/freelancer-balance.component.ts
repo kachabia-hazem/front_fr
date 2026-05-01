@@ -1,4 +1,4 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -6,7 +6,7 @@ import { FreelancerService } from '../../core/services/freelancer.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
-import { OffersService, BalanceResponse, TransactionItem } from '../../core/services/offers.service';
+import { OffersService, BalanceResponse, TransactionItem, CompanySubscriptionResponse } from '../../core/services/offers.service';
 import { Freelancer } from '../../core/models';
 import { environment } from '../../../environments/environment';
 
@@ -25,9 +25,25 @@ export class FreelancerBalanceComponent implements OnInit {
   sidebarCollapsed = signal(false);
   unreadNotifCount = computed(() => this.notificationService.unreadCount());
 
-  balance      = signal<BalanceResponse | null>(null);
+  balance       = signal<BalanceResponse | null>(null);
+  subscription  = signal<CompanySubscriptionResponse | null>(null);
   pointsBalance = computed(() => this.balance()?.pointsBalance ?? 0);
   transactions  = computed(() => this.balance()?.transactions ?? []);
+
+  isSubActive = computed(() => this.subscription()?.active === true);
+  subPlanName = computed(() => this.subscription()?.plan?.name ?? '—');
+  subExpires  = computed(() => {
+    const e = this.subscription()?.expiresAt;
+    return e ? this.formatDate(String(e)) : '—';
+  });
+  daysLeft = computed(() => {
+    const e = this.subscription()?.expiresAt;
+    if (!e) return 0;
+    return Math.max(0, Math.ceil((new Date(String(e)).getTime() - Date.now()) / 86400000));
+  });
+
+  cancelling  = signal(false);
+  cancelToast = signal<{ text: string; type: 'success' | 'error' } | null>(null);
 
   // ── Analytics ─────────────────────────────────────────────────────────────
   totalCredited = computed(() =>
@@ -106,6 +122,7 @@ export class FreelancerBalanceComponent implements OnInit {
     private offersService: OffersService,
     public  authService: AuthService,
     public  themeService: ThemeService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -115,6 +132,25 @@ export class FreelancerBalanceComponent implements OnInit {
     });
     this.notificationService.getUnreadCount().subscribe();
     this.offersService.getMyBalance().subscribe({ next: (b) => this.balance.set(b) });
+    this.offersService.getMyFreelancerSubscription().subscribe({ next: (s) => this.subscription.set(s) });
+  }
+
+  cancelSubscription(): void {
+    if (this.cancelling()) return;
+    this.cancelling.set(true);
+    this.offersService.cancelFreelancerSubscription().subscribe({
+      next: (s) => {
+        this.subscription.set(s);
+        this.cancelling.set(false);
+        this.cancelToast.set({ text: this.translate.instant('balance.cancel_success'), type: 'success' });
+        setTimeout(() => this.cancelToast.set(null), 3500);
+      },
+      error: () => {
+        this.cancelling.set(false);
+        this.cancelToast.set({ text: this.translate.instant('balance.cancel_error'), type: 'error' });
+        setTimeout(() => this.cancelToast.set(null), 3500);
+      },
+    });
   }
 
   toggleSidebar(): void { this.sidebarCollapsed.update(v => !v); }

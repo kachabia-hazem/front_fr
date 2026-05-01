@@ -21,7 +21,7 @@ export class AdminVerificationsComponent implements OnInit {
   showRejectModal = signal(false);
   companyToReject = signal<Company | null>(null);
   actionLoading = signal<string | null>(null);
-  filter = signal<'PENDING' | 'ALL' | 'APPROVED' | 'REJECTED'>('PENDING');
+  filter = signal<'PENDING' | 'ALL' | 'APPROVED' | 'REJECTED'>('ALL');
   toastMessage = signal<{ text: string; type: 'success' | 'error' } | null>(null);
 
   CompanyStatus = CompanyStatus;

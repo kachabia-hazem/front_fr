@@ -1,4 +1,4 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -62,6 +62,9 @@ export class CompanyBalanceComponent implements OnInit {
     if (!e) return 0;
     return Math.max(0, Math.ceil((new Date(e).getTime() - Date.now()) / 86400000));
   });
+
+  cancelling     = signal(false);
+  cancelToast    = signal<{ text: string; type: 'success' | 'error' } | null>(null);
 
   // Chart: walking balance
   chartPoints = computed((): ChartPoint[] => {
@@ -128,6 +131,7 @@ export class CompanyBalanceComponent implements OnInit {
     private offersService: OffersService,
     public  authService: AuthService,
     public  themeService: ThemeService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -138,6 +142,24 @@ export class CompanyBalanceComponent implements OnInit {
     this.notificationService.getUnreadCount().subscribe();
     this.offersService.getMyCompanyBalance().subscribe({ next: (b) => this.balance.set(b) });
     this.offersService.getMySubscription().subscribe({ next: (s) => this.subscription.set(s) });
+  }
+
+  cancelSubscription(): void {
+    if (this.cancelling()) return;
+    this.cancelling.set(true);
+    this.offersService.cancelSubscription().subscribe({
+      next: (s) => {
+        this.subscription.set(s);
+        this.cancelling.set(false);
+        this.cancelToast.set({ text: this.translate.instant('balance.cancel_success'), type: 'success' });
+        setTimeout(() => this.cancelToast.set(null), 3500);
+      },
+      error: () => {
+        this.cancelling.set(false);
+        this.cancelToast.set({ text: this.translate.instant('balance.cancel_error'), type: 'error' });
+        setTimeout(() => this.cancelToast.set(null), 3500);
+      },
+    });
   }
 
   toggleSidebar(): void { this.sidebarCollapsed.update(v => !v); }
@@ -187,21 +209,13 @@ export class CompanyBalanceComponent implements OnInit {
   }
 
   txLabel(type: string): string {
-    const map: Record<string, string> = {
-      PURCHASE_PACK:  'Achat pack',
-      SUBSCRIBE_PLAN: 'Abonnement',
-      APPLICATION:    'Candidature',
-      AI_MATCHING:    'Matching IA',
-      BOOST:          'Boost',
-      FEATURED:       'En vedette',
-    };
-    return map[type] ?? type;
+    return 'balance.tx_' + type;
   }
 
   txTypeColor(type: string): string {
     const map: Record<string, string> = {
       PURCHASE_PACK:  '#3793B0',
-      SUBSCRIBE_PLAN: '#7c3aed',
+      SUBSCRIBE_PLAN: '#1a6480',
       APPLICATION:    '#f59e0b',
       AI_MATCHING:    '#06b6d4',
       BOOST:          '#f97316',

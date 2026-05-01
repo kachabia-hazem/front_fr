@@ -7,22 +7,22 @@
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
         </svg>
       </div>
-      <h3 class="ai-confirm-title">Classement IA des candidats</h3>
+      <h3 class="ai-confirm-title">AI Ranking of Candidates</h3>
       <p class="ai-confirm-desc">
-        L'IA va analyser et classer tous les candidats selon leurs compétences, leur expérience et leur adéquation au profil recherché.
+        The AI will analyze and rank all candidates based on their skills, experience, and fit for the required profile.
       </p>
       <div class="ai-confirm-cost-row">
-        <span class="ai-confirm-cost-label">Coût de l'opération</span>
+        <span class="ai-confirm-cost-label">Operation cost</span>
         <span class="ai-confirm-cost-value">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          5 points
+          {{ aiRankingCost() }} points
         </span>
       </div>
       <div class="ai-confirm-actions">
-        <button class="ai-confirm-cancel" (click)="cancelRankConfirm()">Annuler</button>
+        <button class="ai-confirm-cancel" (click)="cancelRankConfirm()">Cancel</button>
         <button class="ai-confirm-ok" (click)="onAiSort()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-          Confirmer et classer
+          Confirm and rank
         </button>
       </div>
     </div>

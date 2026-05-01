@@ -30,8 +30,8 @@ export class PaymentService {
   }
 
   /** Create Stripe Checkout session for point pack purchase */
-  createPackCheckout(packId: string): Observable<PackCheckoutResponse> {
-    const params = new HttpParams().set('packId', packId);
+  createPackCheckout(packId: string, locale = 'en'): Observable<PackCheckoutResponse> {
+    const params = new HttpParams().set('packId', packId).set('locale', locale);
     return this.http.post<PackCheckoutResponse>(
       `${this.apiUrl}/packs/checkout`, {}, { params }
     );
@@ -56,6 +56,23 @@ export class PaymentService {
     const params = new HttpParams().set('sessionId', sessionId);
     return this.http.post<{ status: string }>(
       `${this.apiUrl}/packs/verify`, {}, { params }
+    );
+  }
+
+  /** Create Stripe Checkout session for subscription plan purchase */
+  createSubscriptionCheckout(planId: string, locale = 'en'): Observable<{ checkoutUrl: string }> {
+    const params = new HttpParams().set('planId', planId).set('locale', locale);
+    return this.http.post<{ checkoutUrl: string }>(
+      `${this.apiUrl}/subscriptions/checkout`, {}, { params }
+    );
+  }
+
+  /** Called from /payment/success after Stripe Checkout redirect for subscription.
+   *  Verifies the session is paid and activates the subscription — no webhook needed. */
+  verifySubscriptionPurchase(sessionId: string): Observable<{ status: string }> {
+    const params = new HttpParams().set('sessionId', sessionId);
+    return this.http.post<{ status: string }>(
+      `${this.apiUrl}/subscriptions/verify`, {}, { params }
     );
   }
 }

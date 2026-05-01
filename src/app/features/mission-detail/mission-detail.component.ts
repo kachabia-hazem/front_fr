@@ -8,6 +8,7 @@ import { ApplicationService } from '../../core/services/application.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { ToastService } from '../../core/services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
+import { OffersService } from '../../core/services/offers.service';
 import { Mission } from '../../core/models/mission.model';
 import { environment } from '../../../environments/environment';
 import { getProfileCompletion } from '../../core/utils/profile-completion';
@@ -30,9 +31,9 @@ export class MissionDetailComponent implements OnInit {
   matchingLoading = signal(false);
   matchingResult = signal<MatchMissionResult | null>(null);
   showMatchingModal = signal(false);
-  showMatchConfirm = signal(false);
   matchingError = signal('');
   explanationLoading = signal(false);
+  showMatchTooltip = signal(false);
   private profileCompletion: number | null = null;
 
   constructor(
@@ -46,6 +47,7 @@ export class MissionDetailComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private translate: TranslateService,
     private missionTranslation: MissionTranslationService,
+    private offersService: OffersService,
   ) {}
 
   get isFreelancer(): boolean {
@@ -212,16 +214,7 @@ export class MissionDetailComponent implements OnInit {
     });
   }
 
-  openMatchConfirm(): void {
-    this.showMatchConfirm.set(true);
-  }
-
-  cancelMatchConfirm(): void {
-    this.showMatchConfirm.set(false);
-  }
-
   checkMatching(): void {
-    this.showMatchConfirm.set(false);
     const id = this.mission()?.id ?? this.route.snapshot.paramMap.get('id');
     if (!id) {
       this.toastService.show(this.translate.instant('detail_page.mission_not_found'), 'error');
@@ -237,6 +230,7 @@ export class MissionDetailComponent implements OnInit {
       next: (result) => {
         this.matchingResult.set(result);
         this.matchingLoading.set(false);
+        this.offersService.notifyBalanceDecremented(5);
         this.cdr.detectChanges();
 
         this.explanationLoading.set(true);

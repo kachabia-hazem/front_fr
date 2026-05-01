@@ -1,0 +1,328 @@
+<div class="settings-page">
+
+  <div class="settings-page-header">
+    <h1 class="settings-page-title">{{ 'admin_settings.title' | translate }}</h1>
+    <p class="settings-page-sub">{{ 'admin_settings.subtitle' | translate }}</p>
+  </div>
+
+  <div class="settings-body">
+
+    <!-- ── Left Nav ── -->
+    <nav class="settings-nav">
+      <button class="snav-item" [class.active]="activeSection() === 'commission'"
+        (click)="activeSection.set('commission')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        {{ 'admin_settings.nav_commission' | translate }}
+      </button>
+      <button class="snav-item" [class.active]="activeSection() === 'points'"
+        (click)="activeSection.set('points')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        {{ 'admin_settings.nav_points' | translate }}
+      </button>
+      <div class="snav-divider"></div>
+      <button class="snav-item" [class.active]="activeSection() === 'password'"
+        (click)="activeSection.set('password')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        {{ 'admin_settings.nav_password' | translate }}
+      </button>
+      <button class="snav-item" [class.active]="activeSection() === 'language'"
+        (click)="activeSection.set('language')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        {{ 'admin_settings.nav_language' | translate }}
+      </button>
+    </nav>
+
+    <!-- ── Content ── -->
+    <div class="settings-content">
+
+      <!-- ── Platform Commission ── -->
+      @if (activeSection() === 'commission') {
+        <div class="s-card">
+          <div class="s-card-header">
+            <div class="s-card-icon s-icon-blue">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="s-card-title">{{ 'admin_settings.commission_title' | translate }}</h2>
+              <p class="s-card-desc">{{ 'admin_settings.commission_desc' | translate }}</p>
+            </div>
+          </div>
+
+          @if (feeSuccess()) {
+            <div class="s-alert s-alert-success">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              {{ feeSuccess() }}
+            </div>
+          }
+          @if (feeError()) {
+            <div class="s-alert s-alert-error">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              {{ feeError() }}
+            </div>
+          }
+
+          <div class="fee-display">
+            <span class="fee-current">{{ currentFee() }}%</span>
+            <span class="fee-label">{{ 'admin_settings.commission_current' | translate }}</span>
+          </div>
+
+          <div class="s-form">
+            <div class="s-field">
+              <label class="s-label">{{ 'admin_settings.commission_label' | translate }}</label>
+              <div class="s-input-wrap" style="max-width:220px">
+                <input type="number" class="s-input" min="1" max="50" placeholder="e.g. 10"
+                  [ngModel]="newFee()" (ngModelChange)="newFee.set($event)" />
+              </div>
+              <span class="s-hint">{{ 'admin_settings.commission_hint' | translate }}</span>
+            </div>
+            <div class="s-actions">
+              <button class="s-btn s-btn-primary" (click)="saveFee()" [disabled]="feeLoading()">
+                @if (feeLoading()) { <span class="s-spinner"></span> } @else { {{ 'admin_settings.commission_save' | translate }} }
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ── Points Economy ── -->
+      @if (activeSection() === 'points') {
+        <div class="s-card">
+          <div class="s-card-header">
+            <div class="s-card-icon s-icon-orange">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="s-card-title">{{ 'admin_settings.points_title' | translate }}</h2>
+              <p class="s-card-desc">{{ 'admin_settings.points_desc' | translate }}</p>
+            </div>
+          </div>
+
+          @if (costsSuccess()) {
+            <div class="s-alert s-alert-success">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              {{ costsSuccess() }}
+            </div>
+          }
+          @if (costsError()) {
+            <div class="s-alert s-alert-error">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              {{ costsError() }}
+            </div>
+          }
+
+          <!-- Summary badges -->
+          <div class="costs-summary">
+            <div class="cost-badge">
+              <span class="cost-badge-val">{{ applicationCost() }}</span>
+              <span class="cost-badge-label">{{ 'admin_settings.points_apply' | translate }}</span>
+              <span class="cost-badge-role freelancer">{{ 'admin_settings.points_badge_freelancer' | translate }}</span>
+            </div>
+            <div class="cost-badge">
+              <span class="cost-badge-val">{{ aiMatchingCost() }}</span>
+              <span class="cost-badge-label">{{ 'admin_settings.points_matching' | translate }}</span>
+              <span class="cost-badge-role freelancer">{{ 'admin_settings.points_badge_freelancer' | translate }}</span>
+            </div>
+            <div class="cost-badge">
+              <span class="cost-badge-val">{{ aiRankingCost() }}</span>
+              <span class="cost-badge-label">{{ 'admin_settings.points_ranking' | translate }}</span>
+              <span class="cost-badge-role company">{{ 'admin_settings.points_badge_company' | translate }}</span>
+            </div>
+            <div class="cost-badge cost-badge-gift">
+              <span class="cost-badge-val cost-badge-val-gift">{{ welcomeBonus() }}</span>
+              <span class="cost-badge-label">{{ 'admin_settings.points_welcome' | translate }}</span>
+              <span class="cost-badge-role new-user">{{ 'admin_settings.points_badge_newuser' | translate }}</span>
+            </div>
+          </div>
+
+          <div class="s-form">
+            <div class="costs-grid">
+              <div class="s-field">
+                <label class="s-label">{{ 'admin_settings.points_label_apply' | translate }}</label>
+                <input type="number" class="s-input" min="1" max="100"
+                  [ngModel]="newAppCost()" (ngModelChange)="newAppCost.set($event)" />
+              </div>
+              <div class="s-field">
+                <label class="s-label">{{ 'admin_settings.points_label_matching' | translate }}</label>
+                <input type="number" class="s-input" min="1" max="100"
+                  [ngModel]="newAiMatchCost()" (ngModelChange)="newAiMatchCost.set($event)" />
+              </div>
+              <div class="s-field">
+                <label class="s-label">{{ 'admin_settings.points_label_ranking' | translate }}</label>
+                <input type="number" class="s-input" min="1" max="100"
+                  [ngModel]="newAiRankCost()" (ngModelChange)="newAiRankCost.set($event)" />
+              </div>
+            </div>
+            <div class="s-field" style="max-width: 300px">
+              <label class="s-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" style="vertical-align:middle;margin-right:4px"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                {{ 'admin_settings.points_label_welcome' | translate }}
+              </label>
+              <input type="number" class="s-input" min="0" max="500"
+                [ngModel]="newWelcomeBonus()" (ngModelChange)="newWelcomeBonus.set($event)" />
+            </div>
+            <span class="s-hint">{{ 'admin_settings.points_hint' | translate }}</span>
+            <div class="s-actions">
+              <button class="s-btn s-btn-primary" (click)="saveCosts()" [disabled]="costsLoading()">
+                @if (costsLoading()) { <span class="s-spinner"></span> } @else { {{ 'admin_settings.points_save' | translate }} }
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ── Change Password ── -->
+      @if (activeSection() === 'password') {
+        <div class="s-card">
+          <div class="s-card-header">
+            <div class="s-card-icon s-icon-green">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="s-card-title">{{ 'admin_settings.password_title' | translate }}</h2>
+              <p class="s-card-desc">{{ 'admin_settings.password_desc' | translate }}</p>
+            </div>
+          </div>
+
+          @if (pwdSuccess()) {
+            <div class="s-alert s-alert-success">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              {{ pwdSuccess() }}
+            </div>
+          }
+          @if (pwdError()) {
+            <div class="s-alert s-alert-error">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              {{ pwdError() }}
+            </div>
+          }
+
+          <div class="s-form">
+            <div class="s-field">
+              <label class="s-label">{{ 'admin_settings.password_current' | translate }}</label>
+              <div class="s-input-wrap">
+                <input [type]="showCurrentPwd() ? 'text' : 'password'" class="s-input" placeholder="••••••••"
+                  [ngModel]="currentPassword()" (ngModelChange)="currentPassword.set($event)" />
+                <button type="button" class="pwd-toggle" (click)="showCurrentPwd.set(!showCurrentPwd())">
+                  @if (showCurrentPwd()) {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  } @else {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  }
+                </button>
+              </div>
+            </div>
+            <div class="s-field">
+              <label class="s-label">{{ 'admin_settings.password_new' | translate }}</label>
+              <div class="s-input-wrap">
+                <input [type]="showNewPwd() ? 'text' : 'password'" class="s-input"
+                  [placeholder]="'admin_settings.password_new_hint' | translate"
+                  [ngModel]="newPassword()" (ngModelChange)="newPassword.set($event)" />
+                <button type="button" class="pwd-toggle" (click)="showNewPwd.set(!showNewPwd())">
+                  @if (showNewPwd()) {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  } @else {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  }
+                </button>
+              </div>
+            </div>
+            <div class="s-field">
+              <label class="s-label">{{ 'admin_settings.password_confirm' | translate }}</label>
+              <div class="s-input-wrap">
+                <input [type]="showConfirmPwd() ? 'text' : 'password'" class="s-input"
+                  [placeholder]="'admin_settings.password_confirm_hint' | translate"
+                  [ngModel]="confirmPassword()" (ngModelChange)="confirmPassword.set($event)" />
+                <button type="button" class="pwd-toggle" (click)="showConfirmPwd.set(!showConfirmPwd())">
+                  @if (showConfirmPwd()) {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  } @else {
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  }
+                </button>
+              </div>
+            </div>
+            <div class="s-actions">
+              <button class="s-btn s-btn-primary" (click)="savePassword()" [disabled]="pwdLoading()">
+                @if (pwdLoading()) { <span class="s-spinner"></span> {{ 'admin_settings.password_saving' | translate }} }
+                @else { {{ 'admin_settings.password_save' | translate }} }
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ── Language ── -->
+      @if (activeSection() === 'language') {
+        <div class="s-card">
+          <div class="s-card-header">
+            <div class="s-card-icon s-icon-blue">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="s-card-title">{{ 'admin_settings.language_title' | translate }}</h2>
+              <p class="s-card-desc">{{ 'admin_settings.language_desc' | translate }}</p>
+            </div>
+          </div>
+
+          @if (langSuccess()) {
+            <div class="s-alert s-alert-success">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              {{ langSuccess() }}
+            </div>
+          }
+
+          <div class="s-form">
+            <div class="lang-picker">
+              <button class="lang-btn" [class.selected]="selectedLanguage() === 'en'"
+                (click)="selectedLanguage.set('en')">
+                <span class="lang-flag">🇬🇧</span> English
+              </button>
+              <button class="lang-btn" [class.selected]="selectedLanguage() === 'fr'"
+                (click)="selectedLanguage.set('fr')">
+                <span class="lang-flag">🇫🇷</span> Français
+              </button>
+            </div>
+            <div class="s-actions">
+              <button class="s-btn s-btn-primary" (click)="saveLanguage()">
+                {{ 'admin_settings.language_save' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+</div>

@@ -2038,3 +2038,304 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* ── Payment Overview Section ─────────────────────────────────────────── */
+.payment-schedule-section {
+  margin-bottom: 28px;
+}
+
+.payment-card {
+  background: var(--card-bg, #ffffff);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(0, 0, 0, 0.06));
+}
+
+.payment-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.payment-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #1a1a2e);
+  margin: 0;
+}
+
+.payment-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 4px 0 0;
+}
+
+.payment-view-all {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #3793B0;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+.payment-view-all:hover { opacity: 0.75; }
+
+/* Empty state */
+.payment-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.payment-empty-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(55, 147, 176, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3793B0;
+  margin-bottom: 4px;
+}
+
+.payment-empty-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary, #1a1a2e);
+  margin: 0;
+}
+
+.payment-empty-sub {
+  font-size: 0.82rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+  max-width: 360px;
+}
+
+/* Balance row */
+.ps-balance-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 600px) {
+  .ps-balance-row { grid-template-columns: 1fr; }
+}
+
+.ps-balance-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+}
+
+.ps-balance-card--escrow {
+  background: rgba(245,158,11,0.07);
+  border-color: rgba(245,158,11,0.2);
+}
+
+.ps-balance-card--earned {
+  background: rgba(16,185,129,0.07);
+  border-color: rgba(16,185,129,0.2);
+}
+
+.ps-balance-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.ps-balance-card--escrow .ps-balance-icon {
+  background: rgba(245,158,11,0.15);
+  color: #d97706;
+}
+
+.ps-balance-card--earned .ps-balance-icon {
+  background: rgba(16,185,129,0.15);
+  color: #059669;
+}
+
+.ps-balance-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ps-balance-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ps-balance-amount {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+}
+
+.ps-balance-sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Contract list */
+.payment-contracts {
+  border-top: 1px solid #f0f1f3;
+  padding-top: 16px;
+}
+
+.payment-contracts-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary, #9ca3af);
+  margin: 0 0 12px;
+}
+
+.payment-contracts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payment-contract-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(55,147,176,0.04);
+  border: 1px solid rgba(55,147,176,0.1);
+  transition: background 0.2s ease;
+  flex-wrap: wrap;
+}
+
+.payment-contract-row:hover {
+  background: rgba(55,147,176,0.08);
+}
+
+.payment-contract-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.payment-contract-mission {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary, #1a1a2e);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.payment-contract-company {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.payment-contract-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.payment-contract-rate {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #3793B0;
+}
+
+.payment-contract-period {
+  font-size: 0.73rem;
+  color: var(--text-secondary, #9ca3af);
+  white-space: nowrap;
+}
+
+.payment-contract-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(55,147,176,0.1);
+  color: #3793B0;
+  flex-shrink: 0;
+}
+
+/* Status badge variants */
+.ps-escrow   { background: rgba(245,158,11,0.12) !important; color: #d97706 !important; }
+.ps-earned   { background: rgba(16,185,129,0.12) !important; color: #059669 !important; }
+.ps-failed   { background: rgba(239,68,68,0.12)  !important; color: #dc2626 !important; }
+.ps-refunded { background: rgba(99,102,241,0.12) !important; color: #6366f1 !important; }
+.ps-unpaid   { background: rgba(107,114,128,0.12)!important; color: #6b7280 !important; }
+
+/* Dark mode */
+:host-context(body.dark-theme) .payment-card {
+  background: var(--card-bg, #1e2535);
+  box-shadow: var(--card-shadow, 0 4px 24px rgba(0,0,0,0.3));
+}
+:host-context(body.dark-theme) .payment-card-title { color: #e4e4ef; }
+:host-context(body.dark-theme) .payment-view-all { color: #4baac7; }
+:host-context(body.dark-theme) .payment-empty-icon {
+  background: rgba(55,147,176,0.12);
+  color: #4baac7;
+}
+:host-context(body.dark-theme) .ps-balance-card--escrow {
+  background: rgba(245,158,11,0.1);
+  border-color: rgba(245,158,11,0.25);
+}
+:host-context(body.dark-theme) .ps-balance-card--earned {
+  background: rgba(52,211,153,0.1);
+  border-color: rgba(52,211,153,0.25);
+}
+:host-context(body.dark-theme) .ps-balance-card--escrow .ps-balance-icon { color: #fbbf24; }
+:host-context(body.dark-theme) .ps-balance-card--earned  .ps-balance-icon { color: #34d399; }
+:host-context(body.dark-theme) .ps-balance-amount { color: #f1f5f9; }
+:host-context(body.dark-theme) .payment-contracts {
+  border-top-color: #222838;
+}
+:host-context(body.dark-theme) .payment-contract-row {
+  background: rgba(55,147,176,0.06);
+  border-color: rgba(55,147,176,0.12);
+}
+:host-context(body.dark-theme) .payment-contract-row:hover {
+  background: rgba(55,147,176,0.1);
+}
+:host-context(body.dark-theme) .payment-contract-rate { color: #4baac7; }
+:host-context(body.dark-theme) .payment-contract-badge {
+  background: rgba(55,147,176,0.15);
+  color: #4baac7;
+}
+:host-context(body.dark-theme) .ps-escrow   { background: rgba(245,158,11,0.18) !important; color: #fbbf24 !important; }
+:host-context(body.dark-theme) .ps-earned   { background: rgba(52,211,153,0.14) !important; color: #34d399 !important; }
+:host-context(body.dark-theme) .ps-failed   { background: rgba(248,113,113,0.14)!important; color: #f87171 !important; }
+:host-context(body.dark-theme) .ps-refunded { background: rgba(129,140,248,0.14)!important; color: #818cf8 !important; }
+:host-context(body.dark-theme) .ps-unpaid   { background: rgba(156,163,175,0.14)!important; color: #9ca3af !important; }
