@@ -496,9 +496,12 @@
             </p>
 
             <!-- Skills Tags -->
-            @if (mission.requiredSkills) {
+            @if (mission.requiredSkills || mission.speciality) {
               <div class="skills-row">
-                @for (skill of getSkillsList(mission.requiredSkills); track skill) {
+                @if (mission.speciality) {
+                  <span class="skill-tag">{{ mission.speciality }}</span>
+                }
+                @for (skill of getSkillsList(mission.requiredSkills ?? ''); track skill) {
                   <span class="skill-tag">{{ skill }}</span>
                 }
               </div>
@@ -672,14 +675,17 @@
         </div>
 
         <!-- Required Skills -->
-        @if (selectedMission.requiredSkills) {
+        @if (selectedMission.requiredSkills || selectedMission.speciality) {
           <div class="modal-section">
             <h3 class="modal-section-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
               {{ 'missions_page.modal_skills' | translate }}
             </h3>
             <div class="modal-skills">
-              @for (skill of getAllSkillsList(selectedMission.requiredSkills); track skill) {
+              @if (selectedMission.speciality) {
+                <span class="skill-tag">{{ selectedMission.speciality }}</span>
+              }
+              @for (skill of getAllSkillsList(selectedMission.requiredSkills ?? ''); track skill) {
                 <span class="skill-tag">{{ skill }}</span>
               }
             </div>
@@ -810,13 +816,16 @@
                         <span class="similar-badge similar-badge-tjm">{{ sim.tjm }} DT/j</span>
                       }
                     </div>
-                    @if (sim.requiredSkills) {
+                    @if (sim.requiredSkills || sim.speciality) {
                       <div class="similar-skills">
-                        @for (skill of getSkillsList(sim.requiredSkills).slice(0, 3); track skill) {
+                        @if (sim.speciality) {
+                          <span class="similar-skill-tag">{{ sim.speciality }}</span>
+                        }
+                        @for (skill of getSkillsList(sim.requiredSkills ?? '').slice(0, 3); track skill) {
                           <span class="similar-skill-tag">{{ skill }}</span>
                         }
-                        @if (getSkillsList(sim.requiredSkills).length > 3) {
-                          <span class="similar-skill-more">+{{ getSkillsList(sim.requiredSkills).length - 3 }}</span>
+                        @if (getSkillsList(sim.requiredSkills ?? '').length > 3) {
+                          <span class="similar-skill-more">+{{ getSkillsList(sim.requiredSkills ?? '').length - 3 }}</span>
                         }
                       </div>
                     }

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { AdminService } from '../../../core/services/admin.service';
 import { FeedbackService } from '../../../core/services/feedback.service';
+import { LegitService } from '../../../core/services/legit.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { Notification } from '../../../core/models/notification.model';
@@ -19,6 +20,7 @@ export class AdminLayoutComponent implements OnInit {
   sidebarCollapsed  = signal(false);
   pendingCount      = signal(0);
   pendingFeedbacksCount = signal(0);
+  pendingLegitsCount = signal(0);
   notifPanelOpen    = signal(false);
 
   recentNotifications = computed(() =>
@@ -29,6 +31,7 @@ export class AdminLayoutComponent implements OnInit {
     public authService: AuthService,
     private adminService: AdminService,
     private feedbackService: FeedbackService,
+    private legitService: LegitService,
     public notificationService: NotificationService,
     public themeService: ThemeService,
     private router: Router,
@@ -40,6 +43,9 @@ export class AdminLayoutComponent implements OnInit {
     });
     this.feedbackService.getPendingFeedbacks().subscribe({
       next: (list) => this.pendingFeedbacksCount.set(list.length),
+    });
+    this.legitService.getStats().subscribe({
+      next: (stats) => this.pendingLegitsCount.set(stats['EN_ATTENTE'] ?? 0),
     });
     this.notificationService.getUnreadCount().subscribe();
     this.notificationService.getMyNotifications().subscribe();

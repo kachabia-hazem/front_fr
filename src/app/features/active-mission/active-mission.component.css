@@ -334,6 +334,8 @@
 :host-context(body.dark-theme) .validation-banner-pending { background: rgba(217,119,6,0.08); border-color: rgba(217,119,6,0.25); color: #fbbf24; }
 .validation-banner-overdue { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
 :host-context(body.dark-theme) .validation-banner-overdue { background: rgba(220,38,38,0.08); border-color: rgba(220,38,38,0.25); color: #f87171; }
+.btn-legit { display: inline-flex; align-items: center; gap: 7px; margin-top: 12px; padding: 8px 16px; background: #fff1f2; color: #e11d48; border: 1.5px solid #fecdd3; border-radius: 8px; font-size: 0.83rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.btn-legit:hover { background: #ffe4e6; }
 
 .validation-stars { display: flex; gap: 4px; margin-top: 8px; }
 .validation-stars svg { color: #d1d5db; }

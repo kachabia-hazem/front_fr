@@ -1,0 +1,267 @@
+<div class="admin-legits">
+
+  <!-- Toast -->
+  @if (toast()) {
+    <div class="toast" [class.toast-success]="toast()!.type === 'success'" [class.toast-error]="toast()!.type === 'error'">
+      @if (toast()!.type === 'success') {
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      }
+      {{ toast()!.msg }}
+    </div>
+  }
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <p class="page-title">Litiges (Legit)</p>
+      <p class="page-sub">Gérez les litiges soumis par les freelancers et entreprises.</p>
+    </div>
+    @if (pendingCount() > 0) {
+      <div class="pending-alert">
+        <span class="pending-dot"></span>
+        {{ pendingCount() }} en attente
+      </div>
+    }
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-val">{{ statVal('TOTAL') }}</span>
+      <span class="stat-label">Total</span>
+    </div>
+    <div class="stat-card stat-card-warning">
+      <span class="stat-val">{{ statVal('EN_ATTENTE') }}</span>
+      <span class="stat-label">En attente</span>
+    </div>
+    <div class="stat-card stat-card-blue">
+      <span class="stat-val">{{ statVal('EN_COURS') }}</span>
+      <span class="stat-label">En cours</span>
+    </div>
+    <div class="stat-card stat-card-success">
+      <span class="stat-val">{{ statVal('RESOLU') }}</span>
+      <span class="stat-label">Résolus</span>
+    </div>
+    <div class="stat-card stat-card-danger">
+      <span class="stat-val">{{ statVal('REJETE') }}</span>
+      <span class="stat-label">Rejetés</span>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-row">
+    <div class="tabs">
+      @for (tab of TABS; track tab) {
+        <button class="tab-btn" [class.active]="statusFilter() === tab" (click)="statusFilter.set(tab)">
+          {{ tabLabel(tab) }}
+        </button>
+      }
+    </div>
+    <input class="search-input" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" placeholder="Rechercher..." />
+  </div>
+
+  <!-- Table -->
+  @if (loading()) {
+    <div class="loading-row">
+      <div class="spinner"></div>
+      <p>Chargement...</p>
+    </div>
+  } @else if (filteredLegits().length === 0) {
+    <div class="empty-state">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p>Aucun litige trouvé</p>
+    </div>
+  } @else {
+    <div class="legits-list">
+      @for (legit of filteredLegits(); track legit.id) {
+
+        <!-- Row -->
+        <div class="legit-row" [class.legit-row-open]="selected()?.id === legit.id" (click)="select(legit)">
+          <div class="legit-row-main">
+            <div class="reporter-info">
+              <div class="reporter-avatar" [class.avatar-company]="legit.reporterRole === 'COMPANY'">
+                {{ (legit.reporterName || '?').charAt(0).toUpperCase() }}
+              </div>
+              <div>
+                <p class="reporter-name">{{ legit.reporterName }}</p>
+                <p class="reporter-role">{{ legit.reporterRole }} · {{ legit.reporterEmail }}</p>
+              </div>
+            </div>
+            <div class="legit-mission">{{ legit.missionTitle || '—' }}</div>
+            <div class="legit-amount">
+              @if (legit.totalAmount) { {{ legit.totalAmount | number:'1.0-2' }} DT }
+              @else { — }
+            </div>
+            <div class="legit-date">{{ formatDate(legit.createdAt) }}</div>
+            <div class="legit-status">
+              <span class="status-badge" [class]="'status-' + legit.status.toLowerCase()">
+                {{ STATUS_LABELS[legit.status] }}
+              </span>
+            </div>
+            <div class="legit-expand-icon">
+              <svg [style.transform]="selected()?.id === legit.id ? 'rotate(180deg)' : ''" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+
+          <!-- Detail panel -->
+          @if (selected()?.id === legit.id) {
+            <div class="legit-detail" (click)="$event.stopPropagation()">
+
+              <!-- Two-col: reporter + other party -->
+              <div class="detail-parties">
+                <div class="party-block">
+                  <p class="party-label">Demandeur</p>
+                  <p class="party-name">{{ legit.reporterName }}</p>
+                  <p class="party-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    {{ legit.reporterEmail || '—' }}
+                  </p>
+                  @if (legit.reporterPhone) {
+                    <p class="party-info party-phone">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l.91-1.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                      <strong>{{ legit.reporterPhone }}</strong>
+                    </p>
+                  }
+                  <span class="role-badge" [class.role-freelancer]="legit.reporterRole === 'FREELANCER'" [class.role-company]="legit.reporterRole === 'COMPANY'">{{ legit.reporterRole }}</span>
+                </div>
+                <div class="party-divider">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </div>
+                <div class="party-block">
+                  <p class="party-label">Autre partie</p>
+                  <p class="party-name">{{ legit.otherPartyName || '—' }}</p>
+                  <p class="party-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    {{ legit.otherPartyEmail || '—' }}
+                  </p>
+                  @if (legit.otherPartyPhone) {
+                    <p class="party-info">{{ legit.otherPartyPhone }}</p>
+                  }
+                  @if (legit.otherPartyRole) {
+                    <span class="role-badge" [class.role-freelancer]="legit.otherPartyRole === 'FREELANCER'" [class.role-company]="legit.otherPartyRole === 'COMPANY'">{{ legit.otherPartyRole }}</span>
+                  }
+                </div>
+              </div>
+
+              <div class="detail-divider"></div>
+
+              <!-- Description -->
+              <div class="detail-section">
+                <p class="detail-section-title">Description du problème</p>
+                <p class="detail-text">{{ legit.description }}</p>
+              </div>
+
+              @if (legit.totalAmount) {
+                <div class="detail-section">
+                  <p class="detail-section-title">Montant concerné</p>
+                  <p class="detail-amount">{{ legit.totalAmount | number:'1.0-2' }} DT</p>
+                </div>
+              }
+
+              <div class="detail-section">
+                <p class="detail-section-title">Résolution souhaitée</p>
+                <p class="detail-text">{{ legit.resolution }}</p>
+              </div>
+
+              <!-- Evidence files -->
+              @if ((legit.evidenceFiles?.length ?? 0) > 0) {
+                <div class="detail-section">
+                  <p class="detail-section-title">Preuves fournies ({{ legit.evidenceFiles.length }} fichier(s))</p>
+                  <div class="evidence-grid">
+                    @for (file of legit.evidenceFiles; track $index) {
+                      @if (isImage(file)) {
+                        <a [href]="getFileUrl(file)" target="_blank" class="evidence-thumb-link">
+                          <img [src]="getFileUrl(file)" class="evidence-thumb" [alt]="getFileName(file)" />
+                        </a>
+                      } @else {
+                        <a [href]="getFileUrl(file)" target="_blank" class="evidence-file-link">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                          {{ getFileName(file) }}
+                        </a>
+                      }
+                    }
+                  </div>
+                </div>
+              }
+
+              <div class="detail-divider"></div>
+
+              <!-- Actions -->
+              <div class="detail-actions">
+                <div class="status-actions">
+                  <span class="action-label">Statut :</span>
+                  @for (s of ['EN_ATTENTE', 'EN_COURS', 'RESOLU', 'REJETE']; track s) {
+                    <button
+                      class="status-btn"
+                      [class.status-btn-active]="legit.status === s"
+                      [class]="'status-btn status-btn-' + s.toLowerCase()"
+                      (click)="setStatus(legit, $any(s), $event)"
+                      [disabled]="processing() === legit.id || legit.status === s">
+                      {{ STATUS_LABELS[s] }}
+                    </button>
+                  }
+                </div>
+                <div class="contact-actions">
+                  @if (legit.reporterPhone) {
+                    <a [href]="'tel:' + legit.reporterPhone" class="btn-phone">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l.91-1.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                      Appeler ({{ legit.reporterPhone }})
+                    </a>
+                  }
+                  <button class="btn-email" (click)="openEmailModal(legit, $event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    Envoyer un email
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          }
+        </div>
+
+      }
+    </div>
+  }
+
+</div>
+
+<!-- ── Email modal ─────────────────────────────────────────────────────── -->
+@if (emailTarget()) {
+  <div class="modal-overlay" (click)="closeEmailModal()"></div>
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3793B0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div>
+        <h3 class="modal-title">Envoyer un email</h3>
+        <p class="modal-sub">À : <strong>{{ emailTarget()!.reporterEmail }}</strong></p>
+      </div>
+      <button class="modal-close" (click)="closeEmailModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <label class="modal-field-label">Sujet</label>
+        <input class="modal-input" [ngModel]="emailSubject()" (ngModelChange)="emailSubject.set($event)" placeholder="Objet du message..." />
+      </div>
+      <div class="modal-field">
+        <label class="modal-field-label">Message</label>
+        <p class="modal-hint">Ce message sera envoyé par email ET créera une notification dans l'application.</p>
+        <textarea class="modal-input modal-textarea" [ngModel]="emailBody()" (ngModelChange)="emailBody.set($event)" rows="7" placeholder="Rédigez votre message..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeEmailModal()">Annuler</button>
+      <button class="btn-send" (click)="confirmSendEmail()" [disabled]="sending() || !emailSubject().trim() || !emailBody().trim()">
+        @if (sending()) { Envoi... } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+          Envoyer
+        }
+      </button>
+    </div>
+  </div>
+}

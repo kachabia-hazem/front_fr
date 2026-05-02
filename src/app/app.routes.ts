@@ -219,6 +219,16 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
+  // Legit (dispute) form — standalone (no navbar/footer)
+  {
+    path: 'legit/:missionId',
+    loadComponent: () =>
+      import('./features/legit-form/legit-form.component').then(
+        (m) => m.LegitFormComponent,
+      ),
+    canActivate: [authGuard],
+  },
+
   // Messaging — standalone (no navbar/footer)
   {
     path: 'messaging',

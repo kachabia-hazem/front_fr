@@ -183,12 +183,14 @@
                       <span>{{ (item.mission.companyName || 'C').charAt(0) }}</span>
                     }
                   </div>
-                  <span class="home-rec-badge"
-                    [class.badge-high]="item.score >= 70"
-                    [class.badge-mid]="item.score >= 50 && item.score < 70"
-                    [class.badge-low]="item.score < 50">
-                    {{ item.score | number:'1.0-0' }}% {{ 'home.match_pct' | translate }}
-                  </span>
+                  @if (item.score > 0) {
+                    <span class="home-rec-badge"
+                      [class.badge-high]="item.score >= 70"
+                      [class.badge-mid]="item.score >= 50 && item.score < 70"
+                      [class.badge-low]="item.score < 50">
+                      {{ item.score | number:'1.0-0' }}% {{ 'home.match_pct' | translate }}
+                    </span>
+                  }
                 </div>
                 <p class="home-rec-company-name">{{ item.mission.companyName }}</p>
                 <h3 class="home-rec-job">{{ item.mission.jobTitle }}</h3>
@@ -217,12 +219,14 @@
                         <span>{{ (item.mission.companyName || 'C').charAt(0) }}</span>
                       }
                     </div>
-                    <span class="home-rec-badge"
-                      [class.badge-high]="item.score >= 70"
-                      [class.badge-mid]="item.score >= 50 && item.score < 70"
-                      [class.badge-low]="item.score < 50">
-                      {{ item.score | number:'1.0-0' }}% {{ 'home.match_pct' | translate }}
-                    </span>
+                    @if (item.score > 0) {
+                      <span class="home-rec-badge"
+                        [class.badge-high]="item.score >= 70"
+                        [class.badge-mid]="item.score >= 50 && item.score < 70"
+                        [class.badge-low]="item.score < 50">
+                        {{ item.score | number:'1.0-0' }}% {{ 'home.match_pct' | translate }}
+                      </span>
+                    }
                   </div>
                   <p class="home-rec-company-name">{{ item.mission.companyName }}</p>
                   <h3 class="home-rec-job">{{ item.mission.jobTitle }}</h3>
