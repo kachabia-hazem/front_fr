@@ -1,7 +1,8 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
-  Component, OnInit, AfterViewInit, signal, computed, ViewChild, ElementRef
+  ChangeDetectorRef, Component, OnDestroy, OnInit, AfterViewInit, signal, computed, ViewChild, ElementRef
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 
@@ -22,7 +23,7 @@ import { PaymentModalComponent } from '../../shared/payment-modal/payment-modal.
   templateUrl: './company-contracts.component.html',
   styleUrl: './company-contracts.component.css',
 })
-export class CompanyContractsComponent implements OnInit, AfterViewInit {
+export class CompanyContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('signatureCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
   company          = signal<Company | null>(null);
@@ -63,6 +64,7 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
   // Toast
   toastVisible = signal(false);
   private toastTimer: any;
+  private langSub?: Subscription;
 
   // Filters
   statusFilter = signal<string>('ALL');
@@ -128,6 +130,8 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
     public themeService: ThemeService,
     private router: Router,
     private location: Location,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -137,9 +141,16 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
       error: ()  => this.loading.set(false),
     });
     this.notificationService.getUnreadCount().subscribe();
+    this.langSub = this.translate.onLangChange.subscribe(() => {
+      this.cdr.markForCheck();
+    });
   }
 
   ngAfterViewInit(): void {}
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
+  }
 
   toggleSidebar(): void { this.sidebarCollapsed.update(v => !v); }
   goBack(): void { this.router.navigate(['/']); }
@@ -325,9 +336,9 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
   }
 
   statusLabel(status: string): string {
-    if (status === 'PENDING_SIGNATURE') return 'Pending Signature';
-    if (status === 'SIGNED') return 'Signed';
-    if (status === 'REJECTED') return 'Rejected';
+    if (status === 'PENDING_SIGNATURE') return this.translate.instant('company_contracts.status_pending');
+    if (status === 'SIGNED') return this.translate.instant('company_contracts.status_signed');
+    if (status === 'REJECTED') return this.translate.instant('company_contracts.status_rejected');
     return status;
   }
 
@@ -366,10 +377,10 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit {
   }
 
   paymentStatusLabel(status: string | null): string {
-    if (!status || status === 'UNPAID') return 'Non payé';
-    if (status === 'AUTHORIZED') return 'En escrow';
-    if (status === 'CAPTURED') return 'Libéré';
-    if (status === 'FAILED') return 'Échec';
+    if (!status || status === 'UNPAID') return this.translate.instant('company_contracts.pay_unpaid');
+    if (status === 'AUTHORIZED') return this.translate.instant('company_contracts.pay_escrow');
+    if (status === 'CAPTURED') return this.translate.instant('company_contracts.pay_released');
+    if (status === 'FAILED') return this.translate.instant('company_contracts.pay_failed');
     return status;
   }
 

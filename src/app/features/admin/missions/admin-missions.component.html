@@ -3,8 +3,8 @@
   <!-- Header -->
   <div class="page-header">
     <div>
-      <h1 class="page-title">Missions Supervision</h1>
-      <p class="page-subtitle">All platform missions — admin view</p>
+      <h1 class="page-title">{{ 'admin_missions.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'admin_missions.subtitle' | translate }}</p>
     </div>
   </div>
 
@@ -12,64 +12,71 @@
   <div class="filters-row">
     <div class="search-bar">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input class="search-input" type="text" placeholder="Search missions..."
+      <input class="search-input" type="text"
+        [placeholder]="'admin_missions.search_placeholder' | translate"
         [value]="searchQuery()"
         (input)="searchQuery.set($any($event.target).value)" />
     </div>
     <div class="status-tabs">
-      <button *ngFor="let s of ['ALL','OPEN','IN_PROGRESS','CLOSED','CANCELLED']"
+      <button *ngFor="let s of STATUS_TABS"
         [class.active]="statusFilter() === s"
         (click)="statusFilter.set(s)">
-        {{ s === 'ALL' ? 'All' : s === 'IN_PROGRESS' ? 'In Progress' : s.charAt(0) + s.slice(1).toLowerCase() }}
+        {{ tabLabel(s) }}
       </button>
     </div>
   </div>
 
   <!-- Loading -->
   <div class="loading-state" *ngIf="loading()">
-    <div class="spinner"></div> Loading missions...
+    <div class="spinner"></div> {{ 'admin_missions.loading' | translate }}
   </div>
 
   <!-- Table -->
   <div class="table-card" *ngIf="!loading()">
     <div class="table-meta">
-      <span>{{ filteredMissions().length }} mission{{ filteredMissions().length !== 1 ? 's' : '' }} found</span>
+      <span>{{ filteredMissions().length }} {{ 'admin_missions.missions_label' | translate }}</span>
     </div>
     <table class="missions-table">
       <thead>
         <tr>
-          <th>Job Title</th>
-          <th>Company</th>
-          <th>Field</th>
-          <th>Location</th>
-          <th>Budget (TJM)</th>
-          <th>Status</th>
-          <th>Created</th>
-          <th>Actions</th>
+          <th>{{ 'admin_missions.th_title' | translate }}</th>
+          <th>{{ 'admin_missions.th_company' | translate }}</th>
+          <th>{{ 'admin_missions.th_field' | translate }}</th>
+          <th>{{ 'admin_missions.th_location' | translate }}</th>
+          <th>{{ 'admin_missions.th_budget' | translate }}</th>
+          <th>{{ 'admin_missions.th_status' | translate }}</th>
+          <th>{{ 'admin_missions.th_created' | translate }}</th>
+          <th>{{ 'admin_missions.th_actions' | translate }}</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let m of filteredMissions()">
           <td class="title-cell">{{ m.jobTitle }}</td>
-          <td class="secondary-cell">{{ m.companyName ?? '—' }}</td>
+          <td>
+            <div class="person-cell">
+              <div class="avatar company-av">{{ (m.companyName ?? '?').charAt(0) }}</div>
+              <div class="person-name">{{ m.companyName ?? '—' }}</div>
+            </div>
+          </td>
           <td><span class="field-tag">{{ m.field }}</span></td>
           <td class="secondary-cell">{{ m.location ?? '—' }}</td>
-          <td class="secondary-cell">{{ m.tjm ? (m.tjm | number:'1.0-0') + ' €/j' : '—' }}</td>
+          <td class="secondary-cell">{{ m.tjm ? (m.tjm | number:'1.0-0') + ' DT/j' : '—' }}</td>
           <td>
-            <span class="status-badge" [class]="m.status?.toLowerCase()">{{ m.status }}</span>
+            <span class="status-badge" [class]="m.status?.toLowerCase()">{{ statusLabel(m.status) }}</span>
           </td>
           <td class="secondary-cell">{{ m.createdAt | date:'dd/MM/yy' }}</td>
           <td>
-            <button class="btn-delete" (click)="openDeleteModal(m)" title="Delete mission">
+            <button class="btn-delete" (click)="openDeleteModal(m)"
+              [title]="'admin_missions.delete_title' | translate">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
               </svg>
-              Delete
+              {{ 'admin_missions.btn_delete' | translate }}
             </button>
           </td>
         </tr>
         <tr *ngIf="filteredMissions().length === 0">
-          <td colspan="8" class="empty-cell">No missions found</td>
+          <td colspan="8" class="empty-cell">{{ 'admin_missions.no_missions' | translate }}</td>
         </tr>
       </tbody>
     </table>
@@ -88,36 +95,37 @@
         </svg>
       </div>
       <div>
-        <h2 class="modal-title">Delete Mission</h2>
-        <p class="modal-sub">This action is permanent and cannot be undone.</p>
+        <h2 class="modal-title">{{ 'admin_missions.modal_title' | translate }}</h2>
+        <p class="modal-sub">{{ 'admin_missions.modal_sub' | translate }}</p>
       </div>
     </div>
 
     <div class="modal-mission-info">
-      <span class="modal-mission-label">Mission</span>
+      <span class="modal-mission-label">{{ 'admin_missions.modal_mission' | translate }}</span>
       <span class="modal-mission-name">{{ deleteTarget()?.jobTitle }}</span>
       <span class="modal-mission-company">{{ deleteTarget()?.companyName ?? '' }}</span>
     </div>
 
     <div class="modal-field">
-      <label class="modal-label">Reason / Motif <span class="required">*</span></label>
+      <label class="modal-label">{{ 'admin_missions.modal_label' | translate }} <span class="required">*</span></label>
       <textarea
         class="modal-textarea"
         rows="3"
-        placeholder="Explain why this mission is being removed..."
+        [placeholder]="'admin_missions.modal_placeholder' | translate"
         [value]="deleteReason()"
         (input)="deleteReason.set($any($event.target).value)">
       </textarea>
-      <p class="modal-hint">The company will receive a notification with this reason.</p>
+      <p class="modal-hint">{{ 'admin_missions.modal_hint' | translate }}</p>
     </div>
 
     <div class="modal-actions">
-      <button class="btn-cancel" (click)="closeDeleteModal()" [disabled]="deleting()">Cancel</button>
+      <button class="btn-cancel" (click)="closeDeleteModal()" [disabled]="deleting()">
+        {{ 'admin_missions.modal_cancel' | translate }}
+      </button>
       <button class="btn-confirm-delete"
         (click)="confirmDelete()"
         [disabled]="!deleteReason().trim() || deleting()">
-        <span *ngIf="!deleting()">Delete Mission</span>
-        <span *ngIf="deleting()">Deleting...</span>
+        {{ deleting() ? ('admin_missions.modal_confirming' | translate) : ('admin_missions.modal_confirm' | translate) }}
       </button>
     </div>
 

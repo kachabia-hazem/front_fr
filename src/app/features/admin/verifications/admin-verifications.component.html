@@ -8,42 +8,42 @@
   <!-- ── Header ── -->
   <div class="page-header">
     <div>
-      <h1 class="page-title">Company Verifications</h1>
-      <p class="page-subtitle">Review and validate company registrations</p>
+      <h1 class="page-title">{{ 'admin_verif.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'admin_verif.subtitle' | translate }}</p>
     </div>
-    <button class="btn-refresh" (click)="loadCompanies()">↻ Refresh</button>
+    <button class="btn-refresh" (click)="loadCompanies()">{{ 'admin_verif.btn_refresh' | translate }}</button>
   </div>
 
   <!-- ── Filter Tabs ── -->
   <div class="filter-tabs">
-    <button [class.active]="filter() === 'ALL'" (click)="setFilter('ALL')">All</button>
-    <button [class.active]="filter() === 'APPROVED'" (click)="setFilter('APPROVED')">Approved</button>
-    <button [class.active]="filter() === 'PENDING'" (click)="setFilter('PENDING')">Pending</button>
-    <button [class.active]="filter() === 'REJECTED'" (click)="setFilter('REJECTED')">Rejected</button>
+    <button [class.active]="filter() === 'ALL'" (click)="setFilter('ALL')">{{ 'admin_verif.tab_all' | translate }}</button>
+    <button [class.active]="filter() === 'APPROVED'" (click)="setFilter('APPROVED')">{{ 'admin_verif.tab_approved' | translate }}</button>
+    <button [class.active]="filter() === 'PENDING'" (click)="setFilter('PENDING')">{{ 'admin_verif.tab_pending' | translate }}</button>
+    <button [class.active]="filter() === 'REJECTED'" (click)="setFilter('REJECTED')">{{ 'admin_verif.tab_rejected' | translate }}</button>
   </div>
 
   <!-- ── Table ── -->
   <div class="table-card">
     <div class="loading-row" *ngIf="loading()">
-      <div class="spinner"></div> Loading...
+      <div class="spinner"></div> {{ 'admin_verif.loading' | translate }}
     </div>
 
     <div class="empty-state" *ngIf="!loading() && companies().length === 0">
       <div class="empty-icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       </div>
-      <p>No companies in this category</p>
+      <p>{{ 'admin_verif.empty' | translate }}</p>
     </div>
 
     <table class="verif-table" *ngIf="!loading() && companies().length > 0">
       <thead>
         <tr>
-          <th>Company</th>
-          <th>Sector</th>
-          <th>Manager</th>
-          <th>Trust Score</th>
-          <th>Status</th>
-          <th>Actions</th>
+          <th>{{ 'admin_verif.th_company' | translate }}</th>
+          <th>{{ 'admin_verif.th_sector' | translate }}</th>
+          <th>{{ 'admin_verif.th_manager' | translate }}</th>
+          <th>{{ 'admin_verif.th_trust' | translate }}</th>
+          <th>{{ 'admin_verif.th_status' | translate }}</th>
+          <th>{{ 'admin_verif.th_actions' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -68,23 +68,21 @@
             </div>
           </td>
           <td>
-            <span class="status-badge" [class]="c.verificationStatus?.toLowerCase()">
-              {{ c.verificationStatus ?? 'PENDING' }}
+            <span class="status-badge" [class]="(c.verificationStatus ?? 'pending').toLowerCase()">
+              {{ statusLabel(c.verificationStatus) }}
             </span>
           </td>
           <td (click)="$event.stopPropagation()">
             <div class="action-btns" *ngIf="(c.verificationStatus ?? 'PENDING') === 'PENDING'">
-              <button class="btn-approve" (click)="approve(c)"
-                [disabled]="actionLoading() === c.id">
-                ✓ Approve
+              <button class="btn-approve" (click)="approve(c)" [disabled]="actionLoading() === c.id">
+                ✓ {{ 'admin_verif.btn_approve' | translate }}
               </button>
-              <button class="btn-reject" (click)="openRejectModal(c)"
-                [disabled]="actionLoading() === c.id">
-                ✕ Reject
+              <button class="btn-reject" (click)="openRejectModal(c)" [disabled]="actionLoading() === c.id">
+                ✕ {{ 'admin_verif.btn_reject' | translate }}
               </button>
             </div>
             <span class="decided" *ngIf="(c.verificationStatus ?? 'PENDING') !== 'PENDING'">
-              Decided
+              {{ 'admin_verif.decided' | translate }}
             </span>
           </td>
         </tr>
@@ -118,72 +116,74 @@
         <span class="trust-label-big">{{ getTrustLabel(c.trustScore) }}</span>
         <button class="btn-rescore" (click)="refreshScore(c)">
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          Re-analyse
+          {{ 'admin_verif.btn_re_analyse' | translate }}
         </button>
       </div>
     </div>
 
-    <!-- Info Grid -->
+    <!-- Company Info -->
     <div class="panel-section">
-      <p class="panel-section-title">Company Info</p>
+      <p class="panel-section-title">{{ 'admin_verif.section_info' | translate }}</p>
       <div class="info-grid">
         <div class="info-item">
-          <span class="info-key">Email</span>
+          <span class="info-key">{{ 'admin_verif.info_email' | translate }}</span>
           <span class="info-val">{{ c.email }}</span>
         </div>
         <div class="info-item">
-          <span class="info-key">Website</span>
+          <span class="info-key">{{ 'admin_verif.info_website' | translate }}</span>
           <span class="info-val">{{ c.websiteUrl ?? '—' }}</span>
         </div>
         <div class="info-item">
-          <span class="info-key">Legal Form</span>
+          <span class="info-key">{{ 'admin_verif.info_legal' | translate }}</span>
           <span class="info-val">{{ c.legalForm }}</span>
         </div>
         <div class="info-item">
-          <span class="info-key">Trade Register</span>
+          <span class="info-key">{{ 'admin_verif.info_register' | translate }}</span>
           <span class="info-val">{{ c.tradeRegister }}</span>
         </div>
         <div class="info-item">
-          <span class="info-key">Foundation</span>
+          <span class="info-key">{{ 'admin_verif.info_foundation' | translate }}</span>
           <span class="info-val">{{ c.foundationDate | date:'mediumDate' }}</span>
         </div>
         <div class="info-item">
-          <span class="info-key">Employees</span>
+          <span class="info-key">{{ 'admin_verif.info_employees' | translate }}</span>
           <span class="info-val">{{ c.numberOfEmployees ?? '—' }}</span>
         </div>
         <div class="info-item">
-          <span class="info-key">Sector</span>
+          <span class="info-key">{{ 'admin_verif.info_sector' | translate }}</span>
           <span class="info-val">{{ c.businessSector }}</span>
         </div>
         <div class="info-item">
-          <span class="info-key">Address</span>
+          <span class="info-key">{{ 'admin_verif.info_address' | translate }}</span>
           <span class="info-val">{{ c.address ?? '—' }}</span>
         </div>
       </div>
     </div>
 
+    <!-- Description -->
     <div class="panel-section" *ngIf="c.description">
-      <p class="panel-section-title">Description</p>
+      <p class="panel-section-title">{{ 'admin_verif.section_description' | translate }}</p>
       <p class="desc-text">{{ c.description }}</p>
     </div>
 
+    <!-- Manager -->
     <div class="panel-section">
-      <p class="panel-section-title">Manager</p>
+      <p class="panel-section-title">{{ 'admin_verif.section_manager' | translate }}</p>
       <div class="info-grid">
         <div class="info-item">
-          <span class="info-key">Name</span>
+          <span class="info-key">{{ 'admin_verif.info_name' | translate }}</span>
           <span class="info-val">{{ c.managerName }}</span>
         </div>
         <div class="info-item">
-          <span class="info-key">Email</span>
+          <span class="info-key">{{ 'admin_verif.info_email' | translate }}</span>
           <span class="info-val">{{ c.managerEmail }}</span>
         </div>
         <div class="info-item">
-          <span class="info-key">Position</span>
+          <span class="info-key">{{ 'admin_verif.info_position' | translate }}</span>
           <span class="info-val">{{ c.managerPosition }}</span>
         </div>
         <div class="info-item">
-          <span class="info-key">Phone</span>
+          <span class="info-key">{{ 'admin_verif.info_phone' | translate }}</span>
           <span class="info-val">{{ c.managerPhoneNumber }}</span>
         </div>
       </div>
@@ -193,19 +193,20 @@
     <div class="panel-actions" *ngIf="(c.verificationStatus ?? 'PENDING') === 'PENDING'">
       <button class="btn-approve-lg" (click)="approve(c)" [disabled]="actionLoading() === c.id">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        Approve
+        {{ 'admin_verif.btn_approve' | translate }}
       </button>
       <button class="btn-reject-lg" (click)="openRejectModal(c)" [disabled]="actionLoading() === c.id">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        Reject
+        {{ 'admin_verif.btn_reject' | translate }}
       </button>
     </div>
 
     <!-- Rejection reason display -->
     <div class="rejection-info" *ngIf="c.verificationStatus === 'REJECTED' && c.rejectionReason">
-      <strong>Rejection reason:</strong>
+      <strong>{{ 'admin_verif.rejection_reason' | translate }}</strong>
       <p>{{ c.rejectionReason }}</p>
     </div>
+
   </div>
 </div>
 
@@ -215,22 +216,22 @@
 <!-- ── Reject Modal ── -->
 <div class="modal-overlay" *ngIf="showRejectModal()">
   <div class="modal">
-    <h3>Reject Company</h3>
-    <p class="modal-sub">Rejecting: <strong>{{ companyToReject()?.companyName }}</strong></p>
-    <label>Reason (required)</label>
+    <h3>{{ 'admin_verif.modal_title' | translate }}</h3>
+    <p class="modal-sub">{{ 'admin_verif.modal_sub' | translate }} <strong>{{ companyToReject()?.companyName }}</strong></p>
+    <label>{{ 'admin_verif.modal_label' | translate }}</label>
     <textarea
       class="reason-input"
       rows="4"
-      placeholder="e.g. Incomplete trade register, suspicious email domain..."
+      [placeholder]="'admin_verif.modal_placeholder' | translate"
       [value]="rejectReason()"
       (input)="rejectReason.set($any($event.target).value)">
     </textarea>
     <div class="modal-actions">
-      <button class="btn-cancel" (click)="cancelReject()">Cancel</button>
+      <button class="btn-cancel" (click)="cancelReject()">{{ 'admin_verif.modal_cancel' | translate }}</button>
       <button class="btn-confirm-reject"
         (click)="confirmReject()"
         [disabled]="!rejectReason().trim() || actionLoading() !== null">
-        Confirm Rejection
+        {{ 'admin_verif.modal_confirm' | translate }}
       </button>
     </div>
   </div>

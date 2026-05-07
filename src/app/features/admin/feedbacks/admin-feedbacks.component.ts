@@ -1,18 +1,21 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FeedbackService } from '../../../core/services/feedback.service';
 import { Feedback } from '../../../core/models/feedback.model';
 import { environment } from '../../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-admin-feedbacks',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './admin-feedbacks.component.html',
   styleUrls: ['./admin-feedbacks.component.css'],
 })
-export class AdminFeedbacksComponent implements OnInit {
+export class AdminFeedbacksComponent implements OnInit, OnDestroy{
 
   feedbacks  = signal<Feedback[]>([]);
   stats      = signal<Record<string, number>>({});
@@ -31,6 +34,8 @@ export class AdminFeedbacksComponent implements OnInit {
 
   toast = signal<{ msg: string; type: 'success' | 'error' } | null>(null);
 
+  private langSub?: Subscription;
+
   readonly TABS = ['ALL', 'PENDING', 'VALIDATED', 'REJECTED'];
 
   filteredFeedbacks = computed(() => {
@@ -45,9 +50,14 @@ export class AdminFeedbacksComponent implements OnInit {
 
   pendingCount = computed(() => this.feedbacks().filter(f => f.status === 'PENDING').length);
 
-  constructor(private feedbackService: FeedbackService) {}
+  constructor(
+    private feedbackService: FeedbackService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  ngOnInit() { this.load(); }
+  ngOnInit() {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck()); this.load(); }
 
   private load() {
     this.loading.set(true);
@@ -74,9 +84,9 @@ export class AdminFeedbacksComponent implements OnInit {
       next: (updated) => {
         this.updateFeedback(updated);
         this.processing.set(null);
-        this.showToast('Feedback approuvé et publié sur la page d\'accueil.', 'success');
+        this.showToast(this.translate.instant('admin_feedbacks.toast_approved'), 'success');
       },
-      error: () => { this.processing.set(null); this.showToast('Erreur lors de l\'approbation.', 'error'); },
+      error: () => { this.processing.set(null); this.showToast(this.translate.instant('admin_feedbacks.toast_approve_err'), 'error'); },
     });
   }
 
@@ -97,22 +107,22 @@ export class AdminFeedbacksComponent implements OnInit {
         this.updateFeedback(updated);
         this.rejecting.set(false);
         this.closeRejectModal();
-        this.showToast('Feedback rejeté, l\'auteur a été notifié.', 'success');
+        this.showToast(this.translate.instant('admin_feedbacks.toast_rejected'), 'success');
       },
-      error: () => { this.rejecting.set(false); this.showToast('Erreur lors du rejet.', 'error'); },
+      error: () => { this.rejecting.set(false); this.showToast(this.translate.instant('admin_feedbacks.toast_reject_err'), 'error'); },
     });
   }
 
   delete(f: Feedback, event?: MouseEvent) {
     event?.stopPropagation();
-    if (!confirm(`Supprimer définitivement ce feedback ?`)) return;
+    if (!confirm(this.translate.instant('admin_feedbacks.delete_confirm'))) return;
     this.feedbackService.deleteFeedback(f.id).subscribe({
       next: () => {
         this.feedbacks.update(list => list.filter(x => x.id !== f.id));
         if (this.selected()?.id === f.id) this.closePanel();
-        this.showToast('Feedback supprimé.', 'success');
+        this.showToast(this.translate.instant('admin_feedbacks.toast_deleted'), 'success');
       },
-      error: () => this.showToast('Erreur lors de la suppression.', 'error'),
+      error: () => this.showToast(this.translate.instant('admin_feedbacks.toast_delete_err'), 'error'),
     });
   }
 
@@ -130,8 +140,8 @@ export class AdminFeedbacksComponent implements OnInit {
   }
 
   tabLabel(s: string): string {
-    const map: Record<string, string> = { ALL: 'All', PENDING: 'Pending', VALIDATED: 'Published', REJECTED: 'Rejected' };
-    return map[s] ?? s;
+    const key = 'admin_feedbacks.tab_' + s.toLowerCase();
+    return this.translate.instant(key);
   }
 
   statVal(k: string): number { return this.stats()[k] ?? 0; }
@@ -145,5 +155,9 @@ export class AdminFeedbacksComponent implements OnInit {
   private showToast(msg: string, type: 'success' | 'error') {
     this.toast.set({ msg, type });
     setTimeout(() => this.toast.set(null), 3500);
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

@@ -85,29 +85,29 @@
     <!-- Page header -->
     <div class="page-header">
       <div class="page-header-left">
-        <h1 class="page-title">My Contracts</h1>
-        <p class="page-subtitle">View and sign your freelance mission contracts</p>
+        <h1 class="page-title">{{ 'freelancer_contracts.title' | translate }}</h1>
+        <p class="page-subtitle">{{ 'freelancer_contracts.subtitle' | translate }}</p>
       </div>
       <div class="page-header-right">
         @if (!selectionMode() && contracts().length > 0) {
           <button class="btn-select-mode" (click)="enterSelectionMode()">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            Select
+            {{ 'freelancer_contracts.btn_select' | translate }}
           </button>
         }
       <div class="page-header-stats">
         <div class="stat-chip pending">
           <span class="stat-chip-value">{{ pendingCount() }}</span>
-          <span class="stat-chip-label">Pending</span>
+          <span class="stat-chip-label">{{ 'freelancer_contracts.stat_pending' | translate }}</span>
         </div>
         <div class="stat-chip signed">
           <span class="stat-chip-value">{{ signedCount() }}</span>
-          <span class="stat-chip-label">Signed</span>
+          <span class="stat-chip-label">{{ 'freelancer_contracts.stat_signed' | translate }}</span>
         </div>
         @if (rejectedCount() > 0) {
           <div class="stat-chip rejected">
             <span class="stat-chip-value">{{ rejectedCount() }}</span>
-            <span class="stat-chip-label">Rejected</span>
+            <span class="stat-chip-label">{{ 'freelancer_contracts.stat_rejected' | translate }}</span>
           </div>
         }
       </div>
@@ -124,17 +124,17 @@
             }
           </button>
           <span class="selection-count">
-            {{ selectedCount() }} selected
+            {{ 'freelancer_contracts.selected_count' | translate: { n: selectedCount() } }}
           </span>
         </div>
         <div class="selection-toolbar-right">
           @if (selectedCount() > 0) {
             <button class="btn-delete-selected" (click)="confirmDeleteSelected()">
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-              Delete ({{ selectedCount() }})
+              {{ 'freelancer_contracts.btn_delete_selected' | translate: { n: selectedCount() } }}
             </button>
           }
-          <button class="btn-cancel-selection" (click)="exitSelectionMode()">Cancel</button>
+          <button class="btn-cancel-selection" (click)="exitSelectionMode()">{{ 'freelancer_contracts.btn_cancel' | translate }}</button>
         </div>
       </div>
     }
@@ -143,7 +143,7 @@
     @if (loading()) {
       <div class="loading-state">
         <div class="spinner"></div>
-        <p>Loading contracts...</p>
+        <p>{{ 'freelancer_contracts.loading' | translate }}</p>
       </div>
     }
 
@@ -151,9 +151,9 @@
     @if (!loading() && contracts().length === 0) {
       <div class="empty-state">
         <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        <h3>No contracts yet</h3>
-        <p>Contracts will appear here once a company accepts your application.</p>
-        <a routerLink="/freelancer-applications" class="btn-primary">View My Applications</a>
+        <h3>{{ 'freelancer_contracts.no_contracts_title' | translate }}</h3>
+        <p>{{ 'freelancer_contracts.no_contracts_sub' | translate }}</p>
+        <a routerLink="/freelancer-applications" class="btn-primary">{{ 'freelancer_contracts.btn_view_apps' | translate }}</a>
       </div>
     }
 
@@ -192,7 +192,7 @@
                 @if (isCompleted(contract.id)) {
                   <div class="badge-completed">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    Completed
+                    {{ 'freelancer_contracts.badge_completed' | translate }}
                   </div>
                 }
                 @if (contract.status === 'SIGNED' || contract.status === 'FINISHED') {
@@ -228,21 +228,21 @@
             <div class="contract-card-footer">
               <button class="btn-view" (click)="openContract(contract); $event.stopPropagation()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                View
+                {{ 'freelancer_contracts.btn_view' | translate }}
               </button>
               @if (contract.status === 'PENDING_SIGNATURE') {
                 <button class="btn-sign-now" (click)="openContract(contract); $event.stopPropagation()">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                  Sign Now
+                  {{ 'freelancer_contracts.btn_sign_now' | translate }}
                 </button>
                 <button class="btn-reject" (click)="openRejectModal(contract, $event)">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                  Reject
+                  {{ 'freelancer_contracts.btn_reject' | translate }}
                 </button>
               } @else if (contract.status === 'SIGNED') {
                 <button class="btn-download" (click)="downloadPdf(contract); $event.stopPropagation()">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download PDF
+                  {{ 'freelancer_contracts.btn_download' | translate }}
                 </button>
               }
             </div>
@@ -254,11 +254,11 @@
         <div class="contracts-pagination">
           <button class="pag-btn" [disabled]="contractPage() === 0" (click)="contractPrevPage()">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            Previous
+            {{ 'freelancer_contracts.prev' | translate }}
           </button>
-          <span class="pag-pages">Page {{ contractPage() + 1 }} / {{ totalContractPages() }}</span>
+          <span class="pag-pages">{{ 'freelancer_contracts.page_of' | translate: { page: contractPage() + 1, total: totalContractPages() } }}</span>
           <button class="pag-btn" [disabled]="contractPage() === totalContractPages() - 1" (click)="contractNextPage()">
-            Next
+            {{ 'freelancer_contracts.next' | translate }}
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
         </div>
@@ -274,7 +274,7 @@
       <div class="modal-header">
         <div class="modal-header-left">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-          <h2 class="modal-title">Delete Contracts</h2>
+          <h2 class="modal-title">{{ 'freelancer_contracts.delete_title' | translate }}</h2>
         </div>
         <button class="modal-close" (click)="cancelDeleteConfirm()">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -283,16 +283,16 @@
       <div class="modal-body">
         <div class="reject-warning">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <p>You are about to permanently delete <strong>{{ selectedCount() }} contract{{ selectedCount() > 1 ? 's' : '' }}</strong>. This action cannot be undone.</p>
+          <p [innerHTML]="'freelancer_contracts.delete_warning' | translate: { count: selectedCount() }"></p>
         </div>
         <div class="reject-modal-actions">
-          <button class="btn-cancel-reject" (click)="cancelDeleteConfirm()" [disabled]="deleting()">Cancel</button>
+          <button class="btn-cancel-reject" (click)="cancelDeleteConfirm()" [disabled]="deleting()">{{ 'freelancer_contracts.btn_cancel_delete' | translate }}</button>
           <button class="btn-confirm-reject" (click)="deleteSelected()" [disabled]="deleting()">
             @if (deleting()) {
-              <span class="btn-spinner"></span> Deleting...
+              <span class="btn-spinner"></span> {{ 'freelancer_contracts.deleting' | translate }}
             } @else {
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-              Delete {{ selectedCount() }} contract{{ selectedCount() > 1 ? 's' : '' }}
+              {{ 'freelancer_contracts.btn_confirm_delete' | translate: { count: selectedCount() } }}
             }
           </button>
         </div>
@@ -308,7 +308,7 @@
       <div class="modal-header">
         <div class="modal-header-left">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-          <h2 class="modal-title">Reject Contract</h2>
+          <h2 class="modal-title">{{ 'freelancer_contracts.reject_title' | translate }}</h2>
         </div>
         <button class="modal-close" (click)="closeRejectModal()">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -318,14 +318,14 @@
       <div class="modal-body">
         <div class="reject-warning">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <p>You are about to reject the contract for <strong>{{ contract.missionTitle }}</strong> from <strong>{{ contract.companyName }}</strong>. This action cannot be undone.</p>
+          <p [innerHTML]="'freelancer_contracts.reject_warning' | translate: { mission: contract.missionTitle, company: contract.companyName }"></p>
         </div>
 
         <div class="reject-reason-field">
-          <label class="reject-reason-label">Reason for rejection <span class="optional-label">(optional)</span></label>
+          <label class="reject-reason-label">{{ 'freelancer_contracts.reject_reason_label' | translate }} <span class="optional-label">{{ 'freelancer_contracts.reject_optional' | translate }}</span></label>
           <textarea
             class="reject-reason-textarea"
-            placeholder="Explain why you are rejecting this contract..."
+            [placeholder]="'freelancer_contracts.reject_placeholder' | translate"
             [(ngModel)]="rejectReason"
             rows="4"
           ></textarea>
@@ -337,14 +337,14 @@
 
         <div class="reject-modal-actions">
           <button class="btn-cancel-reject" (click)="closeRejectModal()" [disabled]="rejecting()">
-            Keep Contract
+            {{ 'freelancer_contracts.btn_keep' | translate }}
           </button>
           <button class="btn-confirm-reject" (click)="confirmReject()" [disabled]="rejecting()">
             @if (rejecting()) {
-              <span class="btn-spinner"></span> Rejecting...
+              <span class="btn-spinner"></span> {{ 'freelancer_contracts.rejecting' | translate }}
             } @else {
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-              Confirm Rejection
+              {{ 'freelancer_contracts.btn_confirm_reject' | translate }}
             }
           </button>
         </div>
@@ -374,26 +374,26 @@
         <!-- Contract info (always visible) -->
         <div class="contract-info-grid">
           <div class="info-block">
-            <span class="info-label">Employer</span>
+            <span class="info-label">{{ 'freelancer_contracts.modal_employer' | translate }}</span>
             <span class="info-value">{{ contract.companyName }}</span>
             <span class="info-sub">{{ contract.companyEmail }}</span>
           </div>
           <div class="info-block">
-            <span class="info-label">Freelancer</span>
+            <span class="info-label">{{ 'freelancer_contracts.modal_freelancer' | translate }}</span>
             <span class="info-value">{{ contract.freelancerName }}</span>
             <span class="info-sub">{{ contract.freelancerEmail }}</span>
           </div>
           <div class="info-block">
-            <span class="info-label">Daily Rate (TJM)</span>
+            <span class="info-label">{{ 'freelancer_contracts.modal_daily_rate' | translate }}</span>
             <span class="info-value salary">{{ contract.salary | number:'1.0-2' }} DT</span>
           </div>
           <div class="info-block">
-            <span class="info-label">Period</span>
+            <span class="info-label">{{ 'freelancer_contracts.modal_period' | translate }}</span>
             <span class="info-value">{{ formatDate(contract.startDate) }} → {{ formatDate(contract.endDate) }}</span>
           </div>
           @if (contract.signedAt) {
             <div class="info-block">
-              <span class="info-label">Signed On</span>
+              <span class="info-label">{{ 'freelancer_contracts.modal_signed_on' | translate }}</span>
               <span class="info-value signed-on">{{ formatDate(contract.signedAt) }}</span>
             </div>
           }
@@ -405,12 +405,12 @@
             <div class="pdf-embed-section">
               <div class="pdf-embed-header">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                Contract Document — please read before signing
+                {{ 'freelancer_contracts.modal_doc_title' | translate }}
               </div>
               @if (pdfLoading()) {
                 <div class="pdf-loading">
                   <div class="pdf-spinner"></div>
-                  <span>Loading contract...</span>
+                  <span>{{ 'freelancer_contracts.modal_loading' | translate }}</span>
                 </div>
               } @else if (pdfBlobUrl()) {
                 <iframe
@@ -420,20 +420,20 @@
                 </iframe>
               } @else {
                 <div class="pdf-loading">
-                  <span>Unable to load contract preview.</span>
+                  <span>{{ 'freelancer_contracts.modal_unable' | translate }}</span>
                 </div>
               }
             </div>
             <div class="sign-cta">
-              <p class="sign-cta-text">This contract is awaiting your signature.</p>
+              <p class="sign-cta-text">{{ 'freelancer_contracts.sign_cta_text' | translate }}</p>
               <div class="sign-cta-actions">
                 <button class="btn-sign-cta" (click)="startSigning()">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                  Sign Contract
+                  {{ 'freelancer_contracts.btn_sign_contract' | translate }}
                 </button>
                 <button class="btn-reject-cta" (click)="openRejectModal(contract)">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                  Reject Contract
+                  {{ 'freelancer_contracts.btn_reject_contract' | translate }}
                 </button>
               </div>
             </div>
@@ -441,9 +441,9 @@
             <div class="signature-section">
               <h3 class="signature-title">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                Electronic Signature
+                {{ 'freelancer_contracts.signature_title' | translate }}
               </h3>
-              <p class="signature-hint">Draw your signature in the box below</p>
+              <p class="signature-hint">{{ 'freelancer_contracts.signature_hint' | translate }}</p>
               <div class="canvas-wrapper">
                 <canvas #signatureCanvas width="560" height="140" class="signature-canvas"></canvas>
               </div>
@@ -453,14 +453,14 @@
               <div class="signature-actions">
                 <button class="btn-outline" (click)="clearSignature()">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.37"/></svg>
-                  Clear
+                  {{ 'freelancer_contracts.btn_clear' | translate }}
                 </button>
                 <button class="btn-sign-submit" (click)="submitSignature()" [disabled]="signing()">
                   @if (signing()) {
-                    <span class="btn-spinner"></span> Signing...
+                    <span class="btn-spinner"></span> {{ 'freelancer_contracts.signing' | translate }}
                   } @else {
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                    Sign &amp; Confirm
+                    {{ 'freelancer_contracts.btn_sign_confirm' | translate }}
                   }
                 </button>
               </div>
@@ -473,9 +473,9 @@
           <div class="rejected-banner">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
             <div>
-              <p class="rejected-title">You rejected this contract</p>
+              <p class="rejected-title">{{ 'freelancer_contracts.rejected_title' | translate }}</p>
               @if (contract.rejectionReason) {
-                <p class="rejected-reason">Reason: {{ contract.rejectionReason }}</p>
+                <p class="rejected-reason">{{ 'freelancer_contracts.rejected_reason_prefix' | translate }} {{ contract.rejectionReason }}</p>
               }
             </div>
           </div>
@@ -487,21 +487,21 @@
             <div class="sign-success-banner">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
               <div>
-                <p class="success-title">Contract signed successfully!</p>
-                <p class="success-sub">Your mission is now active.</p>
+                <p class="success-title">{{ 'freelancer_contracts.success_title' | translate }}</p>
+                <p class="success-sub">{{ 'freelancer_contracts.success_sub' | translate }}</p>
               </div>
             </div>
           }
           <div class="pdf-section">
-            <div class="pdf-section-header"><h3>Signed Contract</h3></div>
+            <div class="pdf-section-header"><h3>{{ 'freelancer_contracts.signed_contract' | translate }}</h3></div>
             <div class="pdf-actions">
               <button class="btn-pdf-open" (click)="viewPdf(contract)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                Open in Browser
+                {{ 'freelancer_contracts.btn_open_browser' | translate }}
               </button>
               <button class="btn-pdf-open" (click)="downloadPdf(contract)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download PDF
+                {{ 'freelancer_contracts.btn_download_pdf' | translate }}
               </button>
             </div>
           </div>

@@ -1,10 +1,10 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed, DestroyRef, inject } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Component, OnInit, signal, computed, DestroyRef, inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActiveMissionService } from '../../core/services/active-mission.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
@@ -24,7 +24,7 @@ import { FeedbackModalComponent } from '../../shared/components/feedback-modal/f
   templateUrl: './active-mission.component.html',
   styleUrl: './active-mission.component.css',
 })
-export class ActiveMissionComponent implements OnInit {
+export class ActiveMissionComponent implements OnInit, OnDestroy{
   freelancer = signal<Freelancer | null>(null);
   mission = signal<ActiveMission | null>(null);
   tasks = signal<Task[]>([]);
@@ -68,6 +68,8 @@ export class ActiveMissionComponent implements OnInit {
     }
     return '';
   }
+
+  private langSub?: Subscription;
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly GIT_POLL_INTERVAL_MS = 30_000; // 30 secondes
@@ -121,9 +123,12 @@ export class ActiveMissionComponent implements OnInit {
     private notificationService: NotificationService,
     public authService: AuthService,
     public themeService: ThemeService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.missionId = this.route.snapshot.paramMap.get('id') || '';
 
     // Determine if current user is freelancer
@@ -445,5 +450,9 @@ export class ActiveMissionComponent implements OnInit {
       next: () => this.router.navigate(['/freelancer-missions']),
       error: () => this.deletingFromHistory.set(false),
     });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

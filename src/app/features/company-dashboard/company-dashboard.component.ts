@@ -1,8 +1,9 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CompanyService } from '../../core/services/company.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
@@ -24,7 +25,7 @@ import { ReportModalComponent } from '../../shared/report-modal/report-modal.com
   templateUrl: './company-dashboard.component.html',
   styleUrl: './company-dashboard.component.css',
 })
-export class CompanyDashboardComponent implements OnInit {
+export class CompanyDashboardComponent implements OnInit, OnDestroy {
   company   = signal<Company | null>(null);
   stats     = signal<CompanyDashboardStats | null>(null);
   contracts = signal<Contract[]>([]);
@@ -158,11 +159,18 @@ export class CompanyDashboardComponent implements OnInit {
     public themeService: ThemeService,
     private router: Router,
     private location: Location,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   goBack(): void { this.router.navigate(['/']); }
 
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
+  }
+
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.companyService.getMyProfile().subscribe({
       next: (profile) => this.company.set(profile),
     });
@@ -351,6 +359,8 @@ export class CompanyDashboardComponent implements OnInit {
     if (diffDays < 7) return `${diffDays}d ago`;
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
+
+  private langSub?: Subscription;
 
   heroSearch = '';
   heroSkill = '';

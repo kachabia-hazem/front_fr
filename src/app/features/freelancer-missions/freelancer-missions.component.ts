@@ -1,5 +1,5 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { FreelancerService } from '../../core/services/freelancer.service';
@@ -10,6 +10,8 @@ import { Freelancer } from '../../core/models';
 import { ActiveMission } from '../../core/models/active-mission.model';
 import { environment } from '../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-freelancer-missions',
   standalone: true,
@@ -17,7 +19,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './freelancer-missions.component.html',
   styleUrl: './freelancer-missions.component.css',
 })
-export class FreelancerMissionsComponent implements OnInit {
+export class FreelancerMissionsComponent implements OnInit, OnDestroy{
   freelancer = signal<Freelancer | null>(null);
   missions = signal<ActiveMission[]>([]);
   loading = signal(true);
@@ -43,16 +45,21 @@ export class FreelancerMissionsComponent implements OnInit {
   confirmDeleteId = signal<string | null>(null);
   deletingId = signal<string | null>(null);
 
-  constructor(
-    private freelancerService: FreelancerService,
+  private langSub?: Subscription;
+
+    constructor(
+  private freelancerService: FreelancerService,
     private notificationService: NotificationService,
     private activeMissionService: ActiveMissionService,
     public themeService: ThemeService,
     private router: Router,
     private location: Location,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.freelancerService.getMyProfile().subscribe({
       next: (profile) => this.freelancer.set(profile),
     });
@@ -137,5 +144,9 @@ export class FreelancerMissionsComponent implements OnInit {
     const end = m.endDate;
     if (!end) return false;
     return new Date(end) <= new Date();
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

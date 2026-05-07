@@ -1,5 +1,5 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule, DecimalPipe, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
@@ -23,6 +23,8 @@ import { ChatConversation, ChatMessage } from '../../core/models/chat.model';
 import { environment } from '../../../environments/environment';
 import { ReportModalComponent } from '../../shared/report-modal/report-modal.component';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-freelancer-dashboard',
   standalone: true,
@@ -30,7 +32,7 @@ import { ReportModalComponent } from '../../shared/report-modal/report-modal.com
   templateUrl: './freelancer-dashboard.component.html',
   styleUrl: './freelancer-dashboard.component.css',
 })
-export class FreelancerDashboardComponent implements OnInit {
+export class FreelancerDashboardComponent implements OnInit, OnDestroy{
   freelancer  = signal<Freelancer | null>(null);
   stats       = signal<DashboardStats | null>(null);
   applications = signal<Application[]>([]);
@@ -78,6 +80,8 @@ export class FreelancerDashboardComponent implements OnInit {
     if (!s) return 1;
     return Math.max(...s.monthlyRevenue, 1);
   });
+
+  private langSub?: Subscription;
 
   readonly PAGE_SIZE = 5;
 
@@ -262,11 +266,14 @@ export class FreelancerDashboardComponent implements OnInit {
     public themeService: ThemeService,
     private router: Router,
     private location: Location,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   goBack(): void { this.router.navigate(['/']); }
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.freelancerService.getMyProfile().subscribe({
       next: (profile) => this.freelancer.set(profile),
     });
@@ -572,5 +579,9 @@ export class FreelancerDashboardComponent implements OnInit {
     const bottomY = height - padding;
     const lastX = padding + w;
     return `${curvePath} L ${lastX},${bottomY} L ${padding},${bottomY} Z`;
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

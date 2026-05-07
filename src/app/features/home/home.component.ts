@@ -1,9 +1,9 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, NgZone, HostListener, signal } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, NgZone, HostListener, signal, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
@@ -19,6 +19,8 @@ interface StatItem {
   label: string;
   current: number;
 }
+
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -52,13 +54,16 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     window.scrollTo({ top, behavior: 'smooth' });
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();}
 
   // ─── Feedbacks ───────────────────────────────────────────────────────────
   companyFeedbacks = signal<FeedbackPublicDto[]>([]);
   freelancerFeedbacks = signal<FeedbackPublicDto[]>([]);
   companyPage = 0;
   freelancerPage = 0;
+  private langSub?: Subscription;
+
   readonly CARDS_VISIBLE = 3;
 
   totalPages(list: FeedbackPublicDto[]): number {
@@ -207,6 +212,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private missionService: MissionService,
     private feedbackService: FeedbackService,
     private offersService: OffersService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   formatTND(amount: number): string {
@@ -214,6 +221,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.offersService.getCatalogPacks().subscribe({
       next: (packs) => this.homePacks.set(packs.slice(0, 2)),
     });

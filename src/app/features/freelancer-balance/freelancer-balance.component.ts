@@ -1,5 +1,5 @@
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FreelancerService } from '../../core/services/freelancer.service';
@@ -12,6 +12,8 @@ import { environment } from '../../../environments/environment';
 
 interface ChartPoint { x: number; y: number; balance: number; label: string; }
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-freelancer-balance',
   standalone: true,
@@ -19,7 +21,7 @@ interface ChartPoint { x: number; y: number; balance: number; label: string; }
   templateUrl: './freelancer-balance.component.html',
   styleUrl: './freelancer-balance.component.css',
 })
-export class FreelancerBalanceComponent implements OnInit {
+export class FreelancerBalanceComponent implements OnInit, OnDestroy{
   freelancer    = signal<Freelancer | null>(null);
   loading       = signal(true);
   sidebarCollapsed = signal(false);
@@ -116,16 +118,20 @@ export class FreelancerBalanceComponent implements OnInit {
   });
   currentPosition = computed(() => this.freelancer()?.currentPosition || 'Freelancer');
 
-  constructor(
-    private freelancerService: FreelancerService,
+  private langSub?: Subscription;
+
+    constructor(
+  private freelancerService: FreelancerService,
     private notificationService: NotificationService,
     private offersService: OffersService,
     public  authService: AuthService,
     public  themeService: ThemeService,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.freelancerService.getMyProfile().subscribe({
       next: (p) => { this.freelancer.set(p); this.loading.set(false); },
       error: ()  => this.loading.set(false),
@@ -201,5 +207,9 @@ export class FreelancerBalanceComponent implements OnInit {
       FEATURED:       'icon-featured',
     };
     return map[type] ?? 'icon-purchase';
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

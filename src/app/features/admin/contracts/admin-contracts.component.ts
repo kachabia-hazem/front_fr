@@ -1,18 +1,21 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ContractService } from '../../../core/services/contract.service';
 import { AdminService } from '../../../core/services/admin.service';
 import { Contract } from '../../../core/models/contract.model';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-admin-contracts',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './admin-contracts.component.html',
   styleUrls: ['./admin-contracts.component.css'],
 })
-export class AdminContractsComponent implements OnInit {
+export class AdminContractsComponent implements OnInit, OnDestroy{
 
   contracts = signal<Contract[]>([]);
   stats = signal<Record<string, number>>({});
@@ -30,6 +33,8 @@ export class AdminContractsComponent implements OnInit {
   toast = signal<{ msg: string; type: 'success' | 'error' } | null>(null);
   feePercent = signal(7);
 
+  private langSub?: Subscription;
+
   readonly STATUS_TABS = ['ALL', 'PENDING_SIGNATURE', 'SIGNED', 'FINISHED', 'CANCELLED', 'REJECTED'];
 
   filteredContracts = computed(() => {
@@ -45,9 +50,12 @@ export class AdminContractsComponent implements OnInit {
   constructor(
     private contractService: ContractService,
     private adminService: AdminService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.load();
     this.adminService.getSettings().subscribe({
       next: (s) => this.feePercent.set(s.platformFeePercent),
@@ -69,9 +77,7 @@ export class AdminContractsComponent implements OnInit {
     this.selectedContract.set(this.selectedContract()?.id === c.id ? null : c);
   }
 
-  closePanel() {
-    this.selectedContract.set(null);
-  }
+  closePanel() { this.selectedContract.set(null); }
 
   openCancelModal(c: Contract, event: MouseEvent) {
     event.stopPropagation();
@@ -94,11 +100,11 @@ export class AdminContractsComponent implements OnInit {
         if (this.selectedContract()?.id === updated.id) this.selectedContract.set(updated);
         this.cancelling.set(false);
         this.closeCancelModal();
-        this.showToast('Contract cancelled and parties notified.', 'success');
+        this.showToast(this.translate.instant('admin_contracts.toast_cancelled'), 'success');
       },
       error: () => {
         this.cancelling.set(false);
-        this.showToast('Failed to cancel contract.', 'error');
+        this.showToast(this.translate.instant('admin_contracts.toast_cancel_err'), 'error');
       },
     });
   }
@@ -113,29 +119,33 @@ export class AdminContractsComponent implements OnInit {
   }
 
   tabLabel(s: string): string {
-    const map: Record<string, string> = {
-      ALL: 'All', PENDING_SIGNATURE: 'Pending', SIGNED: 'Signed',
-      FINISHED: 'Finished', CANCELLED: 'Cancelled', REJECTED: 'Rejected',
+    const keyMap: Record<string, string> = {
+      ALL: 'tab_all', PENDING_SIGNATURE: 'tab_pending',
+      SIGNED: 'tab_signed', FINISHED: 'tab_finished',
+      CANCELLED: 'tab_cancelled', REJECTED: 'tab_rejected',
     };
-    return map[s] ?? s;
+    return this.translate.instant('admin_contracts.' + (keyMap[s] ?? s.toLowerCase()));
   }
 
   paymentLabel(status: string | undefined | null): string {
-    if (!status || status === 'UNPAID') return 'Non payé';
-    const map: Record<string, string> = {
-      AUTHORIZED: 'En escrow', CAPTURED: 'Libéré',
-      FAILED: 'Échoué', REFUNDED: 'Remboursé',
+    if (!status || status === 'UNPAID') return this.translate.instant('admin_contracts.pay_unpaid');
+    const keyMap: Record<string, string> = {
+      AUTHORIZED: 'pay_escrow', CAPTURED: 'pay_captured',
+      FAILED: 'pay_failed', REFUNDED: 'pay_refunded',
     };
-    return map[status] ?? status;
+    const key = keyMap[status];
+    return key ? this.translate.instant('admin_contracts.' + key) : status;
   }
 
   paymentClass(status: string | undefined | null): string {
     const map: Record<string, string> = {
       AUTHORIZED: 'pay-escrow', CAPTURED: 'pay-captured',
-      FAILED: 'pay-failed',    REFUNDED: 'pay-refunded',
+      FAILED: 'pay-failed', REFUNDED: 'pay-refunded',
     };
     return status ? (map[status] ?? 'pay-unpaid') : 'pay-unpaid';
   }
+
+  netPercent(): number { return 100 - this.feePercent(); }
 
   formatTND(v: number | null | undefined): string {
     if (v == null) return '—';
@@ -143,13 +153,14 @@ export class AdminContractsComponent implements OnInit {
   }
 
   getTimeline(c: Contract): { date: string; label: string; icon: 'create' | 'sign' | 'finish' | 'reject' | 'cancel' }[] {
+    const t = this.translate;
     const events: { date: string; label: string; icon: 'create' | 'sign' | 'finish' | 'reject' | 'cancel' }[] = [];
-    if (c.createdAt)       events.push({ date: c.createdAt,       label: 'Contract created & sent to freelancer', icon: 'create' });
-    if (c.companySignedAt) events.push({ date: c.companySignedAt, label: 'Company signed',                        icon: 'sign'   });
-    if (c.signedAt)        events.push({ date: c.signedAt,        label: 'Freelancer signed — mission started',   icon: 'sign'   });
-    if (c.finishedAt)      events.push({ date: c.finishedAt,      label: 'Mission validated — contract finished', icon: 'finish' });
-    if (c.rejectedAt)      events.push({ date: c.rejectedAt,      label: `Rejected by freelancer${c.rejectionReason ? ': ' + c.rejectionReason : ''}`, icon: 'reject' });
-    if (c.cancelledAt)     events.push({ date: c.cancelledAt,     label: `Cancelled by admin${c.cancellationReason ? ': ' + c.cancellationReason : ''}`, icon: 'cancel' });
+    if (c.createdAt)       events.push({ date: c.createdAt,       label: t.instant('admin_contracts.tl_created'),          icon: 'create' });
+    if (c.companySignedAt) events.push({ date: c.companySignedAt, label: t.instant('admin_contracts.tl_company_signed'),    icon: 'sign'   });
+    if (c.signedAt)        events.push({ date: c.signedAt,        label: t.instant('admin_contracts.tl_freelancer_signed'), icon: 'sign'   });
+    if (c.finishedAt)      events.push({ date: c.finishedAt,      label: t.instant('admin_contracts.tl_finished'),          icon: 'finish' });
+    if (c.rejectedAt)      events.push({ date: c.rejectedAt,      label: t.instant('admin_contracts.tl_rejected') + (c.rejectionReason ? ': ' + c.rejectionReason : ''),    icon: 'reject' });
+    if (c.cancelledAt)     events.push({ date: c.cancelledAt,     label: t.instant('admin_contracts.tl_cancelled') + (c.cancellationReason ? ': ' + c.cancellationReason : ''), icon: 'cancel' });
     return events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }
 
@@ -158,7 +169,9 @@ export class AdminContractsComponent implements OnInit {
     setTimeout(() => this.toast.set(null), 3500);
   }
 
-  statVal(key: string): number {
-    return this.stats()[key] ?? 0;
+  statVal(key: string): number { return this.stats()[key] ?? 0; }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

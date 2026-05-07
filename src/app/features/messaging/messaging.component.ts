@@ -1,13 +1,5 @@
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  signal,
-  ViewChild,
-  ElementRef,
-  AfterViewChecked,
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
@@ -15,6 +7,8 @@ import { AuthService } from '../../core/services/auth.service';
 import { ChatService, FreelancerSearchResult } from '../../core/services/chat.service';
 import { ChatConversation, ChatMessage, PresenceEvent, TypingEvent, ReadReceiptEvent } from '../../core/models/chat.model';
 import { environment } from '../../../environments/environment';
+
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-messaging',
@@ -46,6 +40,8 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   // Typing indicator
   contactIsTyping = signal<boolean>(false);
+  private langSub?: Subscription;
+
   private typingHideTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // Read receipts (logic lives in msg.read field)
@@ -75,6 +71,7 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
     private router: Router,
     private route: ActivatedRoute,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   // ── Getters ────────────────────────────────────────────────────────────────
@@ -106,6 +103,7 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
   // ── Lifecycle ──────────────────────────────────────────────────────────────
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.loadConversations().then(() => {
       // Check if a freelancerId query param was passed (company → start chat)
       this.route.queryParams.subscribe((params) => {
@@ -118,6 +116,7 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
     this.chatService.disconnect();
   }
 
@@ -189,8 +188,8 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
           convs.map((c) =>
             c.id === conv.id
               ? { ...c, lastMessage: msg.content, lastMessageTime: msg.timestamp }
-              : c,
-          ),
+              : c
+          )
         );
       },
       // onTyping
@@ -223,7 +222,7 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.contactLastSeen.set(evt.lastSeen);
           }
         }
-      },
+      }
     );
   }
 
@@ -240,8 +239,8 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
           convs.map((c) =>
             c.id === conversationId
               ? { ...c, unreadCount: { ...c.unreadCount, [this.currentUserId]: 0 } }
-              : c,
-          ),
+              : c
+          )
         );
         // Explicitly send read receipt so the other party sees ✓✓ in real-time
         this.chatService.markRead(conversationId).subscribe({ error: () => {} });

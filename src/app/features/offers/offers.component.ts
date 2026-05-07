@@ -1,12 +1,14 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../../core/services/language.service';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { OffersService, PointPack, SubscriptionPlan, BalanceResponse, CompanySubscriptionResponse } from '../../core/services/offers.service';
 import { PaymentService } from '../../core/services/payment.service';
+
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-offers',
@@ -15,7 +17,7 @@ import { PaymentService } from '../../core/services/payment.service';
   templateUrl: './offers.component.html',
   styleUrl: './offers.component.css',
 })
-export class OffersComponent implements OnInit {
+export class OffersComponent implements OnInit, OnDestroy{
   activeTab  = signal<'packs' | 'plans'>('packs');
   loading    = signal(true);
   purchasing = signal(false);
@@ -35,16 +37,21 @@ export class OffersComponent implements OnInit {
 
   pointsBalance = computed(() => this.myBalance()?.pointsBalance ?? this.mySub()?.pointsBalance ?? 0);
 
-  constructor(
-    public authService: AuthService,
+  private langSub?: Subscription;
+
+    constructor(
+  public authService: AuthService,
     public themeService: ThemeService,
     private offersService: OffersService,
     private router: Router,
     private paymentService: PaymentService,
     private languageService: LanguageService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.activeTab.set('packs');
 
     // Load both catalogs
@@ -91,7 +98,7 @@ export class OffersComponent implements OnInit {
       },
       error: () => {
         this.purchasing.set(false);
-        this.showToast('Erreur lors de la création du paiement', 'error');
+        this.showToast(this.translate.instant('offers.error_payment'), 'error');
       },
     });
   }
@@ -111,7 +118,7 @@ export class OffersComponent implements OnInit {
       },
       error: () => {
         this.purchasing.set(false);
-        this.showToast('Erreur lors de la création du paiement', 'error');
+        this.showToast(this.translate.instant('offers.error_payment'), 'error');
       },
     });
   }
@@ -128,7 +135,7 @@ export class OffersComponent implements OnInit {
       },
       error: () => {
         this.purchasing.set(false);
-        this.showToast('Erreur lors de la création du paiement', 'error');
+        this.showToast(this.translate.instant('offers.error_payment'), 'error');
       },
     });
   }
@@ -156,5 +163,9 @@ export class OffersComponent implements OnInit {
 
   isPopularPlan(plan: SubscriptionPlan): boolean {
     return plan.name?.toLowerCase().includes('premium') || plan.name?.toLowerCase().includes('pro');
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -8,6 +8,8 @@ import { MissionService } from '../../core/services/mission.service';
 import { Company } from '../../core/models';
 import { environment } from '../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-view-company-profile',
   standalone: true,
@@ -15,22 +17,26 @@ import { environment } from '../../../environments/environment';
   templateUrl: './view-company-profile.component.html',
   styleUrl: './view-company-profile.component.css',
 })
-export class ViewCompanyProfileComponent implements OnInit {
+export class ViewCompanyProfileComponent implements OnInit, OnDestroy{
   company = signal<Company | null>(null);
   loading = signal(true);
   error = signal('');
   isOwnProfile = signal(false);
   missionCount = signal(0);
 
-  constructor(
-    private route: ActivatedRoute,
+  private langSub?: Subscription;
+
+    constructor(
+  private route: ActivatedRoute,
     private companyService: CompanyService,
     private authService: AuthService,
     private missionService: MissionService,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
@@ -112,5 +118,9 @@ export class ViewCompanyProfileComponent implements OnInit {
       month: 'long',
       day: 'numeric',
     });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

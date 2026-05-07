@@ -1,6 +1,7 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AdminService } from '../../../core/services/admin.service';
 import { Company, Freelancer } from '../../../core/models/user.model';
 
@@ -12,14 +13,16 @@ interface BanTarget {
   type: UserTab;
 }
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-admin-users',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './admin-users.component.html',
   styleUrls: ['./admin-users.component.css'],
 })
-export class AdminUsersComponent implements OnInit {
+export class AdminUsersComponent implements OnInit, OnDestroy {
   activeTab = signal<UserTab>('freelancers');
   freelancers = signal<Freelancer[]>([]);
   companies = signal<Company[]>([]);
@@ -44,9 +47,16 @@ export class AdminUsersComponent implements OnInit {
     );
   });
 
-  constructor(private adminService: AdminService) {}
+  private langSub?: Subscription;
+
+  constructor(
+    private adminService: AdminService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.loadAll();
   }
 
@@ -76,12 +86,12 @@ export class AdminUsersComponent implements OnInit {
       ? this.adminService.toggleFreelancerBan(target.id, this.banReason)
       : this.adminService.toggleCompanyBan(target.id, this.banReason);
     obs.subscribe({
-      next: (res) => {
-        this.showToast(res.message, 'success');
+      next: () => {
+        this.showToast(this.translate.instant('admin_users.toast_banned'), 'success');
         this.showBanModal.set(null);
         this.loadAll();
       },
-      error: () => this.showToast('Action failed', 'error'),
+      error: () => this.showToast(this.translate.instant('admin_users.toast_action_err'), 'error'),
     });
   }
 
@@ -90,8 +100,8 @@ export class AdminUsersComponent implements OnInit {
       this.requestBan(f.id, `${f.firstName} ${f.lastName}`, 'freelancers');
     } else {
       this.adminService.toggleFreelancerBan(f.id).subscribe({
-        next: (res) => { this.showToast(res.message, 'success'); this.loadAll(); },
-        error: () => this.showToast('Action failed', 'error'),
+        next: () => { this.showToast(this.translate.instant('admin_users.toast_unbanned'), 'success'); this.loadAll(); },
+        error: () => this.showToast(this.translate.instant('admin_users.toast_action_err'), 'error'),
       });
     }
   }
@@ -101,8 +111,8 @@ export class AdminUsersComponent implements OnInit {
       this.requestBan(c.id, c.companyName, 'companies');
     } else {
       this.adminService.toggleCompanyBan(c.id).subscribe({
-        next: (res) => { this.showToast(res.message, 'success'); this.loadAll(); },
-        error: () => this.showToast('Action failed', 'error'),
+        next: () => { this.showToast(this.translate.instant('admin_users.toast_unbanned'), 'success'); this.loadAll(); },
+        error: () => this.showToast(this.translate.instant('admin_users.toast_action_err'), 'error'),
       });
     }
   }
@@ -117,19 +127,27 @@ export class AdminUsersComponent implements OnInit {
     const obs = modal.type === 'freelancers'
       ? this.adminService.deleteFreelancer(modal.id)
       : this.adminService.deleteCompany(modal.id);
-
     obs.subscribe({
       next: () => {
-        this.showToast('User deleted', 'success');
+        this.showToast(this.translate.instant('admin_users.toast_deleted'), 'success');
         this.showDeleteModal.set(null);
         this.loadAll();
       },
-      error: () => this.showToast('Delete failed', 'error'),
+      error: () => this.showToast(this.translate.instant('admin_users.toast_delete_err'), 'error'),
     });
+  }
+
+  verifLabel(status: string | undefined | null): string {
+    if (!status) return this.translate.instant('admin_users.verif_pending');
+    return this.translate.instant('admin_users.verif_' + status.toLowerCase());
   }
 
   private showToast(text: string, type: 'success' | 'error') {
     this.toastMessage.set({ text, type });
     setTimeout(() => this.toastMessage.set(null), 3000);
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

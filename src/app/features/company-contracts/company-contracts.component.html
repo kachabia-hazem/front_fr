@@ -88,15 +88,15 @@
   <main class="main-content">
     <div class="page-header">
       <div>
-        <h1 class="page-title">Contracts</h1>
-        <p class="page-subtitle">Track all signed contracts with your freelancers</p>
+        <h1 class="page-title">{{ 'company_contracts.title' | translate }}</h1>
+        <p class="page-subtitle">{{ 'company_contracts.subtitle' | translate }}</p>
       </div>
       <div class="header-stats">
-        <div class="stat-pill total"><span>{{ contracts().length }}</span> Total</div>
-        <div class="stat-pill pending"><span>{{ pendingCount() }}</span> Pending</div>
-        <div class="stat-pill signed"><span>{{ signedCount() }}</span> Signed</div>
+        <div class="stat-pill total"><span>{{ contracts().length }}</span> {{ 'company_contracts.stat_total' | translate }}</div>
+        <div class="stat-pill pending"><span>{{ pendingCount() }}</span> {{ 'company_contracts.stat_pending' | translate }}</div>
+        <div class="stat-pill signed"><span>{{ signedCount() }}</span> {{ 'company_contracts.stat_signed' | translate }}</div>
         @if (rejectedCount() > 0) {
-          <div class="stat-pill rejected"><span>{{ rejectedCount() }}</span> Rejected</div>
+          <div class="stat-pill rejected"><span>{{ rejectedCount() }}</span> {{ 'company_contracts.stat_rejected' | translate }}</div>
         }
       </div>
     </div>
@@ -105,14 +105,14 @@
       <div class="filters-bar">
         <div class="search-wrapper">
           <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input class="search-input" type="text" placeholder="Search by freelancer or mission..." (input)="onSearch($event)" />
+          <input class="search-input" type="text" [placeholder]="'company_contracts.search_placeholder' | translate" (input)="onSearch($event)" />
         </div>
         <div class="filters-divider"></div>
         <div class="status-tabs">
-          <button [class.active]="statusFilter() === 'ALL'"               (click)="setStatusFilter('ALL')">All</button>
-          <button [class.active]="statusFilter() === 'PENDING_SIGNATURE'" (click)="setStatusFilter('PENDING_SIGNATURE')">Pending</button>
-          <button [class.active]="statusFilter() === 'SIGNED'"            (click)="setStatusFilter('SIGNED')">Signed</button>
-          <button [class.active]="statusFilter() === 'REJECTED'"          (click)="setStatusFilter('REJECTED')">Rejected</button>
+          <button [class.active]="statusFilter() === 'ALL'"               (click)="setStatusFilter('ALL')">{{ 'company_contracts.filter_all' | translate }}</button>
+          <button [class.active]="statusFilter() === 'PENDING_SIGNATURE'" (click)="setStatusFilter('PENDING_SIGNATURE')">{{ 'company_contracts.filter_pending' | translate }}</button>
+          <button [class.active]="statusFilter() === 'SIGNED'"            (click)="setStatusFilter('SIGNED')">{{ 'company_contracts.filter_signed' | translate }}</button>
+          <button [class.active]="statusFilter() === 'REJECTED'"          (click)="setStatusFilter('REJECTED')">{{ 'company_contracts.filter_rejected' | translate }}</button>
         </div>
       </div>
     }
@@ -120,16 +120,16 @@
     @if (loading()) {
       <div class="loading-state">
         <div class="spinner"></div>
-        <p>Loading contracts...</p>
+        <p>{{ 'company_contracts.loading' | translate }}</p>
       </div>
     }
 
     @if (!loading() && contracts().length === 0) {
       <div class="empty-state">
         <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        <h3>No contracts yet</h3>
-        <p>Contracts are generated automatically when you accept a freelancer's application.</p>
-        <a routerLink="/company-applications" class="btn-primary">Review Applications</a>
+        <h3>{{ 'company_contracts.no_contracts_title' | translate }}</h3>
+        <p>{{ 'company_contracts.no_contracts_sub' | translate }}</p>
+        <a routerLink="/company-applications" class="btn-primary">{{ 'company_contracts.review_apps' | translate }}</a>
       </div>
     }
 
@@ -138,13 +138,13 @@
         <table class="contracts-table">
           <thead>
             <tr>
-              <th>Freelancer</th>
-              <th>Mission</th>
-              <th>Daily Rate</th>
-              <th>Period</th>
-              <th>Status</th>
-              <th>Response Date</th>
-              <th>Actions</th>
+              <th>{{ 'company_contracts.th_freelancer' | translate }}</th>
+              <th>{{ 'company_contracts.th_mission' | translate }}</th>
+              <th>{{ 'company_contracts.th_daily_rate' | translate }}</th>
+              <th>{{ 'company_contracts.th_period' | translate }}</th>
+              <th>{{ 'company_contracts.th_status' | translate }}</th>
+              <th>{{ 'company_contracts.th_response_date' | translate }}</th>
+              <th>{{ 'company_contracts.th_actions' | translate }}</th>
             </tr>
           </thead>
           <tbody (click)="closeMenu()">
@@ -170,10 +170,12 @@
                 <td>
                   <div class="status-cell">
                     <span class="status-badge" [class]="'badge-' + contract.status.toLowerCase()">
+                      <span class="st-dot"></span>
                       {{ statusLabel(contract.status) }}
                     </span>
                     @if (contract.status === 'SIGNED' || contract.status === 'FINISHED') {
                       <span class="payment-badge" [class]="paymentBadgeClass(contract.paymentStatus)">
+                        <span class="pay-dot"></span>
                         {{ paymentStatusLabel(contract.paymentStatus) }}
                       </span>
                     }
@@ -188,7 +190,7 @@
                   <div class="action-cell">
                     @if (contract.status === 'SIGNED' && (!contract.paymentStatus || contract.paymentStatus === 'UNPAID' || contract.paymentStatus === 'FAILED')) {
                       <button class="btn-pay" (click)="openPaymentModal(contract)">
-                        💳 Payer
+                        {{ 'company_contracts.pay_btn' | translate }}
                       </button>
                     }
                     <div class="action-menu-wrapper" (click)="$event.stopPropagation()">
@@ -199,17 +201,17 @@
                         <div class="dropdown-menu">
                           <button class="dropdown-item" (click)="viewPdf(contract); closeMenu()">
                             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                            View Contract
+                            {{ 'company_contracts.action_view' | translate }}
                           </button>
                           @if (contract.status === 'REJECTED') {
                             <button class="dropdown-item dropdown-item-rejected" (click)="openRejectionModal(contract); closeMenu()">
                               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                              View Reason
+                              {{ 'company_contracts.action_reason' | translate }}
                             </button>
                           } @else {
                             <button class="dropdown-item" (click)="downloadPdf(contract); closeMenu()" [disabled]="contract.status !== 'SIGNED'">
                               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                              Download PDF
+                              {{ 'company_contracts.action_download' | translate }}
                             </button>
                           }
                         </div>
@@ -227,14 +229,14 @@
         <div class="contracts-pagination">
           <button class="pag-btn" [disabled]="contractPage() === 0" (click)="contractPrevPage()">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            Previous
+            {{ 'company_contracts.prev' | translate }}
           </button>
           <span class="pag-pages">
             {{ contractPage() * 7 + 1 }}–{{ Math.min((contractPage() + 1) * 7, filteredContracts().length) }}
             of {{ filteredContracts().length }}
           </span>
           <button class="pag-btn" [disabled]="contractPage() === totalContractPages() - 1" (click)="contractNextPage()">
-            Next
+            {{ 'company_contracts.next' | translate }}
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
         </div>
@@ -242,7 +244,7 @@
     }
 
     @if (!loading() && contracts().length > 0 && filteredContracts().length === 0) {
-      <div class="empty-state"><p>No contracts match your search.</p></div>
+      <div class="empty-state"><p>{{ 'company_contracts.no_match' | translate }}</p></div>
     }
   </main>
 </div>
@@ -269,26 +271,26 @@
         <!-- Contract info grid (always visible) -->
         <div class="contract-info-grid">
           <div class="info-block">
-            <span class="info-label">Freelancer</span>
+            <span class="info-label">{{ 'company_contracts.modal_freelancer' | translate }}</span>
             <span class="info-value">{{ contract.freelancerName }}</span>
             <span class="info-sub">{{ contract.freelancerEmail }}</span>
           </div>
           <div class="info-block">
-            <span class="info-label">Employer</span>
+            <span class="info-label">{{ 'company_contracts.modal_employer' | translate }}</span>
             <span class="info-value">{{ contract.companyName }}</span>
             <span class="info-sub">{{ contract.companyEmail }}</span>
           </div>
           <div class="info-block">
-            <span class="info-label">Daily Rate (TJM)</span>
+            <span class="info-label">{{ 'company_contracts.modal_daily_rate' | translate }}</span>
             <span class="info-value salary">{{ contract.salary | number:'1.0-2' }} DT</span>
           </div>
           <div class="info-block">
-            <span class="info-label">Period</span>
+            <span class="info-label">{{ 'company_contracts.modal_period' | translate }}</span>
             <span class="info-value">{{ formatDate(contract.startDate) }} → {{ formatDate(contract.endDate) }}</span>
           </div>
           @if (contract.signedAt) {
             <div class="info-block">
-              <span class="info-label">Freelancer Signed</span>
+              <span class="info-label">{{ 'company_contracts.modal_signed_on' | translate }}</span>
               <span class="info-value signed-on">{{ formatDate(contract.signedAt) }}</span>
             </div>
           }
@@ -298,12 +300,12 @@
         <div class="pdf-embed-section">
           <div class="pdf-embed-header">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Contract Document
+            {{ 'company_contracts.modal_doc_title' | translate }}
           </div>
           @if (pdfLoading()) {
             <div class="pdf-loading">
               <div class="pdf-spinner"></div>
-              <span>Loading contract...</span>
+              <span>{{ 'company_contracts.modal_loading' | translate }}</span>
             </div>
           } @else if (pdfBlobUrl()) {
             <iframe
@@ -313,7 +315,7 @@
             </iframe>
           } @else {
             <div class="pdf-loading">
-              <span>Unable to load contract preview.</span>
+              <span>{{ 'company_contracts.modal_unable' | translate }}</span>
             </div>
           }
         </div>
@@ -322,7 +324,7 @@
         @if (contract.status === 'PENDING_SIGNATURE') {
           <div class="awaiting-freelancer-notice">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Waiting for the freelancer to sign this contract.
+            {{ 'company_contracts.modal_waiting' | translate }}
           </div>
         }
 
@@ -330,16 +332,16 @@
         @if (contract.status === 'SIGNED') {
           <div class="pdf-section">
             <div class="pdf-section-header">
-              <h3>Signed Contract</h3>
+              <h3>{{ 'company_contracts.modal_signed_title' | translate }}</h3>
             </div>
             <div class="pdf-actions">
               <button class="btn-pdf-open" (click)="viewPdf(contract)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                Open in Browser
+                {{ 'company_contracts.modal_open' | translate }}
               </button>
               <button class="btn-pdf-open" (click)="downloadPdf(contract)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download PDF
+                {{ 'company_contracts.modal_download' | translate }}
               </button>
             </div>
           </div>
@@ -358,7 +360,7 @@
       <div class="rejection-modal-header">
         <div class="rejection-modal-title-row">
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-          <h2 class="rejection-modal-title">Rejection Reason</h2>
+          <h2 class="rejection-modal-title">{{ 'company_contracts.rejection_title' | translate }}</h2>
         </div>
         <button class="rejection-modal-close" (click)="closeRejectionModal()">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -367,16 +369,16 @@
 
       <div class="rejection-modal-body">
         <div class="rejection-contract-info">
-          <span class="rejection-info-label">Contract</span>
+          <span class="rejection-info-label">{{ 'company_contracts.rejection_contract' | translate }}</span>
           <span class="rejection-info-value">{{ contract.missionTitle }}</span>
         </div>
         <div class="rejection-contract-info">
-          <span class="rejection-info-label">Freelancer</span>
+          <span class="rejection-info-label">{{ 'company_contracts.rejection_freelancer' | translate }}</span>
           <span class="rejection-info-value">{{ contract.freelancerName }}</span>
         </div>
         @if (contract.rejectedAt) {
           <div class="rejection-contract-info">
-            <span class="rejection-info-label">Rejected on</span>
+            <span class="rejection-info-label">{{ 'company_contracts.rejection_date' | translate }}</span>
             <span class="rejection-info-value">{{ formatDate(contract.rejectedAt) }}</span>
           </div>
         }
@@ -384,18 +386,18 @@
         <div class="rejection-reason-box">
           <div class="rejection-reason-label">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Reason provided by the freelancer
+            {{ 'company_contracts.rejection_reason_label' | translate }}
           </div>
           @if (contract.rejectionReason) {
             <p class="rejection-reason-text">{{ contract.rejectionReason }}</p>
           } @else {
-            <p class="rejection-reason-empty">No reason was provided.</p>
+            <p class="rejection-reason-empty">{{ 'company_contracts.rejection_no_reason' | translate }}</p>
           }
         </div>
       </div>
 
       <div class="rejection-modal-footer">
-        <button class="btn-close-rejection" (click)="closeRejectionModal()">Close</button>
+        <button class="btn-close-rejection" (click)="closeRejectionModal()">{{ 'company_contracts.rejection_close' | translate }}</button>
       </div>
 
     </div>
@@ -416,6 +418,6 @@
 @if (toastVisible()) {
   <div class="toast-success">
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-    Contract is signed!
+    {{ 'company_contracts.toast_signed' | translate }}
   </div>
 }

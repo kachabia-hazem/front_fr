@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -7,6 +7,8 @@ import { CvService } from '../../core/services/cv.service';
 import { Freelancer } from '../../core/models';
 import { environment } from '../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-customize-card',
   standalone: true,
@@ -14,7 +16,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './customize-card.component.html',
   styleUrl: './customize-card.component.css',
 })
-export class CustomizeCardComponent implements OnInit {
+export class CustomizeCardComponent implements OnInit, OnDestroy{
   freelancer = signal<Freelancer | null>(null);
   cardBackground = signal<string>('');
   portfolioImages = signal<string[]>([]);
@@ -23,6 +25,8 @@ export class CustomizeCardComponent implements OnInit {
   message = signal<{ type: 'success' | 'error'; text: string } | null>(null);
   showToast = signal(false);
   toastMessage = signal('');
+
+  private langSub?: Subscription;
 
   readonly maxPortfolioImages = 5;
 
@@ -35,6 +39,7 @@ export class CustomizeCardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.freelancerService.getMyProfile().subscribe({
       next: (profile) => {
         this.freelancer.set(profile);
@@ -145,5 +150,9 @@ export class CustomizeCardComponent implements OnInit {
     setTimeout(() => {
       this.router.navigate(['/freelancers']);
     }, 2500);
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

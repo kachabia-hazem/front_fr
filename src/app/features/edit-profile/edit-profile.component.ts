@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,6 +11,8 @@ import { FileUploadComponent } from '../../shared/components/file-upload/file-up
 import { environment } from '../../../environments/environment';
 import { ExtractedCvData } from '../../core/services/cv.service';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
@@ -18,7 +20,7 @@ import { ExtractedCvData } from '../../core/services/cv.service';
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.css',
 })
-export class EditProfileComponent implements OnInit {
+export class EditProfileComponent implements OnInit, OnDestroy{
   profileForm!: FormGroup;
   freelancer = signal<Freelancer | null>(null);
   loading = signal(true);
@@ -35,15 +37,19 @@ export class EditProfileComponent implements OnInit {
   profileTypeOptions = Object.values(ProfileType);
   languageOptions = Object.values(Language);
 
-  constructor(
-    private fb: FormBuilder,
+  private langSub?: Subscription;
+
+    constructor(
+  private fb: FormBuilder,
     private freelancerService: FreelancerService,
     private cvService: CvService,
     private router: Router,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.profileForm = this.fb.group({
       firstName: [''],
       lastName: [''],
@@ -354,5 +360,9 @@ export class EditProfileComponent implements OnInit {
         this.saving.set(false);
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

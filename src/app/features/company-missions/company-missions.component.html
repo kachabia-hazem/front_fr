@@ -86,19 +86,19 @@
     @if (loading()) {
       <div class="dashboard-loading">
         <div class="spinner"></div>
-        <p>Loading missions...</p>
+        <p>{{ 'company_missions.loading' | translate }}</p>
       </div>
     } @else if (detailLoading()) {
       <div class="dashboard-loading">
         <div class="spinner"></div>
-        <p>Loading mission details...</p>
+        <p>{{ 'company_missions.loading_detail' | translate }}</p>
       </div>
     } @else if (selectedMission()) {
 
       <!-- ── Inline Mission Detail ── -->
       <button class="back-to-missions-btn" (click)="closeMissionDetail()">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        Back to My Missions
+        {{ 'company_missions.back_btn' | translate }}
       </button>
 
       <div class="mission-detail-wrapper">
@@ -127,7 +127,7 @@
             }
             @if (selectedMission()!.missionType) { <span class="badge badge-type">{{ selectedMission()!.missionType }}</span> }
             @if (selectedMission()!.field) { <span class="badge badge-field">{{ selectedMission()!.field }}</span> }
-            @if (selectedMission()!.yearsOfExperience) { <span class="badge badge-exp">{{ selectedMission()!.yearsOfExperience }} yrs exp.</span> }
+            @if (selectedMission()!.yearsOfExperience) { <span class="badge badge-exp">{{ selectedMission()!.yearsOfExperience }} {{ 'company_missions.label_yrs_exp' | translate }}</span> }
           </div>
         </div>
 
@@ -136,31 +136,31 @@
           @if (selectedMission()!.tjm) {
             <div class="md-info-card md-info-card-tjm">
               <div class="md-info-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-              <div><span class="md-info-label">Daily Rate</span><span class="md-info-value tjm-val">{{ selectedMission()!.tjm }} DT/day</span></div>
+              <div><span class="md-info-label">{{ 'company_missions.label_daily_rate' | translate }}</span><span class="md-info-value tjm-val">{{ selectedMission()!.tjm }} {{ 'company_missions.label_dt_day' | translate }}</span></div>
             </div>
           }
           @if (selectedMission()!.startDate) {
             <div class="md-info-card">
               <div class="md-info-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
-              <div><span class="md-info-label">Duration</span><span class="md-info-value">{{ formatDate(selectedMission()!.startDate) }}@if (selectedMission()!.endDate) { — {{ formatDate(selectedMission()!.endDate) }}}</span></div>
+              <div><span class="md-info-label">{{ 'company_missions.label_duration' | translate }}</span><span class="md-info-value">{{ formatDate(selectedMission()!.startDate) }}@if (selectedMission()!.endDate) { — {{ formatDate(selectedMission()!.endDate) }}}</span></div>
             </div>
           }
           @if (selectedMission()!.yearsOfExperience) {
             <div class="md-info-card">
               <div class="md-info-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-              <div><span class="md-info-label">Experience</span><span class="md-info-value">{{ selectedMission()!.yearsOfExperience }} years</span></div>
+              <div><span class="md-info-label">{{ 'company_missions.label_experience' | translate }}</span><span class="md-info-value">{{ selectedMission()!.yearsOfExperience }} {{ 'company_missions.label_yrs_exp' | translate }}</span></div>
             </div>
           }
           @if (selectedMission()!.location) {
             <div class="md-info-card">
               <div class="md-info-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-              <div><span class="md-info-label">Location</span><span class="md-info-value">{{ selectedMission()!.location }}</span></div>
+              <div><span class="md-info-label">{{ 'company_missions.label_location' | translate }}</span><span class="md-info-value">{{ selectedMission()!.location }}</span></div>
             </div>
           }
           @if (selectedMission()!.missionType) {
             <div class="md-info-card">
               <div class="md-info-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
-              <div><span class="md-info-label">Employment Type</span><span class="md-info-value">{{ selectedMission()!.missionType }}</span></div>
+              <div><span class="md-info-label">{{ 'company_missions.label_employment' | translate }}</span><span class="md-info-value">{{ selectedMission()!.missionType }}</span></div>
             </div>
           }
         </div>
@@ -169,7 +169,7 @@
         <div class="md-section">
           <h2 class="md-section-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Description
+            {{ 'company_missions.label_description' | translate }}
           </h2>
           <p class="md-text">{{ selectedMission()!.description }}</p>
         </div>
@@ -179,7 +179,7 @@
           <div class="md-section">
             <h2 class="md-section-title">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-              Required Skills
+              {{ 'company_missions.label_skills' | translate }}
             </h2>
             <div class="md-skills">
               @for (skill of getSkillsList(selectedMission()!.requiredSkills!); track skill) {
@@ -194,7 +194,7 @@
           <div class="md-section">
             <h2 class="md-section-title">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-              Technical Environment
+              {{ 'company_missions.label_tech_env' | translate }}
             </h2>
             <p class="md-text">{{ selectedMission()!.technicalEnvironment }}</p>
           </div>
@@ -205,7 +205,7 @@
           <div class="md-section">
             <h2 class="md-section-title">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-              Business Sector / Field
+              {{ 'company_missions.label_sector' | translate }}
             </h2>
             <div class="md-skills">
               @if (selectedMission()!.missionBusinessSector) { <span class="md-skill-tag">{{ selectedMission()!.missionBusinessSector }}</span> }
@@ -219,7 +219,7 @@
           <div class="md-section">
             <h2 class="md-section-title">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              Application Deadline
+              {{ 'company_missions.label_deadline' | translate }}
             </h2>
             <p class="md-text">{{ formatDate(selectedMission()!.applicationDeadline!) }}</p>
           </div>
@@ -229,11 +229,11 @@
         <div class="md-actions">
           <button class="btn-see-apps-lg" (click)="router.navigate(['/mission-applications', selectedMission()!.id])">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            See Applications
+            {{ 'company_missions.btn_see_apps' | translate }}
           </button>
           <button class="btn-edit-lg" (click)="router.navigate(['/edit-mission', selectedMission()!.id])">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            Edit Mission
+            {{ 'company_missions.btn_edit' | translate }}
           </button>
         </div>
       </div>
@@ -243,12 +243,12 @@
       <!-- Page Header -->
       <div class="page-header">
         <div>
-          <h1 class="dashboard-title">My Missions</h1>
-          <p class="dashboard-subtitle">{{ countByStatus()['ALL'] }} mission(s) posted in total</p>
+          <h1 class="dashboard-title">{{ 'company_missions.page_title' | translate }}</h1>
+          <p class="dashboard-subtitle">{{ 'company_missions.page_subtitle' | translate: { count: countByStatus()['ALL'] } }}</p>
         </div>
         <a routerLink="/post-job" class="btn-post-job">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Post a Mission
+          {{ 'company_missions.btn_post' | translate }}
         </a>
       </div>
 
@@ -256,19 +256,19 @@
       <div class="filter-bar">
         <div class="filter-chips">
           <button class="filter-chip" [class.active]="filterStatus() === 'ALL'" (click)="setFilter('ALL')">
-            All <span class="chip-count">{{ countByStatus()['ALL'] || 0 }}</span>
+            {{ 'company_missions.filter_all' | translate }} <span class="chip-count">{{ countByStatus()['ALL'] || 0 }}</span>
           </button>
           <button class="filter-chip" [class.active]="filterStatus() === 'OPEN'" (click)="setFilter('OPEN')">
-            Open <span class="chip-count">{{ countByStatus()['OPEN'] || 0 }}</span>
+            {{ 'company_missions.filter_open' | translate }} <span class="chip-count">{{ countByStatus()['OPEN'] || 0 }}</span>
           </button>
           <button class="filter-chip" [class.active]="filterStatus() === 'CLOSED'" (click)="setFilter('CLOSED')">
-            Closed <span class="chip-count">{{ countByStatus()['CLOSED'] || 0 }}</span>
+            {{ 'company_missions.filter_closed' | translate }} <span class="chip-count">{{ countByStatus()['CLOSED'] || 0 }}</span>
           </button>
           <button class="filter-chip" [class.active]="filterStatus() === 'IN_PROGRESS'" (click)="setFilter('IN_PROGRESS')">
-            In Progress <span class="chip-count">{{ countByStatus()['IN_PROGRESS'] || 0 }}</span>
+            {{ 'company_missions.filter_in_progress' | translate }} <span class="chip-count">{{ countByStatus()['IN_PROGRESS'] || 0 }}</span>
           </button>
           <button class="filter-chip" [class.active]="filterStatus() === 'COMPLETED'" (click)="setFilter('COMPLETED')">
-            Completed <span class="chip-count">{{ countByStatus()['COMPLETED'] || 0 }}</span>
+            {{ 'company_missions.filter_completed' | translate }} <span class="chip-count">{{ countByStatus()['COMPLETED'] || 0 }}</span>
           </button>
         </div>
         <div class="search-wrapper" [class.search-focused]="searchFocused">
@@ -276,7 +276,7 @@
           <input
             type="text"
             class="search-input"
-            placeholder="Search missions..."
+            [placeholder]="'company_missions.search_placeholder' | translate"
             [value]="searchQuery()"
             (input)="onSearch($event)"
             (focus)="searchFocused = true"
@@ -296,18 +296,18 @@
           <div class="empty-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
           </div>
-          <p class="empty-title">No missions found</p>
+          <p class="empty-title">{{ 'company_missions.no_missions_title' | translate }}</p>
           <p class="empty-sub">
             @if (filterStatus() !== 'ALL' || searchQuery()) {
-              Try adjusting your filters or search query.
+              {{ 'company_missions.no_missions_filters' | translate }}
             } @else {
-              Post your first mission to get started.
+              {{ 'company_missions.no_missions_empty' | translate }}
             }
           </p>
           @if (filterStatus() === 'ALL' && !searchQuery()) {
             <a routerLink="/post-job" class="btn-post-job">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Post a Mission
+              {{ 'company_missions.btn_post' | translate }}
             </a>
           }
         </div>
@@ -316,11 +316,11 @@
           <table class="missions-table">
             <thead>
               <tr>
-                <th class="col-mission">Mission</th>
-                <th class="col-date">Published</th>
-                <th class="col-count">Applications</th>
-                <th class="col-status">Status</th>
-                <th class="col-actions">Actions</th>
+                <th class="col-mission">{{ 'company_missions.th_mission' | translate }}</th>
+                <th class="col-date">{{ 'company_missions.th_published' | translate }}</th>
+                <th class="col-count">{{ 'company_missions.th_applications' | translate }}</th>
+                <th class="col-status">{{ 'company_missions.th_status' | translate }}</th>
+                <th class="col-actions">{{ 'company_missions.th_actions' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -350,7 +350,7 @@
                     <div class="actions-group">
                       <button class="btn-see-apps" (click)="viewApplications($event, mission.id)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        See Applications
+                        {{ 'company_missions.btn_see_apps' | translate }}
                       </button>
                     </div>
                   </td>
@@ -362,16 +362,16 @@
           @if (totalMissionPages() > 1) {
             <div class="missions-pagination">
               <span class="pag-info">
-                Showing {{ missionPage() * PAGE_SIZE + 1 }}–{{ Math.min((missionPage() + 1) * PAGE_SIZE, filteredMissions().length) }} of {{ filteredMissions().length }}
+                {{ 'company_missions.showing' | translate: { from: missionPage() * PAGE_SIZE + 1, to: Math.min((missionPage() + 1) * PAGE_SIZE, filteredMissions().length), total: filteredMissions().length } }}
               </span>
               <div class="pag-controls">
                 <button class="pag-btn" [disabled]="missionPage() === 0" (click)="missionPrevPage()">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                  Previous
+                  {{ 'company_missions.prev' | translate }}
                 </button>
-                <span class="pag-pages">Page {{ missionPage() + 1 }} / {{ totalMissionPages() }}</span>
+                <span class="pag-pages">{{ 'company_missions.page_of' | translate: { page: missionPage() + 1, total: totalMissionPages() } }}</span>
                 <button class="pag-btn" [disabled]="missionPage() === totalMissionPages() - 1" (click)="missionNextPage()">
-                  Next
+                  {{ 'company_missions.next' | translate }}
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                 </button>
               </div>

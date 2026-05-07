@@ -15,6 +15,10 @@ export class ReportService {
     return this.http.post<Report>(this.apiUrl, req);
   }
 
+  createPublicReport(email: string, req: CreateReportRequest): Observable<Report> {
+    return this.http.post<Report>(`${this.apiUrl}/public`, { email, ...req });
+  }
+
   getAllReports(status?: ReportStatus): Observable<Report[]> {
     const params = status ? `?status=${status}` : '';
     return this.http.get<Report[]>(`${this.adminUrl}${params}`);

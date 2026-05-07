@@ -1,10 +1,10 @@
-import { Component, OnInit, signal, computed, HostListener, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, HostListener, DestroyRef, inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, Subscription } from 'rxjs';
 import { FreelancerService, AiFreelancerSearchResult } from '../../core/services/freelancer.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Freelancer } from '../../core/models';
@@ -54,7 +54,7 @@ const EXPERIENCE_RANGES = [
   templateUrl: './freelancers.component.html',
   styleUrl: './freelancers.component.css',
 })
-export class FreelancersComponent implements OnInit {
+export class FreelancersComponent implements OnInit, OnDestroy{
   freelancers = signal<Freelancer[]>([]);
   loading = signal(true);
   searchQuery = signal('');
@@ -83,6 +83,8 @@ export class FreelancersComponent implements OnInit {
   aiScoreMap = new Map<string, number>();
 
   // Computed unique pour le state de chargement — garantit le tracking réactif en Angular zoneless
+  private langSub?: Subscription;
+
   readonly isLoading = computed(() => this.loading() || this.aiSearchLoading());
 
   // Carousel
@@ -173,21 +175,21 @@ export class FreelancersComponent implements OnInit {
     // Filtre Profile type (s'applique en mode AI et normal)
     if (profileTypes.size > 0) {
       list = list.filter((f) =>
-        (f.profileTypes || []).some((pt) => profileTypes.has(pt)),
+        (f.profileTypes || []).some((pt) => profileTypes.has(pt))
       );
     }
 
     // Filtre Skills (s'applique en mode AI et normal)
     if (skills.size > 0) {
       list = list.filter((f) =>
-        (f.skills || []).some((s) => skills.has(s)),
+        (f.skills || []).some((s) => skills.has(s))
       );
     }
 
     // Filtre Languages (s'applique en mode AI et normal)
     if (languages.size > 0) {
       list = list.filter((f) =>
-        (f.languages || []).some((l) => languages.has(l)),
+        (f.languages || []).some((l) => languages.has(l))
       );
     }
 
@@ -206,7 +208,7 @@ export class FreelancersComponent implements OnInit {
         (f) =>
           f.yearsOfExperience != null &&
           f.yearsOfExperience >= range.min &&
-          f.yearsOfExperience <= range.max,
+          f.yearsOfExperience <= range.max
       );
     }
 
@@ -241,13 +243,14 @@ export class FreelancersComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {
     const destroyRef = inject(DestroyRef);
 
     const sub = toObservable(this.filteredFreelancers).pipe(
       map(list => list.map(f => f.id)),
       debounceTime(1500),
-      distinctUntilChanged((a, b) => a.join(',') === b.join(',')),
+      distinctUntilChanged((a, b) => a.join(',') === b.join(','))
     ).subscribe(ids => {
       if (ids.length > 0 && this.activeFilterCount() > 0 && this.authService.isAuthenticated()) {
         this.freelancerService.recordSearchAppearances(ids).subscribe();
@@ -266,6 +269,7 @@ export class FreelancersComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     const params = this.route.snapshot.queryParamMap;
     const q = params.get('q') || '';
     const skill = params.get('skill') || '';
@@ -512,5 +516,9 @@ export class FreelancersComponent implements OnInit {
 
   getInitials(f: Freelancer): string {
     return ((f.firstName?.charAt(0) || '') + (f.lastName?.charAt(0) || '')).toUpperCase();
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

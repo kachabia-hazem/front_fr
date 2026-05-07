@@ -97,13 +97,13 @@
         </div>
         <div class="header-actions">
           <!-- Report button -->
-          <button class="header-report-btn" (click)="reportModalOpen.set(true)" title="Soumettre un signalement">
+          <button class="header-report-btn" (click)="reportModalOpen.set(true)" [title]="'company_dashboard.report_title' | translate">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
               <line x1="4" y1="22" x2="4" y2="15"/>
             </svg>
-            <span>Signalement</span>
+            <span>{{ 'company_dashboard.report_btn' | translate }}</span>
           </button>
           <button class="header-theme-btn" (click)="themeService.toggle()" [title]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
             @if (themeService.isDark()) {

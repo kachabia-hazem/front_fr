@@ -30,6 +30,13 @@
 .title-cell { font-weight: 600; font-size: 0.875rem; color: #1a1a2e; }
 .secondary-cell { font-size: 0.8rem; color: #6b7280; }
 
+.person-cell { display: flex; align-items: center; gap: 8px; }
+.avatar { width: 32px; height: 32px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; text-transform: uppercase; }
+.company-av { background: #1a1a2e; }
+.person-name { font-weight: 600; font-size: 0.8rem; color: #1a1a2e; }
+
+:host-context(body.dark-theme) .person-name { color: #e4e4ef; }
+
 .field-tag { background: #f0f2f5; color: #374151; border-radius: 6px; padding: 3px 8px; font-size: 0.75rem; font-weight: 500; }
 
 .status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }

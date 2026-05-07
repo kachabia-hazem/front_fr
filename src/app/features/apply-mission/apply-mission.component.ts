@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, signal, ViewChild, ElementRef, NgZone, Ch
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MissionService } from '../../core/services/mission.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
@@ -59,6 +59,8 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
   pdfCurrentPage = 1;
   pdfTotalPages = 0;
   pdfLoading = false;
+  private langSub?: Subscription;
+
   private uploadedObjectUrl: string | null = null;
 
   // Step 5 — Preparation
@@ -83,6 +85,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.contactForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -150,6 +153,7 @@ export class ApplyMissionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
     if (this.uploadedObjectUrl) {
       URL.revokeObjectURL(this.uploadedObjectUrl);
     }

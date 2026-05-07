@@ -12,8 +12,8 @@
           </svg>
         </div>
         <div>
-          <h2 class="report-modal-title">Signalement</h2>
-          <p class="report-modal-subtitle">Signalez un problème rencontré sur la plateforme WorkLink</p>
+          <h2 class="report-modal-title">{{ 'report_modal.title' | translate }}</h2>
+          <p class="report-modal-subtitle">{{ 'report_modal.subtitle' | translate }}</p>
         </div>
       </div>
       <button class="report-modal-close" (click)="close()">
@@ -34,8 +34,8 @@
             <polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
         </div>
-        <h3>Signalement envoyé</h3>
-        <p>Votre signalement a bien été transmis à l'administration WorkLink.<br>Notre équipe examinera votre problème et vous répondra <strong>dans un délai maximum de 3 jours</strong>.</p>
+        <h3>{{ 'report_modal.success_title' | translate }}</h3>
+        <p [innerHTML]="'report_modal.success_msg' | translate"></p>
       </div>
     } @else {
 
@@ -44,19 +44,19 @@
 
       <!-- Status (read-only display) -->
       <div class="report-field">
-        <label class="report-label">Statut</label>
+        <label class="report-label">{{ 'report_modal.status_label' | translate }}</label>
         <div class="report-status-badge report-status-en-attente">
           <span class="report-status-dot"></span>
-          En attente
+          {{ 'report_modal.status_pending' | translate }}
         </div>
       </div>
 
       <!-- Type -->
       <div class="report-field">
-        <label class="report-label">Type de problème <span class="report-required">*</span></label>
+        <label class="report-label">{{ 'report_modal.type_label' | translate }} <span class="report-required">*</span></label>
         <select class="report-select" [ngModel]="type()" (ngModelChange)="type.set($event)">
           @for (t of REPORT_TYPES; track t.value) {
-            <option [value]="t.value">{{ t.label }}</option>
+            <option [value]="t.value">{{ t.labelKey | translate }}</option>
           }
         </select>
       </div>
@@ -64,11 +64,11 @@
       <!-- Custom type (shown only when "Autre" is selected) -->
       @if (type() === 'AUTRE') {
         <div class="report-field">
-          <label class="report-label">Précisez le problème <span class="report-required">*</span></label>
+          <label class="report-label">{{ 'report_modal.custom_type_label' | translate }} <span class="report-required">*</span></label>
           <input
             type="text"
             class="report-input"
-            placeholder="Nommez le problème rencontré..."
+            [placeholder]="'report_modal.custom_type_placeholder' | translate"
             [ngModel]="customType()"
             (ngModelChange)="customType.set($event)"
           />
@@ -77,11 +77,11 @@
 
       <!-- Description -->
       <div class="report-field">
-        <label class="report-label">Description <span class="report-required">*</span></label>
+        <label class="report-label">{{ 'report_modal.description_label' | translate }} <span class="report-required">*</span></label>
         <textarea
           class="report-textarea"
           rows="4"
-          placeholder="Décrivez précisément le problème que vous souhaitez signaler..."
+          [placeholder]="'report_modal.description_placeholder' | translate"
           [ngModel]="description()"
           (ngModelChange)="description.set($event)">
         </textarea>
@@ -101,17 +101,17 @@
 
     <!-- Footer -->
     <div class="report-modal-footer">
-      <button class="report-btn-cancel" (click)="close()" [disabled]="submitting()">Annuler</button>
+      <button class="report-btn-cancel" (click)="close()" [disabled]="submitting()">{{ 'report_modal.cancel' | translate }}</button>
       <button class="report-btn-submit" (click)="submit()" [disabled]="submitting()">
         @if (submitting()) {
           <span class="report-spinner"></span>
-          Envoi en cours...
+          {{ 'report_modal.submitting' | translate }}
         } @else {
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
           </svg>
-          Envoyer le signalement
+          {{ 'report_modal.submit' | translate }}
         }
       </button>
     </div>

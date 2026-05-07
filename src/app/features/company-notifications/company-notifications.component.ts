@@ -1,8 +1,9 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
 import { CompanyService } from '../../core/services/company.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -21,7 +22,7 @@ type FilterType = 'all' | 'unread' | 'read';
   templateUrl: './company-notifications.component.html',
   styleUrl: './company-notifications.component.css',
 })
-export class CompanyNotificationsComponent implements OnInit {
+export class CompanyNotificationsComponent implements OnInit, OnDestroy {
   company = signal<Company | null>(null);
   get notifications() { return this.notificationService.notifications; }
   loading = signal(true);
@@ -85,6 +86,7 @@ export class CompanyNotificationsComponent implements OnInit {
 
   unreadCount = computed(() => this.notificationService.unreadCount());
   expandedIds = signal<Set<string>>(new Set());
+  private langSub?: Subscription;
 
   // Pagination
   readonly PAGE_SIZE = 5;
@@ -105,6 +107,8 @@ export class CompanyNotificationsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private location: Location,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -112,6 +116,13 @@ export class CompanyNotificationsComponent implements OnInit {
       next: (profile) => this.company.set(profile),
     });
     this.loadNotifications();
+    this.langSub = this.translate.onLangChange.subscribe(() => {
+      this.cdr.markForCheck();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 
   loadNotifications(): void {
@@ -197,16 +208,16 @@ export class CompanyNotificationsComponent implements OnInit {
 
   formatDate(dateStr: string): string {
     const date = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
+    const diffMs = Date.now() - date.getTime();
     const diffMin = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMin / 60);
     const diffDays = Math.floor(diffHours / 24);
-    if (diffMin < 1) return 'Just now';
-    if (diffMin < 60) return `${diffMin}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    if (diffMin < 1)  return this.translate.instant('notifications_page.time_just_now');
+    if (diffMin < 60) return this.translate.instant('notifications_page.time_min_ago', { n: diffMin });
+    if (diffHours < 24) return this.translate.instant('notifications_page.time_hour_ago', { n: diffHours });
+    if (diffDays < 7)   return this.translate.instant('notifications_page.time_day_ago', { n: diffDays });
+    const locale = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-US';
+    return date.toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
   getTypeIcon(type: NotificationType | string): string {

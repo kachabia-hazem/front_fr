@@ -1,5 +1,5 @@
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CompanyService } from '../../core/services/company.service';
@@ -12,6 +12,8 @@ import { environment } from '../../../environments/environment';
 
 interface ChartPoint { x: number; y: number; balance: number; label: string; }
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-company-balance',
   standalone: true,
@@ -19,7 +21,7 @@ interface ChartPoint { x: number; y: number; balance: number; label: string; }
   templateUrl: './company-balance.component.html',
   styleUrl: './company-balance.component.css',
 })
-export class CompanyBalanceComponent implements OnInit {
+export class CompanyBalanceComponent implements OnInit, OnDestroy{
   company          = signal<Company | null>(null);
   loading          = signal(true);
   sidebarCollapsed = signal(false);
@@ -125,16 +127,20 @@ export class CompanyBalanceComponent implements OnInit {
   });
   get companyLogo(): string | undefined { return this.company()?.companyLogo; }
 
-  constructor(
-    private companyService: CompanyService,
+  private langSub?: Subscription;
+
+    constructor(
+  private companyService: CompanyService,
     private notificationService: NotificationService,
     private offersService: OffersService,
     public  authService: AuthService,
     public  themeService: ThemeService,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.companyService.getMyProfile().subscribe({
       next: (c) => { this.company.set(c); this.loading.set(false); },
       error: ()  => this.loading.set(false),
@@ -222,5 +228,9 @@ export class CompanyBalanceComponent implements OnInit {
       FEATURED:       '#ec4899',
     };
     return map[type] ?? '#6b7280';
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

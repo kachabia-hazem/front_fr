@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +14,8 @@ import { environment } from '../../../environments/environment';
 
 type Section = 'password' | 'security' | 'notifications' | 'preferences' | 'payment' | 'delete';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-settings',
   standalone: true,
@@ -21,7 +23,7 @@ type Section = 'password' | 'security' | 'notifications' | 'preferences' | 'paym
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css',
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy{
   sidebarCollapsed = signal(false);
   activeSection = signal<Section>('password');
 
@@ -81,8 +83,10 @@ export class SettingsComponent implements OnInit {
   deleteLoading = false;
   deleteError = '';
 
-  constructor(
-    public authService: AuthService,
+  private langSub?: Subscription;
+
+    constructor(
+  public authService: AuthService,
     private freelancerService: FreelancerService,
     private companyService: CompanyService,
     private notificationService: NotificationService,
@@ -90,9 +94,11 @@ export class SettingsComponent implements OnInit {
     public languageService: LanguageService,
     private deviceService: DeviceService,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.notificationService.getUnreadCount().subscribe();
 
     // Load saved notification preferences
@@ -131,7 +137,7 @@ export class SettingsComponent implements OnInit {
         next: (c: any) => {
           this.sidebarUserName.set(c.companyName || c.name || 'Company');
           this.sidebarUserRole.set('Company');
-          this.sidebarUserAvatar.set(c.logo || c.profilePicture);
+          this.sidebarUserAvatar.set(c.companyLogo);
         },
       });
     }
@@ -283,5 +289,9 @@ export class SettingsComponent implements OnInit {
       this.deleteLoading = false;
       this.authService.logout();
     }, 1500);
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

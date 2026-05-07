@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, HostListener, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -16,6 +16,8 @@ import { SECTOR_OPTIONS, SPECIALITY_OPTIONS, CATEGORY_OPTIONS } from '../../core
 import { MissionTranslationService } from '../../core/services/mission-translation.service';
 import { OffersService } from '../../core/services/offers.service';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-missions',
   standalone: true,
@@ -23,7 +25,7 @@ import { OffersService } from '../../core/services/offers.service';
   templateUrl: './missions.component.html',
   styleUrl: './missions.component.css',
 })
-export class MissionsComponent implements OnInit {
+export class MissionsComponent implements OnInit, OnDestroy{
   missions: Mission[] = [];
   filteredMissions: Mission[] = [];
   loading = true;
@@ -45,6 +47,8 @@ export class MissionsComponent implements OnInit {
   tjmRangeMin = 0;
   tjmRangeMax = 1000;
   histogramBuckets: number[] = [];
+  private langSub?: Subscription;
+
   readonly bucketCount = 20;
 
   employmentTypes = [
@@ -392,6 +396,7 @@ export class MissionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     // Read search query from home page search bar
     const q = this.route.snapshot.queryParamMap.get('q');
     if (q) this.searchQuery = q;
@@ -946,5 +951,9 @@ export class MissionsComponent implements OnInit {
       return;
     }
     this.router.navigate(['/apply', mission.id]);
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

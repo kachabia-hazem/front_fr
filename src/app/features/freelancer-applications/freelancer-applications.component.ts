@@ -1,5 +1,5 @@
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +12,8 @@ import { Freelancer } from '../../core/models';
 import { Application } from '../../core/models/application.model';
 import { environment } from '../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-freelancer-applications',
   standalone: true,
@@ -19,7 +21,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './freelancer-applications.component.html',
   styleUrl: './freelancer-applications.component.css',
 })
-export class FreelancerApplicationsComponent implements OnInit {
+export class FreelancerApplicationsComponent implements OnInit, OnDestroy{
   freelancer = signal<Freelancer | null>(null);
   allApplications = signal<Application[]>([]);
   loading = signal(true);
@@ -100,8 +102,10 @@ export class FreelancerApplicationsComponent implements OnInit {
   pendingCount = computed(() => this.allApplications().filter(a => a.status === 'PENDING').length);
   rejectedCount = computed(() => this.allApplications().filter(a => a.status === 'REJECTED').length);
 
-  constructor(
-    private applicationService: ApplicationService,
+  private langSub?: Subscription;
+
+    constructor(
+  private applicationService: ApplicationService,
     private freelancerService: FreelancerService,
     private notificationService: NotificationService,
     public authService: AuthService,
@@ -109,9 +113,11 @@ export class FreelancerApplicationsComponent implements OnInit {
     private router: Router,
     private location: Location,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.freelancerService.getMyProfile().subscribe({
       next: (profile) => this.freelancer.set(profile),
     });
@@ -214,5 +220,9 @@ export class FreelancerApplicationsComponent implements OnInit {
 
   viewMission(app: Application): void {
     this.router.navigate(['/missions', app.missionId]);
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

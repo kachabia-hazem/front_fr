@@ -1,7 +1,8 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
-  Component, OnInit, signal, computed, ViewChild, ElementRef, AfterViewInit
+  ChangeDetectorRef, Component, OnDestroy, OnInit, signal, computed, ViewChild, ElementRef, AfterViewInit
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
@@ -23,7 +24,7 @@ import { Freelancer } from '../../core/models';
   templateUrl: './freelancer-contracts.component.html',
   styleUrl: './freelancer-contracts.component.css',
 })
-export class FreelancerContractsComponent implements OnInit, AfterViewInit {
+export class FreelancerContractsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('signatureCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
   freelancer      = signal<Freelancer | null>(null);
@@ -122,6 +123,8 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
   rejectError       = signal('');
   contractToReject  = signal<Contract | null>(null);
 
+  private langSub?: Subscription;
+
   // Signature pad state
   private ctx: CanvasRenderingContext2D | null = null;
   private drawing = false;
@@ -169,6 +172,8 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
     private router: Router,
     private location: Location,
     private route: ActivatedRoute,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -197,9 +202,14 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
       error: () => this.loading.set(false),
     });
     this.notificationService.getUnreadCount().subscribe();
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
   }
 
   ngAfterViewInit(): void {}
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
+  }
 
   toggleSidebar(): void { this.sidebarCollapsed.update(v => !v); }
   goBack(): void { this.router.navigate(['/']); }
@@ -401,18 +411,18 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit {
   }
 
   statusLabel(status: string): string {
-    if (status === 'PENDING_SIGNATURE') return 'Pending Signature';
-    if (status === 'SIGNED') return 'Signed';
-    if (status === 'REJECTED') return 'Rejected';
-    if (status === 'CANCELLED') return 'Cancelled';
+    if (status === 'PENDING_SIGNATURE') return this.translate.instant('freelancer_contracts.status_pending');
+    if (status === 'SIGNED') return this.translate.instant('freelancer_contracts.status_signed');
+    if (status === 'REJECTED') return this.translate.instant('freelancer_contracts.status_rejected');
+    if (status === 'CANCELLED') return this.translate.instant('freelancer_contracts.status_cancelled');
     return status;
   }
 
   paymentStatusLabel(status: string | null): string {
-    if (!status || status === 'UNPAID') return 'Non payé';
-    if (status === 'AUTHORIZED') return 'Paiement sécurisé';
-    if (status === 'CAPTURED') return 'Payé';
-    if (status === 'FAILED') return 'Échec paiement';
+    if (!status || status === 'UNPAID') return this.translate.instant('freelancer_contracts.pay_unpaid');
+    if (status === 'AUTHORIZED') return this.translate.instant('freelancer_contracts.pay_escrow');
+    if (status === 'CAPTURED') return this.translate.instant('freelancer_contracts.pay_released');
+    if (status === 'FAILED') return this.translate.instant('freelancer_contracts.pay_failed');
     return status;
   }
 

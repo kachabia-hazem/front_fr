@@ -1,7 +1,8 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CompanyService } from '../../core/services/company.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ActiveMissionService } from '../../core/services/active-mission.service';
@@ -17,8 +18,9 @@ import { environment } from '../../../environments/environment';
   templateUrl: './company-mission-control.component.html',
   styleUrl: './company-mission-control.component.css',
 })
-export class CompanyMissionControlComponent implements OnInit {
+export class CompanyMissionControlComponent implements OnInit, OnDestroy {
   company  = signal<Company | null>(null);
+  private langSub?: Subscription;
   missions = signal<ActiveMission[]>([]);
   loading  = signal(true);
   sidebarCollapsed = signal(false);
@@ -40,6 +42,8 @@ export class CompanyMissionControlComponent implements OnInit {
     public themeService: ThemeService,
     private router: Router,
     private location: Location,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +60,14 @@ export class CompanyMissionControlComponent implements OnInit {
     });
 
     this.notificationService.getUnreadCount().subscribe();
+
+    this.langSub = this.translate.onLangChange.subscribe(() => {
+      this.cdr.markForCheck();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 
   toggleSidebar(): void {

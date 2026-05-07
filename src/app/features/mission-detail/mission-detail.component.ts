@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -13,6 +13,8 @@ import { Mission } from '../../core/models/mission.model';
 import { environment } from '../../../environments/environment';
 import { getProfileCompletion } from '../../core/utils/profile-completion';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-mission-detail',
   standalone: true,
@@ -20,7 +22,7 @@ import { getProfileCompletion } from '../../core/utils/profile-completion';
   templateUrl: './mission-detail.component.html',
   styleUrl: './mission-detail.component.css',
 })
-export class MissionDetailComponent implements OnInit {
+export class MissionDetailComponent implements OnInit, OnDestroy{
   mission = signal<Mission | null>(null);
   loading = signal(true);
   error = signal('');
@@ -34,6 +36,8 @@ export class MissionDetailComponent implements OnInit {
   matchingError = signal('');
   explanationLoading = signal(false);
   showMatchTooltip = signal(false);
+  private langSub?: Subscription;
+
   private profileCompletion: number | null = null;
 
   constructor(
@@ -55,6 +59,7 @@ export class MissionDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.fromFavorites = this.route.snapshot.queryParamMap.get('from') === 'favorites';
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -284,5 +289,9 @@ export class MissionDetailComponent implements OnInit {
     if (score >= 65) return '#22c55e';
     if (score >= 40) return '#f59e0b';
     return '#ef4444';
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

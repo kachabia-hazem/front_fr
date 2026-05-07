@@ -3,8 +3,8 @@
   <!-- ── Header ── -->
   <div class="page-header">
     <div>
-      <h1 class="page-title">Notifications</h1>
-      <p class="page-subtitle">Important platform activities</p>
+      <h1 class="page-title">{{ 'admin_notif.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'admin_notif.subtitle' | translate }}</p>
     </div>
     <div class="header-actions">
       <button class="btn-mark-all"
@@ -14,7 +14,7 @@
              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 6L9 17l-5-5"/>
         </svg>
-        Mark all as read
+        {{ 'admin_notif.mark_all_read' | translate }}
       </button>
     </div>
   </div>
@@ -23,19 +23,21 @@
   <div class="stats-bar">
     <div class="stat-pill total">
       <span class="stat-num">{{ notificationService.notifications().length }}</span>
-      <span class="stat-label">Total</span>
+      <span class="stat-label">{{ 'admin_notif.stat_total' | translate }}</span>
     </div>
     <div class="stat-pill unread">
       <span class="stat-num">{{ notificationService.unreadCount() }}</span>
-      <span class="stat-label">Unread</span>
+      <span class="stat-label">{{ 'admin_notif.stat_unread' | translate }}</span>
     </div>
   </div>
 
   <!-- ── Filter Tabs ── -->
   <div class="filter-tabs">
-    <button [class.active]="filter() === 'ALL'" (click)="setFilter('ALL')">All</button>
+    <button [class.active]="filter() === 'ALL'" (click)="setFilter('ALL')">
+      {{ 'admin_notif.tab_all' | translate }}
+    </button>
     <button [class.active]="filter() === 'UNREAD'" (click)="setFilter('UNREAD')">
-      Unread
+      {{ 'admin_notif.tab_unread' | translate }}
       <span class="tab-badge" *ngIf="notificationService.unreadCount() > 0">
         {{ notificationService.unreadCount() }}
       </span>
@@ -48,11 +50,11 @@
     <!-- Loading -->
     <div class="loading-state" *ngIf="loading()">
       <div class="spinner"></div>
-      <span>Loading notifications...</span>
+      <span>{{ 'admin_notif.loading' | translate }}</span>
     </div>
 
     <!-- Empty -->
-    <div class="empty-state" *ngIf="!loading() && displayed.length === 0">
+    <div class="empty-state" *ngIf="!loading() && displayed().length === 0">
       <div class="empty-icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
              stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -60,15 +62,14 @@
           <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
         </svg>
       </div>
-      <p>No notifications</p>
-      <span>{{ filter() === 'UNREAD' ? 'All your notifications have been read.' : 'You don\'t have any notifications yet.' }}</span>
+      <p>{{ 'admin_notif.empty_title' | translate }}</p>
+      <span>{{ (filter() === 'UNREAD' ? 'admin_notif.empty_all_read' : 'admin_notif.empty_none_yet') | translate }}</span>
     </div>
 
     <!-- Items -->
     <div class="notif-item"
-         *ngFor="let n of displayed"
+         *ngFor="let n of displayed()"
          [class.unread]="!n.isRead"
-         [class.clickable]="!!n.actionUrl"
          (click)="markRead(n)">
 
       <!-- Icon -->
@@ -122,8 +123,8 @@
           <span class="notif-time">{{ timeAgo(n.createdAt) }}</span>
           <span class="unread-dot" *ngIf="!n.isRead"></span>
         </div>
-        <div class="notif-title">{{ n.title }}</div>
-        <div class="notif-message">{{ n.message }}</div>
+        <div class="notif-title">{{ getNotifTitle(n) }}</div>
+        <div class="notif-message">{{ getNotifMessage(n) }}</div>
         <div class="notif-sender" *ngIf="n.senderName">
           <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -134,13 +135,6 @@
         </div>
       </div>
 
-      <!-- Arrow if clickable -->
-      <div class="notif-arrow" *ngIf="n.actionUrl">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-             fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </div>
 
     </div>
   </div>

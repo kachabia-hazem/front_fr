@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -10,6 +10,8 @@ import { Contract } from '../../core/models/contract.model';
 import { Company } from '../../core/models/user.model';
 import { environment } from '../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-company-transactions',
   standalone: true,
@@ -17,7 +19,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './company-transactions.component.html',
   styleUrl: './company-transactions.component.css',
 })
-export class CompanyTransactionsComponent implements OnInit {
+export class CompanyTransactionsComponent implements OnInit, OnDestroy{
   company          = signal<Company | null>(null);
   contracts        = signal<Contract[]>([]);
   loading          = signal(true);
@@ -45,15 +47,19 @@ export class CompanyTransactionsComponent implements OnInit {
     return name.split(' ').filter(Boolean).map(p => p.charAt(0)).join('').toUpperCase().slice(0, 2) || '?';
   });
 
-  constructor(
-    private companyService: CompanyService,
+  private langSub?: Subscription;
+
+    constructor(
+  private companyService: CompanyService,
     private contractService: ContractService,
     private notificationService: NotificationService,
     public  authService: AuthService,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.translate.setTranslation('en', {
       transactions: {
         company_title:    'Transactions',
@@ -141,5 +147,9 @@ export class CompanyTransactionsComponent implements OnInit {
       UNPAID:     'badge-unpaid',
     };
     return status ? (map[status] ?? 'badge-unpaid') : '';
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

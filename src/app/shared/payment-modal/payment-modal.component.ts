@@ -1,15 +1,18 @@
 import {
-  Component, Input, Output, EventEmitter, OnInit, OnDestroy, signal, computed
+  Component, Input, Output, EventEmitter, OnInit, OnDestroy, signal, computed, ChangeDetectorRef
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { loadStripe, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
 import { PaymentService } from '../../core/services/payment.service';
+import { LanguageService } from '../../core/services/language.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-payment-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './payment-modal.component.html',
   styleUrl: './payment-modal.component.css',
 })
@@ -35,10 +38,17 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
   private stripe: Stripe | null = null;
   private elements: StripeElements | null = null;
   private paymentElement: StripePaymentElement | null = null;
+  private langSub?: Subscription;
 
-  constructor(private paymentService: PaymentService) {}
+  constructor(
+    private paymentService: PaymentService,
+    private translate: TranslateService,
+    private languageService: LanguageService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   async ngOnInit() {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     try {
       // 1. Create PaymentIntent on backend
       const intent = await this.paymentService
@@ -58,6 +68,7 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
 
       this.elements = this.stripe.elements({
         clientSecret: intent.clientSecret,
+        locale: this.languageService.currentLang() as any,
         appearance: { theme: 'stripe', variables: { colorPrimary: '#6366f1' } },
       });
 
@@ -65,12 +76,13 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
       this.paymentElement.mount('#stripe-payment-element');
       this.loading.set(false);
     } catch (err: any) {
-      this.errorMessage.set(err?.message || 'Une erreur est survenue lors de l\'initialisation du paiement.');
+      this.errorMessage.set(err?.message || this.translate.instant('payment_modal.error_init'));
       this.loading.set(false);
     }
   }
 
   ngOnDestroy() {
+    this.langSub?.unsubscribe();
     this.paymentElement?.unmount();
   }
 
@@ -88,7 +100,7 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
     });
 
     if (error) {
-      this.errorMessage.set(error.message || 'Le paiement a échoué. Veuillez réessayer.');
+      this.errorMessage.set(error.message || this.translate.instant('payment_modal.error_payment'));
       this.submitting.set(false);
       return;
     }
@@ -97,13 +109,13 @@ export class PaymentModalComponent implements OnInit, OnDestroy {
     // (no need to wait for webhook)
     this.paymentService.syncContractPayment(this.contractId).subscribe({
       next: () => {
-        this.successMsg.set('Paiement autorisé ! Les fonds sont sécurisés en escrow.');
+        this.successMsg.set(this.translate.instant('payment_modal.success_authorized'));
         this.submitting.set(false);
         setTimeout(() => this.paid.emit(), 1800);
       },
       error: () => {
         // Sync failed but payment went through — show success anyway
-        this.successMsg.set('Paiement confirmé. Le statut sera mis à jour dans quelques instants.');
+        this.successMsg.set(this.translate.instant('payment_modal.success_confirmed'));
         this.submitting.set(false);
         setTimeout(() => this.paid.emit(), 1800);
       },

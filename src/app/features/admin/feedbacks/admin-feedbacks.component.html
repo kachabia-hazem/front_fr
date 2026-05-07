@@ -6,8 +6,8 @@
   <!-- Header -->
   <div class="page-header">
     <div>
-      <h1 class="page-title">Feedback Moderation</h1>
-      <p class="page-subtitle">Review and publish community feedbacks on the homepage</p>
+      <h1 class="page-title">{{ 'admin_feedbacks.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'admin_feedbacks.subtitle' | translate }}</p>
     </div>
   </div>
 
@@ -15,19 +15,19 @@
   <div class="stats-row" *ngIf="!loading()">
     <div class="stat-card">
       <span class="stat-value">{{ statVal('TOTAL') }}</span>
-      <span class="stat-label">Total</span>
+      <span class="stat-label">{{ 'admin_feedbacks.stat_total' | translate }}</span>
     </div>
     <div class="stat-card pending-card">
       <span class="stat-value">{{ statVal('PENDING') }}</span>
-      <span class="stat-label">Pending Review</span>
+      <span class="stat-label">{{ 'admin_feedbacks.stat_pending' | translate }}</span>
     </div>
     <div class="stat-card validated-card">
       <span class="stat-value">{{ statVal('VALIDATED') }}</span>
-      <span class="stat-label">Published</span>
+      <span class="stat-label">{{ 'admin_feedbacks.stat_published' | translate }}</span>
     </div>
     <div class="stat-card rejected-card">
       <span class="stat-value">{{ statVal('REJECTED') }}</span>
-      <span class="stat-label">Rejected</span>
+      <span class="stat-label">{{ 'admin_feedbacks.stat_rejected' | translate }}</span>
     </div>
   </div>
 
@@ -35,7 +35,8 @@
   <div class="filters-row">
     <div class="search-bar">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input class="search-input" type="text" placeholder="Search by user, mission, comment..."
+      <input class="search-input" type="text"
+        [placeholder]="'admin_feedbacks.search_placeholder' | translate"
         [value]="searchQuery()"
         (input)="searchQuery.set($any($event.target).value)" />
     </div>
@@ -49,7 +50,7 @@
 
   <!-- Loading -->
   <div class="loading-state" *ngIf="loading()">
-    <div class="spinner"></div> Loading feedbacks...
+    <div class="spinner"></div> {{ 'admin_feedbacks.loading' | translate }}
   </div>
 
   <!-- Cards grid -->
@@ -59,7 +60,7 @@
       <div class="empty-icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
-      <p>No feedbacks found for this filter.</p>
+      <p>{{ 'admin_feedbacks.empty' | translate }}</p>
     </div>
 
     <div *ngFor="let f of filteredFeedbacks()"
@@ -78,7 +79,7 @@
           </div>
           <div class="user-avatar initials" *ngIf="!photoUrl(f.userPhoto)">{{ initials(f.userName) }}</div>
           <div>
-            <p class="user-name">{{ f.userName ?? 'Unknown user' }}</p>
+            <p class="user-name">{{ f.userName ?? ('admin_feedbacks.unknown_user' | translate) }}</p>
             <span class="role-badge" [class]="f.userRole.toLowerCase()">{{ f.userRole }}</span>
           </div>
         </div>
@@ -96,7 +97,7 @@
 
       <!-- Comment -->
       <p class="card-comment" *ngIf="f.comment">{{ f.comment }}</p>
-      <p class="card-no-comment" *ngIf="!f.comment">— No comment —</p>
+      <p class="card-no-comment" *ngIf="!f.comment">{{ 'admin_feedbacks.no_comment' | translate }}</p>
 
       <!-- Mission -->
       <p class="card-mission">
@@ -108,19 +109,18 @@
       <div class="card-footer">
         <span class="card-date">{{ f.createdAt | date:'dd MMM yyyy' }}</span>
         <div class="card-actions" *ngIf="f.status === 'PENDING'">
-          <button class="btn-approve" (click)="approve(f, $event)"
-            [disabled]="processing() === f.id">
+          <button class="btn-approve" (click)="approve(f, $event)" [disabled]="processing() === f.id">
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            {{ processing() === f.id ? '...' : 'Approve' }}
+            {{ processing() === f.id ? ('admin_feedbacks.btn_approving' | translate) : ('admin_feedbacks.btn_approve' | translate) }}
           </button>
           <button class="btn-reject" (click)="openRejectModal(f, $event)">
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            Reject
+            {{ 'admin_feedbacks.btn_reject' | translate }}
           </button>
         </div>
         <div class="card-status-tag" *ngIf="f.status !== 'PENDING'">
-          <span *ngIf="f.status === 'VALIDATED'">✓ Published</span>
-          <span *ngIf="f.status === 'REJECTED'">✗ Rejected</span>
+          <span *ngIf="f.status === 'VALIDATED'">{{ 'admin_feedbacks.status_published' | translate }}</span>
+          <span *ngIf="f.status === 'REJECTED'">{{ 'admin_feedbacks.status_rejected' | translate }}</span>
         </div>
       </div>
 
@@ -135,8 +135,8 @@
 <div class="side-panel" *ngIf="selected() as f">
   <div class="panel-header">
     <div>
-      <p class="panel-sub">Feedback Detail</p>
-      <h2 class="panel-title">{{ f.userName ?? 'Unknown' }}</h2>
+      <p class="panel-sub">{{ 'admin_feedbacks.panel_sub' | translate }}</p>
+      <h2 class="panel-title">{{ f.userName ?? ('admin_feedbacks.unknown_user' | translate) }}</h2>
     </div>
     <div class="panel-header-right">
       <span class="status-badge" [class]="f.status.toLowerCase()">{{ tabLabel(f.status) }}</span>
@@ -150,14 +150,14 @@
 
     <!-- User card -->
     <div class="panel-section">
-      <p class="section-title">Author</p>
+      <p class="section-title">{{ 'admin_feedbacks.section_author' | translate }}</p>
       <div class="author-card">
         <div class="user-avatar lg" *ngIf="photoUrl(f.userPhoto)">
           <img [src]="photoUrl(f.userPhoto)" [alt]="f.userName" />
         </div>
         <div class="user-avatar lg initials" *ngIf="!photoUrl(f.userPhoto)">{{ initials(f.userName) }}</div>
         <div>
-          <p class="author-name">{{ f.userName ?? 'Unknown' }}</p>
+          <p class="author-name">{{ f.userName ?? ('admin_feedbacks.unknown_user' | translate) }}</p>
           <span class="role-badge" [class]="f.userRole.toLowerCase()">{{ f.userRole }}</span>
           <p class="author-mission">
             <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
@@ -169,7 +169,7 @@
 
     <!-- Rating & comment -->
     <div class="panel-section">
-      <p class="section-title">Rating & Comment</p>
+      <p class="section-title">{{ 'admin_feedbacks.section_rating' | translate }}</p>
       <div class="panel-stars">
         <svg *ngFor="let s of stars(f.rating)" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
           viewBox="0 0 24 24" fill="currentColor" stroke="none"
@@ -181,12 +181,12 @@
       <div class="comment-box" *ngIf="f.comment">
         <p class="comment-text">"{{ f.comment }}"</p>
       </div>
-      <p class="no-comment" *ngIf="!f.comment">No comment provided.</p>
+      <p class="no-comment" *ngIf="!f.comment">{{ 'admin_feedbacks.no_comment_provided' | translate }}</p>
     </div>
 
     <!-- Homepage preview -->
     <div class="panel-section" *ngIf="f.comment">
-      <p class="section-title">Homepage Preview</p>
+      <p class="section-title">{{ 'admin_feedbacks.section_preview' | translate }}</p>
       <div class="preview-card">
         <div class="preview-header">
           <div class="preview-avatar" *ngIf="photoUrl(f.userPhoto)">
@@ -210,50 +210,59 @@
 
     <!-- Timeline -->
     <div class="panel-section">
-      <p class="section-title">History</p>
+      <p class="section-title">{{ 'admin_feedbacks.section_history' | translate }}</p>
       <div class="timeline">
         <div class="tl-item">
           <div class="tl-dot create"></div>
-          <div><p class="tl-label">Feedback submitted</p><p class="tl-date">{{ f.createdAt | date:'dd MMM yyyy, HH:mm' }}</p></div>
+          <div>
+            <p class="tl-label">{{ 'admin_feedbacks.tl_submitted' | translate }}</p>
+            <p class="tl-date">{{ f.createdAt | date:'dd MMM yyyy, HH:mm' }}</p>
+          </div>
         </div>
         <div class="tl-item" *ngIf="f.validatedAt">
           <div class="tl-dot approve"></div>
-          <div><p class="tl-label">Approved & published</p><p class="tl-date">{{ f.validatedAt | date:'dd MMM yyyy, HH:mm' }}</p></div>
+          <div>
+            <p class="tl-label">{{ 'admin_feedbacks.tl_approved' | translate }}</p>
+            <p class="tl-date">{{ f.validatedAt | date:'dd MMM yyyy, HH:mm' }}</p>
+          </div>
         </div>
         <div class="tl-item" *ngIf="f.rejectedAt">
           <div class="tl-dot reject"></div>
-          <div><p class="tl-label">Rejected{{ f.rejectionReason ? ': ' + f.rejectionReason : '' }}</p><p class="tl-date">{{ f.rejectedAt | date:'dd MMM yyyy, HH:mm' }}</p></div>
+          <div>
+            <p class="tl-label">{{ 'admin_feedbacks.tl_rejected' | translate }}{{ f.rejectionReason ? ': ' + f.rejectionReason : '' }}</p>
+            <p class="tl-date">{{ f.rejectedAt | date:'dd MMM yyyy, HH:mm' }}</p>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Rejection reason block -->
     <div class="panel-section alert-block" *ngIf="f.status === 'REJECTED' && f.rejectionReason">
-      <p class="section-title alert-title">Rejection Reason</p>
+      <p class="section-title alert-title">{{ 'admin_feedbacks.section_rejection' | translate }}</p>
       <p class="alert-body">{{ f.rejectionReason }}</p>
     </div>
 
     <!-- Admin actions -->
     <div class="panel-section actions-block" *ngIf="f.status === 'PENDING'">
-      <p class="section-title">Moderation Decision</p>
+      <p class="section-title">{{ 'admin_feedbacks.section_moderation' | translate }}</p>
       <div class="action-row">
         <button class="btn-panel-approve" (click)="approve(f)" [disabled]="processing() === f.id">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          {{ processing() === f.id ? 'Publishing...' : 'Approve & Publish' }}
+          {{ processing() === f.id ? ('admin_feedbacks.btn_publishing' | translate) : ('admin_feedbacks.btn_approve_publish' | translate) }}
         </button>
         <button class="btn-panel-reject" (click)="openRejectModal(f)">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          Reject
+          {{ 'admin_feedbacks.btn_panel_reject' | translate }}
         </button>
       </div>
-      <p class="action-hint">Approved feedbacks appear on the homepage carousel for visitors.</p>
+      <p class="action-hint">{{ 'admin_feedbacks.action_hint' | translate }}</p>
     </div>
 
     <!-- Delete -->
     <div class="panel-section delete-block">
       <button class="btn-panel-delete" (click)="delete(f)">
         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-        Delete permanently
+        {{ 'admin_feedbacks.btn_delete' | translate }}
       </button>
     </div>
 
@@ -268,8 +277,8 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </div>
       <div>
-        <h2 class="modal-title">Reject Feedback</h2>
-        <p class="modal-sub">The author will be notified with the reason.</p>
+        <h2 class="modal-title">{{ 'admin_feedbacks.modal_title' | translate }}</h2>
+        <p class="modal-sub">{{ 'admin_feedbacks.modal_sub' | translate }}</p>
       </div>
     </div>
     <div class="modal-preview" *ngIf="rejectTarget()?.comment">
@@ -277,17 +286,19 @@
       <span class="modal-preview-author">— {{ rejectTarget()?.userName }}</span>
     </div>
     <div class="modal-field">
-      <label class="modal-label">Rejection reason <span class="required">*</span></label>
+      <label class="modal-label">{{ 'admin_feedbacks.modal_label' | translate }} <span class="required">*</span></label>
       <textarea class="modal-textarea" rows="3"
-        placeholder="Explain why this feedback doesn't meet community guidelines..."
+        [placeholder]="'admin_feedbacks.modal_placeholder' | translate"
         [value]="rejectReason()"
         (input)="rejectReason.set($any($event.target).value)">
       </textarea>
     </div>
     <div class="modal-actions">
-      <button class="btn-modal-close" (click)="closeRejectModal()" [disabled]="rejecting()">Cancel</button>
+      <button class="btn-modal-close" (click)="closeRejectModal()" [disabled]="rejecting()">
+        {{ 'admin_feedbacks.modal_cancel' | translate }}
+      </button>
       <button class="btn-modal-confirm" (click)="confirmReject()" [disabled]="!rejectReason().trim() || rejecting()">
-        {{ rejecting() ? 'Rejecting...' : 'Confirm Rejection' }}
+        {{ rejecting() ? ('admin_feedbacks.modal_confirming' | translate) : ('admin_feedbacks.modal_confirm' | translate) }}
       </button>
     </div>
   </div>

@@ -3,15 +3,15 @@
   <!-- Header -->
   <div class="page-header">
     <div>
-      <h1 class="page-title">Dashboard Overview</h1>
-      <p class="page-subtitle">Platform activity and key metrics</p>
+      <h1 class="page-title">{{ 'admin_overview.page_title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'admin_overview.page_subtitle' | translate }}</p>
     </div>
   </div>
 
   <!-- Loading -->
   <div class="loading-state" *ngIf="loading()">
     <div class="spinner"></div>
-    <p>Loading statistics...</p>
+    <p>{{ 'admin_overview.loading' | translate }}</p>
   </div>
 
   <ng-container *ngIf="stats() as s">
@@ -19,8 +19,8 @@
     <!-- Alert if pending -->
     <div class="alert-banner" *ngIf="s.pendingCompanies > 0" routerLink="/admin/verifications">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span><strong>{{ s.pendingCompanies }}</strong> company registration{{ s.pendingCompanies > 1 ? 's' : '' }} awaiting verification</span>
-      <span class="alert-cta">Review now
+      <span><strong>{{ s.pendingCompanies }}</strong> {{ 'admin_overview.alert_pending' | translate }}</span>
+      <span class="alert-cta">{{ 'admin_overview.alert_cta' | translate }}
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </span>
     </div>
@@ -34,7 +34,7 @@
         </div>
         <div class="kpi-body">
           <span class="kpi-num">{{ s.totalFreelancers }}</span>
-          <span class="kpi-lbl">Freelancers</span>
+          <span class="kpi-lbl">{{ 'admin_overview.kpi_freelancers' | translate }}</span>
         </div>
       </div>
 
@@ -44,8 +44,8 @@
         </div>
         <div class="kpi-body">
           <span class="kpi-num">{{ s.approvedCompanies }}</span>
-          <span class="kpi-lbl">Companies</span>
-          <span class="kpi-sub pending" *ngIf="s.pendingCompanies > 0">{{ s.pendingCompanies }} pending</span>
+          <span class="kpi-lbl">{{ 'admin_overview.kpi_companies' | translate }}</span>
+          <span class="kpi-sub pending" *ngIf="s.pendingCompanies > 0">{{ s.pendingCompanies }} {{ 'admin_overview.kpi_pending' | translate }}</span>
         </div>
       </div>
 
@@ -55,7 +55,7 @@
         </div>
         <div class="kpi-body">
           <span class="kpi-num">{{ s.totalMissions }}</span>
-          <span class="kpi-lbl">Missions</span>
+          <span class="kpi-lbl">{{ 'admin_overview.kpi_missions' | translate }}</span>
         </div>
       </div>
 
@@ -65,7 +65,7 @@
         </div>
         <div class="kpi-body">
           <span class="kpi-num">{{ s.totalContracts }}</span>
-          <span class="kpi-lbl">Contracts</span>
+          <span class="kpi-lbl">{{ 'admin_overview.kpi_contracts' | translate }}</span>
         </div>
       </div>
 
@@ -75,7 +75,7 @@
         </div>
         <div class="kpi-body">
           <span class="kpi-num">{{ s.totalApplications }}</span>
-          <span class="kpi-lbl">Applications</span>
+          <span class="kpi-lbl">{{ 'admin_overview.kpi_applications' | translate }}</span>
         </div>
       </div>
 
@@ -86,8 +86,8 @@
 
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Company Verification Status</h3>
-          <span class="card-total-badge">{{ s.totalCompanies }} total</span>
+          <h3 class="card-title">{{ 'admin_overview.verif_title' | translate }}</h3>
+          <span class="card-total-badge">{{ s.totalCompanies }} {{ 'admin_overview.total_label' | translate }}</span>
         </div>
         <div class="card-body">
 
@@ -104,19 +104,19 @@
             <div class="verif-stat approved">
               <span class="vs-num">{{ s.approvedCompanies }}</span>
               <span class="vs-pct">{{ s.totalCompanies > 0 ? ((s.approvedCompanies / s.totalCompanies) * 100).toFixed(0) : 0 }}%</span>
-              <span class="vs-lbl">Approved</span>
+              <span class="vs-lbl">{{ 'admin_overview.verif_approved' | translate }}</span>
             </div>
 
             <div class="verif-stat pending">
               <span class="vs-num">{{ s.pendingCompanies }}</span>
               <span class="vs-pct">{{ s.totalCompanies > 0 ? ((s.pendingCompanies / s.totalCompanies) * 100).toFixed(0) : 0 }}%</span>
-              <span class="vs-lbl">Pending</span>
+              <span class="vs-lbl">{{ 'admin_overview.verif_pending' | translate }}</span>
             </div>
 
             <div class="verif-stat rejected">
               <span class="vs-num">{{ s.rejectedCompanies }}</span>
               <span class="vs-pct">{{ s.totalCompanies > 0 ? ((s.rejectedCompanies / s.totalCompanies) * 100).toFixed(0) : 0 }}%</span>
-              <span class="vs-lbl">Rejected</span>
+              <span class="vs-lbl">{{ 'admin_overview.verif_rejected' | translate }}</span>
             </div>
 
           </div>
@@ -125,7 +125,7 @@
 
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Quick Actions</h3>
+          <h3 class="card-title">{{ 'admin_overview.actions_title' | translate }}</h3>
         </div>
         <div class="card-body actions-list">
           <a routerLink="/admin/verifications" class="action-item">
@@ -133,8 +133,8 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <div class="action-text">
-              <span class="action-title">Review Verifications</span>
-              <span class="action-sub">{{ s.pendingCompanies }} awaiting</span>
+              <span class="action-title">{{ 'admin_overview.action_verif' | translate }}</span>
+              <span class="action-sub">{{ s.pendingCompanies }} {{ 'admin_overview.action_verif_sub' | translate }}</span>
             </div>
             <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </a>
@@ -144,8 +144,8 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
             <div class="action-text">
-              <span class="action-title">Manage Users</span>
-              <span class="action-sub">{{ s.totalFreelancers + s.totalCompanies }} total</span>
+              <span class="action-title">{{ 'admin_overview.action_users' | translate }}</span>
+              <span class="action-sub">{{ s.totalFreelancers + s.totalCompanies }} {{ 'admin_overview.action_users_sub' | translate }}</span>
             </div>
             <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </a>
@@ -155,8 +155,8 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
             </div>
             <div class="action-text">
-              <span class="action-title">View Missions</span>
-              <span class="action-sub">{{ s.totalMissions }} published</span>
+              <span class="action-title">{{ 'admin_overview.action_missions' | translate }}</span>
+              <span class="action-sub">{{ s.totalMissions }} {{ 'admin_overview.action_missions_sub' | translate }}</span>
             </div>
             <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </a>
@@ -169,7 +169,7 @@
 
   <!-- ── Charts Section ─────────────────────────────────────────── -->
   <div class="charts-header">
-    <h2 class="charts-section-title">Platform Evolution</h2>
+    <h2 class="charts-section-title">{{ 'admin_overview.charts_title' | translate }}</h2>
     <div class="period-tabs">
       <button class="period-btn" [class.active]="period() === 6"  (click)="setPeriod(6)">6M</button>
       <button class="period-btn" [class.active]="period() === 12" (click)="setPeriod(12)">12M</button>
@@ -188,13 +188,13 @@
     <div class="chart-card" *ngIf="usersChart() as c">
       <div class="chart-card-header">
         <div>
-          <h3 class="chart-title">User Growth</h3>
-          <p class="chart-subtitle">New registrations per month</p>
+          <h3 class="chart-title">{{ 'admin_overview.chart_users_title' | translate }}</h3>
+          <p class="chart-subtitle">{{ 'admin_overview.chart_users_sub' | translate }}</p>
         </div>
         <div class="chart-legend">
-          <span class="legend-item"><span class="legend-dot" style="background:#1a1a2e"></span>Total</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#3793B0"></span>Freelancers</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#4a9a8e"></span>Companies</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#1a1a2e"></span>{{ 'admin_overview.lbl_total' | translate }}</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#3793B0"></span>{{ 'admin_overview.lbl_freelancers' | translate }}</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#4a9a8e"></span>{{ 'admin_overview.lbl_companies' | translate }}</span>
         </div>
       </div>
 
@@ -294,13 +294,13 @@
     <div class="chart-card" *ngIf="contractsChart() as c">
       <div class="chart-card-header">
         <div>
-          <h3 class="chart-title">Contract Activity</h3>
-          <p class="chart-subtitle">New contracts per month</p>
+          <h3 class="chart-title">{{ 'admin_overview.chart_contracts_title' | translate }}</h3>
+          <p class="chart-subtitle">{{ 'admin_overview.chart_contracts_sub' | translate }}</p>
         </div>
         <div class="chart-legend">
-          <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Total</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Signed</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#3793B0"></span>Finished</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>{{ 'admin_overview.lbl_total' | translate }}</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>{{ 'admin_overview.lbl_signed' | translate }}</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#3793B0"></span>{{ 'admin_overview.lbl_finished' | translate }}</span>
         </div>
       </div>
 
@@ -399,7 +399,7 @@
     <!-- Empty state -->
     <div class="chart-empty" *ngIf="!usersChart() && !contractsChart()">
       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      <p>No evolution data available yet</p>
+      <p>{{ 'admin_overview.chart_empty' | translate }}</p>
     </div>
 
   </div>
@@ -409,8 +409,8 @@
   <!-- ══════════════════════════════════════════════════════════════════════ -->
 
   <div class="pay-section-header">
-    <h2 class="charts-section-title" style="margin:0">Platform Financial Overview</h2>
-    <p class="pay-section-sub">Escrow, commissions and transactions</p>
+    <h2 class="charts-section-title" style="margin:0">{{ 'admin_overview.pay_title' | translate }}</h2>
+    <p class="pay-section-sub">{{ 'admin_overview.pay_sub' | translate }}</p>
   </div>
 
   <!-- ── 4 KPI Cards ── -->
@@ -421,8 +421,8 @@
       </div>
       <div class="pay-kpi-body">
         <span class="pay-kpi-val">{{ formatTND(po.totalEscrow) }}</span>
-        <span class="pay-kpi-lbl">Total Escrowed</span>
-        <span class="pay-kpi-sub">{{ po.escrowContractCount }} contract(s) pending</span>
+        <span class="pay-kpi-lbl">{{ 'admin_overview.pay_escrow_lbl' | translate }}</span>
+        <span class="pay-kpi-sub">{{ po.escrowContractCount }} {{ 'admin_overview.pay_escrow_sub' | translate }}</span>
       </div>
     </div>
 
@@ -432,8 +432,8 @@
       </div>
       <div class="pay-kpi-body">
         <span class="pay-kpi-val">{{ formatTND(po.releasedThisMonth) }}</span>
-        <span class="pay-kpi-lbl">Released this month</span>
-        <span class="pay-kpi-sub">{{ po.capturedThisMonthCount }} contract(s) validated</span>
+        <span class="pay-kpi-lbl">{{ 'admin_overview.pay_released_lbl' | translate }}</span>
+        <span class="pay-kpi-sub">{{ po.capturedThisMonthCount }} {{ 'admin_overview.pay_released_sub' | translate }}</span>
       </div>
     </div>
 
@@ -443,8 +443,8 @@
       </div>
       <div class="pay-kpi-body">
         <span class="pay-kpi-val">{{ formatTND(po.totalPlatformCommission) }}</span>
-        <span class="pay-kpi-lbl">Total Commission</span>
-        <span class="pay-kpi-sub">{{ po.totalCapturedContracts }} contract(s) completed</span>
+        <span class="pay-kpi-lbl">{{ 'admin_overview.pay_commission_lbl' | translate }}</span>
+        <span class="pay-kpi-sub">{{ po.totalCapturedContracts }} {{ 'admin_overview.pay_commission_sub' | translate }}</span>
       </div>
     </div>
 
@@ -454,8 +454,8 @@
       </div>
       <div class="pay-kpi-body">
         <span class="pay-kpi-val">{{ po.totalCapturedContracts + po.escrowContractCount }}</span>
-        <span class="pay-kpi-lbl">Contracts with payment</span>
-        <span class="pay-kpi-sub">Escrowed + released</span>
+        <span class="pay-kpi-lbl">{{ 'admin_overview.pay_total_lbl' | translate }}</span>
+        <span class="pay-kpi-sub">{{ 'admin_overview.pay_total_sub' | translate }}</span>
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -8,6 +8,8 @@ import { Company, LegalForm } from '../../core/models';
 import { FileUploadComponent } from '../../shared/components/file-upload/file-upload.component';
 import { environment } from '../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-edit-company-profile',
   standalone: true,
@@ -15,7 +17,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './edit-company-profile.component.html',
   styleUrl: './edit-company-profile.component.css',
 })
-export class EditCompanyProfileComponent implements OnInit {
+export class EditCompanyProfileComponent implements OnInit, OnDestroy{
   profileForm!: FormGroup;
   company = signal<Company | null>(null);
   loading = signal(true);
@@ -26,14 +28,18 @@ export class EditCompanyProfileComponent implements OnInit {
 
   legalFormOptions = Object.values(LegalForm);
 
-  constructor(
-    private fb: FormBuilder,
+  private langSub?: Subscription;
+
+    constructor(
+  private fb: FormBuilder,
     private companyService: CompanyService,
     private router: Router,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.profileForm = this.fb.group({
       companyName: [''],
       email: [{ value: '', disabled: true }],
@@ -211,5 +217,9 @@ export class EditCompanyProfileComponent implements OnInit {
         this.saving.set(false);
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

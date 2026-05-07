@@ -6,16 +6,16 @@
   <!-- Header -->
   <div class="page-header">
     <div class="page-title-block">
-      <h1 class="page-title">Offers Management</h1>
-      <p class="page-subtitle">Configure point packs, subscriptions and promotions</p>
+      <h1 class="page-title">{{ 'admin_offers.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'admin_offers.subtitle' | translate }}</p>
     </div>
     <button class="btn-new" *ngIf="activeTab() === 'packs'" (click)="openCreatePack()">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      New Pack
+      {{ 'admin_offers.btn_new_pack' | translate }}
     </button>
     <button class="btn-new" *ngIf="activeTab() === 'subscriptions'" (click)="openCreateSub()">
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      New Subscription
+      {{ 'admin_offers.btn_new_sub' | translate }}
     </button>
   </div>
 
@@ -25,18 +25,18 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
       </svg>
-      One-time Packs
+      {{ 'admin_offers.tab_packs' | translate }}
     </button>
     <button [class.active]="activeTab() === 'subscriptions'" (click)="activeTab.set('subscriptions')">
       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
       </svg>
-      Subscriptions
+      {{ 'admin_offers.tab_subscriptions' | translate }}
     </button>
   </div>
 
   <div class="loading-state" *ngIf="loading()">
-    <div class="spinner"></div> Loading offers...
+    <div class="spinner"></div> {{ 'admin_offers.loading' | translate }}
   </div>
 
   <!-- ══ ONE-TIME PACKS TAB ════════════════════════════════════════════════ -->
@@ -59,30 +59,25 @@
             [class.cat-populaire]="pack.category === 'POPULAIRE'"
             [class.cat-pro]="pack.category === 'PRO'">
 
-            <!-- Top strip: promo + badge -->
             <div class="pack-card-top">
-              <span class="promo-chip" *ngIf="isPackPromoActive(pack.id)">
-                −{{ packPromoDiscountPct(pack.id) }}%
-              </span>
+              <span class="promo-chip" *ngIf="isPackPromoActive(pack.id)">−{{ packPromoDiscountPct(pack.id) }}%</span>
               <span class="pack-badge-chip" *ngIf="pack.badge && !isPackPromoActive(pack.id)">{{ pack.badge }}</span>
-              <span class="inactive-chip" *ngIf="!pack.active">Inactif</span>
+              <span class="inactive-chip" *ngIf="!pack.active">{{ 'admin_offers.inactive_chip' | translate }}</span>
               <span class="spacer"></span>
-              <button class="btn-edit-inline" (click)="openEditPack(pack)" title="Edit">
+              <button class="btn-edit-inline" (click)="openEditPack(pack)" [title]="'admin_offers.btn_edit' | translate">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               </button>
-              <button class="btn-delete-inline" (click)="confirmDeletePackId.set(pack.id)" title="Delete">
+              <button class="btn-delete-inline" (click)="confirmDeletePackId.set(pack.id)" [title]="'admin_offers.btn_delete' | translate">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
               </button>
             </div>
             <div class="pack-name">{{ pack.name }}</div>
 
-            <!-- Points -->
             <div class="pack-points-row">
               <span class="pack-pts-number">{{ pack.points }}</span>
               <span class="pack-pts-label">pts</span>
             </div>
 
-            <!-- Pricing -->
             <div class="pack-price-row">
               <ng-container *ngIf="isPackPromoActive(pack.id) && computedPackPromoPrice(pack) !== null">
                 <span class="price-strike">{{ formatTND(pack.price) }}</span>
@@ -93,7 +88,6 @@
               </ng-container>
             </div>
 
-            <!-- Meta -->
             <div class="pack-meta-row">
               <span class="ppp-label">{{ formatTND(pack.pricePerPoint) }}/pt</span>
               <span class="savings-chip" *ngIf="pack.savingsPercent > 0">−{{ pack.savingsPercent }}%</span>
@@ -108,18 +102,18 @@
       <div class="promo-panel-header">
         <div class="promo-panel-title">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-          Promotions
+          {{ 'admin_offers.promo_title' | translate }}
         </div>
-        <span class="promo-panel-hint">Enable a promo, set the %, then save.</span>
+        <span class="promo-panel-hint">{{ 'admin_offers.promo_hint' | translate }}</span>
       </div>
 
       <div class="promo-table-head">
-        <span>Pack</span>
-        <span>Active</span>
-        <span>Discount</span>
-        <span>Promo price</span>
-        <span>Label</span>
-        <span>Expires</span>
+        <span>{{ 'admin_offers.promo_col_pack' | translate }}</span>
+        <span>{{ 'admin_offers.promo_col_active' | translate }}</span>
+        <span>{{ 'admin_offers.promo_col_discount' | translate }}</span>
+        <span>{{ 'admin_offers.promo_col_price' | translate }}</span>
+        <span>{{ 'admin_offers.promo_col_label' | translate }}</span>
+        <span>{{ 'admin_offers.promo_col_expires' | translate }}</span>
         <span></span>
       </div>
 
@@ -160,7 +154,7 @@
             <span class="pr-dash" *ngIf="!isPackPromoActive(pack.id) || computedPackPromoPrice(pack) === null">—</span>
           </div>
 
-          <input class="pr-input" type="text" placeholder="Ex: Soldes été"
+          <input class="pr-input" type="text" [placeholder]="'admin_offers.promo_placeholder_label' | translate"
             [(ngModel)]="packPromos[pack.id].promoLabel"
             (ngModelChange)="markPackPromoDirty(pack.id)"
             [disabled]="!packPromoEnabled(pack.id)">
@@ -176,7 +170,7 @@
             [class.saving]="savingId() === pack.id + '_promo'">
             <div *ngIf="savingId() === pack.id + '_promo'" class="mini-spinner"></div>
             <svg *ngIf="savingId() !== pack.id + '_promo'" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            Save
+            {{ 'admin_offers.promo_btn_save' | translate }}
           </button>
         </div>
       </div>
@@ -193,15 +187,14 @@
         [class.inactive]="!sub.active"
         [class]="'sub-card plan-' + sub.name.toLowerCase()">
 
-        <!-- Top row -->
         <div class="sub-card-top">
           <span class="promo-chip" *ngIf="isSubPromoActive(sub.id)">−{{ subPromoDiscountPct(sub.id) }}%</span>
-          <span class="inactive-chip" *ngIf="!sub.active">Inactif</span>
+          <span class="inactive-chip" *ngIf="!sub.active">{{ 'admin_offers.inactive_chip' | translate }}</span>
           <span class="spacer"></span>
-          <button class="btn-edit-inline" (click)="openEditSub(sub)" title="Edit">
+          <button class="btn-edit-inline" (click)="openEditSub(sub)" [title]="'admin_offers.btn_edit' | translate">
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
-          <button class="btn-delete-inline" (click)="confirmDeleteSubId.set(sub.id)" title="Delete">
+          <button class="btn-delete-inline" (click)="confirmDeleteSubId.set(sub.id)" [title]="'admin_offers.btn_delete' | translate">
             <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
           </button>
         </div>
@@ -216,12 +209,12 @@
           <ng-container *ngIf="!isSubPromoActive(sub.id) || computedSubPromoPrice(sub) === null">
             <span class="price-normal">{{ formatTND(sub.pricePerMonth) }}</span>
           </ng-container>
-          <span class="sub-period">/mois</span>
+          <span class="sub-period">{{ 'admin_offers.per_month' | translate }}</span>
         </div>
 
         <div class="sub-pts-row">
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          {{ sub.pointsPerMonth }} points / mois
+          {{ sub.pointsPerMonth }} {{ 'admin_offers.pts_per_month' | translate }}
         </div>
 
         <ul class="sub-adv-list">
@@ -238,18 +231,18 @@
       <div class="promo-panel-header">
         <div class="promo-panel-title">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-          Promotions
+          {{ 'admin_offers.promo_title' | translate }}
         </div>
-        <span class="promo-panel-hint">Enable a promo, set the %, then save.</span>
+        <span class="promo-panel-hint">{{ 'admin_offers.promo_hint' | translate }}</span>
       </div>
 
       <div class="promo-table-head">
-        <span>Plan</span>
-        <span>Active</span>
-        <span>Discount</span>
-        <span>Promo price</span>
-        <span>Label</span>
-        <span>Expires</span>
+        <span>{{ 'admin_offers.promo_col_plan' | translate }}</span>
+        <span>{{ 'admin_offers.promo_col_active' | translate }}</span>
+        <span>{{ 'admin_offers.promo_col_discount' | translate }}</span>
+        <span>{{ 'admin_offers.promo_col_price' | translate }}</span>
+        <span>{{ 'admin_offers.promo_col_label' | translate }}</span>
+        <span>{{ 'admin_offers.promo_col_expires' | translate }}</span>
         <span></span>
       </div>
 
@@ -260,7 +253,7 @@
             <span class="pr-dot" [class]="'dot-sub-' + sub.name.toLowerCase()"></span>
             <div>
               <div class="pr-pack-name">{{ sub.name }}</div>
-              <div class="pr-pack-base">{{ formatTND(sub.pricePerMonth) }}/mois</div>
+              <div class="pr-pack-base">{{ formatTND(sub.pricePerMonth) }}{{ 'admin_offers.per_month' | translate }}</div>
             </div>
           </div>
 
@@ -290,7 +283,7 @@
             <span class="pr-dash" *ngIf="!isSubPromoActive(sub.id) || computedSubPromoPrice(sub) === null">—</span>
           </div>
 
-          <input class="pr-input" type="text" placeholder="Ex: Soldes été"
+          <input class="pr-input" type="text" [placeholder]="'admin_offers.promo_placeholder_label' | translate"
             [(ngModel)]="subPromos[sub.id].promoLabel"
             (ngModelChange)="markSubPromoDirty(sub.id)"
             [disabled]="!subPromoEnabled(sub.id)">
@@ -306,7 +299,7 @@
             [class.saving]="savingId() === sub.id + '_promo'">
             <div *ngIf="savingId() === sub.id + '_promo'" class="mini-spinner"></div>
             <svg *ngIf="savingId() !== sub.id + '_promo'" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            Save
+            {{ 'admin_offers.promo_btn_save' | translate }}
           </button>
         </div>
       </div>
@@ -319,7 +312,7 @@
 <div class="modal-overlay" *ngIf="showCreatePack()">
   <div class="modal">
     <div class="modal-header">
-      <h3>New Pack</h3>
+      <h3>{{ 'admin_offers.create_pack_title' | translate }}</h3>
       <button class="modal-close" (click)="showCreatePack.set(false)">
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -327,11 +320,11 @@
     <div class="modal-body">
       <div class="form-row">
         <div class="form-field">
-          <label>Name</label>
+          <label>{{ 'admin_offers.form_name' | translate }}</label>
           <input type="text" [(ngModel)]="createPackForm.name" placeholder="Pack Starter">
         </div>
         <div class="form-field">
-          <label>Category</label>
+          <label>{{ 'admin_offers.form_category' | translate }}</label>
           <select [(ngModel)]="createPackForm.category">
             <option *ngFor="let cat of categories" [value]="cat.key">{{ cat.label }}</option>
           </select>
@@ -339,14 +332,14 @@
       </div>
       <div class="form-row">
         <div class="form-field">
-          <label>Points</label>
+          <label>{{ 'admin_offers.form_points' | translate }}</label>
           <div class="input-addon-wrap">
             <input type="number" min="1" [(ngModel)]="createPackForm.points">
             <span class="input-addon">pts</span>
           </div>
         </div>
         <div class="form-field">
-          <label>Price</label>
+          <label>{{ 'admin_offers.form_price' | translate }}</label>
           <div class="input-addon-wrap">
             <input type="number" min="0" step="0.001" [(ngModel)]="createPackForm.price">
             <span class="input-addon">DT</span>
@@ -355,16 +348,16 @@
       </div>
       <div class="form-row">
         <div class="form-field">
-          <label>Badge <span class="opt-label">(optional)</span></label>
-          <input type="text" [(ngModel)]="createPackForm.badge" placeholder="Le plus vendu">
+          <label>{{ 'admin_offers.form_badge' | translate }} <span class="opt-label">{{ 'admin_offers.form_opt' | translate }}</span></label>
+          <input type="text" [(ngModel)]="createPackForm.badge" placeholder="Best seller">
         </div>
         <div class="form-field">
-          <label>Display order</label>
+          <label>{{ 'admin_offers.form_display_order' | translate }}</label>
           <input type="number" min="1" [(ngModel)]="createPackForm.displayOrder">
         </div>
       </div>
       <div class="preview-row" *ngIf="createPackForm.points > 0 && createPackForm.price > 0">
-        <span class="preview-label">Price per point</span>
+        <span class="preview-label">{{ 'admin_offers.price_per_point' | translate }}</span>
         <strong class="preview-value">{{ (createPackForm.price / createPackForm.points).toFixed(3) }} DT</strong>
       </div>
       <div class="toggle-row">
@@ -372,15 +365,15 @@
           <input type="checkbox" [(ngModel)]="createPackForm.active">
           <span class="toggle-slider"></span>
         </label>
-        <span class="toggle-row-label">Active — visible to users</span>
+        <span class="toggle-row-label">{{ 'admin_offers.active_label' | translate }}</span>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" (click)="showCreatePack.set(false)">Cancel</button>
+      <button class="btn-secondary" (click)="showCreatePack.set(false)">{{ 'admin_offers.btn_cancel' | translate }}</button>
       <button class="btn-primary" (click)="submitCreatePack()"
         [disabled]="!createPackForm.name || createPackForm.points <= 0 || createPackForm.price <= 0 || savingId() === 'new_pack'">
         <div class="mini-spinner" *ngIf="savingId() === 'new_pack'"></div>
-        Create Pack
+        {{ 'admin_offers.btn_create_pack' | translate }}
       </button>
     </div>
   </div>
@@ -390,7 +383,7 @@
 <div class="modal-overlay" *ngIf="showCreateSub()">
   <div class="modal">
     <div class="modal-header">
-      <h3>New Subscription</h3>
+      <h3>{{ 'admin_offers.create_sub_title' | translate }}</h3>
       <button class="modal-close" (click)="showCreateSub.set(false)">
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -398,48 +391,48 @@
     <div class="modal-body">
       <div class="form-row">
         <div class="form-field">
-          <label>Plan name</label>
+          <label>{{ 'admin_offers.form_plan_name' | translate }}</label>
           <input type="text" [(ngModel)]="createSubForm.name" placeholder="Premium">
         </div>
         <div class="form-field">
-          <label>Price / month</label>
+          <label>{{ 'admin_offers.form_price_month' | translate }}</label>
           <div class="input-addon-wrap">
             <input type="number" min="0" step="0.001" [(ngModel)]="createSubForm.pricePerMonth">
-            <span class="input-addon">DT/mois</span>
+            <span class="input-addon">DT{{ 'admin_offers.per_month' | translate }}</span>
           </div>
         </div>
       </div>
       <div class="form-row">
         <div class="form-field">
-          <label>Points / month</label>
+          <label>{{ 'admin_offers.form_points_month' | translate }}</label>
           <div class="input-addon-wrap">
             <input type="number" min="1" [(ngModel)]="createSubForm.pointsPerMonth">
-            <span class="input-addon">pts/mois</span>
+            <span class="input-addon">pts{{ 'admin_offers.per_month' | translate }}</span>
           </div>
         </div>
         <div class="form-field">
-          <label>Display order</label>
+          <label>{{ 'admin_offers.form_display_order' | translate }}</label>
           <input type="number" min="1" [(ngModel)]="createSubForm.displayOrder">
         </div>
       </div>
       <div class="form-field">
-        <label>Advantages <span class="opt-label">(one per line)</span></label>
-        <textarea rows="4" [(ngModel)]="createSubAdvantagesRaw" placeholder="100 points offerts/mois&#10;-10% sur tous les packs"></textarea>
+        <label>{{ 'admin_offers.form_advantages' | translate }} <span class="opt-label">{{ 'admin_offers.form_advantages_hint' | translate }}</span></label>
+        <textarea rows="4" [(ngModel)]="createSubAdvantagesRaw" placeholder="100 points/month&#10;-10% on all packs"></textarea>
       </div>
       <div class="toggle-row">
         <label class="toggle-switch">
           <input type="checkbox" [(ngModel)]="createSubForm.active">
           <span class="toggle-slider"></span>
         </label>
-        <span class="toggle-row-label">Active — visible to users</span>
+        <span class="toggle-row-label">{{ 'admin_offers.active_label' | translate }}</span>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" (click)="showCreateSub.set(false)">Cancel</button>
+      <button class="btn-secondary" (click)="showCreateSub.set(false)">{{ 'admin_offers.btn_cancel' | translate }}</button>
       <button class="btn-primary" (click)="submitCreateSub()"
         [disabled]="!createSubForm.name || createSubForm.pricePerMonth <= 0 || createSubForm.pointsPerMonth <= 0 || savingId() === 'new_sub'">
         <div class="mini-spinner" *ngIf="savingId() === 'new_sub'"></div>
-        Create Subscription
+        {{ 'admin_offers.btn_create_sub' | translate }}
       </button>
     </div>
   </div>
@@ -449,17 +442,17 @@
 <div class="modal-overlay" *ngIf="confirmDeletePackId()">
   <div class="modal modal-sm">
     <div class="modal-header">
-      <h3>Delete Pack</h3>
+      <h3>{{ 'admin_offers.delete_pack_title' | translate }}</h3>
     </div>
     <div class="modal-body">
-      <p class="confirm-text">This pack will be permanently deleted. This action cannot be undone.</p>
+      <p class="confirm-text">{{ 'admin_offers.delete_pack_confirm' | translate }}</p>
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" (click)="confirmDeletePackId.set(null)">Cancel</button>
+      <button class="btn-secondary" (click)="confirmDeletePackId.set(null)">{{ 'admin_offers.btn_cancel' | translate }}</button>
       <button class="btn-danger" (click)="deletePack(confirmDeletePackId()!)"
         [disabled]="savingId() === 'del_' + confirmDeletePackId()">
         <div class="mini-spinner" *ngIf="savingId() === 'del_' + confirmDeletePackId()"></div>
-        Delete
+        {{ 'admin_offers.btn_delete' | translate }}
       </button>
     </div>
   </div>
@@ -469,17 +462,17 @@
 <div class="modal-overlay" *ngIf="confirmDeleteSubId()">
   <div class="modal modal-sm">
     <div class="modal-header">
-      <h3>Delete Subscription</h3>
+      <h3>{{ 'admin_offers.delete_sub_title' | translate }}</h3>
     </div>
     <div class="modal-body">
-      <p class="confirm-text">This subscription plan will be permanently deleted. This action cannot be undone.</p>
+      <p class="confirm-text">{{ 'admin_offers.delete_sub_confirm' | translate }}</p>
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" (click)="confirmDeleteSubId.set(null)">Cancel</button>
+      <button class="btn-secondary" (click)="confirmDeleteSubId.set(null)">{{ 'admin_offers.btn_cancel' | translate }}</button>
       <button class="btn-danger" (click)="deleteSub(confirmDeleteSubId()!)"
         [disabled]="savingId() === 'del_' + confirmDeleteSubId()">
         <div class="mini-spinner" *ngIf="savingId() === 'del_' + confirmDeleteSubId()"></div>
-        Delete
+        {{ 'admin_offers.btn_delete' | translate }}
       </button>
     </div>
   </div>
@@ -489,7 +482,7 @@
 <div class="modal-overlay" *ngIf="editPack()">
   <div class="modal">
     <div class="modal-header">
-      <h3>Edit Pack <span class="modal-badge">{{ editPack()?.name }}</span></h3>
+      <h3>{{ 'admin_offers.edit_pack_title' | translate }} <span class="modal-badge">{{ editPack()?.name }}</span></h3>
       <button class="modal-close" (click)="editPack.set(null)">
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -497,24 +490,24 @@
     <div class="modal-body">
       <div class="form-row">
         <div class="form-field">
-          <label>Name</label>
+          <label>{{ 'admin_offers.form_name' | translate }}</label>
           <input type="text" [(ngModel)]="editPackForm.name">
         </div>
         <div class="form-field">
-          <label>Badge <span class="opt-label">(optional)</span></label>
-          <input type="text" [(ngModel)]="editPackForm.badge" placeholder="Le plus vendu">
+          <label>{{ 'admin_offers.form_badge' | translate }} <span class="opt-label">{{ 'admin_offers.form_opt' | translate }}</span></label>
+          <input type="text" [(ngModel)]="editPackForm.badge" placeholder="Best seller">
         </div>
       </div>
       <div class="form-row">
         <div class="form-field">
-          <label>Points</label>
+          <label>{{ 'admin_offers.form_points' | translate }}</label>
           <div class="input-addon-wrap">
             <input type="number" min="1" [(ngModel)]="editPackForm.points">
             <span class="input-addon">pts</span>
           </div>
         </div>
         <div class="form-field">
-          <label>Price</label>
+          <label>{{ 'admin_offers.form_price' | translate }}</label>
           <div class="input-addon-wrap">
             <input type="number" min="0" step="0.001" [(ngModel)]="editPackForm.price">
             <span class="input-addon">DT</span>
@@ -522,7 +515,7 @@
         </div>
       </div>
       <div class="preview-row" *ngIf="editPackForm.points > 0 && editPackForm.price > 0">
-        <span class="preview-label">Price per point</span>
+        <span class="preview-label">{{ 'admin_offers.price_per_point' | translate }}</span>
         <strong class="preview-value">{{ (editPackForm.price / editPackForm.points).toFixed(3) }} DT</strong>
       </div>
       <div class="toggle-row">
@@ -530,14 +523,14 @@
           <input type="checkbox" [(ngModel)]="editPackForm.active">
           <span class="toggle-slider"></span>
         </label>
-        <span class="toggle-row-label">Active — visible to users</span>
+        <span class="toggle-row-label">{{ 'admin_offers.active_label' | translate }}</span>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" (click)="editPack.set(null)">Cancel</button>
+      <button class="btn-secondary" (click)="editPack.set(null)">{{ 'admin_offers.btn_cancel' | translate }}</button>
       <button class="btn-primary" (click)="savePackEdit()" [disabled]="savingId() === editPack()?.id">
         <div class="mini-spinner" *ngIf="savingId() === editPack()?.id"></div>
-        Save changes
+        {{ 'admin_offers.btn_save_changes' | translate }}
       </button>
     </div>
   </div>
@@ -547,7 +540,7 @@
 <div class="modal-overlay" *ngIf="editSub()">
   <div class="modal">
     <div class="modal-header">
-      <h3>Edit Subscription <span class="modal-badge">{{ editSub()?.name }}</span></h3>
+      <h3>{{ 'admin_offers.edit_sub_title' | translate }} <span class="modal-badge">{{ editSub()?.name }}</span></h3>
       <button class="modal-close" (click)="editSub.set(null)">
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -555,43 +548,43 @@
     <div class="modal-body">
       <div class="form-row">
         <div class="form-field">
-          <label>Plan name</label>
+          <label>{{ 'admin_offers.form_plan_name' | translate }}</label>
           <input type="text" [(ngModel)]="editSubForm.name">
         </div>
         <div class="form-field">
-          <label>Price / month</label>
+          <label>{{ 'admin_offers.form_price_month' | translate }}</label>
           <div class="input-addon-wrap">
             <input type="number" min="0" step="0.001" [(ngModel)]="editSubForm.pricePerMonth">
-            <span class="input-addon">DT/mois</span>
+            <span class="input-addon">DT{{ 'admin_offers.per_month' | translate }}</span>
           </div>
         </div>
       </div>
       <div class="form-row">
         <div class="form-field">
-          <label>Points / month</label>
+          <label>{{ 'admin_offers.form_points_month' | translate }}</label>
           <div class="input-addon-wrap">
             <input type="number" min="1" [(ngModel)]="editSubForm.pointsPerMonth">
-            <span class="input-addon">pts/mois</span>
+            <span class="input-addon">pts{{ 'admin_offers.per_month' | translate }}</span>
           </div>
         </div>
       </div>
       <div class="form-field">
-        <label>Advantages <span class="opt-label">(one per line)</span></label>
-        <textarea rows="5" [(ngModel)]="editSubAdvantagesRaw" placeholder="100 points offerts/mois&#10;-10% sur tous les packs"></textarea>
+        <label>{{ 'admin_offers.form_advantages' | translate }} <span class="opt-label">{{ 'admin_offers.form_advantages_hint' | translate }}</span></label>
+        <textarea rows="5" [(ngModel)]="editSubAdvantagesRaw" placeholder="100 points/month&#10;-10% on all packs"></textarea>
       </div>
       <div class="toggle-row">
         <label class="toggle-switch">
           <input type="checkbox" [(ngModel)]="editSubForm.active">
           <span class="toggle-slider"></span>
         </label>
-        <span class="toggle-row-label">Active — visible to users</span>
+        <span class="toggle-row-label">{{ 'admin_offers.active_label' | translate }}</span>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" (click)="editSub.set(null)">Cancel</button>
+      <button class="btn-secondary" (click)="editSub.set(null)">{{ 'admin_offers.btn_cancel' | translate }}</button>
       <button class="btn-primary" (click)="saveSubEdit()" [disabled]="savingId() === editSub()?.id">
         <div class="mini-spinner" *ngIf="savingId() === editSub()?.id"></div>
-        Save changes
+        {{ 'admin_offers.btn_save_changes' | translate }}
       </button>
     </div>
   </div>

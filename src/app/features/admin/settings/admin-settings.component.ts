@@ -1,9 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AdminService } from '../../../core/services/admin.service';
 import { LanguageService, AppLanguage } from '../../../core/services/language.service';
+
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admin-settings',
@@ -12,7 +14,7 @@ import { LanguageService, AppLanguage } from '../../../core/services/language.se
   templateUrl: './admin-settings.component.html',
   styleUrl: './admin-settings.component.css',
 })
-export class AdminSettingsComponent implements OnInit {
+export class AdminSettingsComponent implements OnInit, OnDestroy{
 
   // ─── Platform fee ─────────────────────────────────────────────────────────
   currentFee    = signal(7);
@@ -52,13 +54,17 @@ export class AdminSettingsComponent implements OnInit {
   showNewPwd      = signal(false);
   showConfirmPwd  = signal(false);
 
-  constructor(
-    private adminService: AdminService,
+  private langSub?: Subscription;
+
+    constructor(
+  private adminService: AdminService,
     private languageService: LanguageService,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.selectedLanguage.set(this.languageService.currentLang());
     this.adminService.getSettings().subscribe({
       next: (s) => {
@@ -175,5 +181,9 @@ export class AdminSettingsComponent implements OnInit {
         this.pwdError.set(err?.error?.message ?? this.translate.instant('admin_settings.password_error_fail'));
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

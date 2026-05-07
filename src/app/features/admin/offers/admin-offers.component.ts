@@ -1,6 +1,7 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   OffersService,
   PointPack,
@@ -31,14 +32,16 @@ interface SubPromoState {
   dirty: boolean;
 }
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-admin-offers',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './admin-offers.component.html',
   styleUrls: ['./admin-offers.component.css'],
 })
-export class AdminOffersComponent implements OnInit {
+export class AdminOffersComponent implements OnInit, OnDestroy{
   activeTab = signal<OffersTab>('packs');
   packs = signal<PointPack[]>([]);
   subscriptions = signal<SubscriptionPlan[]>([]);
@@ -72,15 +75,25 @@ export class AdminOffersComponent implements OnInit {
   packPromos: Record<string, PackPromoState> = {};
   subPromos: Record<string, SubPromoState> = {};
 
-  readonly categories: { key: PackCategory; label: string }[] = [
-    { key: 'DECOUVERTE', label: 'Pack Découverte' },
-    { key: 'POPULAIRE',  label: 'Pack Populaire'  },
-    { key: 'PRO',        label: 'Pack Pro'         },
-  ];
+  private langSub?: Subscription;
 
-  constructor(private offersService: OffersService) {}
+  readonly categoryKeys: PackCategory[] = ['DECOUVERTE', 'POPULAIRE', 'PRO'];
+
+  constructor(
+    private offersService: OffersService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  get categories(): { key: PackCategory; label: string }[] {
+    return this.categoryKeys.map(key => ({
+      key,
+      label: this.translate.instant('admin_offers.cat_' + key.toLowerCase()),
+    }));
+  }
 
   ngOnInit() {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.loadAll();
   }
 
@@ -126,13 +139,9 @@ export class AdminOffersComponent implements OnInit {
     });
   }
 
-  // ── Category helpers ───────────────────────────────────────────────────────
-
   packsForCategory(cat: PackCategory): PointPack[] {
     return this.packs().filter(p => p.category === cat);
   }
-
-  // ── Computed promo price ───────────────────────────────────────────────────
 
   computedPackPromoPrice(pack: PointPack): number | null {
     const s = this.packPromos[pack.id];
@@ -145,8 +154,6 @@ export class AdminOffersComponent implements OnInit {
     if (!s || !s.promoEnabled || s.promoDiscountPercent <= 0) return null;
     return Math.round(sub.pricePerMonth * (1 - s.promoDiscountPercent / 100) * 100) / 100;
   }
-
-  // ── Edit Pack ──────────────────────────────────────────────────────────────
 
   openEditPack(pack: PointPack) {
     this.editPackForm = {
@@ -170,13 +177,11 @@ export class AdminOffersComponent implements OnInit {
         this.initPackPromos([updated]);
         this.editPack.set(null);
         this.savingId.set(null);
-        this.showToast('Pack mis à jour', 'success');
+        this.showToast(this.translate.instant('admin_offers.toast_pack_updated'), 'success');
       },
-      error: () => { this.savingId.set(null); this.showToast('Erreur lors de la mise à jour', 'error'); },
+      error: () => { this.savingId.set(null); this.showToast(this.translate.instant('admin_offers.toast_error_update'), 'error'); },
     });
   }
-
-  // ── Edit Subscription ─────────────────────────────────────────────────────
 
   openEditSub(sub: SubscriptionPlan) {
     this.editSubForm = {
@@ -205,13 +210,11 @@ export class AdminOffersComponent implements OnInit {
         this.initSubPromos([updated]);
         this.editSub.set(null);
         this.savingId.set(null);
-        this.showToast('Abonnement mis à jour', 'success');
+        this.showToast(this.translate.instant('admin_offers.toast_sub_updated'), 'success');
       },
-      error: () => { this.savingId.set(null); this.showToast('Erreur lors de la mise à jour', 'error'); },
+      error: () => { this.savingId.set(null); this.showToast(this.translate.instant('admin_offers.toast_error_update'), 'error'); },
     });
   }
-
-  // ── Save Pack Promo ────────────────────────────────────────────────────────
 
   savePackPromo(pack: PointPack) {
     const s = this.packPromos[pack.id];
@@ -228,9 +231,9 @@ export class AdminOffersComponent implements OnInit {
         this.packs.update(arr => arr.map(x => x.id === updated.id ? updated : x));
         this.packPromos[pack.id].dirty = false;
         this.savingId.set(null);
-        this.showToast('Promo mise à jour', 'success');
+        this.showToast(this.translate.instant('admin_offers.toast_promo_updated'), 'success');
       },
-      error: () => { this.savingId.set(null); this.showToast('Erreur promo', 'error'); },
+      error: () => { this.savingId.set(null); this.showToast(this.translate.instant('admin_offers.toast_error_promo'), 'error'); },
     });
   }
 
@@ -249,9 +252,9 @@ export class AdminOffersComponent implements OnInit {
         this.subscriptions.update(arr => arr.map(x => x.id === updated.id ? updated : x));
         this.subPromos[sub.id].dirty = false;
         this.savingId.set(null);
-        this.showToast('Promo mise à jour', 'success');
+        this.showToast(this.translate.instant('admin_offers.toast_promo_updated'), 'success');
       },
-      error: () => { this.savingId.set(null); this.showToast('Erreur promo', 'error'); },
+      error: () => { this.savingId.set(null); this.showToast(this.translate.instant('admin_offers.toast_error_promo'), 'error'); },
     });
   }
 
@@ -267,8 +270,6 @@ export class AdminOffersComponent implements OnInit {
     this.toast.set({ text, type });
     setTimeout(() => this.toast.set(null), 3000);
   }
-
-  // ── Type-safe promo state accessors (avoids TS2532 in strict templates) ────
 
   isPackPromoActive(id: string): boolean {
     const s = this.packPromos[id];
@@ -304,8 +305,6 @@ export class AdminOffersComponent implements OnInit {
     return !!this.subPromos[id]?.dirty;
   }
 
-  // ── Create Pack ────────────────────────────────────────────────────────────
-
   openCreatePack() {
     this.createPackForm = { name: '', category: 'DECOUVERTE', points: 0, price: 0, badge: '', active: true, displayOrder: this.packs().length + 1 };
     this.showCreatePack.set(true);
@@ -319,13 +318,11 @@ export class AdminOffersComponent implements OnInit {
         this.packPromos[created.id] = { promoEnabled: false, promoDiscountPercent: 0, promoLabel: '', promoExpiresAt: '', dirty: false };
         this.showCreatePack.set(false);
         this.savingId.set(null);
-        this.showToast('Pack créé', 'success');
+        this.showToast(this.translate.instant('admin_offers.toast_pack_created'), 'success');
       },
-      error: () => { this.savingId.set(null); this.showToast('Erreur lors de la création', 'error'); },
+      error: () => { this.savingId.set(null); this.showToast(this.translate.instant('admin_offers.toast_error_create'), 'error'); },
     });
   }
-
-  // ── Delete Pack ────────────────────────────────────────────────────────────
 
   deletePack(id: string) {
     this.savingId.set('del_' + id);
@@ -335,13 +332,11 @@ export class AdminOffersComponent implements OnInit {
         delete this.packPromos[id];
         this.confirmDeletePackId.set(null);
         this.savingId.set(null);
-        this.showToast('Pack supprimé', 'success');
+        this.showToast(this.translate.instant('admin_offers.toast_pack_deleted'), 'success');
       },
-      error: () => { this.savingId.set(null); this.showToast('Erreur lors de la suppression', 'error'); },
+      error: () => { this.savingId.set(null); this.showToast(this.translate.instant('admin_offers.toast_error_delete'), 'error'); },
     });
   }
-
-  // ── Create Subscription ────────────────────────────────────────────────────
 
   openCreateSub() {
     this.createSubForm = { name: '', pricePerMonth: 0, pointsPerMonth: 0, advantages: [], active: true, displayOrder: this.subscriptions().length + 1 };
@@ -359,13 +354,11 @@ export class AdminOffersComponent implements OnInit {
         this.subPromos[created.id] = { promoEnabled: false, promoDiscountPercent: 0, promoLabel: '', promoExpiresAt: '', dirty: false };
         this.showCreateSub.set(false);
         this.savingId.set(null);
-        this.showToast('Abonnement créé', 'success');
+        this.showToast(this.translate.instant('admin_offers.toast_sub_created'), 'success');
       },
-      error: () => { this.savingId.set(null); this.showToast('Erreur lors de la création', 'error'); },
+      error: () => { this.savingId.set(null); this.showToast(this.translate.instant('admin_offers.toast_error_create'), 'error'); },
     });
   }
-
-  // ── Delete Subscription ────────────────────────────────────────────────────
 
   deleteSub(id: string) {
     this.savingId.set('del_' + id);
@@ -375,13 +368,17 @@ export class AdminOffersComponent implements OnInit {
         delete this.subPromos[id];
         this.confirmDeleteSubId.set(null);
         this.savingId.set(null);
-        this.showToast('Abonnement supprimé', 'success');
+        this.showToast(this.translate.instant('admin_offers.toast_sub_deleted'), 'success');
       },
-      error: () => { this.savingId.set(null); this.showToast('Erreur lors de la suppression', 'error'); },
+      error: () => { this.savingId.set(null); this.showToast(this.translate.instant('admin_offers.toast_error_delete'), 'error'); },
     });
   }
 
   formatTND(amount: number): string {
     return amount.toFixed(3).replace('.', ',') + ' DT';
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

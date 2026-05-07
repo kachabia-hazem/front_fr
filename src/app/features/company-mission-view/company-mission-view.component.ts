@@ -1,5 +1,5 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +13,8 @@ import { ActiveMission, Task, Deliverable } from '../../core/models/active-missi
 import { environment } from '../../../environments/environment';
 import { FeedbackModalComponent } from '../../shared/components/feedback-modal/feedback-modal.component';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-company-mission-view',
   standalone: true,
@@ -20,7 +22,7 @@ import { FeedbackModalComponent } from '../../shared/components/feedback-modal/f
   templateUrl: './company-mission-view.component.html',
   styleUrl: './company-mission-view.component.css',
 })
-export class CompanyMissionViewComponent implements OnInit {
+export class CompanyMissionViewComponent implements OnInit, OnDestroy{
   company          = signal<Company | null>(null);
   mission          = signal<ActiveMission | null>(null);
   tasks            = signal<Task[]>([]);
@@ -60,8 +62,10 @@ export class CompanyMissionViewComponent implements OnInit {
 
   missionId = '';
 
-  constructor(
-    private route: ActivatedRoute,
+  private langSub?: Subscription;
+
+    constructor(
+  private route: ActivatedRoute,
     public router: Router,
     private activeMissionService: ActiveMissionService,
     private companyService: CompanyService,
@@ -69,9 +73,12 @@ export class CompanyMissionViewComponent implements OnInit {
     private notificationService: NotificationService,
     public themeService: ThemeService,
     private location: Location,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.missionId = this.route.snapshot.paramMap.get('id') || '';
 
     this.companyService.getMyProfile().subscribe({
@@ -201,5 +208,9 @@ export class CompanyMissionViewComponent implements OnInit {
       },
       error: () => this.validating.set(false),
     });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

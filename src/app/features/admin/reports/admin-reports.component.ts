@@ -1,17 +1,20 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ReportService } from '../../../core/services/report.service';
 import { Report, ReportStatus } from '../../../core/models/report.model';
+
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-admin-reports',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './admin-reports.component.html',
   styleUrls: ['./admin-reports.component.css'],
 })
-export class AdminReportsComponent implements OnInit {
+export class AdminReportsComponent implements OnInit, OnDestroy{
 
   reports  = signal<Report[]>([]);
   stats    = signal<Record<string, number>>({});
@@ -34,29 +37,9 @@ export class AdminReportsComponent implements OnInit {
 
   toast = signal<{ msg: string; type: 'success' | 'error' } | null>(null);
 
+  private langSub?: Subscription;
+
   readonly TABS = ['ALL', 'EN_ATTENTE', 'EN_COURS', 'TRAITE', 'REJETE'];
-
-  readonly TYPE_LABELS: Record<string, string> = {
-    FRAUDE:                 'Fraud',
-    COMPORTEMENT:           'Behavior',
-    PAIEMENT:               'Payment',
-    DOCUMENT_FALSIFIE:      'Forged Document',
-    HORS_SUJET:             'Off-topic',
-    BUG_TECHNIQUE:          'Technical Bug',
-    PROBLEME_NOTIFICATION:  'Notifications',
-    PROBLEME_MESSAGERIE:    'Messaging',
-    ACCES_FONCTIONNALITE:   'Access Denied',
-    CONTENU_INAPPROPRIE:    'Inappropriate Content',
-    COMPTE_INJUSTE:         'Unjust Suspension',
-    AUTRE:                  'Other',
-  };
-
-  readonly STATUS_LABELS: Record<string, string> = {
-    EN_ATTENTE: 'Pending',
-    EN_COURS:   'In Progress',
-    TRAITE:     'Resolved',
-    REJETE:     'Rejected',
-  };
 
   filteredReports = computed(() => {
     const q = this.searchQuery().toLowerCase();
@@ -64,7 +47,7 @@ export class AdminReportsComponent implements OnInit {
     return this.reports().filter(r => {
       const matchQ = !q || [
         r.reportedByName,
-        this.TYPE_LABELS[r.type], r.description, r.customType
+        r.type, r.description, r.customType
       ].filter(Boolean).join(' ').toLowerCase().includes(q);
       const matchS = s === 'ALL' || r.status === s;
       return matchQ && matchS;
@@ -73,9 +56,14 @@ export class AdminReportsComponent implements OnInit {
 
   pendingCount = computed(() => this.reports().filter(r => r.status === 'EN_ATTENTE').length);
 
-  constructor(private reportService: ReportService) {}
+  constructor(
+    private reportService: ReportService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  ngOnInit() { this.load(); }
+  ngOnInit() {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck()); this.load(); }
 
   private load() {
     this.loading.set(true);
@@ -99,8 +87,15 @@ export class AdminReportsComponent implements OnInit {
     if (this.processing()) return;
     this.processing.set(r.id);
     this.reportService.updateStatus(r.id, status).subscribe({
-      next: (updated) => { this.updateReport(updated); this.processing.set(null); this.showToast('Status updated.', 'success'); },
-      error: () => { this.processing.set(null); this.showToast('Failed to update status.', 'error'); },
+      next: (updated) => {
+        this.updateReport(updated);
+        this.processing.set(null);
+        this.showToast(this.translate.instant('admin_reports.toast_status_ok'), 'success');
+      },
+      error: () => {
+        this.processing.set(null);
+        this.showToast(this.translate.instant('admin_reports.toast_status_err'), 'error');
+      },
     });
   }
 
@@ -121,9 +116,12 @@ export class AdminReportsComponent implements OnInit {
         this.updateReport(updated);
         this.warning.set(false);
         this.closeWarnModal();
-        this.showToast('Warning sent to the reported party.', 'success');
+        this.showToast(this.translate.instant('admin_reports.toast_warn_ok'), 'success');
       },
-      error: () => { this.warning.set(false); this.showToast('Failed to send warning.', 'error'); },
+      error: () => {
+        this.warning.set(false);
+        this.showToast(this.translate.instant('admin_reports.toast_warn_err'), 'error');
+      },
     });
   }
 
@@ -144,22 +142,34 @@ export class AdminReportsComponent implements OnInit {
         this.updateReport(updated);
         this.rejecting.set(false);
         this.closeRejectModal();
-        this.showToast('Report rejected, the author received an explanation email.', 'success');
+        this.showToast(this.translate.instant('admin_reports.toast_reject_ok'), 'success');
       },
-      error: () => { this.rejecting.set(false); this.showToast('Failed to reject report.', 'error'); },
+      error: () => {
+        this.rejecting.set(false);
+        this.showToast(this.translate.instant('admin_reports.toast_reject_err'), 'error');
+      },
     });
   }
 
+  typeLabel(type: string): string {
+    return this.translate.instant('admin_reports.type_' + type.toLowerCase());
+  }
+
+  statusLabel(status: string): string {
+    return this.translate.instant('admin_reports.status_' + status.toLowerCase());
+  }
+
   tabLabel(s: string): string {
-    if (s === 'ALL') return 'All';
-    return this.STATUS_LABELS[s] ?? s;
+    if (s === 'ALL') return this.translate.instant('admin_reports.tab_all');
+    return this.translate.instant('admin_reports.status_' + s.toLowerCase());
   }
 
   statVal(k: string): number { return this.stats()[k] ?? 0; }
 
   formatDate(d: string): string {
     if (!d) return '';
-    return new Date(d).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+    const locale = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-US';
+    return new Date(d).toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
   private updateReport(updated: Report) {
@@ -174,5 +184,9 @@ export class AdminReportsComponent implements OnInit {
   private showToast(msg: string, type: 'success' | 'error') {
     this.toast.set({ msg, type });
     setTimeout(() => this.toast.set(null), 3500);
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

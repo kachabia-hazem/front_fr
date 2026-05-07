@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -12,6 +12,8 @@ import { FreelancerPaymentSummary } from '../../core/models/payment.model';
 import { Freelancer } from '../../core/models';
 import { environment } from '../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-freelancer-transactions',
   standalone: true,
@@ -19,7 +21,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './freelancer-transactions.component.html',
   styleUrl: './freelancer-transactions.component.css',
 })
-export class FreelancerTransactionsComponent implements OnInit {
+export class FreelancerTransactionsComponent implements OnInit, OnDestroy{
   freelancer       = signal<Freelancer | null>(null);
   loading          = signal(true);
   sidebarCollapsed = signal(false);
@@ -44,17 +46,21 @@ export class FreelancerTransactionsComponent implements OnInit {
   });
   currentPosition = computed(() => this.freelancer()?.currentPosition || 'Freelancer');
 
-  constructor(
-    private freelancerService: FreelancerService,
+  private langSub?: Subscription;
+
+    constructor(
+  private freelancerService: FreelancerService,
     private notificationService: NotificationService,
     private offersService: OffersService,
     private paymentService: PaymentService,
     public  authService: AuthService,
     public  themeService: ThemeService,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.freelancerService.getMyProfile().subscribe({
       next: (p) => { this.freelancer.set(p); this.loading.set(false); },
       error: ()  => this.loading.set(false),
@@ -124,5 +130,9 @@ export class FreelancerTransactionsComponent implements OnInit {
       FAILED: 'badge-failed',     REFUNDED: 'badge-refunded', UNPAID: 'badge-unpaid',
     };
     return map[status] ?? 'badge-unpaid';
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

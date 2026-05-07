@@ -439,6 +439,14 @@
   color: #9ca3af;
 }
 .notif-empty p { font-size: 0.875rem; color: #9ca3af; margin: 0; }
+.notif-spinner {
+  width: 28px; height: 28px;
+  border: 3px solid #e8eaed;
+  border-top-color: #3793B0;
+  border-radius: 50%;
+  animation: notif-spin 0.7s linear infinite;
+}
+@keyframes notif-spin { to { transform: rotate(360deg); } }
 
 /* Notification item */
 .notif-item {

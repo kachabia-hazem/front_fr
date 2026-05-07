@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -9,6 +9,8 @@ import { ToastService } from '../../core/services/toast.service';
 import { Mission } from '../../core/models/mission.model';
 import { environment } from '../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-saved-missions',
   standalone: true,
@@ -16,9 +18,11 @@ import { environment } from '../../../environments/environment';
   templateUrl: './saved-missions.component.html',
   styleUrl: './saved-missions.component.css',
 })
-export class SavedMissionsComponent implements OnInit {
+export class SavedMissionsComponent implements OnInit, OnDestroy{
   missions = signal<Mission[]>([]);
   loading  = signal(true);
+
+  private langSub?: Subscription;
 
   private readonly APP_STATUS_CACHE_KEY = 'wl_app_status_cache';
   applicationStatusMap = new Map<string, 'PENDING' | 'ACCEPTED' | 'REJECTED'>();
@@ -30,9 +34,11 @@ export class SavedMissionsComponent implements OnInit {
     public router: Router,
     private translate: TranslateService,
     private missionTranslation: MissionTranslationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.savedMissionsService.load();
     this.loading.set(true);
     this.savedMissionsService.getSavedMissions().subscribe({
@@ -115,5 +121,9 @@ export class SavedMissionsComponent implements OnInit {
   isDeadlinePassed(mission: Mission): boolean {
     if (!mission.applicationDeadline) return false;
     return new Date(mission.applicationDeadline) < new Date();
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

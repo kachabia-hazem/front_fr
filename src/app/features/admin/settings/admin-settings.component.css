@@ -123,10 +123,17 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ── Points economy layout ── */
+.costs-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.cost-col { display: flex; flex-direction: column; gap: 10px; }
+.cost-col .s-field { margin: 0; }
+.cost-col .s-input { width: 100%; box-sizing: border-box; }
+@media (max-width: 900px) { .costs-grid-4 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 500px) { .costs-grid-4 { grid-template-columns: 1fr; } }
+
 /* ── Points summary badges ── */
-.costs-summary { display: flex; gap: 12px; flex-wrap: wrap; }
 .cost-badge {
-  flex: 1; min-width: 120px;
+  width: 100%; box-sizing: border-box;
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   background: #f8fafc; border: 1px solid #e8eaed;
   border-radius: 12px; padding: 14px 10px; text-align: center;
@@ -147,9 +154,6 @@
 .cost-badge-val-gift { color: #16a34a; }
 
 /* ── Costs grid ── */
-.costs-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-.costs-grid .s-input { max-width: 100%; }
-@media (max-width: 700px) { .costs-grid { grid-template-columns: 1fr; } }
 
 /* ── Language picker ── */
 .lang-picker { display: flex; gap: 12px; flex-wrap: wrap; }

@@ -10,7 +10,7 @@
       </svg>
     </div>
     <div>
-      <h2 class="pm-title">Paiement sécurisé</h2>
+      <h2 class="pm-title">{{ 'payment_modal.title' | translate }}</h2>
       <p class="pm-subtitle">{{ missionTitle }}</p>
     </div>
     <button class="pm-close-btn" (click)="close()" [disabled]="submitting()">✕</button>
@@ -20,21 +20,19 @@
   @if (!loading() && !successMsg()) {
     <div class="pm-summary">
       <div class="pm-summary-row">
-        <span>Montant total mission</span>
+        <span>{{ 'payment_modal.total_amount' | translate }}</span>
         <strong>{{ totalAmount() | number:'1.2-2' }} {{ currency() }}</strong>
       </div>
       <div class="pm-summary-row pm-fee-row">
-        <span>Commission plateforme ({{ feePercent() }}%)</span>
+        <span>{{ 'payment_modal.platform_fee' | translate }} ({{ feePercent() }}%)</span>
         <span class="pm-fee">-{{ platformFee() | number:'1.2-2' }} {{ currency() }}</span>
       </div>
       <div class="pm-summary-divider"></div>
       <div class="pm-summary-row pm-total-row">
-        <span>Freelancer recevra</span>
+        <span>{{ 'payment_modal.freelancer_receives' | translate }}</span>
         <strong class="pm-freelancer-amt">{{ freelancerAmt() | number:'1.2-2' }} {{ currency() }}</strong>
       </div>
-      <p class="pm-escrow-note">
-        💡 Les fonds seront <strong>bloqués en escrow</strong> et libérés au freelancer uniquement après validation de la mission.
-      </p>
+      <p class="pm-escrow-note" [innerHTML]="'payment_modal.escrow_note' | translate"></p>
     </div>
   }
 
@@ -43,7 +41,7 @@
     @if (loading()) {
       <div class="pm-loading">
         <div class="pm-spinner"></div>
-        <p>Initialisation du paiement…</p>
+        <p>{{ 'payment_modal.initializing' | translate }}</p>
       </div>
     }
 
@@ -64,13 +62,13 @@
   <!-- Footer -->
   @if (!loading() && !successMsg()) {
     <div class="pm-footer">
-      <button class="pm-cancel-btn" (click)="close()" [disabled]="submitting()">Annuler</button>
+      <button class="pm-cancel-btn" (click)="close()" [disabled]="submitting()">{{ 'payment_modal.cancel' | translate }}</button>
       <button class="pm-pay-btn" (click)="confirmPayment()" [disabled]="submitting()">
         @if (submitting()) {
           <span class="pm-btn-spinner"></span>
-          Traitement…
+          {{ 'payment_modal.processing' | translate }}
         } @else {
-          🔒 Payer {{ totalAmount() | number:'1.2-2' }} {{ currency() }}
+          {{ 'payment_modal.pay_btn' | translate }} {{ totalAmount() | number:'1.2-2' }} {{ currency() }}
         }
       </button>
     </div>

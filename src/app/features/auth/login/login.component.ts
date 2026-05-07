@@ -156,7 +156,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
         if (err.status === 403 && err.error?.message) {
           this.authService.clearAuth();
           this.router.navigate(['/auth/banned'], {
-            state: { banReason: err.error.banReason ?? '' },
+            state: {
+              banReason: err.error.banReason ?? '',
+              userId: err.error.userId ?? '',
+              userType: err.error.userType ?? '',
+              email: email,
+            },
           });
         } else if (err.error?.message) {
           this.errorMessage = err.error.message;

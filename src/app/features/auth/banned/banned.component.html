@@ -43,9 +43,15 @@
       <p class="reason-text muted">The administrator did not specify a reason.</p>
     </div>
 
-    <div class="contact-hint">
-      If you believe this is a mistake, please contact our support team.
+    <div class="report-sent-box" *ngIf="reportSubmitted()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Your report has been submitted. Please wait for admin review.
     </div>
+
+    <button class="btn-appeal" *ngIf="!reportSubmitted()" (click)="openReport()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Report
+    </button>
 
     <button class="btn-back" (click)="goToLogin()">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -63,3 +69,10 @@
 
   </div>
 </div>
+
+<app-report-modal
+  *ngIf="showReportModal()"
+  [reporterEmail]="email"
+  (closed)="showReportModal.set(false)"
+  (submitted)="onReportSubmitted()"
+></app-report-modal>

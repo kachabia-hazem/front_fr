@@ -1,7 +1,8 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CompanyService } from '../../core/services/company.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
@@ -20,7 +21,7 @@ import { forkJoin } from 'rxjs';
   templateUrl: './company-missions.component.html',
   styleUrl: './company-missions.component.css',
 })
-export class CompanyMissionsComponent implements OnInit {
+export class CompanyMissionsComponent implements OnInit, OnDestroy {
   company = signal<Company | null>(null);
   missions = signal<Mission[]>([]);
   applicationCounts = signal<Record<string, number>>({});
@@ -32,6 +33,7 @@ export class CompanyMissionsComponent implements OnInit {
   searchFocused = false;
   selectedMission = signal<Mission | null>(null);
   detailLoading = signal(false);
+  private langSub?: Subscription;
 
   // Pagination
   readonly PAGE_SIZE = 7;
@@ -100,6 +102,8 @@ export class CompanyMissionsComponent implements OnInit {
     public themeService: ThemeService,
     public router: Router,
     private location: Location,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -122,6 +126,14 @@ export class CompanyMissionsComponent implements OnInit {
       },
       error: () => this.loading.set(false),
     });
+
+    this.langSub = this.translate.onLangChange.subscribe(() => {
+      this.cdr.markForCheck();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 
   getApplicationCount(missionId: string | undefined): number {
@@ -173,17 +185,15 @@ export class CompanyMissionsComponent implements OnInit {
   }
 
   getTimeAgo(dateStr: string): string {
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
+    const diffMs = Date.now() - new Date(dateStr).getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffMins < 60) return this.translate.instant('company_missions.time_min_ago', { n: diffMins });
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffHours < 24) return this.translate.instant('company_missions.time_hour_ago', { n: diffHours });
     const diffDays = Math.floor(diffHours / 24);
-    if (diffDays < 30) return `${diffDays}d ago`;
+    if (diffDays < 30) return this.translate.instant('company_missions.time_day_ago', { n: diffDays });
     const diffMonths = Math.floor(diffDays / 30);
-    return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
+    return this.translate.instant('company_missions.time_month_ago', { n: diffMonths });
   }
 
   getSkillsList(skills: string): string[] {
@@ -216,14 +226,15 @@ export class CompanyMissionsComponent implements OnInit {
   }
 
   getStatusLabel(status: string | undefined): string {
-    const labels: Record<string, string> = {
-      OPEN: 'Open',
-      CLOSED: 'Closed',
-      IN_PROGRESS: 'In Progress',
-      COMPLETED: 'Completed',
-      CANCELLED: 'Cancelled',
+    const keys: Record<string, string> = {
+      OPEN: 'company_missions.status_open',
+      CLOSED: 'company_missions.status_closed',
+      IN_PROGRESS: 'company_missions.status_in_progress',
+      COMPLETED: 'company_missions.status_completed',
+      CANCELLED: 'company_missions.status_cancelled',
     };
-    return labels[status || ''] || status || '—';
+    const key = keys[status || ''];
+    return key ? this.translate.instant(key) : (status || '—');
   }
 
   formatDate(dateStr: string | undefined): string {

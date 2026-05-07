@@ -1,5 +1,5 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router, ActivatedRoute } from '@angular/router';
 import { CompanyService } from '../../core/services/company.service';
@@ -13,6 +13,8 @@ import { Mission } from '../../core/models/mission.model';
 import { Company } from '../../core/models/user.model';
 import { environment } from '../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-mission-applications',
   standalone: true,
@@ -20,7 +22,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './mission-applications.component.html',
   styleUrl: './mission-applications.component.css',
 })
-export class MissionApplicationsComponent implements OnInit {
+export class MissionApplicationsComponent implements OnInit, OnDestroy{
   company = signal<Company | null>(null);
   mission = signal<Mission | null>(null);
   applications = signal<Application[]>([]);
@@ -63,8 +65,10 @@ export class MissionApplicationsComponent implements OnInit {
   acceptedCount = computed(() => this.applications().filter(a => a.status === 'ACCEPTED').length);
   rejectedCount = computed(() => this.applications().filter(a => a.status === 'REJECTED').length);
 
-  constructor(
-    private companyService: CompanyService,
+  private langSub?: Subscription;
+
+    constructor(
+  private companyService: CompanyService,
     private missionService: MissionService,
     private applicationService: ApplicationService,
     public authService: AuthService,
@@ -73,9 +77,12 @@ export class MissionApplicationsComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private offersService: OffersService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.missionId = this.route.snapshot.paramMap.get('missionId') || '';
 
     this.offersService.getPlatformCosts().subscribe({
@@ -257,5 +264,9 @@ export class MissionApplicationsComponent implements OnInit {
   extraSkillsCount(skills: string[] | undefined): number {
     const len = (skills || []).length;
     return len > 3 ? len - 3 : 0;
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

@@ -1,4 +1,4 @@
-import { Component, HostListener, ElementRef, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, HostListener, ElementRef, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -8,6 +8,8 @@ import { MissionService } from '../../core/services/mission.service';
 import { CreateMissionRequest } from '../../core/models/mission.model';
 import { SECTOR_OPTIONS, SPECIALITY_OPTIONS } from '../../core/constants/mission-options';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-post-job',
   standalone: true,
@@ -15,7 +17,7 @@ import { SECTOR_OPTIONS, SPECIALITY_OPTIONS } from '../../core/constants/mission
   templateUrl: './post-job.component.html',
   styleUrl: './post-job.component.css',
 })
-export class PostJobComponent implements OnInit {
+export class PostJobComponent implements OnInit, OnDestroy{
   missionForm: FormGroup;
   loading = false;
   errorMessage = '';
@@ -47,14 +49,16 @@ export class PostJobComponent implements OnInit {
   @ViewChild('requiredSkillsEditor') skillsEditorRef!: ElementRef<HTMLDivElement>;
   @ViewChild('technicalEnvironmentEditor') techEnvEditorRef!: ElementRef<HTMLDivElement>;
 
-  constructor(
-    private fb: FormBuilder,
+  private langSub?: Subscription;
+
+    constructor(
+  private fb: FormBuilder,
     private missionService: MissionService,
     private router: Router,
     private route: ActivatedRoute,
     private elRef: ElementRef,
     private cdr: ChangeDetectorRef,
-    private translate: TranslateService,
+    private translate: TranslateService
   ) {
     this.missionForm = this.fb.group({
       jobTitle: ['', [Validators.required]],
@@ -75,6 +79,7 @@ export class PostJobComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
@@ -392,5 +397,9 @@ export class PostJobComponent implements OnInit {
     setTimeout(() => {
       this.router.navigate(['/missions']);
     }, 2500);
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

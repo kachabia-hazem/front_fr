@@ -1,18 +1,21 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LegitService } from '../../../core/services/legit.service';
 import { Legit, LegitStatus } from '../../../core/models/legit.model';
 import { environment } from '../../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-admin-legits',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './admin-legits.component.html',
   styleUrls: ['./admin-legits.component.css'],
 })
-export class AdminLegitsComponent implements OnInit {
+export class AdminLegitsComponent implements OnInit, OnDestroy{
 
   legits   = signal<Legit[]>([]);
   stats    = signal<Record<string, number>>({});
@@ -33,14 +36,9 @@ export class AdminLegitsComponent implements OnInit {
 
   toast = signal<{ msg: string; type: 'success' | 'error' } | null>(null);
 
-  readonly TABS = ['ALL', 'EN_ATTENTE', 'EN_COURS', 'RESOLU', 'REJETE'];
+  private langSub?: Subscription;
 
-  readonly STATUS_LABELS: Record<string, string> = {
-    EN_ATTENTE: 'En attente',
-    EN_COURS:   'En cours',
-    RESOLU:     'Résolu',
-    REJETE:     'Rejeté',
-  };
+  readonly TABS = ['ALL', 'EN_ATTENTE', 'EN_COURS', 'RESOLU', 'REJETE'];
 
   filteredLegits = computed(() => {
     const q = this.searchQuery().toLowerCase();
@@ -55,9 +53,14 @@ export class AdminLegitsComponent implements OnInit {
 
   pendingCount = computed(() => this.legits().filter(l => l.status === 'EN_ATTENTE').length);
 
-  constructor(private legitService: LegitService) {}
+  constructor(
+    private legitService: LegitService,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  ngOnInit() { this.load(); }
+  ngOnInit() {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck()); this.load(); }
 
   private load() {
     this.loading.set(true);
@@ -84,18 +87,19 @@ export class AdminLegitsComponent implements OnInit {
       next: (updated) => {
         this.updateLegit(updated);
         this.processing.set(null);
-        this.showToast('Statut mis à jour.', 'success');
+        this.showToast(this.translate.instant('admin_legits.toast_status_ok'), 'success');
       },
-      error: () => { this.processing.set(null); this.showToast('Erreur lors de la mise à jour.', 'error'); },
+      error: () => {
+        this.processing.set(null);
+        this.showToast(this.translate.instant('admin_legits.toast_status_err'), 'error');
+      },
     });
   }
-
-  // ── Email modal ────────────────────────────────────────────────────────────
 
   openEmailModal(l: Legit, event?: MouseEvent) {
     event?.stopPropagation();
     this.emailTarget.set(l);
-    this.emailSubject.set('Concernant votre litige — WorkLink');
+    this.emailSubject.set(this.translate.instant('admin_legits.default_subject'));
     this.emailBody.set('');
   }
 
@@ -114,24 +118,26 @@ export class AdminLegitsComponent implements OnInit {
         this.updateLegit(updated);
         this.sending.set(false);
         this.closeEmailModal();
-        this.showToast('Email envoyé et notification créée.', 'success');
+        this.showToast(this.translate.instant('admin_legits.email_toast_ok'), 'success');
       },
-      error: () => { this.sending.set(false); this.showToast("Échec de l'envoi.", 'error'); },
+      error: () => {
+        this.sending.set(false);
+        this.showToast(this.translate.instant('admin_legits.email_toast_err'), 'error');
+      },
     });
   }
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
-
   tabLabel(s: string): string {
-    if (s === 'ALL') return 'Tous';
-    return this.STATUS_LABELS[s] ?? s;
+    if (s === 'ALL') return this.translate.instant('admin_legits.tab_all');
+    return this.translate.instant('admin_legits.status_' + s.toLowerCase());
   }
 
   statVal(k: string): number { return this.stats()[k] ?? 0; }
 
   formatDate(d: string): string {
     if (!d) return '';
-    return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+    const locale = this.translate.currentLang === 'fr' ? 'fr-FR' : 'en-US';
+    return new Date(d).toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
   isImage(url: string): boolean {
@@ -155,5 +161,9 @@ export class AdminLegitsComponent implements OnInit {
   private showToast(msg: string, type: 'success' | 'error') {
     this.toast.set({ msg, type });
     setTimeout(() => this.toast.set(null), 3500);
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

@@ -123,12 +123,12 @@
     <div class="notif-page-header">
       <div class="notif-page-title-row">
         <div>
-          <h1 class="notif-page-title">Notifications</h1>
+          <h1 class="notif-page-title">{{ 'notifications_page.title' | translate }}</h1>
           <p class="notif-page-subtitle">
             @if (unreadCount() > 0) {
-              You have <strong>{{ unreadCount() }}</strong> unread notification{{ unreadCount() > 1 ? 's' : '' }}.
+              <span [innerHTML]="'notifications_page.subtitle_unread' | translate: { n: unreadCount() }"></span>
             } @else {
-              All notifications are read.
+              {{ 'notifications_page.subtitle_all_read' | translate }}
             }
           </p>
         </div>
@@ -138,7 +138,7 @@
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
-            Mark all as read
+            {{ 'notifications_page.mark_all_read' | translate }}
           </button>
         }
       </div>
@@ -152,7 +152,7 @@
           stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input class="notif-search-input" type="text" placeholder="Search notifications..."
+        <input class="notif-search-input" type="text" [placeholder]="'notifications_page.search_placeholder' | translate"
           [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)" />
         @if (searchQuery()) {
           <button class="notif-search-clear" (click)="onSearchChange('')">
@@ -165,13 +165,13 @@
       </div>
 
       <div class="notif-filter-chips">
-        <button class="chip" [class.chip-active]="filterType() === 'all'" (click)="setFilterType('all')">All</button>
-        <button class="chip" [class.chip-active]="filterType() === 'unread'" (click)="setFilterType('unread')">Unread</button>
-        <button class="chip" [class.chip-active]="filterType() === 'read'" (click)="setFilterType('read')">Read</button>
+        <button class="chip" [class.chip-active]="filterType() === 'all'" (click)="setFilterType('all')">{{ 'notifications_page.filter_all' | translate }}</button>
+        <button class="chip" [class.chip-active]="filterType() === 'unread'" (click)="setFilterType('unread')">{{ 'notifications_page.filter_unread' | translate }}</button>
+        <button class="chip" [class.chip-active]="filterType() === 'read'" (click)="setFilterType('read')">{{ 'notifications_page.filter_read' | translate }}</button>
       </div>
 
       <select class="notif-select" [value]="selectedSender()" (change)="onSenderChange($any($event.target).value)">
-        <option value="">All senders</option>
+        <option value="">{{ 'notifications_page.all_senders' | translate }}</option>
         @for (s of senders(); track s) {
           <option [value]="s">{{ s }}</option>
         }
@@ -181,7 +181,7 @@
         (change)="onDateChange($any($event.target).value)" />
 
       @if (searchQuery() || filterType() !== 'all' || selectedSender() || selectedDate()) {
-        <button class="btn-clear-filters" (click)="clearFilters()">Clear filters</button>
+        <button class="btn-clear-filters" (click)="clearFilters()">{{ 'notifications_page.clear_filters' | translate }}</button>
       }
     </div>
 
@@ -189,7 +189,7 @@
     @if (loading()) {
       <div class="notif-loading">
         <div class="spinner"></div>
-        <p>Loading notifications...</p>
+        <p>{{ 'notifications_page.loading' | translate }}</p>
       </div>
     } @else if (filtered().length === 0) {
       <div class="notif-empty">
@@ -200,16 +200,16 @@
             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
           </svg>
         </div>
-        <p class="notif-empty-title">No notifications found</p>
+        <p class="notif-empty-title">{{ 'notifications_page.no_results_title' | translate }}</p>
         <p class="notif-empty-sub">
           @if (searchQuery() || filterType() !== 'all' || selectedSender() || selectedDate()) {
-            Try adjusting your filters.
+            {{ 'notifications_page.no_results_filters' | translate }}
           } @else {
-            You're all caught up! Notifications will appear here when there are updates.
+            {{ 'notifications_page.no_results_empty' | translate }}
           }
         </p>
         @if (searchQuery() || filterType() !== 'all' || selectedSender() || selectedDate()) {
-          <button class="btn-clear-filters" (click)="clearFilters()">Clear filters</button>
+          <button class="btn-clear-filters" (click)="clearFilters()">{{ 'notifications_page.clear_filters' | translate }}</button>
         }
       </div>
     } @else {
@@ -243,14 +243,14 @@
                   {{ notif.senderName }}
                 </span>
                 <span class="notif-action-hint">
-                  {{ isExpanded(notif.id) ? 'Show less ↑' : 'Show more ↓' }}
+                  {{ isExpanded(notif.id) ? ('notifications_page.show_less' | translate) : ('notifications_page.show_more' | translate) }}
                 </span>
               </div>
             </div>
 
             @if (!notif.isRead) {
               <button class="notif-mark-read-btn" (click)="$event.stopPropagation(); markAsRead(notif)"
-                title="Mark as read">
+                [title]="'notifications_page.mark_as_read' | translate">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="20 6 9 17 4 12"/>
@@ -281,7 +281,7 @@
       }
 
       <p class="notif-count-info">
-        Showing {{ (currentPage() - 1) * PAGE_SIZE + 1 }}–{{ currentPage() * PAGE_SIZE > filtered().length ? filtered().length : currentPage() * PAGE_SIZE }} of {{ filtered().length }} notification{{ filtered().length > 1 ? 's' : '' }}
+        {{ 'notifications_page.showing_count' | translate: { from: (currentPage() - 1) * PAGE_SIZE + 1, to: (currentPage() * PAGE_SIZE > filtered().length ? filtered().length : currentPage() * PAGE_SIZE), total: filtered().length } }}
       </p>
     }
   </main>

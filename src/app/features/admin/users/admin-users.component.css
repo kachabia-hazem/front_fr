@@ -82,6 +82,60 @@
 .btn-confirm-ban:hover:not(:disabled) { background: #c2410c; }
 .btn-confirm-ban:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* ── Appeal column ── */
+.btn-appeal { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; border: none; cursor: pointer; font-size: 0.72rem; font-weight: 700; transition: opacity 0.2s, transform 0.15s; }
+.btn-appeal:hover { opacity: 0.85; transform: scale(1.04); }
+.appeal-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.appeal-dot.blink { animation: appeal-pulse 1.4s ease-in-out infinite; }
+@keyframes appeal-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 currentColor; }
+  50%       { opacity: 0.5; transform: scale(1.3); box-shadow: 0 0 0 4px transparent; }
+}
+.btn-appeal.appeal-pending {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(245,158,11,0.45);
+  animation: btn-glow 1.6s ease-in-out infinite alternate;
+}
+@keyframes btn-glow {
+  from { box-shadow: 0 2px 8px rgba(245,158,11,0.4); }
+  to   { box-shadow: 0 4px 18px rgba(239,68,68,0.55); }
+}
+.btn-appeal.appeal-accepted { background: #d1fae5; color: #065f46; }
+.btn-appeal.appeal-rejected { background: #fee2e2; color: #991b1b; }
+
+/* ── Appeal Modal ── */
+.appeal-modal { width: 520px; max-height: 85vh; overflow-y: auto; }
+.modal-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.modal-header-row h3 { margin: 0; }
+.btn-close-modal { background: none; border: none; cursor: pointer; font-size: 1rem; color: #9ca3af; padding: 4px 8px; border-radius: 6px; }
+.btn-close-modal:hover { background: #f3f4f6; color: #374151; }
+
+.appeal-meta { background: #f8f9fb; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+.appeal-meta-row { display: flex; gap: 10px; margin-bottom: 6px; font-size: 0.82rem; align-items: center; }
+.appeal-meta-row:last-child { margin-bottom: 0; }
+.appeal-meta-label { font-weight: 700; color: #6b7280; min-width: 100px; }
+.appeal-meta-value { color: #374151; }
+
+.appeal-status-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+.appeal-status-badge.appeal-pending { background: #fef3c7; color: #92400e; }
+.appeal-status-badge.appeal-accepted { background: #d1fae5; color: #065f46; }
+.appeal-status-badge.appeal-rejected { background: #fee2e2; color: #991b1b; }
+
+.appeal-section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #9ca3af; margin-bottom: 8px; }
+.appeal-message-section { margin-bottom: 14px; }
+.appeal-message-box { background: #f8f9fb; border: 1px solid #e8eaed; border-radius: 10px; padding: 12px 14px; font-size: 0.875rem; color: #374151; line-height: 1.6; white-space: pre-wrap; }
+.appeal-attachments-section { margin-bottom: 14px; }
+.appeal-no-attach { font-size: 0.8rem; color: #9ca3af; font-style: italic; }
+.appeal-attach-list { display: flex; flex-direction: column; gap: 6px; }
+.appeal-attach-link { display: inline-flex; align-items: center; gap: 7px; font-size: 0.82rem; color: #3793B0; font-weight: 600; text-decoration: none; padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(55,147,176,0.2); background: rgba(55,147,176,0.06); width: fit-content; }
+.appeal-attach-link:hover { background: rgba(55,147,176,0.12); }
+
+.btn-appeal-accept { padding: 9px 18px; border-radius: 9px; background: #10b981; color: #fff; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 700; transition: background 0.2s; }
+.btn-appeal-accept:hover { background: #059669; }
+.btn-appeal-reject { padding: 9px 18px; border-radius: 9px; background: #ef4444; color: #fff; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 700; transition: background 0.2s; }
+.btn-appeal-reject:hover { background: #dc2626; }
+
 /* ── Dark Mode ── */
 :host-context(body.dark-theme) .page-title { color: #e4e4ef; }
 :host-context(body.dark-theme) .tabs button { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }

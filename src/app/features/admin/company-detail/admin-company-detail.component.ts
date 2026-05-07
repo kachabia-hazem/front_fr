@@ -1,7 +1,8 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AdminService } from '../../../core/services/admin.service';
 import { Company } from '../../../core/models/user.model';
 import { HttpClient } from '@angular/common/http';
@@ -46,14 +47,16 @@ interface Signal {
   icon: 'check' | 'x' | 'warn';
 }
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-admin-company-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, TitleCasePipe, RouterModule],
+  imports: [CommonModule, FormsModule, DatePipe, TitleCasePipe, RouterModule, TranslateModule],
   templateUrl: './admin-company-detail.component.html',
   styleUrls: ['./admin-company-detail.component.css'],
 })
-export class AdminCompanyDetailComponent implements OnInit {
+export class AdminCompanyDetailComponent implements OnInit, OnDestroy{
   company = signal<Company | null>(null);
   trustAnalysis = signal<TrustAnalysis | null>(null);
   loadingCompany = signal(true);
@@ -64,14 +67,19 @@ export class AdminCompanyDetailComponent implements OnInit {
   rejectReason = signal('');
   toastMessage = signal<{ text: string; type: 'success' | 'error' } | null>(null);
 
-  constructor(
-    private route: ActivatedRoute,
+  private langSub?: Subscription;
+
+    constructor(
+  private route: ActivatedRoute,
     private router: Router,
     private adminService: AdminService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     const id = this.route.snapshot.paramMap.get('id')!;
     this.adminService.getCompanyById(id).subscribe({
       next: (c) => {
@@ -79,9 +87,7 @@ export class AdminCompanyDetailComponent implements OnInit {
         this.loadingCompany.set(false);
         this.runAIAnalysis(c);
       },
-      error: () => {
-        this.loadingCompany.set(false);
-      },
+      error: () => this.loadingCompany.set(false),
     });
   }
 
@@ -101,14 +107,8 @@ export class AdminCompanyDetailComponent implements OnInit {
       address: c.address ?? null,
       manager_email: c.managerEmail ?? null,
     }).subscribe({
-      next: (res) => {
-        this.trustAnalysis.set(res);
-        this.loadingAI.set(false);
-      },
-      error: () => {
-        this.aiError.set(true);
-        this.loadingAI.set(false);
-      },
+      next: (res) => { this.trustAnalysis.set(res); this.loadingAI.set(false); },
+      error: () => { this.aiError.set(true); this.loadingAI.set(false); },
     });
   }
 
@@ -117,56 +117,49 @@ export class AdminCompanyDetailComponent implements OnInit {
     if (c) this.runAIAnalysis(c);
   }
 
-  // ── Signals breakdown ────────────────────────────────────────────────────────
   getSignals(): Signal[] {
     const ta = this.trustAnalysis();
     if (!ta) return [];
     const n1 = ta.details.node1_website;
     const n2 = ta.details.node2_email;
+    const t = (k: string, p?: object) => this.translate.instant('admin_company_detail.' + k, p);
     const signals: Signal[] = [];
 
-    // Website
-    if (n1.website_exists) signals.push({ text: 'Website is online and reachable', type: 'good', icon: 'check' });
-    else signals.push({ text: 'No active website detected', type: 'bad', icon: 'x' });
+    if (n1.website_exists) signals.push({ text: t('sig_website_online'), type: 'good', icon: 'check' });
+    else signals.push({ text: t('sig_no_website'), type: 'bad', icon: 'x' });
 
-    if (n1.ssl_valid) signals.push({ text: 'Website uses HTTPS (SSL certificate valid)', type: 'good', icon: 'check' });
-    else if (n1.website_exists) signals.push({ text: 'Website has no SSL/HTTPS certificate', type: 'bad', icon: 'x' });
+    if (n1.ssl_valid) signals.push({ text: t('sig_ssl_valid'), type: 'good', icon: 'check' });
+    else if (n1.website_exists) signals.push({ text: t('sig_no_ssl'), type: 'bad', icon: 'x' });
 
     if (n1.domain_age_years !== null) {
-      if (n1.domain_age_years >= 3) signals.push({ text: `Domain is ${n1.domain_age_years} years old (well established)`, type: 'good', icon: 'check' });
-      else if (n1.domain_age_years >= 1) signals.push({ text: `Domain is ${n1.domain_age_years} year(s) old (relatively recent)`, type: 'warning', icon: 'warn' });
-      else signals.push({ text: 'Domain was registered very recently (< 1 year)', type: 'bad', icon: 'x' });
+      if (n1.domain_age_years >= 3) signals.push({ text: t('sig_domain_old', { years: n1.domain_age_years }), type: 'good', icon: 'check' });
+      else if (n1.domain_age_years >= 1) signals.push({ text: t('sig_domain_recent', { years: n1.domain_age_years }), type: 'warning', icon: 'warn' });
+      else signals.push({ text: t('sig_domain_new'), type: 'bad', icon: 'x' });
     }
 
-    if (n1.social_links_found.length >= 2) signals.push({ text: `${n1.social_links_found.length} social media profiles detected (${n1.social_links_found.join(', ')})`, type: 'good', icon: 'check' });
-    else if (n1.social_links_found.length === 1) signals.push({ text: `1 social profile detected (${n1.social_links_found[0]})`, type: 'warning', icon: 'warn' });
-    else signals.push({ text: 'No social media presence detected on the website', type: 'bad', icon: 'x' });
+    if (n1.social_links_found.length >= 2) signals.push({ text: t('sig_social_many', { count: n1.social_links_found.length, platforms: n1.social_links_found.join(', ') }), type: 'good', icon: 'check' });
+    else if (n1.social_links_found.length === 1) signals.push({ text: t('sig_social_one', { platform: n1.social_links_found[0] }), type: 'warning', icon: 'warn' });
+    else signals.push({ text: t('sig_no_social'), type: 'bad', icon: 'x' });
 
-    // Email
-    if (n2.email_valid_format) signals.push({ text: 'Email address format is valid', type: 'good', icon: 'check' });
-    else signals.push({ text: 'Email address format is invalid', type: 'bad', icon: 'x' });
+    if (n2.email_valid_format) signals.push({ text: t('sig_email_valid'), type: 'good', icon: 'check' });
+    else signals.push({ text: t('sig_email_invalid'), type: 'bad', icon: 'x' });
 
-    if (n2.has_mx_records) signals.push({ text: 'Email domain has active mail server (MX records found)', type: 'good', icon: 'check' });
-    else signals.push({ text: 'Email domain has no mail server — address may be fake', type: 'bad', icon: 'x' });
+    if (n2.has_mx_records) signals.push({ text: t('sig_mx_found'), type: 'good', icon: 'check' });
+    else signals.push({ text: t('sig_no_mx'), type: 'bad', icon: 'x' });
 
-    if (n2.is_professional) signals.push({ text: 'Professional email domain (not Gmail/Hotmail/etc.)', type: 'good', icon: 'check' });
-    else signals.push({ text: 'Generic email provider used (Gmail/Hotmail/Yahoo/etc.)', type: 'bad', icon: 'x' });
+    if (n2.is_professional) signals.push({ text: t('sig_professional_email'), type: 'good', icon: 'check' });
+    else signals.push({ text: t('sig_generic_email'), type: 'bad', icon: 'x' });
 
-    if (n2.matches_website) signals.push({ text: 'Email domain matches the company website', type: 'good', icon: 'check' });
-    else if (n2.is_professional) signals.push({ text: 'Email domain does not match website domain', type: 'warning', icon: 'warn' });
+    if (n2.matches_website) signals.push({ text: t('sig_email_matches_web'), type: 'good', icon: 'check' });
+    else if (n2.is_professional) signals.push({ text: t('sig_email_no_match'), type: 'warning', icon: 'warn' });
 
-    if (n2.matches_company_name) signals.push({ text: 'Email domain matches the company name', type: 'good', icon: 'check' });
+    if (n2.matches_company_name) signals.push({ text: t('sig_email_matches_name'), type: 'good', icon: 'check' });
 
     return signals;
   }
 
-  getGoodSignals(): Signal[] {
-    return this.getSignals().filter(s => s.type === 'good');
-  }
-
-  getBadSignals(): Signal[] {
-    return this.getSignals().filter(s => s.type !== 'good');
-  }
+  getGoodSignals(): Signal[] { return this.getSignals().filter(s => s.type === 'good'); }
+  getBadSignals(): Signal[] { return this.getSignals().filter(s => s.type !== 'good'); }
 
   getSocialLinks(): { platform: string; url: string }[] {
     const ta = this.trustAnalysis();
@@ -181,27 +174,24 @@ export class AdminCompanyDetailComponent implements OnInit {
     const ta = this.trustAnalysis();
     const c = this.company();
     if (!ta || !c) return [];
+    const t = (k: string, p?: object) => this.translate.instant('admin_company_detail.' + k, p);
     const tips: string[] = [];
     const n1 = ta.details.node1_website;
     const n2 = ta.details.node2_email;
 
-    if (ta.trust_score >= 75) {
-      tips.push('All major trust signals are positive. This company appears legitimate.');
-    } else if (ta.trust_score >= 45) {
-      tips.push('Some signals require attention. Review the negative points carefully before approving.');
-    } else {
-      tips.push('Multiple risk indicators detected. Consider requesting additional documentation before approving.');
-    }
+    if (ta.trust_score >= 75) tips.push(t('tip_all_good'));
+    else if (ta.trust_score >= 45) tips.push(t('tip_review'));
+    else tips.push(t('tip_risk'));
 
-    if (!n1.website_exists) tips.push('Ask the company to provide a valid website URL or official portal link.');
-    if (!n1.ssl_valid && n1.website_exists) tips.push('The website is accessible but lacks SSL. This is acceptable for small companies but worth noting.');
-    if (!n2.is_professional) tips.push('Request a professional email address (company domain). Generic emails (Gmail, etc.) reduce trust.');
-    if (!n2.has_mx_records) tips.push('The email domain has no mail server. Verify the email address directly by phone.');
-    if (!n2.matches_website) tips.push('Email domain and website domain don\'t match. Ask the company to clarify or provide both from the same domain.');
-    if (n1.social_links_found.length === 0) tips.push('No social media presence found. Ask for LinkedIn or Facebook company page links.');
-    if (n1.domain_age_years !== null && n1.domain_age_years < 1) tips.push('The website domain is very recent. Consider requesting older business documents to confirm company age.');
-    if (!c.tradeRegister) tips.push('No trade register number provided. This is a required document — request it before approving.');
-    if (c.tradeRegister) tips.push(`Trade register: "${c.tradeRegister}" — verify this number with the official national business registry.`);
+    if (!n1.website_exists) tips.push(t('tip_no_website'));
+    if (!n1.ssl_valid && n1.website_exists) tips.push(t('tip_no_ssl'));
+    if (!n2.is_professional) tips.push(t('tip_generic_email'));
+    if (!n2.has_mx_records) tips.push(t('tip_no_mx'));
+    if (!n2.matches_website) tips.push(t('tip_email_domain_mismatch'));
+    if (n1.social_links_found.length === 0) tips.push(t('tip_no_social'));
+    if (n1.domain_age_years !== null && n1.domain_age_years < 1) tips.push(t('tip_domain_new'));
+    if (!c.tradeRegister) tips.push(t('tip_no_register'));
+    if (c.tradeRegister) tips.push(t('tip_verify_register', { register: c.tradeRegister }));
 
     return tips;
   }
@@ -221,26 +211,28 @@ export class AdminCompanyDetailComponent implements OnInit {
     return circumference - (score / 100) * circumference;
   }
 
+  statusLabel(status: string | undefined | null): string {
+    const s = status ?? 'PENDING';
+    return this.translate.instant('admin_verif.status_' + s.toLowerCase());
+  }
+
+  methodLabel(method: string): string {
+    const key = method === 'ai_blended' ? 'method_ai_blended' : 'method_rule';
+    return this.translate.instant('admin_company_detail.' + key);
+  }
+
   getPlatformIcon(platform: string): string {
     const icons: Record<string, string> = {
-      linkedin: 'in',
-      facebook: 'f',
-      twitter: 'X',
-      instagram: 'ig',
-      youtube: '▶',
-      github: 'gh',
+      linkedin: 'in', facebook: 'f', twitter: 'X',
+      instagram: 'ig', youtube: '▶', github: 'gh',
     };
     return icons[platform.toLowerCase()] ?? platform[0].toUpperCase();
   }
 
   getPlatformColor(platform: string): string {
     const colors: Record<string, string> = {
-      linkedin: '#0077b5',
-      facebook: '#1877f2',
-      twitter: '#000000',
-      instagram: '#e1306c',
-      youtube: '#ff0000',
-      github: '#24292e',
+      linkedin: '#0077b5', facebook: '#1877f2', twitter: '#000000',
+      instagram: '#e1306c', youtube: '#ff0000', github: '#24292e',
     };
     return colors[platform.toLowerCase()] ?? '#6b7280';
   }
@@ -251,12 +243,12 @@ export class AdminCompanyDetailComponent implements OnInit {
     this.actionLoading.set(true);
     this.adminService.approveCompany(c.id).subscribe({
       next: () => {
-        this.showToast('Company approved successfully', 'success');
+        this.showToast(this.translate.instant('admin_company_detail.toast_approved'), 'success');
         this.actionLoading.set(false);
         setTimeout(() => this.router.navigate(['/admin/verifications']), 1500);
       },
       error: () => {
-        this.showToast('Failed to approve company', 'error');
+        this.showToast(this.translate.instant('admin_company_detail.toast_approve_err'), 'error');
         this.actionLoading.set(false);
       },
     });
@@ -273,24 +265,26 @@ export class AdminCompanyDetailComponent implements OnInit {
     this.actionLoading.set(true);
     this.adminService.rejectCompany(c.id, this.rejectReason()).subscribe({
       next: () => {
-        this.showToast('Company rejected', 'success');
+        this.showToast(this.translate.instant('admin_company_detail.toast_rejected'), 'success');
         this.showRejectModal.set(false);
         this.actionLoading.set(false);
         setTimeout(() => this.router.navigate(['/admin/verifications']), 1500);
       },
       error: () => {
-        this.showToast('Failed to reject company', 'error');
+        this.showToast(this.translate.instant('admin_company_detail.toast_reject_err'), 'error');
         this.actionLoading.set(false);
       },
     });
   }
 
-  goBack() {
-    this.router.navigate(['/admin/verifications']);
-  }
+  goBack() { this.router.navigate(['/admin/verifications']); }
 
   private showToast(text: string, type: 'success' | 'error') {
     this.toastMessage.set({ text, type });
     setTimeout(() => this.toastMessage.set(null), 3500);
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

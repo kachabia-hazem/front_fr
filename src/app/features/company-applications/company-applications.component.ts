@@ -1,7 +1,8 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CompanyService } from '../../core/services/company.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
@@ -18,7 +19,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './company-applications.component.html',
   styleUrl: './company-applications.component.css',
 })
-export class CompanyApplicationsComponent implements OnInit {
+export class CompanyApplicationsComponent implements OnInit, OnDestroy {
   company = signal<Company | null>(null);
   allApplications = signal<Application[]>([]);
   loading = signal(true);
@@ -36,6 +37,7 @@ export class CompanyApplicationsComponent implements OnInit {
   currentPage = signal(1);
   readonly pageSize = 5;
   Math = Math;
+  private langSub?: Subscription;
 
   // Computed sidebar info
   companyName = computed(() => this.company()?.companyName || 'Company');
@@ -112,6 +114,8 @@ export class CompanyApplicationsComponent implements OnInit {
     public themeService: ThemeService,
     private router: Router,
     private location: Location,
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -121,6 +125,14 @@ export class CompanyApplicationsComponent implements OnInit {
       next: apps => { this.allApplications.set(apps); this.loading.set(false); },
       error: ()  => this.loading.set(false),
     });
+
+    this.langSub = this.translate.onLangChange.subscribe(() => {
+      this.cdr.markForCheck();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 
   // ── Actions ──────────────────────────────────────────

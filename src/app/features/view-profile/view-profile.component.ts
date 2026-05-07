@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -7,6 +7,8 @@ import { AuthService } from '../../core/services/auth.service';
 import { Freelancer, Review } from '../../core/models';
 import { environment } from '../../../environments/environment';
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-view-profile',
   standalone: true,
@@ -14,7 +16,7 @@ import { environment } from '../../../environments/environment';
   templateUrl: './view-profile.component.html',
   styleUrl: './view-profile.component.css',
 })
-export class ViewProfileComponent implements OnInit {
+export class ViewProfileComponent implements OnInit, OnDestroy{
   freelancer = signal<Freelancer | null>(null);
   loading = signal(true);
   error = signal('');
@@ -31,14 +33,18 @@ export class ViewProfileComponent implements OnInit {
   showSkills = signal(true);
   showLanguages = signal(true);
 
-  constructor(
-    private route: ActivatedRoute,
+  private langSub?: Subscription;
+
+    constructor(
+  private route: ActivatedRoute,
     private freelancerService: FreelancerService,
     private authService: AuthService,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
@@ -166,5 +172,9 @@ export class ViewProfileComponent implements OnInit {
       year: 'numeric',
       month: 'short',
     });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 }

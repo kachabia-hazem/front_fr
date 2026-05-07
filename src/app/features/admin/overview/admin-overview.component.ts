@@ -1,6 +1,7 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   AdminService, AdminStats,
   UserEvolutionPoint, ContractEvolutionPoint,
@@ -16,14 +17,16 @@ interface TooltipState {
   month: string;
 }
 
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-admin-overview',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './admin-overview.component.html',
   styleUrls: ['./admin-overview.component.css'],
 })
-export class AdminOverviewComponent implements OnInit {
+export class AdminOverviewComponent implements OnInit, OnDestroy{
 
   // ─── KPI stats ────────────────────────────────────────────────────────────
   stats       = signal<AdminStats | null>(null);
@@ -41,6 +44,8 @@ export class AdminOverviewComponent implements OnInit {
   contractTooltip = signal<TooltipState>({ visible: false, x: 0, y: 0, lines: [], month: '' });
 
   // ─── SVG layout constants ─────────────────────────────────────────────────
+  private langSub?: Subscription;
+
   readonly VW = 660;
   readonly VH = 220;
   readonly PT = 18; // pad top
@@ -67,9 +72,13 @@ export class AdminOverviewComponent implements OnInit {
   // ─── Payment analytics ────────────────────────────────────────────────────
   paymentOverview = signal<AdminPaymentOverview | null>(null);
 
-  constructor(private adminService: AdminService) {}
+  constructor(
+    private adminService: AdminService, private translate: TranslateService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
+    this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.adminService.getStats().subscribe({
       next: (d) => { this.stats.set(d); this.loading.set(false); },
       error: () => { this.error.set('Failed to load stats'); this.loading.set(false); },
@@ -255,9 +264,9 @@ export class AdminOverviewComponent implements OnInit {
       x: zone.cx,
       y: Math.min(tPt.y, this.PT + 8),
       lines: [
-        { label: 'Total',       color: '#1a1a2e', value: d.total },
-        { label: 'Freelancers', color: '#3793B0', value: d.freelancers },
-        { label: 'Companies',   color: '#4a9a8e', value: d.companies },
+        { label: this.translate.instant('admin_overview.lbl_total'),       color: '#1a1a2e', value: d.total },
+        { label: this.translate.instant('admin_overview.lbl_freelancers'), color: '#3793B0', value: d.freelancers },
+        { label: this.translate.instant('admin_overview.lbl_companies'),   color: '#4a9a8e', value: d.companies },
       ],
       month: d.month,
     });
@@ -277,9 +286,9 @@ export class AdminOverviewComponent implements OnInit {
       x: zone.cx,
       y: Math.min(tPt.y, this.PT + 8),
       lines: [
-        { label: 'Total',    color: '#8b5cf6', value: d.total },
-        { label: 'Signed',   color: '#10b981', value: d.signed },
-        { label: 'Finished', color: '#3793B0', value: d.finished },
+        { label: this.translate.instant('admin_overview.lbl_total'),    color: '#8b5cf6', value: d.total },
+        { label: this.translate.instant('admin_overview.lbl_signed'),   color: '#10b981', value: d.signed },
+        { label: this.translate.instant('admin_overview.lbl_finished'), color: '#3793B0', value: d.finished },
       ],
       month: d.month,
     });
@@ -296,4 +305,8 @@ export class AdminOverviewComponent implements OnInit {
     return amount.toFixed(3).replace('.', ',') + ' DT';
   }
 
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
+  }
 }

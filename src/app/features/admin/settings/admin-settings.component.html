@@ -133,32 +133,41 @@
             </div>
           }
 
-          <!-- Summary badges -->
-          <div class="costs-summary">
-            <div class="cost-badge">
-              <span class="cost-badge-val">{{ applicationCost() }}</span>
-              <span class="cost-badge-label">{{ 'admin_settings.points_apply' | translate }}</span>
-              <span class="cost-badge-role freelancer">{{ 'admin_settings.points_badge_freelancer' | translate }}</span>
-            </div>
-            <div class="cost-badge">
-              <span class="cost-badge-val">{{ aiMatchingCost() }}</span>
-              <span class="cost-badge-label">{{ 'admin_settings.points_matching' | translate }}</span>
-              <span class="cost-badge-role freelancer">{{ 'admin_settings.points_badge_freelancer' | translate }}</span>
-            </div>
-            <div class="cost-badge">
-              <span class="cost-badge-val">{{ aiRankingCost() }}</span>
-              <span class="cost-badge-label">{{ 'admin_settings.points_ranking' | translate }}</span>
-              <span class="cost-badge-role company">{{ 'admin_settings.points_badge_company' | translate }}</span>
-            </div>
-            <div class="cost-badge cost-badge-gift">
-              <span class="cost-badge-val cost-badge-val-gift">{{ welcomeBonus() }}</span>
-              <span class="cost-badge-label">{{ 'admin_settings.points_welcome' | translate }}</span>
-              <span class="cost-badge-role new-user">{{ 'admin_settings.points_badge_newuser' | translate }}</span>
-            </div>
-          </div>
-
           <div class="s-form">
-            <div class="costs-grid">
+            <!-- Each column: badge on top, field below -->
+            <div class="costs-grid-4">
+
+              <!-- Row 1: badges -->
+              <div class="cost-badge cost-badge-gift">
+                <span class="cost-badge-val cost-badge-val-gift">{{ welcomeBonus() }}</span>
+                <span class="cost-badge-label">{{ 'admin_settings.points_welcome' | translate }}</span>
+                <span class="cost-badge-role new-user">{{ 'admin_settings.points_badge_newuser' | translate }}</span>
+              </div>
+              <div class="cost-badge">
+                <span class="cost-badge-val">{{ applicationCost() }}</span>
+                <span class="cost-badge-label">{{ 'admin_settings.points_apply' | translate }}</span>
+                <span class="cost-badge-role freelancer">{{ 'admin_settings.points_badge_freelancer' | translate }}</span>
+              </div>
+              <div class="cost-badge">
+                <span class="cost-badge-val">{{ aiMatchingCost() }}</span>
+                <span class="cost-badge-label">{{ 'admin_settings.points_matching' | translate }}</span>
+                <span class="cost-badge-role freelancer">{{ 'admin_settings.points_badge_freelancer' | translate }}</span>
+              </div>
+              <div class="cost-badge">
+                <span class="cost-badge-val">{{ aiRankingCost() }}</span>
+                <span class="cost-badge-label">{{ 'admin_settings.points_ranking' | translate }}</span>
+                <span class="cost-badge-role company">{{ 'admin_settings.points_badge_company' | translate }}</span>
+              </div>
+
+              <!-- Row 2: fields -->
+              <div class="s-field">
+                <label class="s-label">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" style="vertical-align:middle;margin-right:4px"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                  {{ 'admin_settings.points_label_welcome' | translate }}
+                </label>
+                <input type="number" class="s-input" min="0" max="500"
+                  [ngModel]="newWelcomeBonus()" (ngModelChange)="newWelcomeBonus.set($event)" />
+              </div>
               <div class="s-field">
                 <label class="s-label">{{ 'admin_settings.points_label_apply' | translate }}</label>
                 <input type="number" class="s-input" min="1" max="100"
@@ -174,15 +183,9 @@
                 <input type="number" class="s-input" min="1" max="100"
                   [ngModel]="newAiRankCost()" (ngModelChange)="newAiRankCost.set($event)" />
               </div>
+
             </div>
-            <div class="s-field" style="max-width: 300px">
-              <label class="s-label">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" style="vertical-align:middle;margin-right:4px"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
-                {{ 'admin_settings.points_label_welcome' | translate }}
-              </label>
-              <input type="number" class="s-input" min="0" max="500"
-                [ngModel]="newWelcomeBonus()" (ngModelChange)="newWelcomeBonus.set($event)" />
-            </div>
+
             <span class="s-hint">{{ 'admin_settings.points_hint' | translate }}</span>
             <div class="s-actions">
               <button class="s-btn s-btn-primary" (click)="saveCosts()" [disabled]="costsLoading()">
