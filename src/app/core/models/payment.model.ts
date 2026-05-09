@@ -27,6 +27,7 @@ export interface ContractPaymentItem {
   companyName: string;
   paymentStatus: PaymentStatus;
   freelancerAmount: number | null;
+  freelancerRefundAmount: number | null;
   paidAt: string | null;
   capturedAt: string | null;
 }

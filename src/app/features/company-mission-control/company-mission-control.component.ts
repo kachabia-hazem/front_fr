@@ -28,6 +28,9 @@ export class CompanyMissionControlComponent implements OnInit, OnDestroy {
 
   activeMissionsCount = computed(() => this.missions().filter(m => m.status === 'ACTIVE').length);
 
+  deletingId  = signal<string | null>(null);
+  confirmDeleteId = signal<string | null>(null);
+
   companyName = computed(() => this.company()?.companyName || 'Company');
   companyLogo = computed(() => this.company()?.companyLogo);
   companyInitials = computed(() => {
@@ -103,5 +106,31 @@ export class CompanyMissionControlComponent implements OnInit, OnDestroy {
     const end = m.endDate;
     if (!end) return false;
     return new Date(end) <= new Date();
+  }
+
+  requestDelete(id: string, event: Event): void {
+    event.stopPropagation();
+    this.confirmDeleteId.set(id);
+  }
+
+  cancelDelete(event: Event): void {
+    event.stopPropagation();
+    this.confirmDeleteId.set(null);
+  }
+
+  confirmDelete(id: string, event: Event): void {
+    event.stopPropagation();
+    this.deletingId.set(id);
+    this.activeMissionService.deleteFromHistoryByCompany(id).subscribe({
+      next: () => {
+        this.missions.update(list => list.filter(m => m.id !== id));
+        this.deletingId.set(null);
+        this.confirmDeleteId.set(null);
+      },
+      error: () => {
+        this.deletingId.set(null);
+        this.confirmDeleteId.set(null);
+      },
+    });
   }
 }

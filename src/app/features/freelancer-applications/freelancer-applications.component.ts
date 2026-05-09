@@ -206,6 +206,8 @@ export class FreelancerApplicationsComponent implements OnInit, OnDestroy{
     return companyName.split(' ').map(w => w.charAt(0)).join('').substring(0, 2).toUpperCase();
   }
 
+  dismissingId = signal<string | null>(null);
+
   withdrawApp(app: Application): void {
     if (confirm(this.translate.instant('freelancer_apps.withdraw_confirm', { title: app.missionTitle }))) {
       this.applicationService.withdrawApplication(app.missionId).subscribe({
@@ -216,6 +218,18 @@ export class FreelancerApplicationsComponent implements OnInit, OnDestroy{
         },
       });
     }
+  }
+
+  dismissApp(app: Application): void {
+    if (this.dismissingId()) return;
+    this.dismissingId.set(app.id);
+    this.applicationService.dismissApplication(app.id).subscribe({
+      next: () => {
+        this.allApplications.update(list => list.filter(a => a.id !== app.id));
+        this.dismissingId.set(null);
+      },
+      error: () => this.dismissingId.set(null),
+    });
   }
 
   viewMission(app: Application): void {

@@ -31,6 +31,8 @@ export interface Contract {
   totalAmount: number | null;
   platformFee: number | null;
   freelancerAmount: number | null;
+  freelancerRefundAmount: number | null;
+  companyRefundAmount: number | null;
   paidAt: string | null;
   capturedAt: string | null;
 }

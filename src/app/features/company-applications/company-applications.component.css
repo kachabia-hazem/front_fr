@@ -370,8 +370,12 @@
 .act-btn.accept:hover:not(:disabled) { background:rgba(16,185,129,.2); }
 .act-btn.reject { background:rgba(239,68,68,.08); color:#dc2626; }
 .act-btn.reject:hover:not(:disabled) { background:rgba(239,68,68,.16); }
+.act-btn.dismiss { background:rgba(107,114,128,.08); color:#6b7280; padding:5px 8px; }
+.act-btn.dismiss:hover:not(:disabled) { background:rgba(220,38,38,.08); color:#dc2626; }
 :host-context(body.dark-theme) .act-btn.accept { background:rgba(16,185,129,.15); color:#34d399; }
 :host-context(body.dark-theme) .act-btn.reject { background:rgba(239,68,68,.12); color:#f87171; }
+:host-context(body.dark-theme) .act-btn.dismiss { background:rgba(255,255,255,.06); color:#9ca3b0; }
+:host-context(body.dark-theme) .act-btn.dismiss:hover:not(:disabled) { background:rgba(220,38,38,.1); color:#f87171; }
 
 .mini-spinner { display:inline-block; width:11px; height:11px; border:2px solid currentColor; border-top-color:transparent; border-radius:50%; animation:spin .7s linear infinite; }
 

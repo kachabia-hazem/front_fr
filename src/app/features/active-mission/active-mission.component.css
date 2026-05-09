@@ -148,6 +148,33 @@
 :host-context(body.dark-theme) .progress-bar-lg { background: #2a3040; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, #3793B0, #5ab4d4); border-radius: 4px; transition: width 0.5s ease; }
 
+/* ── Dispute banner ── */
+.dispute-banner {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+  border: 1.5px solid #f59e0b; border-radius: 14px;
+  padding: 18px 22px; margin-bottom: 20px;
+}
+.dispute-banner-icon {
+  flex-shrink: 0; width: 40px; height: 40px; border-radius: 10px;
+  background: rgba(245,158,11,0.15); display: flex; align-items: center; justify-content: center;
+  color: #d97706;
+}
+.dispute-banner-body { flex: 1; }
+.dispute-banner-title {
+  font-size: 0.95rem; font-weight: 700; color: #92400e; margin: 0 0 6px;
+}
+.dispute-banner-text {
+  font-size: 0.87rem; color: #78350f; line-height: 1.55; margin: 0;
+}
+.dispute-banner-text strong { color: #d97706; }
+:host-context(body.dark-theme) .dispute-banner {
+  background: linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(245,158,11,0.06) 100%);
+  border-color: rgba(245,158,11,0.4);
+}
+:host-context(body.dark-theme) .dispute-banner-title { color: #fbbf24; }
+:host-context(body.dark-theme) .dispute-banner-text { color: #fcd34d; }
+
 /* ── Sections ── */
 .workspace-section { background: #fff; border-radius: 14px; padding: 24px 28px; border: 1px solid #e8eaed; margin-bottom: 24px; }
 :host-context(body.dark-theme) .workspace-section { background: #1a1f2e; border-color: #2a3040; }

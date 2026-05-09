@@ -25,7 +25,8 @@ export class CompanyApplicationsComponent implements OnInit, OnDestroy {
   loading = signal(true);
   sidebarCollapsed = signal(false);
   unreadCount = computed(() => this.notificationService.unreadCount());
-  updatingId = signal<string | null>(null);
+  updatingId   = signal<string | null>(null);
+  dismissingId = signal<string | null>(null);
 
   // Filters
   searchQuery   = signal('');
@@ -235,5 +236,18 @@ export class CompanyApplicationsComponent implements OnInit, OnDestroy {
 
   goToPage(p: number): void {
     if (p >= 1 && p <= this.totalPages()) this.currentPage.set(p);
+  }
+
+  dismiss(event: Event, app: Application): void {
+    event.stopPropagation();
+    if (this.dismissingId()) return;
+    this.dismissingId.set(app.id);
+    this.applicationService.dismissApplicationByCompany(app.id).subscribe({
+      next: () => {
+        this.allApplications.update(list => list.filter(a => a.id !== app.id));
+        this.dismissingId.set(null);
+      },
+      error: () => this.dismissingId.set(null),
+    });
   }
 }

@@ -127,6 +127,13 @@
                 <div class="progress-fill" [style.width.%]="mission.progress"></div>
               </div>
 
+              @if (mission.status === 'DISPUTE') {
+                <div class="dispute-card-alert">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  <span>Cette mission est en litige. L'équipe administrative WorkLink prendra une décision dans un délai maximum de <strong>7 jours ouvrables</strong>.</span>
+                </div>
+              }
+
               <div class="mission-meta-row">
                 @if (mission.gitRepositoryUrl) {
                   <span class="meta-badge git-badge">
@@ -146,7 +153,25 @@
               </div>
 
               <div class="mission-card-footer">
-                <span class="view-link">{{ 'mission_control.view_workspace' | translate }}</span>
+                @if (mission.status === 'COMPLETED') {
+                  @if (confirmDeleteId() === mission.id) {
+                    <div class="delete-confirm-inline" (click)="$event.stopPropagation()">
+                      <span class="delete-confirm-text">Supprimer de l'historique ?</span>
+                      <button class="btn-delete-confirm" (click)="confirmDelete(mission.id, $event)" [disabled]="deletingId() === mission.id">
+                        @if (deletingId() === mission.id) { Suppression… } @else { Confirmer }
+                      </button>
+                      <button class="btn-delete-cancel" (click)="cancelDelete($event)">Annuler</button>
+                    </div>
+                  } @else {
+                    <span class="view-link">{{ 'mission_control.view_workspace' | translate }}</span>
+                    <button class="btn-delete-history" (click)="requestDelete(mission.id, $event)" title="Supprimer de l'historique">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                      Supprimer
+                    </button>
+                  }
+                } @else {
+                  <span class="view-link">{{ 'mission_control.view_workspace' | translate }}</span>
+                }
               </div>
             </div>
           }

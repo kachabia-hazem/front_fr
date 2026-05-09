@@ -129,6 +129,7 @@
 .tx-amount { font-size: 0.75rem; color: var(--text-secondary, #6b7280); }
 
 .tx-pay-amount { font-size: 1rem; font-weight: 700; color: var(--text-primary, #111827); }
+.tx-refund-detail { font-size: 0.72rem; color: #9ca3af; }
 .tx-pay-badge  {
   font-size: 0.66rem; font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.04em; padding: 2px 8px; border-radius: 20px;

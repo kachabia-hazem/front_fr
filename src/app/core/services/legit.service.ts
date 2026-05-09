@@ -42,4 +42,16 @@ export class LegitService {
   getStats(): Observable<Record<string, number>> {
     return this.http.get<Record<string, number>>(`${this.adminUrl}/stats`);
   }
+
+  cancelMission(id: string, reason: string): Observable<Legit> {
+    return this.http.post<Legit>(`${this.adminUrl}/${id}/cancel-mission`, { reason });
+  }
+
+  refundMission(id: string, freelancerPercentage: number, companyPercentage: number, reason: string): Observable<Legit> {
+    return this.http.post<Legit>(`${this.adminUrl}/${id}/refund`, { freelancerPercentage, companyPercentage, reason });
+  }
+
+  continueMission(id: string, adminNote: string): Observable<Legit> {
+    return this.http.post<Legit>(`${this.adminUrl}/${id}/continue-mission`, { adminNote });
+  }
 }

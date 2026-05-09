@@ -32,6 +32,20 @@ export class AdminLegitsComponent implements OnInit, OnDestroy{
   emailBody    = signal('');
   sending      = signal(false);
 
+  // Cancel mission modal
+  cancelTarget  = signal<Legit | null>(null);
+  cancelReason  = signal('');
+
+  // Refund modal
+  refundTarget        = signal<Legit | null>(null);
+  freelancerPct       = signal(50);
+  companyPct          = signal(50);
+  refundReason        = signal('');
+
+  // Continue mission modal
+  continueTarget = signal<Legit | null>(null);
+  continueNote   = signal('');
+
   processing = signal<string | null>(null);
 
   toast = signal<{ msg: string; type: 'success' | 'error' } | null>(null);
@@ -123,6 +137,104 @@ export class AdminLegitsComponent implements OnInit, OnDestroy{
       error: () => {
         this.sending.set(false);
         this.showToast(this.translate.instant('admin_legits.email_toast_err'), 'error');
+      },
+    });
+  }
+
+  // ── Cancel mission ──────────────────────────────────────────────────────────
+
+  openCancelModal(l: Legit, event?: MouseEvent) {
+    event?.stopPropagation();
+    this.cancelTarget.set(l);
+    this.cancelReason.set('');
+  }
+
+  closeCancelModal() { this.cancelTarget.set(null); this.cancelReason.set(''); }
+
+  confirmCancelMission() {
+    const target = this.cancelTarget();
+    if (!target) return;
+    this.processing.set(target.id);
+    this.legitService.cancelMission(target.id, this.cancelReason()).subscribe({
+      next: (updated) => {
+        this.updateLegit(updated);
+        this.processing.set(null);
+        this.closeCancelModal();
+        this.showToast('Mission annulée avec succès', 'success');
+      },
+      error: () => {
+        this.processing.set(null);
+        this.showToast('Erreur lors de l\'annulation', 'error');
+      },
+    });
+  }
+
+  // ── Refund mission ──────────────────────────────────────────────────────────
+
+  openRefundModal(l: Legit, event?: MouseEvent) {
+    event?.stopPropagation();
+    this.refundTarget.set(l);
+    this.freelancerPct.set(50);
+    this.companyPct.set(50);
+    this.refundReason.set('');
+  }
+
+  closeRefundModal() { this.refundTarget.set(null); }
+
+  onFreelancerPctChange(val: number) {
+    const v = Math.max(0, Math.min(100, val));
+    this.freelancerPct.set(v);
+    this.companyPct.set(100 - v);
+  }
+
+  onCompanyPctChange(val: number) {
+    const v = Math.max(0, Math.min(100, val));
+    this.companyPct.set(v);
+    this.freelancerPct.set(100 - v);
+  }
+
+  confirmRefundMission() {
+    const target = this.refundTarget();
+    if (!target) return;
+    this.processing.set(target.id);
+    this.legitService.refundMission(target.id, this.freelancerPct(), this.companyPct(), this.refundReason()).subscribe({
+      next: (updated) => {
+        this.updateLegit(updated);
+        this.processing.set(null);
+        this.closeRefundModal();
+        this.showToast('Remboursement enregistré', 'success');
+      },
+      error: () => {
+        this.processing.set(null);
+        this.showToast('Erreur lors du remboursement', 'error');
+      },
+    });
+  }
+
+  // ── Continue mission ────────────────────────────────────────────────────────
+
+  openContinueModal(l: Legit, event?: MouseEvent) {
+    event?.stopPropagation();
+    this.continueTarget.set(l);
+    this.continueNote.set('');
+  }
+
+  closeContinueModal() { this.continueTarget.set(null); this.continueNote.set(''); }
+
+  confirmContinueMission() {
+    const target = this.continueTarget();
+    if (!target) return;
+    this.processing.set(target.id);
+    this.legitService.continueMission(target.id, this.continueNote()).subscribe({
+      next: (updated) => {
+        this.updateLegit(updated);
+        this.processing.set(null);
+        this.closeContinueModal();
+        this.showToast('Mission relancée avec succès', 'success');
+      },
+      error: () => {
+        this.processing.set(null);
+        this.showToast('Erreur lors de la relance', 'error');
       },
     });
   }

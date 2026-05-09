@@ -21,6 +21,9 @@ export interface Legit {
   resolution: string;
   evidenceFiles: string[];
   adminNote: string;
+  adminDecision?: string;
+  freelancerRefundPercentage?: number;
+  companyRefundPercentage?: number;
   createdAt: string;
   updatedAt: string;
   resolvedAt: string;

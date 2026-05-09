@@ -689,10 +689,14 @@
 
 .action-view:hover { border-color: #3793B0; color: #3793B0; background: rgba(90,170,158,0.06); }
 .action-withdraw:hover { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.06); }
+.action-dismiss:hover:not(:disabled) { border-color: #dc2626; color: #dc2626; background: rgba(220,38,38,0.06); }
+.action-dismiss:disabled { opacity: 0.5; cursor: not-allowed; }
+.mini-spin { display: inline-block; width: 12px; height: 12px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
 
 :host-context(body.dark-theme) .action-btn { border-color: #3a4050; }
 :host-context(body.dark-theme) .action-view:hover { border-color: #6dc4b8; color: #6dc4b8; background: rgba(109,196,184,0.08); }
 :host-context(body.dark-theme) .action-withdraw:hover { border-color: #f87171; color: #f87171; background: rgba(239,68,68,0.08); }
+:host-context(body.dark-theme) .action-dismiss:hover:not(:disabled) { border-color: #f87171; color: #f87171; background: rgba(220,38,38,0.08); }
 
 /* ── Empty State ── */
 .table-empty {

@@ -43,4 +43,12 @@ export class ApplicationService {
   getRankedApplications(missionId: string): Observable<RankedApplication[]> {
     return this.http.get<RankedApplication[]>(`${this.apiUrl}/mission/${missionId}/ranked`);
   }
+
+  dismissApplication(applicationId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${applicationId}/dismiss`);
+  }
+
+  dismissApplicationByCompany(applicationId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${applicationId}/company-dismiss`);
+  }
 }

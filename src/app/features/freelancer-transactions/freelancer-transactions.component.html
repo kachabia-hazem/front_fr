@@ -221,7 +221,12 @@
                   </span>
                 </div>
                 <div class="tx-right">
-                  <span class="tx-pay-amount">{{ c.freelancerAmount != null ? formatTND(c.freelancerAmount) : '—' }}</span>
+                  @if (c.paymentStatus.toString() === 'REFUNDED' && c.freelancerRefundAmount != null) {
+                    <span class="tx-pay-amount">{{ formatTND(c.freelancerRefundAmount) }}</span>
+                    <span class="tx-refund-detail">sur {{ c.freelancerAmount != null ? formatTND(c.freelancerAmount) : '—' }} prévu</span>
+                  } @else {
+                    <span class="tx-pay-amount">{{ c.freelancerAmount != null ? formatTND(c.freelancerAmount) : '—' }}</span>
+                  }
                   <span class="tx-pay-badge" [ngClass]="paymentStatusClass(c.paymentStatus.toString())">
                     {{ paymentStatusLabel(c.paymentStatus.toString()) | translate }}
                   </span>

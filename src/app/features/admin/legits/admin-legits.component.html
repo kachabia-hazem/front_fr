@@ -204,6 +204,22 @@
                 </div>
               }
 
+              <!-- Decision badge if already resolved -->
+              @if (legit.adminDecision) {
+                <div class="d-decision-badge" [class]="'d-decision-' + legit.adminDecision.toLowerCase()">
+                  @if (legit.adminDecision === 'ANNULE') {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                    Mission annulée — fonds conservés par la plateforme
+                  } @else if (legit.adminDecision === 'REMBOURSE') {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Remboursement — Freelancer {{ legit.freelancerRefundPercentage }}% · Entreprise {{ legit.companyRefundPercentage }}%
+                  } @else if (legit.adminDecision === 'CONTINUE') {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Mission relancée — contrat actif
+                  }
+                </div>
+              }
+
               <!-- Actions bar -->
               <div class="d-actions-bar">
                 <div class="d-status-group">
@@ -232,6 +248,27 @@
                 </div>
               </div>
 
+              <!-- Resolution actions (only shown when not yet resolved) -->
+              @if (legit.status === 'EN_ATTENTE' || legit.status === 'EN_COURS') {
+                <div class="d-resolution-bar">
+                  <span class="d-resolution-label">Décision finale</span>
+                  <div class="d-resolution-actions">
+                    <button class="d-btn-cancel-mission" (click)="openCancelModal(legit, $event)" [disabled]="processing() === legit.id">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                      Annuler la mission
+                    </button>
+                    <button class="d-btn-refund" (click)="openRefundModal(legit, $event)" [disabled]="processing() === legit.id">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                      Remboursement
+                    </button>
+                    <button class="d-btn-continue-mission" (click)="openContinueModal(legit, $event)" [disabled]="processing() === legit.id">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      Continuer la mission
+                    </button>
+                  </div>
+                </div>
+              }
+
             </div>
           }
         </div>
@@ -241,6 +278,157 @@
   }
 
 </div>
+
+<!-- ── Cancel mission modal ───────────────────────────────────────────── -->
+@if (cancelTarget()) {
+  <div class="modal-overlay" (click)="closeCancelModal()"></div>
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-icon modal-icon-danger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      </div>
+      <div>
+        <h3 class="modal-title">Annuler la mission</h3>
+        <p class="modal-sub">Mission : <strong>{{ cancelTarget()!.missionTitle }}</strong></p>
+      </div>
+      <button class="modal-close" (click)="closeCancelModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-warning-box">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Le contrat sera annulé et les fonds seront conservés par la plateforme. Les deux parties seront notifiées.
+      </div>
+      <div class="modal-field">
+        <label class="modal-field-label">Motif d'annulation</label>
+        <textarea class="modal-input modal-textarea" [ngModel]="cancelReason()" (ngModelChange)="cancelReason.set($event)" rows="4" placeholder="Expliquez la raison de l'annulation..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeCancelModal()">Annuler</button>
+      <button class="btn-danger" (click)="confirmCancelMission()" [disabled]="processing() !== null">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        Confirmer l'annulation
+      </button>
+    </div>
+  </div>
+}
+
+<!-- ── Refund modal ────────────────────────────────────────────────────── -->
+@if (refundTarget()) {
+  <div class="modal-overlay" (click)="closeRefundModal()"></div>
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <div class="modal-header-icon modal-icon-orange">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div>
+        <h3 class="modal-title">Remboursement partiel</h3>
+        <p class="modal-sub">Mission : <strong>{{ refundTarget()!.missionTitle }}</strong></p>
+      </div>
+      <button class="modal-close" (click)="closeRefundModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-warning-box modal-warning-orange">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Définissez comment répartir les 100% du montant entre les deux parties. Le contrat sera annulé.
+      </div>
+
+      <!-- Percentage split UI -->
+      <div class="refund-split">
+        <div class="refund-party refund-party-freelancer">
+          <div class="refund-party-label">
+            <span class="refund-role-chip chip-freelancer">Freelancer</span>
+            <span class="refund-party-name">{{ refundTarget()!.reporterRole === 'FREELANCER' ? refundTarget()!.reporterName : refundTarget()!.otherPartyName }}</span>
+          </div>
+          <div class="refund-pct-control">
+            <input type="range" class="refund-slider" min="0" max="100" step="1"
+              [ngModel]="freelancerPct()" (ngModelChange)="onFreelancerPctChange($event)" />
+            <input type="number" class="refund-pct-input" min="0" max="100"
+              [ngModel]="freelancerPct()" (ngModelChange)="onFreelancerPctChange(+$event)" />
+            <span class="refund-pct-symbol">%</span>
+          </div>
+        </div>
+
+        <div class="refund-bar-visual">
+          <div class="refund-bar-track">
+            <div class="refund-bar-fill-fl" [style.width.%]="freelancerPct()"></div>
+            <div class="refund-bar-fill-co" [style.width.%]="companyPct()"></div>
+          </div>
+          <div class="refund-bar-labels">
+            <span>{{ freelancerPct() }}%</span>
+            <span>{{ companyPct() }}%</span>
+          </div>
+        </div>
+
+        <div class="refund-party refund-party-company">
+          <div class="refund-party-label">
+            <span class="refund-role-chip chip-company">Entreprise</span>
+            <span class="refund-party-name">{{ refundTarget()!.reporterRole === 'COMPANY' ? refundTarget()!.reporterName : refundTarget()!.otherPartyName }}</span>
+          </div>
+          <div class="refund-pct-control">
+            <input type="range" class="refund-slider refund-slider-co" min="0" max="100" step="1"
+              [ngModel]="companyPct()" (ngModelChange)="onCompanyPctChange($event)" />
+            <input type="number" class="refund-pct-input" min="0" max="100"
+              [ngModel]="companyPct()" (ngModelChange)="onCompanyPctChange(+$event)" />
+            <span class="refund-pct-symbol">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-field-label">Motif du remboursement</label>
+        <textarea class="modal-input modal-textarea" [ngModel]="refundReason()" (ngModelChange)="refundReason.set($event)" rows="3" placeholder="Expliquez la décision de remboursement..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeRefundModal()">Annuler</button>
+      <button class="btn-refund-confirm" (click)="confirmRefundMission()" [disabled]="processing() !== null">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Confirmer le remboursement
+      </button>
+    </div>
+  </div>
+}
+
+<!-- ── Continue mission modal ─────────────────────────────────────────── -->
+@if (continueTarget()) {
+  <div class="modal-overlay" (click)="closeContinueModal()"></div>
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-icon modal-icon-success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <div>
+        <h3 class="modal-title">Continuer la mission</h3>
+        <p class="modal-sub">Mission : <strong>{{ continueTarget()!.missionTitle }}</strong></p>
+      </div>
+      <button class="modal-close" (click)="closeContinueModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-warning-box modal-warning-green">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Le contrat repassera en état actif et la mission reprendra son cours. Les deux parties seront notifiées.
+      </div>
+      <div class="modal-field">
+        <label class="modal-field-label">Note administrative (optionnel)</label>
+        <textarea class="modal-input modal-textarea" [ngModel]="continueNote()" (ngModelChange)="continueNote.set($event)" rows="3" placeholder="Ajoutez une note à destination des deux parties..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeContinueModal()">Annuler</button>
+      <button class="btn-success" (click)="confirmContinueMission()" [disabled]="processing() !== null">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Confirmer la relance
+      </button>
+    </div>
+  </div>
+}
 
 <!-- ── Email modal ─────────────────────────────────────────────────────── -->
 @if (emailTarget()) {

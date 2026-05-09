@@ -161,7 +161,12 @@
                 </span>
               </div>
               <div class="tx-right">
-                <span class="tx-pay-amount">{{ formatTND(c.totalAmount) }}</span>
+                @if (c.paymentStatus === 'REFUNDED' && c.companyRefundAmount != null) {
+                  <span class="tx-pay-amount">{{ formatTND(c.companyRefundAmount) }}</span>
+                  <span class="tx-refund-detail">sur {{ formatTND(c.totalAmount) }} payé</span>
+                } @else {
+                  <span class="tx-pay-amount">{{ formatTND(c.totalAmount) }}</span>
+                }
                 <span class="tx-pay-badge" [ngClass]="paymentStatusClass(c.paymentStatus)">
                   {{ paymentStatusLabel(c.paymentStatus) | translate }}
                 </span>
