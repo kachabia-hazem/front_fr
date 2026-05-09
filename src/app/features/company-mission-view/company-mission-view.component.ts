@@ -87,6 +87,11 @@ export class CompanyMissionViewComponent implements OnInit, OnDestroy{
 
     this.activeMissionService.getMission(this.missionId).subscribe({
       next: (m) => {
+        // Redirect away if mission is not yet accessible
+        if (m.status === 'PENDING') {
+          this.router.navigate(['/company-mission-control']);
+          return;
+        }
         this.mission.set(m);
         this.loading.set(false);
         if (m.contractId) {

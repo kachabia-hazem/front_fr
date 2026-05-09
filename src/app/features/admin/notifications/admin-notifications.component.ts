@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -12,10 +12,12 @@ import { Notification, NotificationType } from '../../../core/models/notificatio
   imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './admin-notifications.component.html',
   styleUrls: ['./admin-notifications.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminNotificationsComponent implements OnInit, OnDestroy {
   loading = signal(true);
   filter = signal<'ALL' | 'UNREAD'>('ALL');
+  markingAll = signal(false);
 
   private langSub?: Subscription;
 
@@ -23,12 +25,23 @@ export class AdminNotificationsComponent implements OnInit, OnDestroy {
     public notificationService: NotificationService,
     private translate: TranslateService,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) {
+    // Don't show spinner if we already have cached data
+    if (this.notificationService.notifications().length > 0) {
+      this.loading.set(false);
+    }
+  }
 
   ngOnInit() {
     this.notificationService.getMyNotifications().subscribe({
-      complete: () => this.loading.set(false),
-      error: () => this.loading.set(false),
+      next: () => {
+        this.loading.set(false);
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.loading.set(false);
+        this.cdr.markForCheck();
+      },
     });
 
     this.langSub = this.translate.onLangChange.subscribe(() => {
@@ -50,13 +63,26 @@ export class AdminNotificationsComponent implements OnInit, OnDestroy {
   }
 
   markRead(n: Notification) {
-    if (!n.isRead) {
-      this.notificationService.markAsRead(n.id).subscribe();
-    }
+    if (n.isRead) return;
+    this.notificationService.markAsRead(n.id).subscribe({
+      next: () => this.cdr.markForCheck(),
+      error: () => this.cdr.markForCheck(),
+    });
   }
 
   markAllRead() {
-    this.notificationService.markAllAsRead().subscribe();
+    if (this.notificationService.unreadCount() === 0) return;
+    this.markingAll.set(true);
+    this.notificationService.markAllAsRead().subscribe({
+      next: () => {
+        this.markingAll.set(false);
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.markingAll.set(false);
+        this.cdr.markForCheck();
+      },
+    });
   }
 
   getIcon(type: NotificationType): string {

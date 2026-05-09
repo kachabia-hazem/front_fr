@@ -6,28 +6,45 @@
       <h1 class="page-title">{{ 'admin_notif.title' | translate }}</h1>
       <p class="page-subtitle">{{ 'admin_notif.subtitle' | translate }}</p>
     </div>
-    <div class="header-actions">
-      <button class="btn-mark-all"
-              (click)="markAllRead()"
-              [disabled]="notificationService.unreadCount() === 0">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 6L9 17l-5-5"/>
-        </svg>
-        {{ 'admin_notif.mark_all_read' | translate }}
-      </button>
-    </div>
+    <button class="btn-mark-all"
+            (click)="markAllRead()"
+            [disabled]="notificationService.unreadCount() === 0 || markingAll()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+      {{ markingAll() ? 'Marking...' : ('admin_notif.mark_all_read' | translate) }}
+    </button>
   </div>
 
   <!-- ── Stats bar ── -->
   <div class="stats-bar">
-    <div class="stat-pill total">
-      <span class="stat-num">{{ notificationService.notifications().length }}</span>
-      <span class="stat-label">{{ 'admin_notif.stat_total' | translate }}</span>
+    <div class="stat-pill">
+      <div class="stat-icon total-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </div>
+      <div>
+        <div class="stat-num">{{ notificationService.notifications().length }}</div>
+        <div class="stat-label">{{ 'admin_notif.stat_total' | translate }}</div>
+      </div>
     </div>
-    <div class="stat-pill unread">
-      <span class="stat-num">{{ notificationService.unreadCount() }}</span>
-      <span class="stat-label">{{ 'admin_notif.stat_unread' | translate }}</span>
+    <div class="stat-pill unread-pill">
+      <div class="stat-icon unread-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <div>
+        <div class="stat-num unread-num">{{ notificationService.unreadCount() }}</div>
+        <div class="stat-label">{{ 'admin_notif.stat_unread' | translate }}</div>
+      </div>
     </div>
   </div>
 
@@ -47,8 +64,8 @@
   <!-- ── List ── -->
   <div class="notif-list">
 
-    <!-- Loading -->
-    <div class="loading-state" *ngIf="loading()">
+    <!-- Loading (only when no cached data yet) -->
+    <div class="loading-state" *ngIf="loading() && displayed().length === 0">
       <div class="spinner"></div>
       <span>{{ 'admin_notif.loading' | translate }}</span>
     </div>
@@ -72,23 +89,23 @@
          [class.unread]="!n.isRead"
          (click)="markRead(n)">
 
+      <!-- Unread left bar -->
+      <div class="unread-bar" *ngIf="!n.isRead"></div>
+
       <!-- Icon -->
       <div class="notif-icon" [ngClass]="getTypeClass(n.type)">
-        <!-- Verification icon -->
         <svg *ngIf="getIcon(n.type) === 'verification'" xmlns="http://www.w3.org/2000/svg"
              width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 11l3 3L22 4"/>
           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
         </svg>
-        <!-- User icon -->
         <svg *ngIf="getIcon(n.type) === 'user'" xmlns="http://www.w3.org/2000/svg"
              width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
           <circle cx="12" cy="7" r="4"/>
         </svg>
-        <!-- Contract icon -->
         <svg *ngIf="getIcon(n.type) === 'contract'" xmlns="http://www.w3.org/2000/svg"
              width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -97,14 +114,12 @@
           <line x1="16" y1="13" x2="8" y2="13"/>
           <line x1="16" y1="17" x2="8" y2="17"/>
         </svg>
-        <!-- Mission icon -->
         <svg *ngIf="getIcon(n.type) === 'mission'" xmlns="http://www.w3.org/2000/svg"
              width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
           <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
         </svg>
-        <!-- Info icon -->
         <svg *ngIf="getIcon(n.type) === 'info'" xmlns="http://www.w3.org/2000/svg"
              width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -135,6 +150,13 @@
         </div>
       </div>
 
+      <!-- Read indicator -->
+      <div class="read-check" *ngIf="n.isRead">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
 
     </div>
   </div>

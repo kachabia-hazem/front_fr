@@ -78,6 +78,11 @@
 .ban-reason-field .required { color: #ef4444; }
 .ban-reason-field textarea { width: 100%; border: 1px solid #e8eaed; border-radius: 9px; padding: 10px 12px; font-size: 0.875rem; color: #374151; resize: vertical; outline: none; font-family: inherit; box-sizing: border-box; }
 .ban-reason-field textarea:focus { border-color: #3793B0; box-shadow: 0 0 0 3px rgba(55,147,176,0.12); }
+.ban-duration-field { margin-top: 12px; }
+.ban-duration-field label { display: block; font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
+.ban-duration-field .required { color: #ef4444; }
+.ban-duration-field select { width: 100%; border: 1px solid #e8eaed; border-radius: 9px; padding: 9px 12px; font-size: 0.875rem; color: #374151; outline: none; font-family: inherit; box-sizing: border-box; background-color: #fff; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2.5rem; }
+.ban-duration-field select:focus { border-color: #3793B0; box-shadow: 0 0 0 3px rgba(55,147,176,0.12); }
 .btn-confirm-ban { padding: 9px 18px; border-radius: 9px; background: #ea580c; color: #fff; border: none; cursor: pointer; font-size: 0.875rem; font-weight: 700; transition: background 0.2s; }
 .btn-confirm-ban:hover:not(:disabled) { background: #c2410c; }
 .btn-confirm-ban:disabled { opacity: 0.5; cursor: not-allowed; }

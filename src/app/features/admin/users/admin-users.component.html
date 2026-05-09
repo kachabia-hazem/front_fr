@@ -169,9 +169,21 @@
         rows="3"
       ></textarea>
     </div>
+    <div class="ban-duration-field">
+      <label>Ban Duration <span class="required">*</span></label>
+      <select [(ngModel)]="banDuration">
+        <option value="" disabled selected>Select duration</option>
+        <option value="1 Day">1 Day</option>
+        <option value="3 Days">3 Days</option>
+        <option value="7 Days">7 Days</option>
+        <option value="14 Days">14 Days</option>
+        <option value="30 Days">30 Days</option>
+        <option value="Permanent">Permanent</option>
+      </select>
+    </div>
     <div class="modal-actions">
       <button class="btn-cancel" (click)="showBanModal.set(null)">{{ 'admin_users.modal_cancel' | translate }}</button>
-      <button class="btn-confirm-ban" (click)="executeBan()" [disabled]="!banReason.trim()">{{ 'admin_users.modal_confirm_ban' | translate }}</button>
+      <button class="btn-confirm-ban" (click)="executeBan()" [disabled]="!banReason.trim() || !banDuration">{{ 'admin_users.modal_confirm_ban' | translate }}</button>
     </div>
   </div>
 </div>

@@ -47,9 +47,30 @@
         <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" [(ngModel)]="searchQuery" [placeholder]="'missions_page.search_placeholder' | translate" (keyup.enter)="onSearch()" />
       </div>
-      <div class="search-input-group location-group">
-        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <input type="text" [(ngModel)]="locationQuery" [placeholder]="'missions_page.location_placeholder' | translate" (keyup.enter)="onSearch()" />
+      <div class="search-input-group location-group" (click)="$event.stopPropagation()">
+        <div class="loc-dropdown" [class.open]="locationDropdownOpen">
+          <button type="button" class="loc-trigger" (click)="toggleLocationDropdown($event)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="loc-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span [class.loc-placeholder]="!locationQuery">
+              {{ locationQuery || ('missions_page.select_region' | translate) }}
+            </span>
+            <svg class="loc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline [attr.points]="locationDropdownOpen ? '18 15 12 9 6 15' : '6 9 12 15 18 9'"/>
+            </svg>
+          </button>
+          @if (locationDropdownOpen) {
+            <div class="loc-panel">
+              <button type="button" class="loc-option" [class.selected]="!locationQuery" (click)="clearLocation($event)">
+                {{ 'missions_page.all_locations' | translate }}
+              </button>
+              @for (gov of governorates; track gov) {
+                <button type="button" class="loc-option" [class.selected]="gov === locationQuery" (click)="selectLocationOption(gov, $event)">
+                  {{ gov }}
+                </button>
+              }
+            </div>
+          }
+        </div>
       </div>
       <button class="btn-search" (click)="onSearch()">{{ 'missions_page.search_btn' | translate }}</button>
       <span class="search-divider">{{ 'missions_page.or' | translate }}</span>
@@ -517,11 +538,10 @@
               @if (isFreelancer) {
                 @if (!hasApplied(mission)) {
                   <div class="matching-btn-wrapper">
-                    <button class="btn-matching" (click)="checkMatching($event, mission)">
+                    <button class="btn-matching" (click)="openMatchConfirm($event, mission)">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
                       {{ 'missions_page.matching_ia' | translate }}
                     </button>
-                    <div class="matching-tooltip">This AI feature will use <strong>{{ aiMatchingCost }} points</strong> from your balance.</div>
                   </div>
                 }
                 @if (getApplicationStatus(mission) === 'PENDING') {
@@ -872,15 +892,57 @@
           }
           @if (!hasApplied(selectedMission!)) {
             <div class="matching-btn-wrapper">
-              <button class="btn-matching-modal" (click)="checkMatching($event, selectedMission!)">
+              <button class="btn-matching-modal" (click)="openMatchConfirm($event, selectedMission!)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
-                Matching IA
+                {{ 'missions_page.matching_ia' | translate }}
               </button>
-              <div class="matching-tooltip matching-tooltip--top">This AI feature will use <strong>{{ aiMatchingCost }} points</strong> from your balance.</div>
             </div>
           }
         </div>
       }
+    </div>
+  </div>
+}
+
+<!-- ═══ AI Matching Confirm Modal ═══ -->
+@if (showMatchConfirmModal) {
+  <div class="ai-confirm-overlay" (click)="declineMatching()">
+    <div class="ai-confirm-dialog" (click)="$event.stopPropagation()">
+
+      <div class="ai-confirm-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+
+      <h3 class="ai-confirm-title">{{ 'missions_page.ai_confirm_title' | translate }}</h3>
+      <p class="ai-confirm-desc">{{ 'missions_page.ai_confirm_sub' | translate }}</p>
+
+      <div class="ai-confirm-cost-row">
+        <span class="ai-confirm-cost-label">{{ 'missions_page.ai_confirm_body_pre' | translate }}</span>
+        <span class="ai-confirm-cost-value">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          {{ aiMatchingCost }} {{ 'missions_page.ai_confirm_pts' | translate }}
+        </span>
+      </div>
+
+      <div class="ai-confirm-actions">
+        <button class="ai-confirm-cancel" (click)="declineMatching()">
+          {{ 'missions_page.ai_confirm_decline' | translate }}
+        </button>
+        <button class="ai-confirm-ok" (click)="proceedMatching()">
+          {{ 'missions_page.ai_confirm_proceed' | translate }}
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 6 15 12 9 18"/>
+          </svg>
+        </button>
+      </div>
+
     </div>
   </div>
 }

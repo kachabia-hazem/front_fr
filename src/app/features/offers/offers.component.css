@@ -192,15 +192,27 @@
 }
 .active-badge { background: linear-gradient(135deg, #059669, #10b981) !important; }
 
-/* Promo tag */
-.off-promo-tag {
-  display: inline-block;
-  background: #fef3c7; color: #92400e;
-  border-radius: 6px; padding: 2px 8px;
-  font-size: 11px; font-weight: 600;
-  margin-bottom: 4px; width: fit-content;
+/* Promo badge — top-left corner, red percentage pill */
+.off-promo-badge {
+  position: absolute;
+  top: 14px; left: 14px;
+  background: #ef4444;
+  color: #fff;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 12px; font-weight: 800;
+  letter-spacing: .01em;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(239,68,68,.35);
 }
-:host-context(body.dark-theme) .off-promo-tag { background: rgba(245,158,11,.15); color: #f59e0b; }
+
+/* Promo expiry line */
+.off-promo-expiry {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: #ef4444; font-weight: 500;
+  margin-top: 2px;
+}
+:host-context(body.dark-theme) .off-promo-expiry { color: #f87171; }
 
 /* Category pill */
 .off-card-cat {
@@ -246,7 +258,7 @@
   font-size: 22px; font-weight: 700; color: #111827;
 }
 :host-context(body.dark-theme) .off-price-now { color: #f3f4f6; }
-.off-price-now.promo { color: #059669; }
+.off-price-now.promo-red { color: #ef4444; font-size: 24px; font-weight: 800; }
 .off-per { font-size: 13px; color: #9ca3af; }
 
 /* Savings */
@@ -369,7 +381,7 @@
 .off-confirm-price s { color: #9ca3af; font-size: 15px; }
 .off-confirm-price strong { color: #111827; }
 :host-context(body.dark-theme) .off-confirm-price strong { color: #f3f4f6; }
-.off-confirm-price strong.promo { color: #059669; }
+.off-confirm-price strong.promo-red { color: #ef4444; }
 .off-confirm-adv {
   list-style: none; padding: 0;
   margin: 0 0 16px; text-align: left;

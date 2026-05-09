@@ -107,7 +107,11 @@ export class AdminCompanyDetailComponent implements OnInit, OnDestroy{
       address: c.address ?? null,
       manager_email: c.managerEmail ?? null,
     }).subscribe({
-      next: (res) => { this.trustAnalysis.set(res); this.loadingAI.set(false); },
+      next: (res) => {
+        this.trustAnalysis.set(res);
+        this.loadingAI.set(false);
+        this.adminService.saveTrustScore(c.id, res.trust_score).subscribe();
+      },
       error: () => { this.aiError.set(true); this.loadingAI.set(false); },
     });
   }

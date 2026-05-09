@@ -101,6 +101,13 @@
       </div>
     </div>
 
+    @if (!loading() && unpaidSignedContracts().length > 0) {
+      <div class="payment-deadline-banner">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <p>{{ 'company_contracts.payment_rule' | translate }}</p>
+      </div>
+    }
+
     @if (!loading() && contracts().length > 0) {
       <div class="filters-bar">
         <div class="search-wrapper">
@@ -188,10 +195,21 @@
                 </td>
                 <td>
                   <div class="action-cell">
-                    @if (contract.status === 'SIGNED' && (!contract.paymentStatus || contract.paymentStatus === 'UNPAID' || contract.paymentStatus === 'FAILED')) {
+                    @if (isPaymentWindowOpen(contract)) {
                       <button class="btn-pay" (click)="openPaymentModal(contract)">
                         {{ 'company_contracts.pay_btn' | translate }}
                       </button>
+                      <div class="pay-deadline-line" [class]="'deadline-' + deadlineUrgency(contract)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        {{ 'company_contracts.pay_deadline_label' | translate }}
+                        <strong>{{ formatDate(contract.startDate) }}</strong>
+                        @if (daysUntilStart(contract) >= 0) {
+                          · {{ daysUntilStart(contract) }}{{ 'company_contracts.pay_days_left' | translate }}
+                        }
+                      </div>
+                    }
+                    @if (isPaymentWindowExpired(contract)) {
+                      <span class="pay-expired-label">{{ 'company_contracts.pay_expired' | translate }}</span>
                     }
                     <div class="action-menu-wrapper" (click)="$event.stopPropagation()">
                       <button class="btn-dots" (click)="toggleMenu(contract.id)">

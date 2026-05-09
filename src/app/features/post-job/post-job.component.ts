@@ -37,12 +37,23 @@ export class PostJobComponent implements OnInit, OnDestroy{
   specialityDropdownOpen = false;
   specialitySearch = '';
 
+  // Location dropdown
+  locationOpen = false;
+  selectedLocation = '';
+
   // Edit mode
   isEditMode = false;
   missionId: string | null = null;
 
   sectorOptions = SECTOR_OPTIONS.map(s => s.label);
   specialityOptions = SPECIALITY_OPTIONS.map(s => s.label);
+
+  readonly governorates = [
+    'Ariana', 'Béja', 'Ben Arous', 'Bizerte', 'Gabès', 'Gafsa',
+    'Jendouba', 'Kairouan', 'Kasserine', 'Kébili', 'Le Kef', 'Mahdia',
+    'La Manouba', 'Médenine', 'Monastir', 'Nabeul', 'Sfax', 'Sidi Bouzid',
+    'Siliana', 'Sousse', 'Tataouine', 'Tozeur', 'Tunis', 'Zaghouan',
+  ];
 
   // Rich editor refs
   @ViewChild('descriptionEditor') descriptionEditorRef!: ElementRef<HTMLDivElement>;
@@ -108,6 +119,8 @@ export class PostJobComponent implements OnInit, OnDestroy{
           speciality: mission.speciality || '',
           tjm: mission.tjm ?? null,
         });
+        // Restore location
+        this.selectedLocation = mission.location || '';
         // Restore selected sectors
         if (mission.missionBusinessSector) {
           this.selectedSectors = mission.missionBusinessSector.split(',').map((s: string) => s.trim()).filter((s: string) => s);
@@ -206,6 +219,21 @@ export class PostJobComponent implements OnInit, OnDestroy{
     if (specEl && !specEl.contains(event.target)) {
       this.specialityDropdownOpen = false;
     }
+    const locEl = this.elRef.nativeElement.querySelector('.location-field');
+    if (locEl && !locEl.contains(event.target)) {
+      this.locationOpen = false;
+    }
+  }
+
+  toggleLocation(): void {
+    this.locationOpen = !this.locationOpen;
+  }
+
+  selectLocation(gov: string): void {
+    this.selectedLocation = gov;
+    this.missionForm.get('location')?.setValue(gov);
+    this.missionForm.get('location')?.markAsTouched();
+    this.locationOpen = false;
   }
 
   // ── Rich Editor methods ──

@@ -234,7 +234,7 @@
             <!-- Content -->
             <div class="notif-content">
               <div class="notif-content-header">
-                <span class="notif-title" [innerHTML]="notif.title | highlight: searchQuery()"></span>
+                <span class="notif-title" [innerHTML]="localizeTitle(notif) | highlight: searchQuery()"></span>
                 <div class="notif-meta">
                   @if (!notif.isRead) {
                     <span class="notif-unread-dot"></span>

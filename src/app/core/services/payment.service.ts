@@ -6,7 +6,8 @@ import {
   ContractPaymentIntent,
   ContractPaymentStatus,
   FreelancerPaymentSummary,
-  PackCheckoutResponse
+  PackCheckoutResponse,
+  SavedCard
 } from '../models/payment.model';
 
 @Injectable({ providedIn: 'root' })
@@ -74,5 +75,20 @@ export class PaymentService {
     return this.http.post<{ status: string }>(
       `${this.apiUrl}/subscriptions/verify`, {}, { params }
     );
+  }
+
+  /** Create a Stripe Setup Intent → returns clientSecret for confirmSetup() */
+  createSetupIntent(): Observable<{ clientSecret: string }> {
+    return this.http.post<{ clientSecret: string }>(`${this.apiUrl}/payment-methods/setup`, {});
+  }
+
+  /** List saved payment cards for the authenticated user */
+  listPaymentMethods(): Observable<SavedCard[]> {
+    return this.http.get<SavedCard[]>(`${this.apiUrl}/payment-methods`);
+  }
+
+  /** Remove a saved card by payment method ID */
+  deletePaymentMethod(pmId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/payment-methods/${pmId}`);
   }
 }

@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "home": "Home",
     "freelancers": "Freelancers",
@@ -94,9 +94,23 @@
     "payment": {
       "label": "Payment",
       "title": "Payment Methods",
-      "desc": "Manage your billing information and payment methods.",
-      "coming_soon_title": "Coming Soon",
-      "coming_soon_desc": "Payment management will be available in an upcoming release. Stay tuned!"
+      "desc": "Manage your saved payment cards.",
+      "saved_cards": "Saved Cards",
+      "no_cards": "No payment cards saved yet.",
+      "add_card": "Add a Card",
+      "confirm_add": "Save Card",
+      "cancel_add": "Cancel",
+      "expires": "Expires",
+      "remove": "Remove",
+      "loading": "Loading cards...",
+      "add_success": "Card saved successfully.",
+      "remove_success": "Card removed.",
+      "error_load": "Failed to load payment methods.",
+      "error_add": "Failed to add card. Please try again.",
+      "error_remove": "Failed to remove card.",
+      "confirm_remove": "Remove this card?",
+      "yes_remove": "Yes, remove",
+      "no_cancel": "Cancel"
     },
     "delete": {
       "label": "Delete Account",
@@ -244,6 +258,17 @@
     "time_hour_ago": "{{n}}h ago",
     "time_day_ago": "{{n}}d ago"
   },
+  "notif_type": {
+    "LEGIT_OPENED": "Dispute Submitted",
+    "LEGIT_RESPONSE_FROM_ADMIN": "Admin Response on Your Dispute",
+    "LEGIT_MISSION_CANCELLED_BY_ADMIN": "Mission Cancelled — Dispute Resolution",
+    "LEGIT_REFUND_BY_ADMIN": "Refund Processed — Dispute Resolution",
+    "LEGIT_MISSION_CONTINUED_BY_ADMIN": "Mission Resumed — Dispute Resolution",
+    "LEGIT_STATUS_UPDATED": "Dispute Status Updated",
+    "CONTRACT_PAYMENT_AUTHORIZED": "Payment Authorized",
+    "CONTRACT_PAYMENT_RELEASED": "Payment Released",
+    "PACK_PURCHASED": "Pack Purchased"
+  },
   "messaging_page": {
     "title": "Messages",
     "search": "Search conversations...",
@@ -372,7 +397,7 @@
     "login_btn": "Log In",
     "register_btn": "Create an Account",
     "search_placeholder": "Search for missions, companies...",
-    "location_placeholder": "Mission location...",
+    "location_placeholder": "Mission location...","all_locations": "All regions","select_region": "Select a region",
     "search_btn": "Search",
     "or": "or",
     "ai_search": "AI Search",
@@ -431,6 +456,13 @@
     "modal_skills_missing": "Missing",
     "modal_apply_now": "Apply Now",
     "modal_retry": "Retry",
+    "ai_confirm_title": "AI Matching Analysis",
+    "ai_confirm_body_pre": "Points to deduct",
+    "ai_confirm_pts": "points",
+    "ai_confirm_body_post": "from your balance.",
+    "ai_confirm_sub": "Do you want to proceed?",
+    "ai_confirm_decline": "Decline",
+    "ai_confirm_proceed": "Proceed",
     "ai_analyzing": "AI is analyzing your request...",
     "save_mission": "Save mission",
     "remove_saved": "Remove from saved",
@@ -808,7 +840,32 @@
     "email_send": "Send",
     "email_toast_ok": "Email sent and notification created.",
     "email_toast_err": "Failed to send.",
-    "default_subject": "Regarding your dispute — WorkLink"
+    "default_subject": "Regarding your dispute — WorkLink",
+    "final_decision": "Final Decision",
+    "btn_cancel_mission": "Cancel Mission",
+    "btn_refund": "Refund",
+    "btn_continue_mission": "Continue Mission",
+    "decision_annule": "Mission cancelled — funds retained by the platform",
+    "decision_rembourse": "Refund — Freelancer {{fl}}% · Company {{co}}%",
+    "decision_continue": "Mission resumed — contract active",
+    "modal_mission_label": "Mission:",
+    "cancel_modal_title": "Cancel Mission",
+    "cancel_warning": "The contract will be cancelled and funds will be retained by the platform. Both parties will be notified.",
+    "cancel_reason_label": "Cancellation Reason",
+    "cancel_reason_placeholder": "Explain the reason for cancellation...",
+    "cancel_confirm_btn": "Confirm Cancellation",
+    "refund_modal_title": "Partial Refund",
+    "refund_warning": "Define how to split 100% of the amount between the two parties. The contract will be cancelled.",
+    "role_company": "Company",
+    "refund_reason_label": "Refund Reason",
+    "refund_reason_placeholder": "Explain the refund decision...",
+    "refund_confirm_btn": "Confirm Refund",
+    "continue_modal_title": "Continue Mission",
+    "continue_warning": "The contract will return to active status and the mission will resume. Both parties will be notified.",
+    "continue_note_label": "Administrative Note (optional)",
+    "continue_note_placeholder": "Add a note for both parties...",
+    "continue_confirm_btn": "Confirm Resume",
+    "modal_cancel_btn": "Cancel"
   },
   "admin_notif": {
     "title": "Notifications",
@@ -1514,10 +1571,10 @@
     "cancel": "Cancel",
     "view_workspace": "View workspace",
     "delete": "Delete",
-    "toast_title": "Mission removed",
+    "toast_title": "Mission not yet accessible",
     "toast_text_pre": "The mission",
-    "toast_text_mid": "has been",
-    "toast_text_post": "removed from your history."
+    "toast_text_mid": "will be accessible from",
+    "toast_text_post": "Please wait until the start date and ensure the contract payment has been completed."
   },
   "messaging": {
     "title": "Messages",
@@ -1616,7 +1673,11 @@
     "pay_escrow": "In escrow",
     "pay_released": "Released",
     "pay_failed": "Failed",
-    "pay_btn": "💳 Pay"
+    "pay_btn": "💳 Pay",
+    "pay_expired": "Payment window expired",
+    "pay_deadline_label": "Pay by",
+    "pay_days_left": "d left",
+    "payment_rule": "The contract must be paid within the period between the freelancer's signature date and the mission start date. Otherwise, the contract will be automatically cancelled."
   },
   "company_apps": {
     "loading": "Loading applications…",
@@ -1951,7 +2012,7 @@
     "field": "Field",
     "field_ph": "e.g. Web Development",
     "location": "Location",
-    "location_ph": "e.g. Tunis, Tunisia (or Remote)",
+    "location_ph": "e.g. Tunis, Tunisia (or Remote)","select_region": "Select a region",
     "section_conditions": "Working Conditions",
     "employment_type": "Employment Type",
     "employment_type_ph": "Select type",
@@ -2008,9 +2069,10 @@
     "active_badge": "Current Plan",
     "pts": "pts",
     "pts_month": "pts / month",
+    "promo_expires": "Expires",
     "save_pct": "Save {{n}}%",
     "ppp": "DT / pt",
-    "buy": "Buy",
+    "buy": "Purchase",
     "no_packs": "No packs available at the moment.",
     "no_plans": "No plans available at the moment.",
     "per_month": "/ month",
@@ -2042,5 +2104,20 @@
     "error_payment": "Payment failed. Please try again.",
     "success_authorized": "Payment authorized! Funds are secured in escrow.",
     "success_confirmed": "Payment confirmed. Status will be updated shortly."
+  },
+  "payment_success": {
+    "verifying": "Verifying payment…",
+    "title": "Payment confirmed!",
+    "msg_pack": "Your points pack has been credited to your account. You can now use your points.",
+    "msg_plan": "Your subscription has been activated successfully. Points have been credited to your account.",
+    "msg_contract": "Payment secured. Funds will be released to the freelancer after mission validation.",
+    "warn_delay": "Points will be credited in a few moments.",
+    "warn_plan_delay": "Subscription will be activated in a few moments.",
+    "go_back": "Back to my space"
+  },
+  "payment_cancel": {
+    "title": "Payment Cancelled",
+    "msg": "Your payment has been cancelled. No amount has been charged. You can try again at any time.",
+    "go_back": "Go Back"
   }
 }

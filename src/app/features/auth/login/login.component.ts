@@ -158,6 +158,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.router.navigate(['/auth/banned'], {
             state: {
               banReason: err.error.banReason ?? '',
+              banDuration: err.error.banDuration ?? '',
+              banEndDate: err.error.banEndDate ?? '',
               userId: err.error.userId ?? '',
               userType: err.error.userType ?? '',
               email: email,

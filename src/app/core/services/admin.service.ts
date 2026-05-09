@@ -106,8 +106,11 @@ export class AdminService {
     return this.http.post<Company>(`${this.apiUrl}/companies/${id}/reject`, { reason });
   }
 
-  toggleCompanyBan(id: string, banReason?: string): Observable<ToggleBanResponse> {
-    return this.http.post<ToggleBanResponse>(`${this.apiUrl}/companies/${id}/toggle-ban`, banReason ? { banReason } : {});
+  toggleCompanyBan(id: string, banReason?: string, banDuration?: string): Observable<ToggleBanResponse> {
+    const body: Record<string, string> = {};
+    if (banReason) body['banReason'] = banReason;
+    if (banDuration) body['banDuration'] = banDuration;
+    return this.http.post<ToggleBanResponse>(`${this.apiUrl}/companies/${id}/toggle-ban`, body);
   }
 
   deleteCompany(id: string): Observable<void> {
@@ -116,6 +119,10 @@ export class AdminService {
 
   refreshTrustScore(id: string): Observable<Company> {
     return this.http.post<Company>(`${this.apiUrl}/companies/${id}/refresh-trust-score`, {});
+  }
+
+  saveTrustScore(id: string, score: number): Observable<Company> {
+    return this.http.patch<Company>(`${this.apiUrl}/companies/${id}/trust-score`, { trustScore: score });
   }
 
   // ─── Freelancers ──────────────────────────────────────────────────────────
@@ -127,8 +134,11 @@ export class AdminService {
     return this.http.get<Freelancer>(`${this.apiUrl}/freelancers/${id}`);
   }
 
-  toggleFreelancerBan(id: string, banReason?: string): Observable<ToggleBanResponse> {
-    return this.http.post<ToggleBanResponse>(`${this.apiUrl}/freelancers/${id}/toggle-ban`, banReason ? { banReason } : {});
+  toggleFreelancerBan(id: string, banReason?: string, banDuration?: string): Observable<ToggleBanResponse> {
+    const body: Record<string, string> = {};
+    if (banReason) body['banReason'] = banReason;
+    if (banDuration) body['banDuration'] = banDuration;
+    return this.http.post<ToggleBanResponse>(`${this.apiUrl}/freelancers/${id}/toggle-ban`, body);
   }
 
   deleteFreelancer(id: string): Observable<void> {

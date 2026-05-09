@@ -36,11 +36,27 @@
           </div>
         </div>
 
-        <div class="form-field form-field-half" [class.has-error]="hasError('location')">
+        <div class="form-field form-field-half location-field" [class.has-error]="hasError('location')">
           <label>{{ 'post_job.location' | translate }} <span class="required">*</span></label>
-          <div class="icon-input">
-            <svg class="field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <input type="text" formControlName="location" [placeholder]="'post_job.location_ph' | translate" />
+          <div class="loc-dropdown" [class.open]="locationOpen">
+            <button type="button" class="loc-trigger" (click)="toggleLocation()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="loc-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span [class.loc-placeholder]="!selectedLocation">
+                {{ selectedLocation || ('post_job.select_region' | translate) }}
+              </span>
+              <svg class="loc-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline [attr.points]="locationOpen ? '18 15 12 9 6 15' : '6 9 12 15 18 9'"/>
+              </svg>
+            </button>
+            @if (locationOpen) {
+              <div class="loc-panel">
+                @for (gov of governorates; track gov) {
+                  <button type="button" class="loc-option" [class.selected]="gov === selectedLocation" (click)="selectLocation(gov)">
+                    {{ gov }}
+                  </button>
+                }
+              </div>
+            }
           </div>
           @if (hasError('location')) {
             <div class="field-error">{{ getError('location') }}</div>

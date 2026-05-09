@@ -179,3 +179,47 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 :host-context(body.dark-theme) .modal label { color: #c5cad8; }
 :host-context(body.dark-theme) .reason-input { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }
 :host-context(body.dark-theme) .btn-cancel { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+
+/* ── Trust score Test button ── */
+.btn-test-ai {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  background: linear-gradient(135deg, rgba(55,147,176,0.1), rgba(124,58,237,0.1));
+  border: 1.5px solid rgba(55,147,176,0.35);
+  border-radius: 8px;
+  color: #3793B0;
+  font-size: 0.78rem; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-test-ai:hover {
+  background: linear-gradient(135deg, rgba(55,147,176,0.2), rgba(124,58,237,0.16));
+  border-color: #3793B0;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(55,147,176,0.2);
+}
+
+/* ── Trust testing state ── */
+.trust-testing {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 0.75rem; color: #9ca3af; font-style: italic;
+}
+.trust-spinner {
+  width: 14px; height: 14px;
+  border: 2px solid #e8eaed; border-top-color: #3793B0;
+  border-radius: 50%; animation: tspin 0.7s linear infinite; flex-shrink: 0;
+}
+@keyframes tspin { to { transform: rotate(360deg); } }
+
+:host-context(body.dark-theme) .btn-test-ai {
+  background: linear-gradient(135deg, rgba(55,147,176,0.1), rgba(124,58,237,0.1));
+  border-color: rgba(55,147,176,0.3); color: #60b8d4;
+}
+:host-context(body.dark-theme) .btn-test-ai:hover {
+  background: linear-gradient(135deg, rgba(55,147,176,0.2), rgba(124,58,237,0.15));
+  border-color: #3793B0;
+}
+:host-context(body.dark-theme) .trust-spinner {
+  border-color: rgba(255,255,255,0.1); border-top-color: #3793B0;
+}

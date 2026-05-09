@@ -160,6 +160,11 @@ export class ActiveMissionComponent implements OnInit, OnDestroy{
   loadMission(): void {
     this.activeMissionService.getMission(this.missionId).subscribe({
       next: (m) => {
+        // Redirect away if mission is not yet accessible
+        if (m.status === 'PENDING') {
+          this.router.navigate(['/freelancer-dashboard']);
+          return;
+        }
         this.mission.set(m);
         this.newGitUrl = m.gitRepositoryUrl || '';
         this.loading.set(false);

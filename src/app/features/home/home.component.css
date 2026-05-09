@@ -1749,3 +1749,34 @@ button.how-card-btn:focus-visible {
   .fb-track { grid-template-columns: 1fr; }
   .fb-title { font-size: 1.5rem; }
 }
+
+/* ── Feedback / Testimonials — Dark Mode ── */
+:host-context(body.dark-theme) .fb-section { background: #111827; }
+:host-context(body.dark-theme) .fb-badge { background: #1e3a4a; color: #3793B0; }
+:host-context(body.dark-theme) .fb-title { color: #f3f4f6; }
+:host-context(body.dark-theme) .fb-subtitle { color: #9ca3af; }
+:host-context(body.dark-theme) .fb-group-title { color: #e4e4ef; }
+:host-context(body.dark-theme) .fb-card {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: none;
+}
+:host-context(body.dark-theme) .fb-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+:host-context(body.dark-theme) .fb-user-name { color: #f3f4f6; }
+:host-context(body.dark-theme) .fb-date { color: #6b7280; }
+:host-context(body.dark-theme) .fb-stars svg { color: #374151; }
+:host-context(body.dark-theme) .fb-comment { color: #9ca3af; }
+:host-context(body.dark-theme) .fb-nav {
+  background: #1f2937;
+  border-color: #374151;
+  color: #9ca3af;
+}
+:host-context(body.dark-theme) .fb-nav:hover:not(:disabled) {
+  background: #3793B0;
+  border-color: #3793B0;
+  color: #fff;
+}
+:host-context(body.dark-theme) .fb-dot { background: #374151; }
+:host-context(body.dark-theme) .fb-dot-active { background: #3793B0; }

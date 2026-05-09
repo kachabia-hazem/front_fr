@@ -12,6 +12,8 @@ import { ReportModalComponent } from '../../../shared/report-modal/report-modal.
 })
 export class BannedComponent implements OnInit {
   banReason = '';
+  banDuration = '';
+  banEndDate = '';
   email = '';
   showReportModal = signal(false);
   reportSubmitted = signal(false);
@@ -19,8 +21,10 @@ export class BannedComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const state = history.state as { banReason?: string; email?: string };
+    const state = history.state as { banReason?: string; banDuration?: string; banEndDate?: string; email?: string };
     this.banReason = state?.banReason ?? '';
+    this.banDuration = state?.banDuration ?? '';
+    this.banEndDate = state?.banEndDate ?? '';
     this.email = state?.email ?? '';
   }
 

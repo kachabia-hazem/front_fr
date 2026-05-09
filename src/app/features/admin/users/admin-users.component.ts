@@ -32,6 +32,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
   showDeleteModal = signal<{ id: string; name: string; type: UserTab } | null>(null);
   showBanModal = signal<BanTarget | null>(null);
   banReason = '';
+  banDuration = '';
 
   filteredFreelancers = computed(() => {
     const q = this.searchQuery().toLowerCase();
@@ -76,6 +77,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
 
   requestBan(id: string, name: string, type: UserTab) {
     this.banReason = '';
+    this.banDuration = '';
     this.showBanModal.set({ id, name, type });
   }
 
@@ -83,8 +85,8 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     const target = this.showBanModal();
     if (!target) return;
     const obs = target.type === 'freelancers'
-      ? this.adminService.toggleFreelancerBan(target.id, this.banReason)
-      : this.adminService.toggleCompanyBan(target.id, this.banReason);
+      ? this.adminService.toggleFreelancerBan(target.id, this.banReason, this.banDuration)
+      : this.adminService.toggleCompanyBan(target.id, this.banReason, this.banDuration);
     obs.subscribe({
       next: () => {
         this.showToast(this.translate.instant('admin_users.toast_banned'), 'success');

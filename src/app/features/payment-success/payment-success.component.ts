@@ -1,37 +1,38 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
 import { PaymentService } from '../../core/services/payment.service';
 
 @Component({
   selector: 'app-payment-success',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
     <div class="ps-page">
       <div class="ps-card">
 
         @if (verifying()) {
           <div class="ps-spinner"></div>
-          <p class="ps-verifying">Vérification du paiement en cours…</p>
+          <p class="ps-verifying">{{ 'payment_success.verifying' | translate }}</p>
         } @else {
           <div class="ps-icon">✓</div>
-          <h1 class="ps-title">Paiement confirmé !</h1>
+          <h1 class="ps-title">{{ 'payment_success.title' | translate }}</h1>
           <p class="ps-msg">
             @if (isPack()) {
-              Votre pack de points a été crédité sur votre compte. Vous pouvez maintenant utiliser vos points.
+              {{ 'payment_success.msg_pack' | translate }}
             } @else if (isPlan()) {
-              Votre abonnement a été activé avec succès. Les points ont été crédités sur votre compte.
+              {{ 'payment_success.msg_plan' | translate }}
             } @else {
-              Le paiement a été sécurisé. Les fonds seront libérés au freelancer après validation de la mission.
+              {{ 'payment_success.msg_contract' | translate }}
             }
           </p>
           @if (errorMsg()) {
             <p class="ps-warn">⚠️ {{ errorMsg() }}</p>
           }
           <div class="ps-actions">
-            <button class="ps-btn" (click)="goBack()">Retour à mon espace</button>
+            <button class="ps-btn" (click)="goBack()">{{ 'payment_success.go_back' | translate }}</button>
           </div>
         }
 
@@ -53,16 +54,17 @@ import { PaymentService } from '../../core/services/payment.service';
   `]
 })
 export class PaymentSuccessComponent implements OnInit {
-  verifying   = signal(false);
-  isPack      = signal(false);
-  isPlan      = signal(false);
-  errorMsg    = signal('');
+  verifying = signal(false);
+  isPack    = signal(false);
+  isPlan    = signal(false);
+  errorMsg  = signal('');
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
     private paymentService: PaymentService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit() {
@@ -79,7 +81,7 @@ export class PaymentSuccessComponent implements OnInit {
           this.verifying.set(false);
           const msg = err?.error?.error || '';
           if (!msg.toLowerCase().includes('already')) {
-            this.errorMsg.set('Les points seront crédités dans quelques instants.');
+            this.errorMsg.set(this.translate.instant('payment_success.warn_delay'));
           }
         },
       });
@@ -92,7 +94,7 @@ export class PaymentSuccessComponent implements OnInit {
           this.verifying.set(false);
           const msg = err?.error?.error || '';
           if (!msg.toLowerCase().includes('already')) {
-            this.errorMsg.set("L'abonnement sera activé dans quelques instants.");
+            this.errorMsg.set(this.translate.instant('payment_success.warn_plan_delay'));
           }
         },
       });

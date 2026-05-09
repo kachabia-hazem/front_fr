@@ -39,3 +39,11 @@ export interface FreelancerPaymentSummary {
   earnedContractCount: number;
   contracts: ContractPaymentItem[];
 }
+
+export interface SavedCard {
+  id: string;
+  brand: string;
+  last4: string;
+  expMonth: number;
+  expYear: number;
+}

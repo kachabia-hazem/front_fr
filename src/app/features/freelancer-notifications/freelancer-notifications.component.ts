@@ -246,6 +246,19 @@ export class FreelancerNotificationsComponent implements OnInit, OnDestroy {
     return date.toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
+  private readonly LOCALIZED_TYPES = new Set<NotificationType>([
+    'LEGIT_OPENED', 'LEGIT_RESPONSE_FROM_ADMIN', 'LEGIT_MISSION_CANCELLED_BY_ADMIN',
+    'LEGIT_REFUND_BY_ADMIN', 'LEGIT_MISSION_CONTINUED_BY_ADMIN', 'LEGIT_STATUS_UPDATED',
+    'CONTRACT_PAYMENT_AUTHORIZED', 'CONTRACT_PAYMENT_RELEASED', 'PACK_PURCHASED',
+  ]);
+
+  localizeTitle(notif: Notification): string {
+    if (this.LOCALIZED_TYPES.has(notif.type)) {
+      return this.translate.instant('notif_type.' + notif.type);
+    }
+    return notif.title;
+  }
+
   getTypeIcon(type: NotificationType): string {
     const icons: Partial<Record<NotificationType, string>> = {
       WELCOME: '👋',
@@ -256,6 +269,20 @@ export class FreelancerNotificationsComponent implements OnInit, OnDestroy {
       NEW_MISSION_MATCH: '🎯',
       MISSION_DEADLINE_SOON: '⏰',
       PROFILE_INCOMPLETE: '⚠️',
+      CONTRACT_GENERATED: '📋',
+      CONTRACT_SIGNED: '✍️',
+      CONTRACT_SIGNATURE_REMINDER: '⏰',
+      CONTRACT_REJECTED: '❌',
+      CONTRACT_CANCELLED_BY_ADMIN: '🚫',
+      CONTRACT_PAYMENT_AUTHORIZED: '💳',
+      CONTRACT_PAYMENT_RELEASED: '💰',
+      PACK_PURCHASED: '📦',
+      LEGIT_OPENED: '⚖️',
+      LEGIT_RESPONSE_FROM_ADMIN: '💬',
+      LEGIT_MISSION_CANCELLED_BY_ADMIN: '🚫',
+      LEGIT_REFUND_BY_ADMIN: '💰',
+      LEGIT_MISSION_CONTINUED_BY_ADMIN: '▶️',
+      LEGIT_STATUS_UPDATED: '🔄',
     };
     return icons[type] || '🔔';
   }
@@ -270,6 +297,20 @@ export class FreelancerNotificationsComponent implements OnInit, OnDestroy {
       NEW_MISSION_MATCH: 'type-mission',
       MISSION_DEADLINE_SOON: 'type-deadline',
       PROFILE_INCOMPLETE: 'type-warning',
+      CONTRACT_GENERATED: 'type-mission',
+      CONTRACT_SIGNED: 'type-accepted',
+      CONTRACT_SIGNATURE_REMINDER: 'type-deadline',
+      CONTRACT_REJECTED: 'type-rejected',
+      CONTRACT_CANCELLED_BY_ADMIN: 'type-rejected',
+      CONTRACT_PAYMENT_AUTHORIZED: 'type-mission',
+      CONTRACT_PAYMENT_RELEASED: 'type-accepted',
+      PACK_PURCHASED: 'type-accepted',
+      LEGIT_OPENED: 'type-warning',
+      LEGIT_RESPONSE_FROM_ADMIN: 'type-mission',
+      LEGIT_MISSION_CANCELLED_BY_ADMIN: 'type-rejected',
+      LEGIT_REFUND_BY_ADMIN: 'type-accepted',
+      LEGIT_MISSION_CONTINUED_BY_ADMIN: 'type-accepted',
+      LEGIT_STATUS_UPDATED: 'type-deadline',
     };
     return classes[type] || 'type-default';
   }

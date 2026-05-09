@@ -57,11 +57,11 @@
         @for (pack of packs(); track pack.id) {
           <div class="off-card" [class.off-card-star]="isPopularPack(pack)">
 
+            @if (pack.promoEnabled && pack.promoDiscountPercent > 0) {
+              <div class="off-promo-badge">-{{ pack.promoDiscountPercent }}%</div>
+            }
             @if (isPopularPack(pack)) {
               <div class="off-star-badge">{{ 'offers.popular_badge' | translate }}</div>
-            }
-            @if (pack.promoEnabled && pack.promoLabel) {
-              <div class="off-promo-tag">{{ pack.promoLabel }}</div>
             }
 
             <div class="off-card-cat" [class]="'cat-'+pack.category.toLowerCase()">{{ packLabel(pack) | translate }}</div>
@@ -75,13 +75,20 @@
             <div class="off-price">
               @if (pack.promoEnabled && pack.promoPrice !== null) {
                 <span class="off-price-old">{{ formatTND(pack.price) }}</span>
-                <span class="off-price-now promo">{{ formatTND(pack.promoPrice!) }}</span>
+                <span class="off-price-now promo-red">{{ formatTND(pack.promoPrice!) }}</span>
               } @else {
                 <span class="off-price-now">{{ formatTND(pack.price) }}</span>
               }
             </div>
 
-            @if (pack.savingsPercent > 0) {
+            @if (pack.promoEnabled && pack.promoExpiresAt) {
+              <div class="off-promo-expiry">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                {{ 'offers.promo_expires' | translate }}: {{ formatPromoDate(pack.promoExpiresAt) }}
+              </div>
+            }
+
+            @if (pack.savingsPercent > 0 && !pack.promoEnabled) {
               <div class="off-save">{{ 'offers.save_pct' | translate: {n: pack.savingsPercent} }}</div>
             }
 
@@ -106,13 +113,13 @@
         @for (plan of plans(); track plan.id) {
           <div class="off-card" [class.off-card-star]="isPopularPlan(plan)" [class.off-card-active]="isCurrentPlan(plan.id)">
 
+            @if (plan.promoEnabled && plan.promoDiscountPercent > 0) {
+              <div class="off-promo-badge">-{{ plan.promoDiscountPercent }}%</div>
+            }
             @if (isCurrentPlan(plan.id)) {
               <div class="off-star-badge active-badge">{{ 'offers.active_badge' | translate }}</div>
             } @else if (isPopularPlan(plan)) {
               <div class="off-star-badge">{{ 'offers.popular_badge' | translate }}</div>
-            }
-            @if (plan.promoEnabled && plan.promoLabel) {
-              <div class="off-promo-tag">{{ plan.promoLabel }}</div>
             }
 
             <div class="off-card-name">{{ plan.name }}</div>
@@ -125,12 +132,19 @@
             <div class="off-price">
               @if (plan.promoEnabled && plan.promoPrice !== null) {
                 <span class="off-price-old">{{ formatTND(plan.pricePerMonth) }}</span>
-                <span class="off-price-now promo">{{ formatTND(plan.promoPrice!) }}</span>
+                <span class="off-price-now promo-red">{{ formatTND(plan.promoPrice!) }}</span>
               } @else {
                 <span class="off-price-now">{{ formatTND(plan.pricePerMonth) }}</span>
               }
               <span class="off-per">{{ 'offers.per_month' | translate }}</span>
             </div>
+
+            @if (plan.promoEnabled && plan.promoExpiresAt) {
+              <div class="off-promo-expiry">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                {{ 'offers.promo_expires' | translate }}: {{ formatPromoDate(plan.promoExpiresAt) }}
+              </div>
+            }
 
             <ul class="off-adv">
               @for (adv of plan.advantages; track adv) {
@@ -177,7 +191,7 @@
         <div class="off-confirm-price">
           @if (pack.promoEnabled && pack.promoPrice !== null) {
             <s>{{ formatTND(pack.price) }}</s>
-            <strong class="promo">{{ formatTND(pack.promoPrice!) }}</strong>
+            <strong class="promo-red">{{ formatTND(pack.promoPrice!) }}</strong>
           } @else {
             <strong>{{ formatTND(pack.price) }}</strong>
           }
@@ -205,7 +219,7 @@
         <div class="off-confirm-price">
           @if (plan.promoEnabled && plan.promoPrice !== null) {
             <s>{{ formatTND(plan.pricePerMonth) }}</s>
-            <strong class="promo">{{ formatTND(plan.promoPrice!) }}</strong>
+            <strong class="promo-red">{{ formatTND(plan.promoPrice!) }}</strong>
           } @else {
             <strong>{{ formatTND(plan.pricePerMonth) }}</strong>
           }

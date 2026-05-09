@@ -357,6 +357,43 @@
 :host-context(body.dark-theme) .danger-warning { background: rgba(194,65,12,0.1); border-color: rgba(194,65,12,0.25); color: #fb923c; }
 .danger-warning svg { flex-shrink: 0; margin-top: 1px; }
 
+/* ── Payment ── */
+.s-icon-teal { background: rgba(55,147,176,0.1); color: #3793B0; }
+:host-context(body.dark-theme) .s-icon-teal { background: rgba(55,147,176,0.18); color: #5ab4d4; }
+.pm-loading { display: flex; align-items: center; gap: 10px; padding: 24px 0; color: #6b7280; font-size: 0.9rem; }
+.pm-section-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #9ca3af; margin-bottom: 14px; }
+.pm-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 36px 0 24px; color: #9ca3af; }
+.pm-empty svg { opacity: 0.45; }
+.pm-empty p { font-size: 0.9rem; }
+.pm-card-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.pm-card-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid #e5e7eb; border-radius: 12px; background: #fff; }
+:host-context(body.dark-theme) .pm-card-item { background: #1e2433; border-color: #2a3040; }
+.pm-card-brand { width: 44px; height: 30px; border-radius: 6px; background: #1a1a2e; color: #fff; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.04em; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pm-card-brand[data-brand="visa"] { background: #1a1f71; }
+.pm-card-brand[data-brand="mastercard"] { background: #eb001b; }
+.pm-card-brand[data-brand="amex"] { background: #007bc1; }
+.pm-card-info { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.pm-card-number { font-size: 0.92rem; font-weight: 600; color: #1a1a2e; letter-spacing: 0.04em; }
+:host-context(body.dark-theme) .pm-card-number { color: #e4e4ef; }
+.pm-card-expiry { font-size: 0.78rem; color: #6b7280; }
+.pm-card-remove { background: none; border: none; cursor: pointer; color: #9ca3af; padding: 6px; border-radius: 6px; display: flex; transition: color 0.2s, background 0.2s; flex-shrink: 0; }
+.pm-card-remove:hover { color: #ef4444; background: rgba(239,68,68,0.08); }
+.pm-card-removing { opacity: 0.5; pointer-events: none; }
+.pm-remove-spinner { flex-shrink: 0; width: 18px; height: 18px; border-width: 2px; }
+.pm-confirm-row { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.pm-confirm-label { font-size: 0.78rem; color: #ef4444; white-space: nowrap; }
+.pm-confirm-yes { background: #ef4444; color: #fff; border: none; border-radius: 6px; padding: 4px 10px; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+.pm-confirm-yes:hover { background: #dc2626; }
+.pm-confirm-no { background: none; border: 1px solid #d1d5db; color: #6b7280; border-radius: 6px; padding: 4px 10px; font-size: 0.78rem; cursor: pointer; }
+.pm-confirm-no:hover { background: #f3f4f6; }
+.pm-add-form { margin-bottom: 8px; }
+.pm-stripe-element { padding: 4px 0; margin-bottom: 16px; min-height: 60px; }
+.pm-add-actions { display: flex; gap: 10px; margin-top: 4px; }
+.s-btn-outline { background: transparent; color: #374151; border: 1.5px solid #d1d5db; }
+.s-btn-outline:hover { background: #f9fafb; border-color: #9ca3af; }
+:host-context(body.dark-theme) .s-btn-outline { color: #d1d5db; border-color: #374151; }
+:host-context(body.dark-theme) .s-btn-outline:hover { background: rgba(255,255,255,0.05); }
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .settings-page { padding: 24px 20px 48px; }

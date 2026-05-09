@@ -278,6 +278,78 @@
   padding-left: 2.4rem;
 }
 
+/* ── Location Custom Dropdown ── */
+.loc-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.loc-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0.85rem;
+  border: 1.5px solid #e2e2ea;
+  border-radius: 0.6rem;
+  background: #fafafa;
+  color: #1a1a2e;
+  font-size: 0.875rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.loc-trigger:hover {
+  border-color: #c0c0d0;
+  background: #fff;
+}
+
+.loc-dropdown.open .loc-trigger {
+  border-color: #3793B0;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(90, 170, 158, 0.12);
+}
+
+.loc-pin { color: #999; flex-shrink: 0; }
+
+.loc-placeholder { color: #b0b0c0; flex: 1; }
+
+.loc-trigger span:not(.loc-placeholder) { flex: 1; }
+
+.loc-chevron { margin-left: auto; flex-shrink: 0; color: #999; transition: transform 0.2s; }
+
+.loc-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1.5px solid #e2e2ea;
+  border-radius: 0.6rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 200;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.loc-option {
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  border: none;
+  background: none;
+  color: #1a1a2e;
+  font-size: 0.875rem;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.loc-option:hover { background: #f0f9ff; color: #3793B0; }
+.loc-option.selected { color: #3793B0; font-weight: 600; background: #f0f9ff; }
+
 /* ── Experience Wrapper ── */
 .experience-wrapper {
   position: relative;
@@ -833,6 +905,41 @@
 
 :host-context(body.dark-theme) .field-icon {
   color: #6b7280;
+}
+
+:host-context(body.dark-theme) .loc-trigger {
+  background: #253347;
+  border-color: #4b5563;
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .loc-trigger:hover {
+  background: #2a3a50;
+  border-color: #6b7280;
+}
+
+:host-context(body.dark-theme) .loc-dropdown.open .loc-trigger {
+  background: #253347;
+  border-color: #3793B0;
+}
+
+:host-context(body.dark-theme) .loc-panel {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+:host-context(body.dark-theme) .loc-option {
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .loc-option:hover {
+  background: #2a3a50;
+  color: #3793B0;
+}
+
+:host-context(body.dark-theme) .loc-option.selected {
+  background: #2a3a50;
+  color: #3793B0;
 }
 
 :host-context(body.dark-theme) .experience-label {

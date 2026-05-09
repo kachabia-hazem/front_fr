@@ -111,6 +111,26 @@ export class AdminLayoutComponent implements OnInit, OnDestroy{
     }
   }
 
+  getTypeClass(type: NotificationType): string {
+    switch (type) {
+      case 'ADMIN_COMPANY_VERIFICATION_REQUEST': return 'type-verification';
+      case 'ADMIN_NEW_FREELANCER_REGISTERED':    return 'type-user';
+      case 'ADMIN_NEW_CONTRACT_SIGNED':          return 'type-contract';
+      case 'ADMIN_NEW_MISSION_PUBLISHED':        return 'type-mission';
+      default:                                   return 'type-info';
+    }
+  }
+
+  getIcon(type: NotificationType): string {
+    switch (type) {
+      case 'ADMIN_COMPANY_VERIFICATION_REQUEST': return 'verification';
+      case 'ADMIN_NEW_FREELANCER_REGISTERED':    return 'user';
+      case 'ADMIN_NEW_CONTRACT_SIGNED':          return 'contract';
+      case 'ADMIN_NEW_MISSION_PUBLISHED':        return 'mission';
+      default:                                   return 'info';
+    }
+  }
+
   getNotifMessage(n: Notification): string {
     const name = n.senderName || 'Unknown';
     switch (n.type) {

@@ -7,9 +7,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { FreelancerService } from '../../core/services/freelancer.service';
 import { CompanyService } from '../../core/services/company.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { PaymentService } from '../../core/services/payment.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { LanguageService, AppLanguage } from '../../core/services/language.service';
 import { DeviceService, DeviceSession } from '../../core/services/device.service';
+import { SavedCard } from '../../core/models/payment.model';
+import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
 import { environment } from '../../../environments/environment';
 
 type Section = 'password' | 'security' | 'notifications' | 'preferences' | 'payment' | 'delete';
@@ -78,6 +81,19 @@ export class SettingsComponent implements OnInit, OnDestroy{
     { value: 'UTC', label: 'UTC' },
   ];
 
+  // ── Payment ──
+  savedCards = signal<SavedCard[]>([]);
+  paymentLoading = signal(false);
+  paymentAddMode = signal(false);
+  paymentAddLoading = signal(false);
+  paymentError = signal('');
+  paymentSuccess = signal('');
+  confirmRemoveId = signal<string | null>(null);
+  removingCardId = signal<string | null>(null);
+  private stripe: Stripe | null = null;
+  private stripeElements: StripeElements | null = null;
+  private setupClientSecret = '';
+
   // ── Delete ──
   deleteConfirmText = '';
   deleteLoading = false;
@@ -90,6 +106,7 @@ export class SettingsComponent implements OnInit, OnDestroy{
     private freelancerService: FreelancerService,
     private companyService: CompanyService,
     private notificationService: NotificationService,
+    private paymentService: PaymentService,
     public themeService: ThemeService,
     public languageService: LanguageService,
     private deviceService: DeviceService,
@@ -119,7 +136,10 @@ export class SettingsComponent implements OnInit, OnDestroy{
 
     // Restore last active section
     const savedSection = localStorage.getItem('wl_settings_section') as Section | null;
-    if (savedSection) this.activeSection.set(savedSection);
+    if (savedSection) {
+      this.activeSection.set(savedSection);
+      if (savedSection === 'payment') this.loadPaymentMethods();
+    }
 
     // Load real devices
     this.devices.set(this.deviceService.getSessions());
@@ -152,6 +172,14 @@ export class SettingsComponent implements OnInit, OnDestroy{
     this.notifSuccess = '';
     this.prefSuccess = '';
     this.deleteError = '';
+    this.paymentError.set('');
+    this.paymentSuccess.set('');
+    this.paymentAddMode.set(false);
+    this.confirmRemoveId.set(null);
+    this.removingCardId.set(null);
+    this.stripeElements?.getElement('card')?.unmount();
+    this.stripeElements = null;
+    if (s === 'payment') this.loadPaymentMethods();
   }
 
   toggleSidebar(): void {
@@ -272,6 +300,112 @@ export class SettingsComponent implements OnInit, OnDestroy{
     }, 500);
   }
 
+  // ── Payment ──
+  loadPaymentMethods(): void {
+    this.paymentLoading.set(true);
+    this.paymentError.set('');
+    this.paymentService.listPaymentMethods().subscribe({
+      next: (cards) => { this.savedCards.set(cards); this.paymentLoading.set(false); },
+      error: () => {
+        this.paymentError.set(this.translate.instant('settings.payment.error_load'));
+        this.paymentLoading.set(false);
+      },
+    });
+  }
+
+  async showAddCardForm(): Promise<void> {
+    this.paymentAddMode.set(true);
+    this.paymentError.set('');
+    await new Promise(r => setTimeout(r, 50));
+    try {
+      if (!this.stripe) {
+        this.stripe = await loadStripe(environment.stripePublishableKey);
+      }
+      if (!this.stripe) throw new Error('Stripe failed to load');
+      const resp = await this.paymentService.createSetupIntent().toPromise();
+      if (!resp) throw new Error('No setup intent returned');
+      this.setupClientSecret = resp.clientSecret;
+      this.stripeElements = this.stripe.elements({
+        clientSecret: resp.clientSecret,
+        locale: this.languageService.currentLang() as any,
+        appearance: { theme: 'stripe', variables: { colorPrimary: '#3793B0' } },
+      });
+      // Payment Element with Link disabled — keeps banks/card UI, no SMS prompt
+      const cardEl = this.stripeElements.create('payment', {
+        wallets: { link: 'never' },
+      } as any);
+      cardEl.mount('#settings-card-element');
+    } catch (e: any) {
+      this.paymentError.set(e?.message || this.translate.instant('settings.payment.error_add'));
+      this.paymentAddMode.set(false);
+    }
+  }
+
+  async confirmAddCard(): Promise<void> {
+    if (!this.stripe || !this.stripeElements) return;
+    this.paymentAddLoading.set(true);
+    this.paymentError.set('');
+    const { error } = await this.stripe.confirmSetup({
+      elements: this.stripeElements,
+      confirmParams: { return_url: window.location.href },
+      redirect: 'if_required',
+    });
+    if (error) {
+      this.paymentError.set(error.message || this.translate.instant('settings.payment.error_add'));
+      this.paymentAddLoading.set(false);
+      return;
+    }
+    this.stripeElements?.getElement('card')?.unmount();
+    this.stripeElements = null;
+    this.setupClientSecret = '';
+    this.paymentAddMode.set(false);
+    this.paymentAddLoading.set(false);
+    this.paymentSuccess.set(this.translate.instant('settings.payment.add_success'));
+    this.loadPaymentMethods();
+  }
+
+  cancelAddCard(): void {
+    this.stripeElements?.getElement('card')?.unmount();
+    this.stripeElements = null;
+    this.setupClientSecret = '';
+    this.paymentAddMode.set(false);
+    this.paymentError.set('');
+  }
+
+  askRemoveCard(pmId: string): void {
+    this.confirmRemoveId.set(pmId);
+    this.paymentSuccess.set('');
+    this.paymentError.set('');
+  }
+
+  cancelRemoveCard(): void {
+    this.confirmRemoveId.set(null);
+  }
+
+  removeCard(pmId: string): void {
+    this.removingCardId.set(pmId);
+    this.confirmRemoveId.set(null);
+    this.paymentService.deletePaymentMethod(pmId).subscribe({
+      next: () => {
+        this.paymentSuccess.set(this.translate.instant('settings.payment.remove_success'));
+        this.savedCards.update(cards => cards.filter(c => c.id !== pmId));
+        this.removingCardId.set(null);
+      },
+      error: () => {
+        this.paymentError.set(this.translate.instant('settings.payment.error_remove'));
+        this.removingCardId.set(null);
+      },
+    });
+  }
+
+  cardBrandIcon(brand: string): string {
+    const b = brand.toLowerCase();
+    if (b === 'visa') return 'VISA';
+    if (b === 'mastercard') return 'MC';
+    if (b === 'amex') return 'AMEX';
+    return brand.toUpperCase().slice(0, 4);
+  }
+
   // ── Delete ──
   get deleteConfirmKeyword(): string {
     return this.translate.instant('settings.delete.confirm_keyword');
@@ -293,5 +427,6 @@ export class SettingsComponent implements OnInit, OnDestroy{
 
   ngOnDestroy(): void {
     this.langSub?.unsubscribe();
+    this.stripeElements?.getElement('card')?.unmount();
   }
 }

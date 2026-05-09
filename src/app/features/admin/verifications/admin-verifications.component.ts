@@ -117,6 +117,11 @@ export class AdminVerificationsComponent implements OnInit, OnDestroy{
     this.companyToReject.set(null);
   }
 
+  testTrustScore(company: Company, event: Event) {
+    event.stopPropagation();
+    this.router.navigate(['/admin/verifications', company.id]);
+  }
+
   refreshScore(company: Company) {
     this.adminService.refreshTrustScore(company.id).subscribe({
       next: (updated) => {

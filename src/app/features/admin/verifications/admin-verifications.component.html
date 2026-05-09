@@ -61,11 +61,26 @@
           </td>
           <td><span class="sector-tag">{{ c.businessSector }}</span></td>
           <td>{{ c.managerName }}</td>
-          <td>
-            <div class="trust-badge" [class]="getTrustClass(c.trustScore)">
-              <span class="trust-score">{{ c.trustScore ?? '—' }}</span>
-              <span class="trust-label" *ngIf="c.trustScore !== undefined && c.trustScore !== null">{{ getTrustLabel(c.trustScore) }}</span>
+          <td (click)="$event.stopPropagation()">
+            <!-- Score exists → show badge -->
+            <div class="trust-badge" [class]="getTrustClass(c.trustScore)"
+                 *ngIf="c.trustScore !== undefined && c.trustScore !== null">
+              <span class="trust-score">{{ c.trustScore }}</span>
+              <span class="trust-label">{{ getTrustLabel(c.trustScore) }}</span>
             </div>
+            <!-- No score → Test button (navigates to detail page for AI analysis) -->
+            <button class="btn-test-ai"
+                    *ngIf="c.trustScore === undefined || c.trustScore === null"
+                    (click)="testTrustScore(c, $event)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2a10 10 0 1 0 10 10"/>
+                <path d="M12 6v6l4 2"/>
+                <circle cx="18" cy="6" r="3" fill="currentColor" stroke="none"/>
+                <path d="M16.5 4.5l3 3" stroke-width="1.5"/>
+              </svg>
+              Test
+            </button>
           </td>
           <td>
             <span class="status-badge" [class]="(c.verificationStatus ?? 'pending').toLowerCase()">

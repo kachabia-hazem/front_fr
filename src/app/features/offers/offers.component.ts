@@ -153,6 +153,12 @@ export class OffersComponent implements OnInit, OnDestroy{
     return amount.toFixed(3).replace('.', ',') + ' DT';
   }
 
+  formatPromoDate(dateStr: string | null): string {
+    if (!dateStr) return '';
+    const locale = this.languageService.currentLang() === 'fr' ? 'fr-FR' : 'en-GB';
+    return new Date(dateStr).toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
   packLabel(pack: PointPack): string {
     return 'offers.cat_' + pack.category;
   }

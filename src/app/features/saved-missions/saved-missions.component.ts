@@ -25,6 +25,8 @@ export class SavedMissionsComponent implements OnInit, OnDestroy{
   private langSub?: Subscription;
 
   private readonly APP_STATUS_CACHE_KEY = 'wl_app_status_cache';
+  private readonly ACCEPTED_AT_KEY = 'wl_accepted_missions';
+  private readonly HIDE_AFTER_MS = 60 * 60 * 1000;
   applicationStatusMap = new Map<string, 'PENDING' | 'ACCEPTED' | 'REJECTED'>();
 
   constructor(
@@ -43,13 +45,14 @@ export class SavedMissionsComponent implements OnInit, OnDestroy{
     this.loading.set(true);
     this.savedMissionsService.getSavedMissions().subscribe({
       next: async (missions) => {
-        this.missions.set(missions);
+        const filtered = missions.filter(m => !m.id || !this.isHiddenBecauseAccepted(m.id));
+        this.missions.set(filtered);
         this.loading.set(false);
         const lang = this.missionTranslation.getCurrentLang();
-        if (lang === 'fr' && missions.length > 0) {
+        if (lang === 'fr' && filtered.length > 0) {
           // Sequential to respect MyMemory rate limits
           const translated: any[] = [];
-          for (const m of missions) {
+          for (const m of filtered) {
             translated.push(await this.missionTranslation.translateMissionFields(m, 'fr'));
           }
           this.missions.set(translated);
@@ -63,11 +66,18 @@ export class SavedMissionsComponent implements OnInit, OnDestroy{
     this.applicationService.getMyApplications().subscribe({
       next: (applications) => {
         this.applicationStatusMap.clear();
+        const acceptedAtMap = this.getAcceptedAtMap();
         for (const app of applications) {
           if (app.status !== 'WITHDRAWN') {
             this.applicationStatusMap.set(app.missionId, app.status as 'PENDING' | 'ACCEPTED' | 'REJECTED');
+            if (app.status === 'ACCEPTED' && !acceptedAtMap.has(app.missionId)) {
+              acceptedAtMap.set(app.missionId, (app as any).updatedAt ?? new Date().toISOString());
+              this.saveAcceptedAtMap(acceptedAtMap);
+            }
           }
         }
+        // Filter out missions hidden due to acceptance > 1h
+        this.missions.update(list => list.filter(m => !m.id || !this.isHiddenBecauseAccepted(m.id)));
       },
     });
   }
@@ -80,6 +90,27 @@ export class SavedMissionsComponent implements OnInit, OnDestroy{
         this.applicationStatusMap = new Map(entries);
       }
     } catch { /* ignore */ }
+  }
+
+  private getAcceptedAtMap(): Map<string, string> {
+    try {
+      const raw = localStorage.getItem(this.ACCEPTED_AT_KEY);
+      if (raw) return new Map(JSON.parse(raw));
+    } catch { /* ignore */ }
+    return new Map();
+  }
+
+  private saveAcceptedAtMap(map: Map<string, string>): void {
+    try {
+      localStorage.setItem(this.ACCEPTED_AT_KEY, JSON.stringify(Array.from(map.entries())));
+    } catch { /* ignore */ }
+  }
+
+  isHiddenBecauseAccepted(missionId: string): boolean {
+    const map = this.getAcceptedAtMap();
+    const acceptedAt = map.get(missionId);
+    if (!acceptedAt) return false;
+    return Date.now() - new Date(acceptedAt).getTime() >= this.HIDE_AFTER_MS;
   }
 
   getApplicationStatus(missionId: string | undefined): 'PENDING' | 'ACCEPTED' | 'REJECTED' | null {

@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "home": "Accueil",
     "freelancers": "Freelancers",
@@ -93,10 +93,24 @@
     },
     "payment": {
       "label": "Paiement",
-      "title": "Moyens de paiement",
-      "desc": "Gérez vos informations de facturation et moyens de paiement.",
-      "coming_soon_title": "Bientôt disponible",
-      "coming_soon_desc": "La gestion des paiements sera disponible dans une prochaine version. Restez connecté !"
+      "title": "Méthodes de paiement",
+      "desc": "Gérez vos cartes de paiement enregistrées.",
+      "saved_cards": "Cartes enregistrées",
+      "no_cards": "Aucune carte de paiement enregistrée.",
+      "add_card": "Ajouter une carte",
+      "confirm_add": "Enregistrer la carte",
+      "cancel_add": "Annuler",
+      "expires": "Expire",
+      "remove": "Supprimer",
+      "loading": "Chargement des cartes...",
+      "add_success": "Carte enregistrée avec succès.",
+      "remove_success": "Carte supprimée.",
+      "error_load": "Impossible de charger les méthodes de paiement.",
+      "error_add": "Impossible d'ajouter la carte. Veuillez réessayer.",
+      "error_remove": "Impossible de supprimer la carte.",
+      "confirm_remove": "Supprimer cette carte ?",
+      "yes_remove": "Oui, supprimer",
+      "no_cancel": "Annuler"
     },
     "delete": {
       "label": "Supprimer le compte",
@@ -244,6 +258,17 @@
     "time_hour_ago": "il y a {{n}}h",
     "time_day_ago": "il y a {{n}}j"
   },
+  "notif_type": {
+    "LEGIT_OPENED": "Litige soumis",
+    "LEGIT_RESPONSE_FROM_ADMIN": "Réponse de l'admin sur votre litige",
+    "LEGIT_MISSION_CANCELLED_BY_ADMIN": "Mission annulée — Résolution de litige",
+    "LEGIT_REFUND_BY_ADMIN": "Remboursement — Résolution de litige",
+    "LEGIT_MISSION_CONTINUED_BY_ADMIN": "Mission relancée — Résolution de litige",
+    "LEGIT_STATUS_UPDATED": "Statut du litige mis à jour",
+    "CONTRACT_PAYMENT_AUTHORIZED": "Paiement autorisé",
+    "CONTRACT_PAYMENT_RELEASED": "Paiement libéré",
+    "PACK_PURCHASED": "Pack acheté"
+  },
   "messaging_page": {
     "title": "Messages",
     "search": "Rechercher des conversations...",
@@ -372,7 +397,7 @@
     "login_btn": "Se connecter",
     "register_btn": "Créer un compte",
     "search_placeholder": "Rechercher des missions, entreprises...",
-    "location_placeholder": "Lieu de la mission...",
+    "location_placeholder": "Lieu de la mission...","all_locations": "Toutes les régions","select_region": "Sélectionner une région",
     "search_btn": "Rechercher",
     "or": "ou",
     "ai_search": "Recherche IA",
@@ -431,6 +456,13 @@
     "modal_skills_missing": "Manquantes",
     "modal_apply_now": "Postuler maintenant",
     "modal_retry": "Réessayer",
+    "ai_confirm_title": "Analyse IA de compatibilité",
+    "ai_confirm_body_pre": "Points à déduire",
+    "ai_confirm_pts": "points",
+    "ai_confirm_body_post": "de votre solde.",
+    "ai_confirm_sub": "Voulez-vous continuer ?",
+    "ai_confirm_decline": "Annuler",
+    "ai_confirm_proceed": "Continuer",
     "ai_analyzing": "L'IA analyse votre demande...",
     "save_mission": "Sauvegarder la mission",
     "remove_saved": "Retirer des favoris",
@@ -808,7 +840,32 @@
     "email_send": "Envoyer",
     "email_toast_ok": "Email envoyé et notification créée.",
     "email_toast_err": "Échec de l'envoi.",
-    "default_subject": "Concernant votre litige — WorkLink"
+    "default_subject": "Concernant votre litige — WorkLink",
+    "final_decision": "Décision finale",
+    "btn_cancel_mission": "Annuler la mission",
+    "btn_refund": "Remboursement",
+    "btn_continue_mission": "Continuer la mission",
+    "decision_annule": "Mission annulée — fonds conservés par la plateforme",
+    "decision_rembourse": "Remboursement — Freelancer {{fl}}% · Entreprise {{co}}%",
+    "decision_continue": "Mission relancée — contrat actif",
+    "modal_mission_label": "Mission :",
+    "cancel_modal_title": "Annuler la mission",
+    "cancel_warning": "Le contrat sera annulé et les fonds seront conservés par la plateforme. Les deux parties seront notifiées.",
+    "cancel_reason_label": "Motif d'annulation",
+    "cancel_reason_placeholder": "Expliquez la raison de l'annulation...",
+    "cancel_confirm_btn": "Confirmer l'annulation",
+    "refund_modal_title": "Remboursement partiel",
+    "refund_warning": "Définissez comment répartir les 100% du montant entre les deux parties. Le contrat sera annulé.",
+    "role_company": "Entreprise",
+    "refund_reason_label": "Motif du remboursement",
+    "refund_reason_placeholder": "Expliquez la décision de remboursement...",
+    "refund_confirm_btn": "Confirmer le remboursement",
+    "continue_modal_title": "Continuer la mission",
+    "continue_warning": "Le contrat repassera en état actif et la mission reprendra son cours. Les deux parties seront notifiées.",
+    "continue_note_label": "Note administrative (optionnel)",
+    "continue_note_placeholder": "Ajoutez une note à destination des deux parties...",
+    "continue_confirm_btn": "Confirmer la relance",
+    "modal_cancel_btn": "Annuler"
   },
   "admin_notif": {
     "title": "Notifications",
@@ -1514,10 +1571,10 @@
     "cancel": "Annuler",
     "view_workspace": "Voir l'espace de travail",
     "delete": "Supprimer",
-    "toast_title": "Mission retirée",
+    "toast_title": "Mission non encore accessible",
     "toast_text_pre": "La mission",
-    "toast_text_mid": "a été",
-    "toast_text_post": "retirée de votre historique."
+    "toast_text_mid": "sera accessible à partir du",
+    "toast_text_post": "Veuillez attendre la date de début et vous assurer que le paiement du contrat est effectué."
   },
   "messaging": {
     "title": "Messages",
@@ -1616,7 +1673,11 @@
     "pay_escrow": "En séquestre",
     "pay_released": "Libéré",
     "pay_failed": "Échec",
-    "pay_btn": "💳 Payer"
+    "pay_btn": "💳 Payer",
+    "pay_expired": "Délai de paiement expiré",
+    "pay_deadline_label": "Payer avant le",
+    "pay_days_left": "j restants",
+    "payment_rule": "Le contrat doit être payé dans la période comprise entre la date de signature du freelancer et la date de début de mission. Dans le cas contraire, le contrat sera automatiquement annulé."
   },
   "company_apps": {
     "loading": "Chargement des candidatures…",
@@ -1951,7 +2012,7 @@
     "field": "Domaine",
     "field_ph": "ex. Développement Web",
     "location": "Localisation",
-    "location_ph": "ex. Tunis, Tunisie (ou Télétravail)",
+    "location_ph": "ex. Tunis, Tunisie (ou Télétravail)","select_region": "Sélectionner une région",
     "section_conditions": "Conditions de travail",
     "employment_type": "Type de contrat",
     "employment_type_ph": "Sélectionner le type",
@@ -2008,6 +2069,7 @@
     "active_badge": "Abonnement actuel",
     "pts": "pts",
     "pts_month": "pts / mois",
+    "promo_expires": "Expire le",
     "save_pct": "Économisez {{n}}%",
     "ppp": "DT / pt",
     "buy": "Acheter",
@@ -2042,5 +2104,20 @@
     "error_payment": "Le paiement a échoué. Veuillez réessayer.",
     "success_authorized": "Paiement autorisé ! Les fonds sont sécurisés en escrow.",
     "success_confirmed": "Paiement confirmé. Le statut sera mis à jour dans quelques instants."
+  },
+  "payment_success": {
+    "verifying": "Vérification du paiement en cours…",
+    "title": "Paiement confirmé !",
+    "msg_pack": "Votre pack de points a été crédité sur votre compte. Vous pouvez maintenant utiliser vos points.",
+    "msg_plan": "Votre abonnement a été activé avec succès. Les points ont été crédités sur votre compte.",
+    "msg_contract": "Le paiement a été sécurisé. Les fonds seront libérés au freelancer après validation de la mission.",
+    "warn_delay": "Les points seront crédités dans quelques instants.",
+    "warn_plan_delay": "L'abonnement sera activé dans quelques instants.",
+    "go_back": "Retour à mon espace"
+  },
+  "payment_cancel": {
+    "title": "Paiement annulé",
+    "msg": "Votre paiement a été annulé. Aucun montant n'a été débité. Vous pouvez réessayer à tout moment.",
+    "go_back": "Retour"
   }
 }

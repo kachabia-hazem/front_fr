@@ -73,9 +73,11 @@ export class AdminSettingsComponent implements OnInit, OnDestroy{
         this.applicationCost.set(s.applicationCost);
         this.aiMatchingCost.set(s.aiMatchingCost);
         this.aiRankingCost.set(s.aiRankingCost);
+        this.welcomeBonus.set(s.welcomeBonus);
         this.newAppCost.set(s.applicationCost);
         this.newAiMatchCost.set(s.aiMatchingCost);
         this.newAiRankCost.set(s.aiRankingCost);
+        this.newWelcomeBonus.set(s.welcomeBonus);
       },
     });
   }

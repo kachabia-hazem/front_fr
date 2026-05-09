@@ -376,6 +376,66 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit, OnDestr
     });
   }
 
+  /** Contracts that are SIGNED and still unpaid (need payment action) */
+  unpaidSignedContracts = computed(() =>
+    this.contracts().filter(c =>
+      c.status === 'SIGNED' &&
+      c.paymentStatus !== 'AUTHORIZED' &&
+      c.paymentStatus !== 'CAPTURED'
+    )
+  );
+
+  /** Days remaining until startDate (negative = overdue) */
+  daysUntilStart(contract: Contract): number {
+    const start = this.parseStartDate(contract);
+    if (!start) return Infinity;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return Math.floor((start.getTime() - today.getTime()) / 86400000);
+  }
+
+  deadlineUrgency(contract: Contract): 'ok' | 'warn' | 'urgent' {
+    const d = this.daysUntilStart(contract);
+    if (d <= 1) return 'urgent';
+    if (d <= 3) return 'warn';
+    return 'ok';
+  }
+
+  /** Parse startDate which arrives as ISO string "YYYY-MM-DD" */
+  private parseStartDate(contract: Contract): Date | null {
+    if (!contract.startDate) return null;
+    const s = contract.startDate as any;
+    if (Array.isArray(s)) {
+      const [y, m, d] = s;
+      return new Date(y, m - 1, d);
+    }
+    return new Date(s);
+  }
+
+  /** Payment window is open when: contract SIGNED, startDate not yet reached, not already paid */
+  isPaymentWindowOpen(contract: Contract): boolean {
+    if (contract.status !== 'SIGNED') return false;
+    const ps = contract.paymentStatus;
+    if (ps === 'AUTHORIZED' || ps === 'CAPTURED') return false;
+    const start = this.parseStartDate(contract);
+    if (!start) return true; // no start date → always open
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today < start;
+  }
+
+  /** Window has expired: SIGNED, UNPAID, and startDate has arrived */
+  isPaymentWindowExpired(contract: Contract): boolean {
+    if (contract.status !== 'SIGNED') return false;
+    const ps = contract.paymentStatus;
+    if (ps === 'AUTHORIZED' || ps === 'CAPTURED') return false;
+    const start = this.parseStartDate(contract);
+    if (!start) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today >= start;
+  }
+
   paymentStatusLabel(status: string | null): string {
     if (!status || status === 'UNPAID') return this.translate.instant('company_contracts.pay_unpaid');
     if (status === 'AUTHORIZED') return this.translate.instant('company_contracts.pay_escrow');

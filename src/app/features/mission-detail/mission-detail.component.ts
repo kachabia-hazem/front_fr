@@ -36,6 +36,8 @@ export class MissionDetailComponent implements OnInit, OnDestroy{
   matchingError = signal('');
   explanationLoading = signal(false);
   showMatchTooltip = signal(false);
+  showMatchConfirmModal = signal(false);
+  readonly MATCHING_COST = 4;
   private langSub?: Subscription;
 
   private profileCompletion: number | null = null;
@@ -217,6 +219,19 @@ export class MissionDetailComponent implements OnInit, OnDestroy{
         this.toastService.show(this.translate.instant('detail_page.withdraw_error'), 'error');
       },
     });
+  }
+
+  openMatchConfirm(): void {
+    this.showMatchConfirmModal.set(true);
+  }
+
+  declineMatching(): void {
+    this.showMatchConfirmModal.set(false);
+  }
+
+  proceedMatching(): void {
+    this.showMatchConfirmModal.set(false);
+    this.checkMatching();
   }
 
   checkMatching(): void {

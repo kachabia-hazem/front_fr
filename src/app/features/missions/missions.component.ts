@@ -31,9 +31,17 @@ export class MissionsComponent implements OnInit, OnDestroy{
   loading = true;
   aiMatchingCost = 5;
 
+  readonly governorates = [
+    'Ariana', 'Béja', 'Ben Arous', 'Bizerte', 'Gabès', 'Gafsa',
+    'Jendouba', 'Kairouan', 'Kasserine', 'Kébili', 'Le Kef', 'Mahdia',
+    'La Manouba', 'Médenine', 'Monastir', 'Nabeul', 'Sfax', 'Sidi Bouzid',
+    'Siliana', 'Sousse', 'Tataouine', 'Tozeur', 'Tunis', 'Zaghouan',
+  ];
+
   // Search
   searchQuery = '';
   locationQuery = '';
+  locationDropdownOpen = false;
 
   // View mode
   viewMode: 'list' | 'grid' = 'list';
@@ -97,6 +105,8 @@ export class MissionsComponent implements OnInit, OnDestroy{
   matchingError = '';
   matchingMission: Mission | null = null;
   explanationLoading = false;
+  showMatchConfirmModal = false;
+  pendingMatchMission: Mission | null = null;
 
   // Track which missions the freelancer has already applied to, with their status
   applicationStatusMap = new Map<string, 'PENDING' | 'ACCEPTED' | 'REJECTED'>();
@@ -148,6 +158,26 @@ export class MissionsComponent implements OnInit, OnDestroy{
   @HostListener('document:click')
   onDocumentClick(): void {
     this.openMenuId = null;
+    this.locationDropdownOpen = false;
+  }
+
+  toggleLocationDropdown(event: Event): void {
+    event.stopPropagation();
+    this.locationDropdownOpen = !this.locationDropdownOpen;
+  }
+
+  selectLocationOption(gov: string, event: Event): void {
+    event.stopPropagation();
+    this.locationQuery = gov;
+    this.locationDropdownOpen = false;
+    this.onSearch();
+  }
+
+  clearLocation(event: Event): void {
+    event.stopPropagation();
+    this.locationQuery = '';
+    this.locationDropdownOpen = false;
+    this.onSearch();
   }
 
   similarMissions: Mission[] = [];
@@ -424,6 +454,29 @@ export class MissionsComponent implements OnInit, OnDestroy{
   }
 
   private readonly APP_STATUS_CACHE_KEY = 'wl_app_status_cache';
+  private readonly ACCEPTED_AT_KEY = 'wl_accepted_missions';
+  private readonly HIDE_AFTER_MS = 60 * 60 * 1000; // 1 hour
+
+  private getAcceptedAtMap(): Map<string, string> {
+    try {
+      const raw = localStorage.getItem(this.ACCEPTED_AT_KEY);
+      if (raw) return new Map(JSON.parse(raw));
+    } catch { /* ignore */ }
+    return new Map();
+  }
+
+  private saveAcceptedAtMap(map: Map<string, string>): void {
+    try {
+      localStorage.setItem(this.ACCEPTED_AT_KEY, JSON.stringify(Array.from(map.entries())));
+    } catch { /* ignore */ }
+  }
+
+  isHiddenBecauseAccepted(missionId: string): boolean {
+    const map = this.getAcceptedAtMap();
+    const acceptedAt = map.get(missionId);
+    if (!acceptedAt) return false;
+    return Date.now() - new Date(acceptedAt).getTime() >= this.HIDE_AFTER_MS;
+  }
 
   private restoreApplicationStatusCache(): void {
     try {
@@ -448,11 +501,16 @@ export class MissionsComponent implements OnInit, OnDestroy{
     this.applicationService.getMyApplications().subscribe({
       next: (applications) => {
         this.applicationStatusMap.clear();
+        const acceptedAtMap = this.getAcceptedAtMap();
         for (const app of applications) {
           if (app.status !== 'WITHDRAWN') {
             this.applicationStatusMap.set(app.missionId, app.status as 'PENDING' | 'ACCEPTED' | 'REJECTED');
+            if (app.status === 'ACCEPTED' && !acceptedAtMap.has(app.missionId)) {
+              acceptedAtMap.set(app.missionId, (app as any).updatedAt ?? new Date().toISOString());
+            }
           }
         }
+        this.saveAcceptedAtMap(acceptedAtMap);
         this.saveApplicationStatusCache();
       },
     });
@@ -601,6 +659,11 @@ export class MissionsComponent implements OnInit, OnDestroy{
   applyFilters(): void {
     // Hide missions whose deadline passed more than 1 hour ago
     let result = this.missions.filter(m => !this.isExpiredOver1h(m));
+
+    // Hide missions where freelancer's application was accepted more than 1 hour ago
+    if (this.isFreelancer) {
+      result = result.filter(m => !m.id || !this.isHiddenBecauseAccepted(m.id));
+    }
 
     // Search by keyword
     if (this.searchQuery.trim()) {
@@ -867,6 +930,24 @@ export class MissionsComponent implements OnInit, OnDestroy{
     if (!relativePath) return '';
     const baseUrl = environment.apiUrl.replace(/\/api$/, '');
     return baseUrl + relativePath;
+  }
+
+  openMatchConfirm(event: Event, mission: Mission): void {
+    event.stopPropagation();
+    this.pendingMatchMission = mission;
+    this.showMatchConfirmModal = true;
+  }
+
+  declineMatching(): void {
+    this.showMatchConfirmModal = false;
+    this.pendingMatchMission = null;
+  }
+
+  proceedMatching(): void {
+    const mission = this.pendingMatchMission;
+    this.showMatchConfirmModal = false;
+    this.pendingMatchMission = null;
+    if (mission) this.checkMatching(new Event('click'), mission);
   }
 
   checkMatching(event: Event, mission: Mission): void {

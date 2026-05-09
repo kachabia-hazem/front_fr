@@ -1,19 +1,20 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payment-cancel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
     <div class="pc-page">
       <div class="pc-card">
         <div class="pc-icon">✕</div>
-        <h1 class="pc-title">Payment Cancelled</h1>
-        <p class="pc-msg">Your payment has been cancelled. No amount has been charged. You can try again at any time.</p>
+        <h1 class="pc-title">{{ 'payment_cancel.title' | translate }}</h1>
+        <p class="pc-msg">{{ 'payment_cancel.msg' | translate }}</p>
         <div class="pc-actions">
-          <button class="pc-btn" (click)="goBack()">Go Back</button>
+          <button class="pc-btn" (click)="goBack()">{{ 'payment_cancel.go_back' | translate }}</button>
         </div>
       </div>
     </div>

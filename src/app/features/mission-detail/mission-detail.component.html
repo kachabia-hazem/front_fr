@@ -1,4 +1,46 @@
 
+<!-- ═══ AI Matching Confirm Modal ═══ -->
+@if (showMatchConfirmModal()) {
+  <div class="ai-confirm-overlay" (click)="declineMatching()">
+    <div class="ai-confirm-dialog" (click)="$event.stopPropagation()">
+
+      <div class="ai-confirm-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          <path d="M11 8v4"/><path d="M9 10h4"/>
+        </svg>
+      </div>
+
+      <h3 class="ai-confirm-title">{{ 'missions_page.ai_confirm_title' | translate }}</h3>
+      <p class="ai-confirm-desc">{{ 'missions_page.ai_confirm_sub' | translate }}</p>
+
+      <div class="ai-confirm-cost-row">
+        <span class="ai-confirm-cost-label">{{ 'missions_page.ai_confirm_body_pre' | translate }}</span>
+        <span class="ai-confirm-cost-value">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          {{ MATCHING_COST }} {{ 'missions_page.ai_confirm_pts' | translate }}
+        </span>
+      </div>
+
+      <div class="ai-confirm-actions">
+        <button class="ai-confirm-cancel" (click)="declineMatching()">
+          {{ 'missions_page.ai_confirm_decline' | translate }}
+        </button>
+        <button class="ai-confirm-ok" (click)="proceedMatching()">
+          {{ 'missions_page.ai_confirm_proceed' | translate }}
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 6 15 12 9 18"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
+
 <!-- ═══ Matching Modal ═══ -->
 @if (showMatchingModal()) {
   <div class="matching-overlay" (click)="closeMatchingModal()">
@@ -380,27 +422,18 @@
             <button class="btn-postuler-lg" (click)="applyToMission()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
               {{ 'missions_page.apply_btn' | translate }}
-              <span class="btn-cost-badge">3 pts</span>
             </button>
           }
           @if (applicationStatus() !== 'ACCEPTED' && applicationStatus() !== 'REJECTED') {
-            <div class="match-tooltip-wrap"
-                 (mouseenter)="showMatchTooltip.set(true)"
-                 (mouseleave)="showMatchTooltip.set(false)">
-              <button class="btn-matching-lg" (click)="checkMatching()" [disabled]="matchingLoading()">
-                @if (matchingLoading()) {
-                  <span class="btn-spinner"></span>
-                  {{ 'detail_page.analyzing' | translate }}
-                } @else {
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
-                  {{ 'missions_page.matching_ia' | translate }}
-                  <span class="btn-cost-badge">5 pts</span>
-                }
-              </button>
-              @if (showMatchTooltip()) {
-                <div class="match-tooltip">This operation will deduct <strong>5 points</strong> from your balance.</div>
+            <button class="btn-matching-lg" (click)="openMatchConfirm()" [disabled]="matchingLoading()">
+              @if (matchingLoading()) {
+                <span class="btn-spinner"></span>
+                {{ 'detail_page.analyzing' | translate }}
+              } @else {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+                {{ 'missions_page.matching_ia' | translate }}
               }
-            </div>
+            </button>
           }
         </div>
       }

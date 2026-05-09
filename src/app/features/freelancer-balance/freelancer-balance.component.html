@@ -247,48 +247,6 @@
         </div>
       }
 
-      <!-- ── Transaction history ──────────────────────────────────────────── -->
-      <div class="bal-history-card">
-        <div class="bal-history-header">
-          <div class="bal-history-title">{{ 'balance.history_title' | translate }}</div>
-          @if (transactions().length > 0) {
-            <span class="bal-history-count">{{ transactions().length }}</span>
-          }
-        </div>
-
-        @if (transactions().length === 0) {
-          <div class="bal-history-empty">
-            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <p>{{ 'balance.history_empty' | translate }}</p>
-            <p class="bal-empty-hint">{{ 'balance.history_hint' | translate }}</p>
-          </div>
-        } @else {
-          <div class="bal-tx-list">
-            @for (tx of transactions(); track tx.id) {
-              <div class="bal-tx-row" [class]="txColorClass(tx.type)">
-                <div class="bal-tx-icon" [class]="txIconClass(tx.type)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path [attr.d]="txIcon(tx.type)"/>
-                  </svg>
-                </div>
-                <div class="bal-tx-info">
-                  <div class="bal-tx-desc">{{ tx.description }}</div>
-                  <div class="bal-tx-date">{{ formatDate(tx.createdAt) }}</div>
-                </div>
-                <div class="bal-tx-right">
-                  <div class="bal-tx-pts" [class]="txColorClass(tx.type)">
-                    {{ tx.points > 0 ? '+' : '' }}{{ tx.points }} pts
-                  </div>
-                  @if (tx.amount > 0) {
-                    <div class="bal-tx-amount">{{ formatTND(tx.amount) }}</div>
-                  }
-                </div>
-              </div>
-            }
-          </div>
-        }
-      </div>
-
     }
 
   </main>

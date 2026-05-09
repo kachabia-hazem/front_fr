@@ -349,3 +349,62 @@
     padding: 1.75rem;
   }
 }
+
+/* ── Dark Mode ── */
+:host-context(body.dark-theme) .login-page { background: #111827; }
+
+:host-context(body.dark-theme) .login-card {
+  background: #1f2937;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+:host-context(body.dark-theme) .login-card h2 { color: #f3f4f6; }
+
+:host-context(body.dark-theme) .form-group label { color: #9ca3af; }
+
+:host-context(body.dark-theme) .form-group input {
+  background: #253347;
+  border-color: #374151;
+  color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .form-group input:hover { border-color: #4b5563; }
+
+:host-context(body.dark-theme) .form-group input:focus {
+  background: #2a3a50;
+  border-color: #3793B0;
+}
+
+:host-context(body.dark-theme) .form-group input::placeholder { color: #6b7280; }
+
+:host-context(body.dark-theme) .form-group input:-webkit-autofill,
+:host-context(body.dark-theme) .form-group input:-webkit-autofill:hover,
+:host-context(body.dark-theme) .form-group input:-webkit-autofill:focus,
+:host-context(body.dark-theme) .form-group input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #2a3a50 inset !important;
+  -webkit-text-fill-color: #e4e4ef !important;
+  caret-color: #e4e4ef;
+}
+
+:host-context(body.dark-theme) .toggle-pw { color: #9ca3af; }
+
+:host-context(body.dark-theme) .divider::before,
+:host-context(body.dark-theme) .divider::after { background: #374151; }
+
+:host-context(body.dark-theme) .divider span { color: #6b7280; }
+
+:host-context(body.dark-theme) .oauth-loading { color: #9ca3af; }
+
+:host-context(body.dark-theme) .register-link { color: #9ca3af; }
+
+:host-context(body.dark-theme) .error-message {
+  background: #2d1515;
+  border-color: #7f1d1d;
+  color: #fca5a5;
+}
+
+:host-context(body.dark-theme) .success-message {
+  background: #052e16;
+  border-color: #14532d;
+  color: #86efac;
+}
