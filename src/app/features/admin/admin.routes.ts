@@ -62,6 +62,11 @@ export const ADMIN_ROUTES: Routes = [
       import('./legits/admin-legits.component').then(m => m.AdminLegitsComponent),
   },
   {
+    path: 'transactions',
+    loadComponent: () =>
+      import('./transactions/admin-transactions.component').then(m => m.AdminTransactionsComponent),
+  },
+  {
     path: 'settings',
     loadComponent: () =>
       import('./settings/admin-settings.component').then(m => m.AdminSettingsComponent),

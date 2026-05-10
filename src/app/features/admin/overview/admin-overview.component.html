@@ -81,6 +81,54 @@
 
     </div>
 
+    <!-- ── Platform Financial Overview ── -->
+    <div class="pay-section-header">
+      <h2 class="charts-section-title" style="margin:0">{{ 'admin_overview.pay_title' | translate }}</h2>
+      <p class="pay-section-sub">{{ 'admin_overview.pay_sub' | translate }}</p>
+    </div>
+    <div class="pay-kpi-grid" *ngIf="paymentOverview() as po">
+      <div class="pay-kpi-card pay-kpi-escrow">
+        <div class="pay-kpi-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="pay-kpi-body">
+          <span class="pay-kpi-val">{{ formatTND(po.totalEscrow) }}</span>
+          <span class="pay-kpi-lbl">{{ 'admin_overview.pay_escrow_lbl' | translate }}</span>
+          <span class="pay-kpi-sub">{{ po.escrowContractCount }} {{ 'admin_overview.pay_escrow_sub' | translate }}</span>
+        </div>
+      </div>
+      <div class="pay-kpi-card pay-kpi-released">
+        <div class="pay-kpi-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="pay-kpi-body">
+          <span class="pay-kpi-val">{{ formatTND(po.releasedThisMonth) }}</span>
+          <span class="pay-kpi-lbl">{{ 'admin_overview.pay_released_lbl' | translate }}</span>
+          <span class="pay-kpi-sub">{{ po.capturedThisMonthCount }} {{ 'admin_overview.pay_released_sub' | translate }}</span>
+        </div>
+      </div>
+      <div class="pay-kpi-card pay-kpi-commission">
+        <div class="pay-kpi-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="pay-kpi-body">
+          <span class="pay-kpi-val">{{ formatTND(po.totalPlatformCommission) }}</span>
+          <span class="pay-kpi-lbl">{{ 'admin_overview.pay_commission_lbl' | translate }}</span>
+          <span class="pay-kpi-sub">{{ po.totalCapturedContracts }} {{ 'admin_overview.pay_commission_sub' | translate }}</span>
+        </div>
+      </div>
+      <div class="pay-kpi-card pay-kpi-total">
+        <div class="pay-kpi-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div class="pay-kpi-body">
+          <span class="pay-kpi-val">{{ po.totalCapturedContracts + po.escrowContractCount }}</span>
+          <span class="pay-kpi-lbl">{{ 'admin_overview.pay_total_lbl' | translate }}</span>
+          <span class="pay-kpi-sub">{{ 'admin_overview.pay_total_sub' | translate }}</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Verification Overview -->
     <div class="section-grid">
 
@@ -402,62 +450,6 @@
       <p>{{ 'admin_overview.chart_empty' | translate }}</p>
     </div>
 
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-  <!-- ── Payment Tracking Section ──────────────────────────────────────── -->
-  <!-- ══════════════════════════════════════════════════════════════════════ -->
-
-  <div class="pay-section-header">
-    <h2 class="charts-section-title" style="margin:0">{{ 'admin_overview.pay_title' | translate }}</h2>
-    <p class="pay-section-sub">{{ 'admin_overview.pay_sub' | translate }}</p>
-  </div>
-
-  <!-- ── 4 KPI Cards ── -->
-  <div class="pay-kpi-grid" *ngIf="paymentOverview() as po">
-    <div class="pay-kpi-card pay-kpi-escrow">
-      <div class="pay-kpi-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
-      <div class="pay-kpi-body">
-        <span class="pay-kpi-val">{{ formatTND(po.totalEscrow) }}</span>
-        <span class="pay-kpi-lbl">{{ 'admin_overview.pay_escrow_lbl' | translate }}</span>
-        <span class="pay-kpi-sub">{{ po.escrowContractCount }} {{ 'admin_overview.pay_escrow_sub' | translate }}</span>
-      </div>
-    </div>
-
-    <div class="pay-kpi-card pay-kpi-released">
-      <div class="pay-kpi-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <div class="pay-kpi-body">
-        <span class="pay-kpi-val">{{ formatTND(po.releasedThisMonth) }}</span>
-        <span class="pay-kpi-lbl">{{ 'admin_overview.pay_released_lbl' | translate }}</span>
-        <span class="pay-kpi-sub">{{ po.capturedThisMonthCount }} {{ 'admin_overview.pay_released_sub' | translate }}</span>
-      </div>
-    </div>
-
-    <div class="pay-kpi-card pay-kpi-commission">
-      <div class="pay-kpi-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      </div>
-      <div class="pay-kpi-body">
-        <span class="pay-kpi-val">{{ formatTND(po.totalPlatformCommission) }}</span>
-        <span class="pay-kpi-lbl">{{ 'admin_overview.pay_commission_lbl' | translate }}</span>
-        <span class="pay-kpi-sub">{{ po.totalCapturedContracts }} {{ 'admin_overview.pay_commission_sub' | translate }}</span>
-      </div>
-    </div>
-
-    <div class="pay-kpi-card pay-kpi-total">
-      <div class="pay-kpi-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-      </div>
-      <div class="pay-kpi-body">
-        <span class="pay-kpi-val">{{ po.totalCapturedContracts + po.escrowContractCount }}</span>
-        <span class="pay-kpi-lbl">{{ 'admin_overview.pay_total_lbl' | translate }}</span>
-        <span class="pay-kpi-sub">{{ 'admin_overview.pay_total_sub' | translate }}</span>
-      </div>
-    </div>
   </div>
 
 

@@ -196,7 +196,7 @@
       <div class="info-grid">
         <div class="info-item">
           <span class="info-key">{{ 'admin_contracts.daily_rate' | translate }}</span>
-          <span class="info-val">{{ c.salary ? ((c.salary | number:'1.0-0') + ' €/jour') : '—' }}</span>
+          <span class="info-val">{{ c.salary ? ((c.salary | number:'1.0-0') + ' DT/jour') : '—' }}</span>
         </div>
         <div class="info-item">
           <span class="info-key">{{ 'admin_contracts.start_date' | translate }}</span>
@@ -252,20 +252,14 @@
       </div>
     </div>
 
-    <!-- PDF Documents -->
-    <div class="panel-section">
+    <!-- Contract Document -->
+    <div class="panel-section doc-open-section">
       <p class="section-title">{{ 'admin_contracts.section_docs' | translate }}</p>
-      <div class="docs-row">
-        <button class="doc-btn" [disabled]="!c.pdfUrl" (click)="openPdf(c.pdfUrl)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          {{ 'admin_contracts.doc_original' | translate }}
-        </button>
-        <button class="doc-btn signed-doc" [disabled]="!c.signedPdfUrl" (click)="openPdf(c.signedPdfUrl)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>
-          {{ 'admin_contracts.doc_signed' | translate }}
-          <span class="doc-unavailable" *ngIf="!c.signedPdfUrl">{{ 'admin_contracts.doc_not_yet' | translate }}</span>
-        </button>
-      </div>
+      <p class="doc-open-desc">{{ 'admin_contracts.doc_open_desc' | translate }}</p>
+      <button class="doc-open-btn" [disabled]="!c.pdfUrl && !c.signedPdfUrl" (click)="openPdf(c.signedPdfUrl || c.pdfUrl)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>
+        {{ 'admin_contracts.doc_open_btn' | translate }}
+      </button>
     </div>
 
     <!-- Timeline / History -->
@@ -314,6 +308,7 @@
       </button>
       <p class="danger-hint">{{ 'admin_contracts.force_cancel_hint' | translate }}</p>
     </div>
+
 
   </div>
 </div>

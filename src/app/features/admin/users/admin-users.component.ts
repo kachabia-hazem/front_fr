@@ -36,16 +36,16 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
 
   filteredFreelancers = computed(() => {
     const q = this.searchQuery().toLowerCase();
-    return this.freelancers().filter(f =>
-      !q || `${f.firstName} ${f.lastName} ${f.email}`.toLowerCase().includes(q)
-    );
+    return this.freelancers()
+      .filter(f => !q || `${f.firstName} ${f.lastName} ${f.email}`.toLowerCase().includes(q))
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   });
 
   filteredCompanies = computed(() => {
     const q = this.searchQuery().toLowerCase();
-    return this.companies().filter(c =>
-      !q || `${c.companyName} ${c.email}`.toLowerCase().includes(q)
-    );
+    return this.companies()
+      .filter(c => !q || `${c.companyName} ${c.email}`.toLowerCase().includes(q))
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   });
 
   private langSub?: Subscription;

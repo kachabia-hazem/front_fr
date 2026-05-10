@@ -24,8 +24,8 @@ export class BannedComponent implements OnInit {
     const state = history.state as { banReason?: string; banDuration?: string; banEndDate?: string; email?: string };
     this.banReason = state?.banReason ?? '';
     this.banDuration = state?.banDuration ?? '';
-    this.banEndDate = state?.banEndDate ?? '';
     this.email = state?.email ?? '';
+    this.banEndDate = state?.banEndDate ?? '';
   }
 
   goToLogin(): void {

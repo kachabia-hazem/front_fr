@@ -1,14 +1,15 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, NgZone } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, NgZone, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { environment } from '../../../../environments/environment';
+import { ReportModalComponent } from '../../../shared/report-modal/report-modal.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, ReportModalComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -19,6 +20,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   loading = false;
   showPassword = false;
   googleLoading = false;
+  showReportModal = signal(false);
+  reportSubmitted = signal(false);
 
   @ViewChild('googleBtn', { static: false }) googleBtn!: ElementRef;
 
@@ -175,4 +178,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       },
     });
   }
+
+  openReport(): void { this.showReportModal.set(true); }
+  onReportSubmitted(): void { this.showReportModal.set(false); this.reportSubmitted.set(true); }
 }

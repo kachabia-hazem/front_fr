@@ -1,0 +1,309 @@
+<div class="transactions-page">
+
+  <!-- ── En-tête ── -->
+  <div class="page-header">
+    <h1 class="page-title">{{ 'admin_transactions.title' | translate }}</h1>
+    <p class="page-subtitle">{{ 'admin_transactions.subtitle' | translate }}</p>
+  </div>
+
+  <!-- ── Onglets principaux ── -->
+  <div class="main-tabs">
+    <button class="main-tab" [class.active]="activeTab() === 'contracts'" (click)="setTab('contracts')">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+      {{ 'admin_transactions.tab_contracts' | translate }}
+    </button>
+    <button class="main-tab" [class.active]="activeTab() === 'points'" (click)="setTab('points')">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="6"/>
+        <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+      </svg>
+      {{ 'admin_transactions.tab_points' | translate }}
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB 1 — PAIEMENTS CONTRATS
+  ══════════════════════════════════════ -->
+  @if (activeTab() === 'contracts') {
+    <div class="tab-toolbar">
+      <div class="search-bar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input class="search-input" [placeholder]="'admin_transactions.search_contracts' | translate"
+               [ngModel]="contractSearch()" (ngModelChange)="contractSearch.set($event)" />
+      </div>
+      <div class="status-tabs">
+        @for (s of CONTRACT_STATUS_TABS; track s) {
+          <button [class.active]="contractStatusFilter() === s" (click)="contractStatusFilter.set(s)">
+            {{ paymentStatusLabel(s) }}
+          </button>
+        }
+      </div>
+      <button class="refresh-btn" (click)="refreshContracts()" title="Refresh">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+      </button>
+    </div>
+
+    @if (contractsLoading()) {
+      <div class="loading-state"><div class="spinner"></div><span>{{ 'admin_transactions.loading' | translate }}</span></div>
+    } @else {
+      <div class="table-card">
+        <div class="table-meta">{{ filteredContracts().length }} {{ 'admin_transactions.count_payments' | translate }}</div>
+        <div class="table-scroll-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>{{ 'admin_transactions.th_mission' | translate }}</th>
+                <th>{{ 'admin_transactions.th_freelancer' | translate }}</th>
+                <th>{{ 'admin_transactions.th_company' | translate }}</th>
+                <th>{{ 'admin_transactions.th_total' | translate }}</th>
+                <th>{{ 'admin_transactions.th_commission' | translate }}</th>
+                <th>{{ 'admin_transactions.th_net' | translate }}</th>
+                <th>{{ 'admin_transactions.th_status' | translate }}</th>
+                <th>{{ 'admin_transactions.th_payment_date' | translate }}</th>
+                <th>{{ 'admin_transactions.th_capture_date' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (filteredContracts().length === 0) {
+                <tr>
+                  <td colspan="9" class="empty-cell">{{ 'admin_transactions.no_payments' | translate }}</td>
+                </tr>
+              }
+              @for (c of filteredContracts(); track c.id) {
+                <tr [class.selected]="selectedContract()?.id === c.id" (click)="selectContract(c)">
+                  <td>
+                    <div class="title-cell">{{ c.missionTitle }}</div>
+                    <div class="secondary-cell">{{ c.createdAt | date:'dd/MM/yyyy' }}</div>
+                  </td>
+                  <td>
+                    <div class="person-cell">
+                      <div class="avatar freelancer-av">{{ initials(c.freelancerName) }}</div>
+                      <div>
+                        <div class="person-name">{{ c.freelancerName }}</div>
+                        <div class="person-email">{{ c.freelancerEmail }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="person-cell">
+                      <div class="avatar company-av">{{ initials(c.companyName) }}</div>
+                      <div>
+                        <div class="person-name">{{ c.companyName }}</div>
+                        <div class="person-email">{{ c.companyEmail }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="amount-cell">{{ formatTND(c.totalAmount) }}</span></td>
+                  <td><span class="amount-cell fee">{{ formatTND(c.platformFee) }}</span></td>
+                  <td><span class="amount-cell net">{{ formatTND(c.freelancerAmount) }}</span></td>
+                  <td><span class="status-badge" [ngClass]="paymentStatusClass(c.paymentStatus)">{{ paymentStatusLabel(c.paymentStatus) }}</span></td>
+                  <td class="secondary-cell">{{ c.paidAt ? (c.paidAt | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
+                  <td class="secondary-cell">{{ c.capturedAt ? (c.capturedAt | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
+                </tr>
+                <!-- Détail inline -->
+                @if (selectedContract()?.id === c.id) {
+                  <tr class="detail-row">
+                    <td colspan="9">
+                      <div class="detail-panel">
+                        <div class="detail-grid">
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_contract_id' | translate }}</span>
+                            <span class="detail-value mono">{{ c.id }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_freelancer' | translate }}</span>
+                            <span class="detail-value">{{ c.freelancerName }} — {{ c.freelancerEmail }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_company' | translate }}</span>
+                            <span class="detail-value">{{ c.companyName }} — {{ c.companyEmail }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_payment_status' | translate }}</span>
+                            <span class="status-badge" [ngClass]="paymentStatusClass(c.paymentStatus)">{{ paymentStatusLabel(c.paymentStatus) }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_total' | translate }}</span>
+                            <span class="detail-value amount-lg">{{ formatTND(c.totalAmount) }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_commission' | translate }}</span>
+                            <span class="detail-value">{{ formatTND(c.platformFee) }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_net' | translate }}</span>
+                            <span class="detail-value">{{ formatTND(c.freelancerAmount) }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_authorized_at' | translate }}</span>
+                            <span class="detail-value">{{ c.paidAt ? (c.paidAt | date:'dd/MM/yyyy HH:mm') : '—' }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_captured_at' | translate }}</span>
+                            <span class="detail-value">{{ c.capturedAt ? (c.capturedAt | date:'dd/MM/yyyy HH:mm') : '—' }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- ══════════════════════════════════════
+       TAB 2 — TRANSACTIONS POINTS
+  ══════════════════════════════════════ -->
+  @if (activeTab() === 'points') {
+    <!-- Résumé rapide -->
+    @if (!pointsLoading() && pointTransactions().length > 0) {
+      <div class="summary-row">
+        <div class="summary-card">
+          <span class="summary-value">{{ formatTND(totalPointsRevenue()) }}</span>
+          <span class="summary-label">{{ 'admin_transactions.summary_revenue' | translate }}</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-value">{{ totalPointsGranted() | number }} pts</span>
+          <span class="summary-label">{{ 'admin_transactions.summary_points' | translate }}</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-value">{{ pointTransactions().length }}</span>
+          <span class="summary-label">{{ 'admin_transactions.summary_total' | translate }}</span>
+        </div>
+      </div>
+    }
+
+    <div class="tab-toolbar">
+      <div class="search-bar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input class="search-input" [placeholder]="'admin_transactions.search_points' | translate"
+               [ngModel]="pointSearch()" (ngModelChange)="pointSearch.set($event)" />
+      </div>
+      <div class="status-tabs">
+        @for (t of POINT_TYPE_TABS; track t) {
+          <button [class.active]="pointTypeFilter() === t" (click)="pointTypeFilter.set(t)">
+            {{ pointTypeLabel(t) }}
+          </button>
+        }
+      </div>
+      <button class="refresh-btn" (click)="refreshPoints()" title="Refresh">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+      </button>
+    </div>
+
+    @if (pointsLoading()) {
+      <div class="loading-state"><div class="spinner"></div><span>{{ 'admin_transactions.loading' | translate }}</span></div>
+    } @else {
+      <div class="table-card">
+        <div class="table-meta">{{ filteredPoints().length }} {{ 'admin_transactions.count_transactions' | translate }}</div>
+        <div class="table-scroll-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>{{ 'admin_transactions.th_date' | translate }}</th>
+                <th>{{ 'admin_transactions.th_user' | translate }}</th>
+                <th>{{ 'admin_transactions.th_type' | translate }}</th>
+                <th>{{ 'admin_transactions.th_description' | translate }}</th>
+                <th>{{ 'admin_transactions.th_points' | translate }}</th>
+                <th>{{ 'admin_transactions.th_amount' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (filteredPoints().length === 0) {
+                <tr>
+                  <td colspan="6" class="empty-cell">{{ 'admin_transactions.no_transactions' | translate }}</td>
+                </tr>
+              }
+              @for (p of filteredPoints(); track p.id) {
+                <tr [class.selected]="selectedPoint()?.id === p.id" (click)="selectPoint(p)">
+                  <td class="secondary-cell">{{ p.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                  <td>
+                    <div class="person-cell">
+                      <div class="avatar user-av">{{ initials(p.userName) }}</div>
+                      <div>
+                        <div class="person-name">{{ p.userName }}</div>
+                        <div class="person-email">{{ p.userEmail }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="type-badge" [ngClass]="pointTypeClass(p.type)">{{ pointTypeLabel(p.type) }}</span>
+                  </td>
+                  <td class="desc-cell">{{ p.description }}</td>
+                  <td>
+                    <span class="points-cell" [class.points-pos]="p.points > 0" [class.points-neg]="p.points < 0">
+                      {{ p.points > 0 ? '+' : '' }}{{ p.points }} pts
+                    </span>
+                  </td>
+                  <td>
+                    <span class="amount-cell" [class.amount-paid]="p.amount > 0">
+                      {{ p.amount > 0 ? formatTND(p.amount) : '—' }}
+                    </span>
+                  </td>
+                </tr>
+                <!-- Détail inline -->
+                @if (selectedPoint()?.id === p.id) {
+                  <tr class="detail-row">
+                    <td colspan="6">
+                      <div class="detail-panel">
+                        <div class="detail-grid">
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_transaction_id' | translate }}</span>
+                            <span class="detail-value mono">{{ p.id }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_user' | translate }}</span>
+                            <span class="detail-value">{{ p.userName }} ({{ p.userEmail }})</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_type' | translate }}</span>
+                            <span class="type-badge" [ngClass]="pointTypeClass(p.type)">{{ pointTypeLabel(p.type) }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_description' | translate }}</span>
+                            <span class="detail-value">{{ p.description }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_points_credited' | translate }}</span>
+                            <span class="detail-value points-pos">+{{ p.points }} pts</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_amount' | translate }}</span>
+                            <span class="detail-value amount-lg">{{ p.amount > 0 ? formatTND(p.amount) : ('admin_transactions.free_or_debit' | translate) }}</span>
+                          </div>
+                          <div class="detail-item">
+                            <span class="detail-label">{{ 'admin_transactions.detail_date' | translate }}</span>
+                            <span class="detail-value">{{ p.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  }
+
+</div>

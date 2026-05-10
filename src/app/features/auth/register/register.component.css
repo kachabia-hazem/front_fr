@@ -428,6 +428,28 @@
   text-decoration: underline;
 }
 
+.support-hint {
+  text-align: center;
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin: 4px 0 0;
+}
+
+.support-link {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #3793B0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s;
+}
+
+.support-link:hover { color: #2271a3; }
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .register-page {

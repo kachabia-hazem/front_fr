@@ -104,7 +104,18 @@
         <p class="register-link">
           New to WorkLink ? <a routerLink="/auth/register">Register</a>
         </p>
+
+        <p class="support-hint" *ngIf="!reportSubmitted()">
+          Need help? <button class="support-link" (click)="openReport()">Report an issue.</button>
+        </p>
+        <p class="support-hint" *ngIf="reportSubmitted()">Your report has been submitted. We'll get back to you soon.</p>
       </form>
     </div>
   </div>
 </div>
+
+<app-report-modal
+  *ngIf="showReportModal()"
+  (closed)="showReportModal.set(false)"
+  (submitted)="onReportSubmitted()"
+></app-report-modal>

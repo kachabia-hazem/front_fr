@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -7,11 +7,12 @@ import {
   LegalForm,
 } from '../../../core/models';
 import { PhoneInputComponent } from '../../../shared/components/phone-input/phone-input.component';
+import { ReportModalComponent } from '../../../shared/report-modal/report-modal.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, PhoneInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, PhoneInputComponent, ReportModalComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
@@ -22,6 +23,8 @@ export class RegisterComponent {
   errorMessage = '';
   showPassword = false;
   showConfirmPassword = false;
+  showReportModal = signal(false);
+  reportSubmitted = signal(false);
 
   genders = Object.values(Gender);
   legalForms = Object.values(LegalForm);
@@ -255,4 +258,7 @@ export class RegisterComponent {
     if (invalidFields.length === 0) return 'Please fill in all required fields.';
     return `Invalid fields: ${invalidFields.join(', ')}`;
   }
+
+  openReport(): void { this.showReportModal.set(true); }
+  onReportSubmitted(): void { this.showReportModal.set(false); this.reportSubmitted.set(true); }
 }

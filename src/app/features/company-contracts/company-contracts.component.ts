@@ -103,7 +103,9 @@ export class CompanyContractsComponent implements OnInit, AfterViewInit, OnDestr
       c.freelancerName.toLowerCase().includes(q) ||
       c.missionTitle.toLowerCase().includes(q)
     );
-    if (this.statusFilter() !== 'ALL') {
+    if (this.statusFilter() === 'PAID') {
+      list = list.filter(c => c.paymentStatus === 'AUTHORIZED' || c.paymentStatus === 'CAPTURED');
+    } else if (this.statusFilter() !== 'ALL') {
       list = list.filter(c => c.status === this.statusFilter());
     }
     return list.sort((a, b) => {

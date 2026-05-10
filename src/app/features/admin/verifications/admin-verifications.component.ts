@@ -53,7 +53,7 @@ export class AdminVerificationsComponent implements OnInit, OnDestroy{
         if (this.filter() !== 'PENDING' && this.filter() !== 'ALL') {
           filtered = data.filter(c => c.verificationStatus === this.filter());
         }
-        this.companies.set(filtered);
+        this.companies.set(filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
         this.loading.set(false);
       },
       error: () => this.loading.set(false),

@@ -74,7 +74,8 @@ export class AdminContractsComponent implements OnInit, OnDestroy{
   }
 
   selectContract(c: Contract) {
-    this.selectedContract.set(this.selectedContract()?.id === c.id ? null : c);
+    const isSame = this.selectedContract()?.id === c.id;
+    this.selectedContract.set(isSame ? null : c);
   }
 
   closePanel() { this.selectedContract.set(null); }

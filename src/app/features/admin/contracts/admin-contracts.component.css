@@ -114,13 +114,11 @@
 .terms-text { font-size: 0.8rem; color: #374151; margin: 6px 0 0; white-space: pre-wrap; line-height: 1.5; }
 
 /* Documents */
-.docs-row { display: flex; gap: 10px; flex-wrap: wrap; }
-.doc-btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 9px; border: 1px solid #e8eaed; background: #fff; color: #374151; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-.doc-btn:hover:not(:disabled) { border-color: #3793B0; color: #3793B0; }
-.doc-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.doc-btn.signed-doc { border-color: #a7f3d0; color: #065f46; background: #f0fdf4; }
-.doc-btn.signed-doc:hover:not(:disabled) { background: #d1fae5; }
-.doc-unavailable { font-size: 0.7rem; color: #9ca3af; font-weight: 400; }
+.doc-open-section {}
+.doc-open-desc { font-size: 0.8rem; color: #6b7280; margin: 0 0 12px; line-height: 1.5; }
+.doc-open-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 9px; border: 1px solid #a7f3d0; background: #f0fdf4; color: #065f46; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.doc-open-btn:hover:not(:disabled) { background: #d1fae5; border-color: #6ee7b7; }
+.doc-open-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* Timeline */
 .timeline { display: flex; flex-direction: column; gap: 0; }
@@ -274,3 +272,4 @@
 :host-context(body.dark-theme) .modal-label { color: #c5cad8; }
 :host-context(body.dark-theme) .modal-textarea { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }
 :host-context(body.dark-theme) .btn-modal-cancel { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+
