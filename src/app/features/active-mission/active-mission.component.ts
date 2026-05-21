@@ -12,6 +12,7 @@ import { ContractService } from '../../core/services/contract.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { ToastService } from '../../core/services/toast.service';
 import { Freelancer } from '../../core/models';
 import { ActiveMission, Task, Deliverable } from '../../core/models/active-mission.model';
 import { environment } from '../../../environments/environment';
@@ -95,7 +96,7 @@ export class ActiveMissionComponent implements OnInit, OnDestroy{
 
   // User role check
   isFreelancer    = signal(false);
-  isReadOnly      = computed(() => this.mission()?.status === 'COMPLETED');
+  isReadOnly      = computed(() => this.mission()?.status === 'COMPLETED' || this.mission()?.status === 'PENDING');
   isOverdue       = computed(() => this.mission()?.status === 'ACTIVE' && this.isDeadlinePassed());
   contractPending = signal(false);
 
@@ -124,7 +125,8 @@ export class ActiveMissionComponent implements OnInit, OnDestroy{
     public authService: AuthService,
     public themeService: ThemeService,
     private translate: TranslateService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -160,10 +162,22 @@ export class ActiveMissionComponent implements OnInit, OnDestroy{
   loadMission(): void {
     this.activeMissionService.getMission(this.missionId).subscribe({
       next: (m) => {
-        // Redirect away if mission is not yet accessible
         if (m.status === 'PENDING') {
-          this.router.navigate(['/freelancer-dashboard']);
-          return;
+          const role = this.authService.userRole();
+          if (role === 'COMPANY') {
+            const startDate = m.startDate
+              ? new Date(m.startDate).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
+              : '';
+            this.toastService.show(
+              `Cette mission commencera le ${startDate}. Vous pourrez la gérer à partir de cette date.`,
+              'info',
+              6000
+            );
+            // Charge la mission en lecture seule
+          } else {
+            this.router.navigate(['/freelancer-dashboard']);
+            return;
+          }
         }
         this.mission.set(m);
         this.newGitUrl = m.gitRepositoryUrl || '';
@@ -393,6 +407,7 @@ export class ActiveMissionComponent implements OnInit, OnDestroy{
   getStatusClass(status: string): string {
     switch (status) {
       case 'ACTIVE': return 'status-active';
+      case 'PENDING': return 'status-pending';
       case 'SUBMITTED': return 'status-submitted';
       case 'COMPLETED': return 'status-completed';
       case 'PAUSED': return 'status-paused';

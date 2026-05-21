@@ -95,11 +95,6 @@
               @if (freelancer()!.yearsOfExperience) {
                 <span class="exp-tag">{{ freelancer()!.yearsOfExperience }} {{ 'view_profile.years' | translate }}</span>
               }
-              @if (freelancer()!.skills && freelancer()!.skills!.length > 0) {
-                @for (skill of freelancer()!.skills!.slice(0, 5); track skill) {
-                  <span class="exp-tag">{{ skill }}</span>
-                }
-              }
             </div>
           </div>
         </div>
