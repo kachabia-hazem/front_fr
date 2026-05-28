@@ -130,11 +130,13 @@ export class FreelancerMissionsComponent implements OnInit, OnDestroy{
 
   getStatusClass(status: string): string {
     switch (status) {
-      case 'PENDING': return 'status-pending';
-      case 'ACTIVE': return 'status-active';
+      case 'PENDING':   return 'status-pending';
+      case 'ACTIVE':    return 'status-active';
+      case 'SUBMITTED': return 'status-submitted';
       case 'COMPLETED': return 'status-completed';
-      case 'PAUSED': return 'status-paused';
-      case 'DISPUTE': return 'status-dispute';
+      case 'PAUSED':    return 'status-paused';
+      case 'DISPUTE':   return 'status-dispute';
+      case 'CANCELLED': return 'status-cancelled';
       default: return '';
     }
   }

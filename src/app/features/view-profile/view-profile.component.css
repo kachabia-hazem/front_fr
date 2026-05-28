@@ -752,3 +752,20 @@
     padding: 1rem;
   }
 }
+
+@media (max-width: 1024px) {
+  .profile-container { padding: 1.5rem; max-width: 100%; }
+  .hero-banner { padding: 2rem 1.5rem; }
+  .hero-banner h1 { font-size: 1.4rem; }
+}
+
+@media (max-width: 480px) {
+  .hero-banner { padding: 1.2rem 1rem; }
+  .hero-banner h1 { font-size: 1.1rem; }
+  .profile-container { padding: 0.75rem; }
+  .profile-header { padding: 1.2rem; gap: 1rem; }
+  .profile-avatar { width: 100px; height: 100px; }
+  .profile-avatar.avatar-initials { width: 100px; height: 100px; font-size: 2rem; }
+  .profile-name { font-size: 1.2rem; }
+  .skills-list { gap: 6px; }
+}

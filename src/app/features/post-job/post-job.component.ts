@@ -178,6 +178,7 @@ export class PostJobComponent implements OnInit, OnDestroy{
 
     if (control.errors['required']) return this.translate.instant('post_job.err_required');
     if (control.errors['endBeforeStart']) return this.translate.instant('post_job.err_end_before_start');
+    if (control.errors['deadlineAfterStart']) return this.translate.instant('post_job.err_deadline_after_start');
     if (control.errors['min']) return this.translate.instant('post_job.err_min', { min: control.errors['min'].min });
     if (control.errors['minlength']) return this.translate.instant('post_job.err_minlength', { len: control.errors['minlength'].requiredLength });
     return this.translate.instant('post_job.err_invalid');
@@ -186,10 +187,23 @@ export class PostJobComponent implements OnInit, OnDestroy{
   onStartDateChange(): void {
     this.missionForm.get('endDate')?.updateValueAndValidity();
     this.validateEndDate();
+    this.validateDeadline();
   }
 
   onEndDateChange(): void {
     this.validateEndDate();
+  }
+
+  onDeadlineChange(): void {
+    this.validateDeadline();
+  }
+
+  get maxDeadlineDate(): string {
+    const start = this.missionForm.get('startDate')?.value;
+    if (!start) return '';
+    const d = new Date(start);
+    d.setDate(d.getDate() - 1);
+    return d.toISOString().split('T')[0];
   }
 
   private validateEndDate(): void {
@@ -205,6 +219,23 @@ export class PostJobComponent implements OnInit, OnDestroy{
         const errors = { ...endControl.errors };
         delete errors['endBeforeStart'];
         endControl.setErrors(Object.keys(errors).length ? errors : null);
+      }
+    }
+  }
+
+  private validateDeadline(): void {
+    const startVal = this.missionForm.get('startDate')?.value;
+    const deadlineControl = this.missionForm.get('applicationDeadline');
+    const deadlineVal = deadlineControl?.value;
+
+    if (startVal && deadlineVal && new Date(deadlineVal) >= new Date(startVal)) {
+      deadlineControl?.setErrors({ ...(deadlineControl.errors || {}), deadlineAfterStart: true });
+      deadlineControl?.markAsTouched();
+    } else {
+      if (deadlineControl?.errors?.['deadlineAfterStart']) {
+        const errors = { ...deadlineControl.errors };
+        delete errors['deadlineAfterStart'];
+        deadlineControl.setErrors(Object.keys(errors).length ? errors : null);
       }
     }
   }
@@ -384,6 +415,13 @@ export class PostJobComponent implements OnInit, OnDestroy{
     const end = this.missionForm.value.endDate;
     if (start && end && new Date(end) <= new Date(start)) {
       this.errorMessage = this.translate.instant('post_job.error_dates');
+      return;
+    }
+
+    // Validate application deadline < start date
+    const deadline = this.missionForm.value.applicationDeadline;
+    if (start && deadline && new Date(deadline) >= new Date(start)) {
+      this.errorMessage = this.translate.instant('post_job.err_deadline_after_start');
       return;
     }
 

@@ -1690,3 +1690,12 @@
     max-width: 80%;
   }
 }
+
+@media (max-width: 480px) {
+  .nav-sb { display: none; }
+  .chat-header { padding: 10px 12px; }
+  .msg-input-bar { padding: 8px 10px; }
+  .msg-bubble { font-size: 0.85rem; padding: 8px 12px; }
+  .msg-bubble-wrap { max-width: 88%; }
+  .msg-input { font-size: 0.9rem; }
+}

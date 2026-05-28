@@ -1,13 +1,13 @@
-/* ── Layout ── */
+﻿/* â”€â”€ Layout â”€â”€ */
 .dashboard-layout { display: flex; height: 100vh; overflow: hidden; }
 
-/* ── Back button ── */
+/* â”€â”€ Back button â”€â”€ */
 .back-to-missions-btn { display: inline-flex; align-items: center; gap: 7px; background: none; border: 1px solid #e8eaed; color: #374151; padding: 7px 14px; border-radius: 8px; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: background 0.18s, border-color 0.18s; margin-bottom: 18px; }
 .back-to-missions-btn:hover { background: #f3f4f6; border-color: #d1d5db; }
 :host-context(body.dark-theme) .back-to-missions-btn { border-color: #2a3040; color: #d1d5db; }
 :host-context(body.dark-theme) .back-to-missions-btn:hover { background: rgba(255,255,255,0.06); border-color: #374151; }
 
-/* ── Sidebar ── */
+/* â”€â”€ Sidebar â”€â”€ */
 .sidebar { width: 260px; min-width: 260px; background: #f8f9fb; display: flex; flex-direction: column; justify-content: space-between; padding: 24px 0; border-right: 1px solid #e8eaed; transition: width 0.3s cubic-bezier(0.4,0,0.2,1), min-width 0.3s cubic-bezier(0.4,0,0.2,1); position: sticky; top: 0; height: 100vh; overflow-y: auto; overflow-x: hidden; }
 :host-context(body.dark-theme) .sidebar { background: #1a1f2e; border-right-color: #2a3040; }
 .sidebar.collapsed { width: 72px; min-width: 72px; }
@@ -43,14 +43,14 @@
 .sidebar-back-btn:hover { background: #eef0f3; color: #1a1a2e; }
 :host-context(body.dark-theme) .sidebar-back-btn:hover { background: rgba(255,255,255,0.06); color: #e4e4ef; }
 
-/* ── Main ── */
+/* â”€â”€ Main â”€â”€ */
 .mission-main { flex: 1; padding: 36px 40px; background: #f4f6f9; overflow-y: auto; }
 :host-context(body.dark-theme) .mission-main { background: #111622; }
 .page-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; gap: 16px; color: #6b7280; }
 .spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: #3793B0; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Mission Header ── */
+/* â”€â”€ Mission Header â”€â”€ */
 .mission-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; background: #fff; border-radius: 14px; padding: 24px 28px; border: 1px solid #e8eaed; margin-bottom: 24px; }
 :host-context(body.dark-theme) .mission-header { background: #1a1f2e; border-color: #2a3040; }
 .mission-header-info { flex: 1; }
@@ -65,6 +65,18 @@
 .status-completed { background: #e0f2fe; color: #0284c7; }
 .status-paused { background: #fef9c3; color: #ca8a04; }
 .status-dispute { background: #fee2e2; color: #dc2626; }
+.status-cancelled { background: #f3f4f6; color: #6b7280; }
+:host-context(body.dark-theme) .status-cancelled { background: rgba(107,114,128,0.15); color: #9ca3af; }
+
+/* -- Cancelled banner ---------------------------------------------------------------- */
+.readonly-banner--cancelled {
+  display: flex; align-items: center; gap: 10px;
+  background: #fef2f2; border: 1px solid #fca5a5; border-radius: 10px;
+  padding: 12px 16px; margin-bottom: 20px;
+  color: #991b1b; font-size: 0.875rem;
+}
+.readonly-banner--cancelled svg { flex-shrink: 0; color: #ef4444; }
+:host-context(body.dark-theme) .readonly-banner--cancelled { background: rgba(239,68,68,.1); border-color: #ef4444; color: #fca5a5; }
 .status-overdue { background: #fee2e2; color: #dc2626; }
 :host-context(body.dark-theme) .status-active { background: rgba(22,163,74,0.15); color: #4ade80; }
 :host-context(body.dark-theme) .status-submitted { background: rgba(217,119,6,0.15); color: #fbbf24; }
@@ -81,7 +93,7 @@
 :host-context(body.dark-theme) .progress-bar-lg { background: #2a3040; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, #3793B0, #5ab4d4); border-radius: 4px; transition: width 0.5s ease; }
 
-/* ── Dispute banner ── */
+/* â”€â”€ Dispute banner â”€â”€ */
 .dispute-banner {
   display: flex; align-items: flex-start; gap: 16px;
   background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
@@ -104,7 +116,7 @@
 :host-context(body.dark-theme) .dispute-banner-title { color: #fbbf24; }
 :host-context(body.dark-theme) .dispute-banner-text { color: #fcd34d; }
 
-/* ── Sections ── */
+/* â”€â”€ Sections â”€â”€ */
 .workspace-section { background: #fff; border-radius: 14px; padding: 24px 28px; border: 1px solid #e8eaed; margin-bottom: 24px; }
 :host-context(body.dark-theme) .workspace-section { background: #1a1f2e; border-color: #2a3040; }
 .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
@@ -112,7 +124,7 @@
 :host-context(body.dark-theme) .section-title { color: #e4e4ef; }
 .readonly-note { font-size: 0.78rem; color: #9ca3af; font-style: italic; }
 
-/* ── Kanban (read-only) ── */
+/* â”€â”€ Kanban (read-only) â”€â”€ */
 .kanban-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .kanban-col { background: #f4f6f9; border-radius: 12px; padding: 12px; min-height: 200px; display: flex; flex-direction: column; gap: 8px; }
 :host-context(body.dark-theme) .kanban-col { background: #111622; }
@@ -136,7 +148,7 @@
 .task-desc { font-size: 0.78rem; color: #6b7280; margin: 0; word-break: break-word; }
 .col-empty { font-size: 0.8rem; color: #9ca3af; text-align: center; padding: 16px; font-style: italic; }
 
-/* ── Git ── */
+/* â”€â”€ Git â”€â”€ */
 .btn-open-repo { display: inline-flex; align-items: center; gap: 6px; background: #1a1a2e; color: #fff; text-decoration: none; padding: 7px 16px; border-radius: 9px; font-size: 0.85rem; font-weight: 600; transition: background 0.2s; }
 :host-context(body.dark-theme) .btn-open-repo { background: #e4e4ef; color: #1a1a2e; }
 .btn-open-repo:hover { background: #3793B0; }
@@ -154,7 +166,7 @@
 .git-repo-link { font-size: 0.85rem; color: #3793B0; text-decoration: none; display: flex; align-items: center; gap: 4px; word-break: break-all; }
 .git-repo-link:hover { text-decoration: underline; }
 
-/* ── Deliverables ── */
+/* â”€â”€ Deliverables â”€â”€ */
 .empty-deliverables { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 40px 20px; color: #9ca3af; text-align: center; }
 .empty-deliverables p { margin: 0; font-size: 0.9rem; }
 .deliverables-list { display: flex; flex-direction: column; gap: 10px; }
@@ -169,7 +181,7 @@
 .btn-download { display: flex; align-items: center; gap: 6px; color: #3793B0; text-decoration: none; font-size: 0.85rem; font-weight: 600; padding: 7px 14px; border-radius: 8px; background: #e8f4f8; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
 .btn-download:hover { background: #d0eaf4; }
 
-/* ── Mission Validation ── */
+/* â”€â”€ Mission Validation â”€â”€ */
 .validation-section { border-top: 2px solid #e8eaed; }
 :host-context(body.dark-theme) .validation-section { border-top-color: #2a3040; }
 
@@ -250,7 +262,7 @@
 .extend-form { display: flex; flex-direction: column; gap: 14px; padding: 20px; background: #f8f9fb; border-radius: 12px; border: 1px solid #e8eaed; }
 :host-context(body.dark-theme) .extend-form { background: rgba(255,255,255,0.03); border-color: #2a3040; }
 
-/* ── Extend Deadline Modal ── */
+/* â”€â”€ Extend Deadline Modal â”€â”€ */
 .extend-overlay {
   position: fixed; inset: 0; z-index: 1000;
   background: rgba(15, 20, 35, 0.45);
@@ -325,3 +337,87 @@
   border-top: 1px solid #f0f2f5;
 }
 :host-context(body.dark-theme) .extend-modal-footer { border-color: #2a3040; }
+
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .mission-main { padding: 28px 24px; }
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  /* ── Fixed Bottom Tab Navigation ── */
+  .sidebar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    width: 100%; min-width: unset;
+    height: 62px; padding: 0;
+    flex-direction: row;
+    border-right: none;
+    border-top: 1px solid #e8eaed;
+    z-index: 1000;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.07);
+    overflow: visible;
+  }
+  :host-context(body.dark-theme) .sidebar {
+    border-top-color: #2a3040;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.25);
+  }
+  .sidebar-top {
+    display: flex; flex-direction: row;
+    align-items: stretch; flex: 1; overflow: hidden;
+  }
+  .sidebar-header { display: none; }
+  .sidebar-bottom-section { display: none; }
+  .sidebar-nav {
+    display: flex; flex-direction: row;
+    align-items: stretch; justify-content: space-around;
+    padding: 0; gap: 0; flex: 1;
+  }
+  .sidebar-link {
+    flex: 1; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 8px 2px 4px; gap: 0;
+    border-radius: 0; font-size: 0;
+    height: 62px; min-width: 0; position: relative;
+  }
+  .sidebar-link svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .sidebar-link.active { background: transparent; color: #3793B0; }
+  :host-context(body.dark-theme) .sidebar-link.active { color: #5ab4d4; }
+  .sidebar-link.active::after {
+    content: ''; position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 2.5px; background: #3793B0;
+    border-radius: 0 0 3px 3px;
+  }
+  :host-context(body.dark-theme) .sidebar-link.active::after { background: #5ab4d4; }
+  .notif-icon-wrapper { display: flex; align-items: center; justify-content: center; }
+  .sidebar-notif-badge { top: -5px; right: -6px; font-size: 0.55rem; padding: 1px 4px; min-width: 14px; }
+  .badge-count, .badge-soon { display: none; }
+  /* Main content — account for fixed bottom bar */
+  .dashboard-main,
+  .missions-main,
+  .mission-main,
+  .main-content { padding: 20px 16px 80px; overflow-y: auto; }
+  .page-title, .dashboard-title { font-size: 1.4rem; }
+  .page-header, .dashboard-header { flex-direction: column; gap: 12px; }
+  .kanban-board { grid-template-columns: 1fr; gap: 12px; }
+  .kanban-grid { grid-template-columns: 1fr; }
+  .mission-header { flex-direction: column; padding: 16px 20px; }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .git-info-grid { grid-template-columns: 1fr; }
+  .dispute-banner { flex-direction: column; gap: 10px; }
+}
+
+@media (max-width: 480px) {
+  .sidebar-link svg { width: 20px; height: 20px; }
+  .dashboard-main, .missions-main, .mission-main, .main-content { padding: 14px 12px 80px; }
+  .page-title, .dashboard-title { font-size: 1.25rem; }
+  .deliverable-row { flex-wrap: wrap; gap: 8px; }
+}

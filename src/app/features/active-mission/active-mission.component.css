@@ -1,7 +1,7 @@
-/* ── Layout ── */
+﻿/* â”€â”€ Layout â”€â”€ */
 .dashboard-layout { display: flex; height: 100vh; overflow: hidden; }
 
-/* ── Sidebar ── */
+/* â”€â”€ Sidebar â”€â”€ */
 .sidebar {
   width: 260px; min-width: 260px;
   background: #f8f9fb;
@@ -56,13 +56,13 @@
 .sidebar-back-btn:hover { background: #eef0f3; color: #1a1a2e; }
 :host-context(body.dark-theme) .sidebar-back-btn:hover { background: rgba(255,255,255,0.06); color: #e4e4ef; }
 
-/* ── Main content ── */
+/* â”€â”€ Main content â”€â”€ */
 .mission-main { flex: 1; padding: 36px 40px; background: #f4f6f9; overflow-y: auto; }
 :host-context(body.dark-theme) .mission-main { background: #111622; }
 
 .page-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; gap: 16px; color: #6b7280; }
 
-/* ── Contract pending modal overlay ── */
+/* â”€â”€ Contract pending modal overlay â”€â”€ */
 .contract-pending-overlay {
   position: fixed; inset: 0; z-index: 1000;
   background: rgba(15, 20, 35, 0.5);
@@ -119,7 +119,7 @@
 .spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: #3793B0; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Mission Header ── */
+/* â”€â”€ Mission Header â”€â”€ */
 .mission-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; background: #fff; border-radius: 14px; padding: 24px 28px; border: 1px solid #e8eaed; margin-bottom: 24px; }
 :host-context(body.dark-theme) .mission-header { background: #1a1f2e; border-color: #2a3040; }
 .mission-title { font-size: 1.6rem; font-weight: 700; color: #1a1a2e; margin: 0 0 8px; }
@@ -132,6 +132,7 @@
 .status-completed { background: #e0f2fe; color: #0284c7; }
 .status-paused { background: #fef9c3; color: #ca8a04; }
 .status-dispute { background: #fee2e2; color: #dc2626; }
+.status-cancelled { background: #f3f4f6; color: #6b7280; }
 .status-overdue { background: #fee2e2; color: #dc2626; }
 :host-context(body.dark-theme) .status-active { background: rgba(22,163,74,0.15); color: #4ade80; }
 :host-context(body.dark-theme) .status-pending { background: rgba(37,99,235,0.15); color: #93c5fd; }
@@ -139,6 +140,7 @@
 :host-context(body.dark-theme) .status-completed { background: rgba(2,132,199,0.15); color: #38bdf8; }
 :host-context(body.dark-theme) .status-paused { background: rgba(202,138,4,0.15); color: #facc15; }
 :host-context(body.dark-theme) .status-dispute { background: rgba(220,38,38,0.15); color: #f87171; }
+:host-context(body.dark-theme) .status-cancelled { background: rgba(107,114,128,0.15); color: #9ca3af; }
 :host-context(body.dark-theme) .status-overdue { background: rgba(220,38,38,0.15); color: #f87171; }
 .mission-dates { font-size: 0.85rem; color: #6b7280; }
 
@@ -150,7 +152,7 @@
 :host-context(body.dark-theme) .progress-bar-lg { background: #2a3040; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, #3793B0, #5ab4d4); border-radius: 4px; transition: width 0.5s ease; }
 
-/* ── Dispute banner ── */
+/* â”€â”€ Dispute banner â”€â”€ */
 .dispute-banner {
   display: flex; align-items: flex-start; gap: 16px;
   background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
@@ -177,7 +179,7 @@
 :host-context(body.dark-theme) .dispute-banner-title { color: #fbbf24; }
 :host-context(body.dark-theme) .dispute-banner-text { color: #fcd34d; }
 
-/* ── Sections ── */
+/* â”€â”€ Sections â”€â”€ */
 .workspace-section { background: #fff; border-radius: 14px; padding: 24px 28px; border: 1px solid #e8eaed; margin-bottom: 24px; }
 :host-context(body.dark-theme) .workspace-section { background: #1a1f2e; border-color: #2a3040; }
 
@@ -186,7 +188,7 @@
 :host-context(body.dark-theme) .section-title { color: #e4e4ef; }
 .section-actions { display: flex; align-items: center; gap: 8px; }
 
-/* ── Kanban ── */
+/* â”€â”€ Kanban â”€â”€ */
 .kanban-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 
 .kanban-col { background: #f4f6f9; border-radius: 12px; padding: 12px; min-height: 200px; display: flex; flex-direction: column; gap: 8px; }
@@ -238,7 +240,7 @@
 .add-task-btn { display: flex; align-items: center; gap: 6px; background: none; border: none; color: #9ca3af; font-size: 0.82rem; cursor: pointer; padding: 8px 12px; border-radius: 8px; transition: color 0.15s, background 0.15s; }
 .add-task-btn:hover { color: #3793B0; background: #e8f4f8; }
 
-/* ── Buttons ── */
+/* â”€â”€ Buttons â”€â”€ */
 .btn-primary { background: #3793B0; color: #fff; border: none; padding: 9px 18px; border-radius: 9px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
 .btn-primary:hover:not(:disabled) { background: #2a7a96; }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -252,7 +254,7 @@
 .git-auto-refresh-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; color: #16a34a; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 3px 8px; border-radius: 20px; font-weight: 600; }
 :host-context(body.dark-theme) .git-auto-refresh-badge { color: #4ade80; background: #052e16; border-color: #166534; }
 
-/* ── Git Section ── */
+/* â”€â”€ Git Section â”€â”€ */
 .error-banner { background: #fee2e2; color: #dc2626; padding: 10px 16px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px; }
 :host-context(body.dark-theme) .error-banner { background: rgba(220,38,38,0.15); color: #f87171; }
 
@@ -276,7 +278,7 @@
 .git-repo-link { font-size: 0.85rem; color: #3793B0; text-decoration: none; display: flex; align-items: center; gap: 4px; word-break: break-all; }
 .git-repo-link:hover { text-decoration: underline; }
 
-/* ── Deliverables ── */
+/* â”€â”€ Deliverables â”€â”€ */
 .deliverable-upload { margin-bottom: 20px; }
 .upload-row { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
 .file-label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
@@ -302,7 +304,7 @@
 .btn-download { display: flex; align-items: center; gap: 6px; color: #3793B0; text-decoration: none; font-size: 0.85rem; font-weight: 600; padding: 6px 12px; border-radius: 8px; background: #e8f4f8; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
 .btn-download:hover { background: #d0eaf4; }
 
-/* ── Read-only banner (COMPLETED) ────────────────────────────────────────── */
+/* â”€â”€ Read-only banner (COMPLETED) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .readonly-banner {
   display: flex; align-items: center; gap: 10px;
   background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px;
@@ -312,15 +314,22 @@
 .readonly-banner svg { flex-shrink: 0; color: #22c55e; }
 :host-context(body.dark-theme) .readonly-banner { background: rgba(34,197,94,.1); border-color: #22c55e; color: #86efac; }
 
-/* ── Pending banner ──────────────────────────────────────────────────────── */
+/* â”€â”€ Pending banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .readonly-banner--pending {
   background: #eff6ff; border-color: #93c5fd;
   color: #1e40af;
 }
 .readonly-banner--pending svg { color: #3b82f6; }
 :host-context(body.dark-theme) .readonly-banner--pending { background: rgba(59,130,246,.1); border-color: #3b82f6; color: #93c5fd; }
+/* -- Cancelled banner (non-payment) -------------------------------------------------- */
+.readonly-banner--cancelled {
+  background: #fef2f2; border-color: #fca5a5;
+  color: #991b1b;
+}
+.readonly-banner--cancelled svg { color: #ef4444; }
+:host-context(body.dark-theme) .readonly-banner--cancelled { background: rgba(239,68,68,.1); border-color: #ef4444; color: #fca5a5; }
 
-/* ── GitHub Required Banner ───────────────────────────────────────────────── */
+/* â”€â”€ GitHub Required Banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .git-required-banner { display: flex; align-items: flex-start; gap: 12px; background: #fff7ed; border: 1px solid #fb923c; border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; color: #9a3412; }
 .git-required-banner svg { flex-shrink: 0; margin-top: 2px; color: #f97316; }
 .git-required-banner-text { display: flex; flex-direction: column; gap: 3px; font-size: 0.875rem; }
@@ -328,14 +337,14 @@
 .git-required-banner-text em { font-style: italic; font-weight: 600; }
 :host-context(body.dark-theme) .git-required-banner { background: rgba(249,115,22,0.1); border-color: #f97316; color: #fed7aa; }
 
-/* ── Required Field Indicators ───────────────────────────────────────────── */
+/* â”€â”€ Required Field Indicators â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .required-star { color: #dc2626; font-weight: 700; margin-left: 2px; }
 .required-hint { font-size: 0.78rem; font-weight: 400; color: #9a3412; margin-left: 6px; }
 :host-context(body.dark-theme) .required-hint { color: #fdba74; }
 .form-input-required { border-color: #f97316 !important; background: #fff7ed !important; }
 :host-context(body.dark-theme) .form-input-required { background: rgba(249,115,22,0.08) !important; border-color: #f97316 !important; }
 
-/* ── Git URL Validation States ───────────────────────────────────────────── */
+/* â”€â”€ Git URL Validation States â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .form-input-valid   { border-color: #16a34a !important; background: #f0fdf4 !important; }
 .form-input-invalid { border-color: #dc2626 !important; background: #fef2f2 !important; }
 :host-context(body.dark-theme) .form-input-valid   { background: rgba(22,163,74,0.08) !important; border-color: #22c55e !important; }
@@ -347,14 +356,14 @@
 :host-context(body.dark-theme) .git-validation-success { color: #4ade80; background: rgba(22,163,74,0.1); border-color: rgba(74,222,128,0.3); }
 :host-context(body.dark-theme) .git-validation-error   { color: #f87171; background: rgba(220,38,38,0.1); border-color: rgba(248,113,113,0.3); }
 
-/* ── Test Button ─────────────────────────────────────────────────────────── */
+/* â”€â”€ Test Button â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .btn-test { display: flex; align-items: center; gap: 5px; padding: 9px 14px; border-radius: 9px; border: 1.5px solid #3793B0; background: transparent; color: #3793B0; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.2s, color 0.2s; white-space: nowrap; }
 .btn-test:hover:not(:disabled) { background: #e8f4f8; }
 .btn-test:disabled { opacity: 0.45; cursor: not-allowed; }
 :host-context(body.dark-theme) .btn-test { border-color: #3793B0; color: #67c5e0; }
 :host-context(body.dark-theme) .btn-test:hover:not(:disabled) { background: rgba(55,147,176,0.12); }
 
-/* ── Mission Validation ── */
+/* â”€â”€ Mission Validation â”€â”€ */
 .validation-section { border-top: 2px solid #e8eaed; }
 :host-context(body.dark-theme) .validation-section { border-top-color: #2a3040; }
 
@@ -417,3 +426,89 @@
 .btn-delete-confirm-detail { background: #dc2626; color: #fff; border: none; padding: 8px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.18s; }
 .btn-delete-confirm-detail:hover:not(:disabled) { background: #b91c1c; }
 .btn-delete-confirm-detail:disabled { opacity: 0.6; cursor: not-allowed; }
+
+
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .mission-main { padding: 28px 24px; }
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  /* ── Fixed Bottom Tab Navigation ── */
+  .sidebar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    width: 100%; min-width: unset;
+    height: 62px; padding: 0;
+    flex-direction: row;
+    border-right: none;
+    border-top: 1px solid #e8eaed;
+    z-index: 1000;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.07);
+    overflow: visible;
+  }
+  :host-context(body.dark-theme) .sidebar {
+    border-top-color: #2a3040;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.25);
+  }
+  .sidebar-top {
+    display: flex; flex-direction: row;
+    align-items: stretch; flex: 1; overflow: hidden;
+  }
+  .sidebar-header { display: none; }
+  .sidebar-bottom-section { display: none; }
+  .sidebar-nav {
+    display: flex; flex-direction: row;
+    align-items: stretch; justify-content: space-around;
+    padding: 0; gap: 0; flex: 1;
+  }
+  .sidebar-link {
+    flex: 1; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 8px 2px 4px; gap: 0;
+    border-radius: 0; font-size: 0;
+    height: 62px; min-width: 0; position: relative;
+  }
+  .sidebar-link svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .sidebar-link.active { background: transparent; color: #3793B0; }
+  :host-context(body.dark-theme) .sidebar-link.active { color: #5ab4d4; }
+  .sidebar-link.active::after {
+    content: ''; position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 2.5px; background: #3793B0;
+    border-radius: 0 0 3px 3px;
+  }
+  :host-context(body.dark-theme) .sidebar-link.active::after { background: #5ab4d4; }
+  .notif-icon-wrapper { display: flex; align-items: center; justify-content: center; }
+  .sidebar-notif-badge { top: -5px; right: -6px; font-size: 0.55rem; padding: 1px 4px; min-width: 14px; }
+  .badge-count, .badge-soon { display: none; }
+  /* Main content — account for fixed bottom bar */
+  .dashboard-main,
+  .missions-main,
+  .mission-main,
+  .main-content { padding: 20px 16px 80px; overflow-y: auto; }
+  .page-title, .dashboard-title { font-size: 1.4rem; }
+  .page-header, .dashboard-header { flex-direction: column; gap: 12px; }
+  .kanban-board { grid-template-columns: 1fr; gap: 12px; }
+  .mission-header { flex-direction: column; padding: 16px 20px; }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .validate-actions { flex-direction: column; }
+  .git-info-grid { grid-template-columns: 1fr; }
+  .dispute-banner { flex-direction: column; gap: 10px; }
+}
+
+@media (max-width: 480px) {
+  .sidebar-link svg { width: 20px; height: 20px; }
+  .dashboard-main, .missions-main, .mission-main, .main-content { padding: 14px 12px 80px; }
+  .page-title, .dashboard-title { font-size: 1.25rem; }
+  .validate-form { padding: 16px; }
+  .deliverable-row { flex-wrap: wrap; gap: 8px; }
+}

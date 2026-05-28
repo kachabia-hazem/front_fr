@@ -366,3 +366,10 @@
 :host-context(.dark) .report-btn-cancel { background: #2d3748; border-color: #4a5568; color: #94a3b8; }
 :host-context(.dark) .report-success { background: #1e2030; }
 :host-context(.dark) .report-success h3 { color: #f1f5f9; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .report-modal { border-radius: 14px; max-width: 96vw; }
+  .report-modal-footer { flex-direction: column-reverse; gap: 8px; }
+  .report-btn-cancel, .report-btn-submit { width: 100%; justify-content: center; }
+}

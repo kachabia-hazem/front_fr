@@ -331,3 +331,10 @@
   margin: 0;
   text-align: center;
 }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .fb-modal { border-radius: 14px; max-width: 96vw; }
+  .fb-footer { flex-direction: column-reverse; gap: 8px; }
+  .fb-submit, .fb-cancel { width: 100%; justify-content: center; }
+}

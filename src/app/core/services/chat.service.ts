@@ -6,7 +6,7 @@ export interface FreelancerSearchResult {
   currentPosition: string;
 }
 
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -44,6 +44,7 @@ export class ChatService {
   constructor(
     private http: HttpClient,
     private authService: AuthService,
+    private ngZone: NgZone,
   ) {}
 
   // ── REST ──────────────────────────────────────────────────────────────────
@@ -123,20 +124,26 @@ export class ChatService {
       onConnect: () => {
         this.stompClient?.subscribe(
           `/topic/conversation/${conversationId}`,
-          (frame: IMessage) => onMessage(JSON.parse(frame.body)),
+          (frame: IMessage) => this.ngZone.run(() => onMessage(JSON.parse(frame.body))),
         );
         this.typingSub = this.stompClient?.subscribe(
           `/topic/conversation/${conversationId}/typing`,
-          (frame: IMessage) => onTyping(JSON.parse(frame.body)),
+          (frame: IMessage) => this.ngZone.run(() => onTyping(JSON.parse(frame.body))),
         ) ?? null;
         this.readSub = this.stompClient?.subscribe(
           `/topic/conversation/${conversationId}/read`,
-          (frame: IMessage) => onRead(JSON.parse(frame.body)),
+          (frame: IMessage) => this.ngZone.run(() => onRead(JSON.parse(frame.body))),
         ) ?? null;
         this.presenceSub = this.stompClient?.subscribe(
           `/topic/presence`,
-          (frame: IMessage) => onPresence(JSON.parse(frame.body)),
+          (frame: IMessage) => this.ngZone.run(() => onPresence(JSON.parse(frame.body))),
         ) ?? null;
+      },
+      onStompError: (frame) => {
+        console.error('[Chat] STOMP error:', frame.headers['message'], frame.body);
+      },
+      onWebSocketError: (event) => {
+        console.error('[Chat] WebSocket connection error:', event);
       },
       onDisconnect: () => {
         this.activeConversationId = null;

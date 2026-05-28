@@ -121,6 +121,12 @@ export class OffersService {
     );
   }
 
+  getPlatformStats(): Observable<{ freelancers: number; companies: number; missions: number; satisfactionRate: number }> {
+    return this.http.get<{ freelancers: number; companies: number; missions: number; satisfactionRate: number }>(
+      `${environment.apiUrl}/public/stats`
+    );
+  }
+
   // ── Packs ──────────────────────────────────────────────────────────────────
   getAllPacks(): Observable<PointPack[]> {
     return this.http.get<PointPack[]>(`${this.base}/packs`);

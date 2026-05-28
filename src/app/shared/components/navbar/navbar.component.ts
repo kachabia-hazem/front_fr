@@ -1,4 +1,6 @@
-import { Component, OnInit, OnDestroy, HostListener, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, signal, computed, inject } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -26,6 +28,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   freelancer = signal<Freelancer | null>(null);
   company    = signal<Company | null>(null);
   showDropdown = false;
+  showMobileMenu = false;
   unreadNotifCount = computed(() => this.notificationService.unreadCount());
 
   // ── Points & offers modal ─────────────────────────────────────────────────
@@ -86,6 +89,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return this.progressCircumference * (1 - this.profileCompletion / 100);
   }
 
+  private router = inject(Router);
+
   constructor(
     public authService: AuthService,
     public themeService: ThemeService,
@@ -95,7 +100,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private chatService: ChatService,
     private offersService: OffersService,
-  ) {}
+  ) {
+    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
+      this.showMobileMenu = false;
+    });
+  }
 
   ngOnInit(): void {
     if (!this.authService.isAuthenticated()) return;
@@ -249,7 +258,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.showDropdown = false;
   }
 
-  logout(): void { this.showDropdown = false; this.authService.logout(); }
+  @HostListener('window:resize')
+  onResize(): void {
+    if (window.innerWidth > 768) this.showMobileMenu = false;
+  }
+
+  toggleMobileMenu(): void {
+    this.showMobileMenu = !this.showMobileMenu;
+    this.showDropdown = false;
+  }
+
+  logout(): void { this.showDropdown = false; this.showMobileMenu = false; this.authService.logout(); }
   toggleTheme(): void { this.themeService.toggle(); }
   setLang(lang: AppLanguage): void { this.languageService.setLanguage(lang); }
 

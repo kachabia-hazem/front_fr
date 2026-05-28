@@ -199,11 +199,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   stats: StatItem[] = [
-    { target: 1200, suffix: '+', label: 'home.stats_freelancers', current: 0 },
-    { target: 350,  suffix: '+', label: 'home.stats_companies',   current: 0 },
-    { target: 2500, suffix: '+', label: 'home.stats_missions',    current: 0 },
-    { target: 98,   suffix: '%', label: 'home.stats_satisfaction',current: 0 },
+    { target: 0, suffix: '+', label: 'home.stats_freelancers', current: 0 },
+    { target: 0, suffix: '+', label: 'home.stats_companies',   current: 0 },
+    { target: 0, suffix: '+', label: 'home.stats_missions',    current: 0 },
+    { target: 0, suffix: '%', label: 'home.stats_satisfaction',current: 0 },
   ];
+  statsLoaded = false;
 
   constructor(
     public authService: AuthService,
@@ -224,6 +225,28 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.langSub = this.translate.onLangChange.subscribe(() => this.cdr.markForCheck());
     this.offersService.getCatalogPacks().subscribe({
       next: (packs) => this.homePacks.set(packs.slice(0, 2)),
+    });
+
+    // ── Fetch real platform stats ─────────────────────────────────────────────
+    this.offersService.getPlatformStats().subscribe({
+      next: (s) => {
+        this.stats[0].target = s.freelancers;
+        this.stats[1].target = s.companies;
+        this.stats[2].target = s.missions;
+        this.stats[3].target = s.satisfactionRate > 0 ? s.satisfactionRate : 98;
+        this.statsLoaded = true;
+        // Re-animate counters with real values
+        this.animateStats();
+      },
+      error: () => {
+        // Fallback to sensible defaults if backend unreachable
+        this.stats[0].target = 0;
+        this.stats[1].target = 0;
+        this.stats[2].target = 0;
+        this.stats[3].target = 98;
+        this.statsLoaded = true;
+        this.animateStats();
+      }
     });
 
     this.feedbackService.getPublicFeedbacks().subscribe({
@@ -249,8 +272,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // Start counter immediately when page loads (after a short render delay)
-    setTimeout(() => this.animateStats(), 400);
+    // Animation lancée après réception des stats depuis le backend
+    // (fallback déclenché dans ngOnInit si erreur)
   }
 
   private animateStats(): void {

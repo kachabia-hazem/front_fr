@@ -264,8 +264,20 @@ export class MessagingComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.chatService.sendTyping(conv.id, false);
 
     this.chatService.sendMessage(conv.id, content).subscribe({
-      next: () => {
+      next: (msg) => {
         this.sending = false;
+        // Ajouter immédiatement si le WebSocket ne l'a pas encore ajouté
+        if (!this.messages().some(m => m.id === msg.id)) {
+          this.messages.update((msgs) => [...msgs, msg]);
+          this.shouldScrollToBottom = true;
+          this.conversations.update((convs) =>
+            convs.map((c) =>
+              c.id === conv.id
+                ? { ...c, lastMessage: msg.content, lastMessageTime: msg.timestamp }
+                : c
+            )
+          );
+        }
       },
       error: () => {
         this.sending = false;

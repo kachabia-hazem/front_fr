@@ -153,7 +153,7 @@
               </div>
 
               <div class="mission-card-footer">
-                @if (mission.status === 'COMPLETED') {
+                @if (mission.status === 'COMPLETED' || mission.status === 'CANCELLED') {
                   @if (confirmDeleteId() === mission.id) {
                     <div class="delete-confirm-inline" (click)="$event.stopPropagation()">
                       <span class="delete-confirm-text">Supprimer de l'historique ?</span>
@@ -163,7 +163,11 @@
                       <button class="btn-delete-cancel" (click)="cancelDelete($event)">Annuler</button>
                     </div>
                   } @else {
-                    <span class="view-link">{{ 'mission_control.view_workspace' | translate }}</span>
+                    @if (mission.status === 'COMPLETED') {
+                      <span class="view-link">{{ 'mission_control.view_workspace' | translate }}</span>
+                    } @else {
+                      <span class="view-link view-link-cancelled">{{ 'mission_control.view_details' | translate }}</span>
+                    }
                     <button class="btn-delete-history" (click)="requestDelete(mission.id, $event)" title="Supprimer de l'historique">
                       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                       Supprimer

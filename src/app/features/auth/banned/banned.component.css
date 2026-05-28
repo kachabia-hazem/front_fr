@@ -275,3 +275,12 @@
   margin-bottom: 28px;
   line-height: 1.5;
 }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .banned-page { padding: 16px; align-items: flex-start; padding-top: 3rem; }
+}
+
+@media (max-width: 480px) {
+  .brand { display: none; }
+}

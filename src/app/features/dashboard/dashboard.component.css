@@ -36,3 +36,15 @@
   color: #3793B0;
   font-weight: 500;
 }
+
+@media (max-width: 768px) {
+  .dashboard { padding: 1rem; }
+  .welcome-card { padding: 2rem 1.5rem; }
+  .welcome-card h1 { font-size: 1.75rem; }
+  .welcome-card p { font-size: 0.95rem; }
+}
+
+@media (max-width: 480px) {
+  .welcome-card { padding: 1.5rem 1rem; border-radius: 1rem; }
+  .welcome-card h1 { font-size: 1.4rem; }
+}

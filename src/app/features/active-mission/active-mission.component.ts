@@ -96,7 +96,7 @@ export class ActiveMissionComponent implements OnInit, OnDestroy{
 
   // User role check
   isFreelancer    = signal(false);
-  isReadOnly      = computed(() => this.mission()?.status === 'COMPLETED' || this.mission()?.status === 'PENDING');
+  isReadOnly      = computed(() => this.mission()?.status === 'COMPLETED' || this.mission()?.status === 'PENDING' || this.mission()?.status === 'CANCELLED');
   isOverdue       = computed(() => this.mission()?.status === 'ACTIVE' && this.isDeadlinePassed());
   contractPending = signal(false);
 
@@ -412,6 +412,7 @@ export class ActiveMissionComponent implements OnInit, OnDestroy{
       case 'COMPLETED': return 'status-completed';
       case 'PAUSED': return 'status-paused';
       case 'DISPUTE': return 'status-dispute';
+      case 'CANCELLED': return 'status-cancelled';
       default: return '';
     }
   }

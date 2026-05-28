@@ -3193,3 +3193,32 @@
   color: #fcd34d;
   border-color: #92400e;
 }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .missions-container { padding: 24px 20px; }
+  .missions-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .search-bar { padding: 12px 14px; }
+}
+
+@media (max-width: 768px) {
+  .hero-banner { padding: 2rem 1rem; }
+  .hero-content h1, .hero-content .hero-title { font-size: 1.5rem; }
+  .missions-container, .missions-wrapper, .page-content { padding: 16px; }
+  .missions-grid { grid-template-columns: 1fr; }
+  .filters-bar, .filter-row { flex-direction: column; gap: 10px; align-items: stretch; }
+  .search-wrapper { min-width: unset; }
+  .search-bar { flex-direction: column; height: auto; padding: 12px; gap: 8px; border-radius: 12px; }
+  .status-tabs { flex-wrap: wrap; gap: 6px; }
+  .filters-divider { display: none; }
+  .ai-confirm-dialog { padding: 1.5rem 1rem 1.2rem; }
+}
+
+@media (max-width: 480px) {
+  .hero-banner { padding: 1.2rem 0.8rem; }
+  .hero-content h1, .hero-content .hero-title { font-size: 1.2rem; }
+  .mission-card { padding: 16px; }
+  .ai-confirm-actions { flex-direction: column; }
+}

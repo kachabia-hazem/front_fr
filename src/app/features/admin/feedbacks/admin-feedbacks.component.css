@@ -245,3 +245,28 @@
 :host-context(body.dark-theme) .modal-preview-text { color: #c5cad8; }
 :host-context(body.dark-theme) .modal-textarea { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }
 :host-context(body.dark-theme) .btn-modal-close { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .feedbacks-page.panel-open { margin-right: 0; }
+  .side-panel { width: 100%; max-width: 100%; border-left: none; border-top: 1px solid #e8eaed; }
+}
+
+@media (max-width: 768px) {
+  .stats-row { gap: 8px; }
+  .stat-card { min-width: 80px; padding: 10px 14px; }
+  .stat-value { font-size: 1.2rem; }
+  .filters-row { flex-direction: column; align-items: stretch; }
+  .search-bar { min-width: unset; }
+  .status-tabs { gap: 4px; }
+  .status-tabs button { padding: 6px 10px; font-size: 0.75rem; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .side-panel { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; border-radius: 0; z-index: 600; }
+}
+
+@media (max-width: 480px) {
+  .card-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .card-actions { width: 100%; }
+  .btn-approve, .btn-reject { flex: 1; justify-content: center; }
+  .modal-card { padding: 20px 16px; }
+}

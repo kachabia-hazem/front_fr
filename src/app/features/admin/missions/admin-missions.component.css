@@ -141,3 +141,19 @@
 :host-context(body.dark-theme) .modal-label { color: #c5cad8; }
 :host-context(body.dark-theme) .modal-textarea { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }
 :host-context(body.dark-theme) .btn-cancel { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .table-card { overflow-x: auto; border-radius: 10px; }
+  .missions-table { min-width: 720px; }
+  .filters-row { flex-direction: column; align-items: stretch; }
+  .search-bar { min-width: unset; }
+  .status-tabs { flex-wrap: wrap; }
+  .status-tabs button { padding: 6px 10px; font-size: 0.75rem; }
+  .modal-card { max-width: 95vw; padding: 20px 16px; }
+}
+
+@media (max-width: 480px) {
+  .modal-actions { flex-direction: column-reverse; }
+  .modal-actions button { width: 100%; }
+}

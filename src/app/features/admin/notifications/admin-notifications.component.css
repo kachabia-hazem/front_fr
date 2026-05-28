@@ -240,3 +240,10 @@
 :host-context(body.dark-theme) .notif-sender { color: #4b5563; }
 :host-context(body.dark-theme) .notif-time { color: #4b5563; }
 :host-context(body.dark-theme) .read-check { color: #374151; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .stats-bar { flex-wrap: wrap; gap: 8px; }
+  .btn-mark-all { align-self: flex-start; }
+}

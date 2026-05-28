@@ -87,7 +87,7 @@ export class CompanyMissionViewComponent implements OnInit, OnDestroy{
 
     this.activeMissionService.getMission(this.missionId).subscribe({
       next: (m) => {
-        // Redirect away if mission is not yet accessible
+        // Redirect away if mission is not yet accessible (CANCELLED is kept for read-only history)
         if (m.status === 'PENDING') {
           this.router.navigate(['/company-mission-control']);
           return;
@@ -130,11 +130,12 @@ export class CompanyMissionViewComponent implements OnInit, OnDestroy{
 
   getStatusClass(status: string): string {
     switch (status) {
-      case 'ACTIVE': return 'status-active';
+      case 'ACTIVE':    return 'status-active';
       case 'SUBMITTED': return 'status-submitted';
       case 'COMPLETED': return 'status-completed';
-      case 'PAUSED': return 'status-paused';
-      case 'DISPUTE': return 'status-dispute';
+      case 'PAUSED':    return 'status-paused';
+      case 'DISPUTE':   return 'status-dispute';
+      case 'CANCELLED': return 'status-cancelled';
       default: return '';
     }
   }

@@ -463,3 +463,15 @@
 :host-context(body.dark-theme) .refund-pct-input { background: #13151e; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }
 :host-context(body.dark-theme) .refund-pct-symbol { color: #9ca3af; }
 :host-context(body.dark-theme) .refund-bar-labels { color: #9ca3af; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .stats-row { gap: 8px; }
+}
+
+@media (max-width: 768px) {
+  .filter-tabs { flex-wrap: wrap; }
+  .filter-tabs button { padding: 6px 12px; font-size: 0.75rem; }
+  .table-card { overflow-x: auto; border-radius: 10px; }
+}

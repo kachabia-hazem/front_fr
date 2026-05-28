@@ -1,11 +1,11 @@
-/* ── Layout ── */
+﻿/* â”€â”€ Layout â”€â”€ */
 .dashboard-layout {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
-/* ── Sidebar (shared pattern) ── */
+/* â”€â”€ Sidebar (shared pattern) â”€â”€ */
 .sidebar {
   width: 260px;
   min-width: 260px;
@@ -156,7 +156,7 @@
 .sidebar-back-btn:hover { background: #eef0f3; color: #1a1a2e; }
 :host-context(body.dark-theme) .sidebar-back-btn:hover { background: rgba(255,255,255,0.06); color: #e4e4ef; }
 
-/* ── Main content ── */
+/* â”€â”€ Main content â”€â”€ */
 .missions-main {
   flex: 1;
   padding: 40px 40px;
@@ -193,7 +193,7 @@
 :host-context(body.dark-theme) .page-title { color: #e4e4ef; }
 .page-subtitle { font-size: 0.95rem; color: #6b7280; margin: 0; }
 
-/* ── Empty state ── */
+/* â”€â”€ Empty state â”€â”€ */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -208,7 +208,7 @@
 .empty-state h3 { font-size: 1.2rem; font-weight: 600; color: #6b7280; margin: 0; }
 .empty-state p { font-size: 0.9rem; max-width: 360px; margin: 0; }
 
-/* ── Missions grid ── */
+/* â”€â”€ Missions grid â”€â”€ */
 .missions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -244,6 +244,8 @@
 .status-completed { background: #e0f2fe; color: #0284c7; }
 .status-paused   { background: #fef9c3; color: #ca8a04; }
 .status-dispute  { background: #fee2e2; color: #dc2626; }
+.status-cancelled { background: #f3f4f6; color: #6b7280; }
+:host-context(body.dark-theme) .status-cancelled { background: rgba(107,114,128,0.15); color: #9ca3af; }
 .status-overdue  { background: #fee2e2; color: #dc2626; }
 :host-context(body.dark-theme) .status-pending  { background: rgba(234,88,12,0.15); color: #fb923c; }
 :host-context(body.dark-theme) .status-active   { background: rgba(22,163,74,0.15); color: #4ade80; }
@@ -289,7 +291,7 @@
 :host-context(body.dark-theme) .btn-delete-cancel { border-color: #374151; color: #9ca3af; }
 :host-context(body.dark-theme) .btn-delete-cancel:hover { background: rgba(255,255,255,0.05); }
 
-/* ── Dispute alert inside card ── */
+/* â”€â”€ Dispute alert inside card â”€â”€ */
 .dispute-card-alert {
   display: flex;
   align-items: flex-start;
@@ -312,7 +314,7 @@
 }
 .dispute-card-alert svg { flex-shrink: 0; margin-top: 1px; }
 
-/* ── Pending mission card ── */
+/* â”€â”€ Pending mission card â”€â”€ */
 .mission-card-pending { border-color: #fed7aa; cursor: default; }
 .mission-card-pending:hover { transform: none; box-shadow: 0 2px 12px rgba(234,88,12,0.1); }
 :host-context(body.dark-theme) .mission-card-pending { border-color: rgba(234,88,12,0.3); }
@@ -327,7 +329,17 @@
 }
 :host-context(body.dark-theme) .view-link-pending { color: #fb923c; }
 
-/* ── Pending toast ── */
+.view-link-cancelled {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+:host-context(body.dark-theme) .view-link-cancelled { color: #9ca3af; }
+
+/* â”€â”€ Pending toast â”€â”€ */
 .pending-toast-overlay {
   position: fixed;
   inset: 0;
@@ -405,3 +417,83 @@
 }
 .pending-toast-close:hover { color: #374151; background: #f3f4f6; }
 :host-context(body.dark-theme) .pending-toast-close:hover { color: #e4e4ef; background: rgba(255,255,255,0.08); }
+
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .missions-main { padding: 28px 24px; }
+  .missions-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  /* ── Fixed Bottom Tab Navigation ── */
+  .sidebar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    width: 100%; min-width: unset;
+    height: 62px; padding: 0;
+    flex-direction: row;
+    border-right: none;
+    border-top: 1px solid #e8eaed;
+    z-index: 1000;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.07);
+    overflow: visible;
+  }
+  :host-context(body.dark-theme) .sidebar {
+    border-top-color: #2a3040;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.25);
+  }
+  .sidebar-top {
+    display: flex; flex-direction: row;
+    align-items: stretch; flex: 1; overflow: hidden;
+  }
+  .sidebar-header { display: none; }
+  .sidebar-bottom-section { display: none; }
+  .sidebar-nav {
+    display: flex; flex-direction: row;
+    align-items: stretch; justify-content: space-around;
+    padding: 0; gap: 0; flex: 1;
+  }
+  .sidebar-link {
+    flex: 1; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 8px 2px 4px; gap: 0;
+    border-radius: 0; font-size: 0;
+    height: 62px; min-width: 0; position: relative;
+  }
+  .sidebar-link svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .sidebar-link.active { background: transparent; color: #3793B0; }
+  :host-context(body.dark-theme) .sidebar-link.active { color: #5ab4d4; }
+  .sidebar-link.active::after {
+    content: ''; position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 2.5px; background: #3793B0;
+    border-radius: 0 0 3px 3px;
+  }
+  :host-context(body.dark-theme) .sidebar-link.active::after { background: #5ab4d4; }
+  .notif-icon-wrapper { display: flex; align-items: center; justify-content: center; }
+  .sidebar-notif-badge { top: -5px; right: -6px; font-size: 0.55rem; padding: 1px 4px; min-width: 14px; }
+  .badge-count, .badge-soon { display: none; }
+  /* Main content — account for fixed bottom bar */
+  .dashboard-main,
+  .missions-main,
+  .mission-main,
+  .main-content { padding: 20px 16px 80px; overflow-y: auto; }
+  .page-title, .dashboard-title { font-size: 1.4rem; }
+  .page-header, .dashboard-header { flex-direction: column; gap: 12px; }
+  .missions-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .sidebar-link svg { width: 20px; height: 20px; }
+  .dashboard-main, .missions-main, .mission-main, .main-content { padding: 14px 12px 80px; }
+  .page-title, .dashboard-title { font-size: 1.25rem; }
+  .mission-card { padding: 16px; }
+}

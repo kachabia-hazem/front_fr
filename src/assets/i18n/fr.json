@@ -1560,9 +1560,11 @@
     "status_overdue": "En retard",
     "status_pending": "En attente",
     "status_active": "Active",
+    "status_submitted": "Soumise",
     "status_completed": "Terminée",
     "status_paused": "En pause",
     "status_dispute": "Litige",
+    "status_cancelled": "Annulée",
     "progress": "Progression",
     "starts_on": "Démarre le",
     "remove_history": "Retirer de l'historique",
@@ -1570,6 +1572,7 @@
     "confirm": "Confirmer",
     "cancel": "Annuler",
     "view_workspace": "Voir l'espace de travail",
+    "view_details": "Voir les détails",
     "delete": "Supprimer",
     "toast_title": "Mission non encore accessible",
     "toast_text_pre": "La mission",
@@ -1615,7 +1618,8 @@
     "overdue": "En retard",
     "progress": "Progression",
     "git_linked": "Git lié",
-    "view_workspace": "Voir l'espace →"
+    "view_workspace": "Voir l'espace →",
+    "view_details": "Voir les détails →"
   },
   "company_contracts": {
     "title": "Contrats",
@@ -2055,6 +2059,7 @@
     "success_create": "Votre mission a été publiée avec succès !",
     "err_required": "Ce champ est obligatoire.",
     "err_end_before_start": "La date de fin doit être postérieure à la date de début.",
+    "err_deadline_after_start": "La date limite de candidature doit être avant la date de début.",
     "err_min": "La valeur minimale est {{min}}.",
     "err_minlength": "Minimum {{len}} caractères requis.",
     "err_invalid": "Valeur invalide."

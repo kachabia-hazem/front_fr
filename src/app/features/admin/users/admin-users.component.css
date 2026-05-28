@@ -168,3 +168,20 @@
 :host-context(body.dark-theme) .modal p { color: #9ca3b0; }
 :host-context(body.dark-theme) .btn-cancel { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
 :host-context(body.dark-theme) .ban-reason-field textarea { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .table-card { overflow-x: auto; border-radius: 10px; }
+  .users-table { min-width: 700px; }
+  .tabs { flex-wrap: wrap; gap: 4px; }
+  .tabs button { padding: 6px 12px; font-size: 0.75rem; }
+  .modal { width: 95vw; padding: 20px 16px; }
+  .appeal-modal { width: 95vw; }
+}
+
+@media (max-width: 480px) {
+  .tabs button { padding: 5px 8px; font-size: 0.72rem; }
+  .modal h3 { font-size: 0.95rem; }
+  .modal-actions { flex-direction: column-reverse; }
+  .modal-actions button { width: 100%; justify-content: center; }
+}

@@ -223,3 +223,15 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 :host-context(body.dark-theme) .trust-spinner {
   border-color: rgba(255,255,255,0.1); border-top-color: #3793B0;
 }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .verif-page.panel-open { margin-right: 0; }
+}
+
+@media (max-width: 768px) {
+  .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .filter-tabs { flex-wrap: wrap; }
+  .filter-tabs button { padding: 6px 12px; font-size: 0.75rem; }
+  .table-card { overflow-x: auto; border-radius: 10px; }
+}

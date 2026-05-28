@@ -202,3 +202,8 @@
   font-weight: 500;
 }
 .help-text a:hover { text-decoration: underline; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .pending-page { padding: 16px; align-items: flex-start; padding-top: 3rem; }
+}

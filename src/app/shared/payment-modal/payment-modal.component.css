@@ -254,3 +254,10 @@
 :host-context(.dark) .pm-footer { background: #1e293b; border-color: #334155; }
 :host-context(.dark) .pm-cancel-btn { background: #334155; border-color: #475569; color: #e2e8f0; }
 :host-context(.dark) .pm-cancel-btn:hover { background: #475569; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .pm-modal { border-radius: 14px; max-width: 96vw; }
+  .pm-footer { flex-direction: column; gap: 8px; }
+  .pm-pay-btn, .pm-cancel-btn { width: 100%; justify-content: center; }
+}

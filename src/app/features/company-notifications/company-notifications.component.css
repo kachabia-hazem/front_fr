@@ -965,76 +965,70 @@
 @media (max-width: 768px) {
   .dashboard-layout {
     flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
   }
-
+  /* ── Fixed Bottom Tab Navigation ── */
   .sidebar {
-    width: 100%;
-    min-width: unset;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    width: 100%; min-width: unset;
+    height: 62px; padding: 0;
     flex-direction: row;
-    padding: 12px 16px;
     border-right: none;
-    border-bottom: 1px solid #e8eaed;
-    overflow-x: auto;
-    justify-content: flex-start;
-    gap: 8px;
+    border-top: 1px solid #e8eaed;
+    z-index: 1000;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.07);
+    overflow: visible;
   }
-
   :host-context(body.dark-theme) .sidebar {
-    border-bottom-color: #2a3040;
+    border-top-color: #2a3040;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.25);
   }
-
   .sidebar-top {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: unset;
+    display: flex; flex-direction: row;
+    align-items: stretch; flex: 1; overflow: hidden;
   }
-
+  .sidebar-header { display: none; }
+  .sidebar-bottom-section { display: none; }
   .sidebar-nav {
-    flex-direction: row;
-    gap: 2px;
-    padding: 0;
+    display: flex; flex-direction: row;
+    align-items: stretch; justify-content: space-around;
+    padding: 0; gap: 0; flex: 1;
   }
-
   .sidebar-link {
-    padding: 8px 12px;
-    white-space: nowrap;
-    font-size: 0.82rem;
+    flex: 1; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 8px 2px 4px; gap: 0;
+    border-radius: 0; font-size: 0;
+    height: 62px; min-width: 0; position: relative;
   }
-
-  .sidebar-link.active::before {
-    display: none;
+  .sidebar-link svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .sidebar-link.active { background: transparent; color: #3793B0; }
+  :host-context(body.dark-theme) .sidebar-link.active { color: #5ab4d4; }
+  .sidebar-link.active::after {
+    content: ''; position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 2.5px; background: #3793B0;
+    border-radius: 0 0 3px 3px;
   }
-
-  .sidebar-bottom-section {
-    display: none;
-  }
-
-  .badge-soon {
-    display: none;
-  }
-
-  .dashboard-main {
-    padding: 20px 16px;
-  }
-
-  .notif-page-title {
-    font-size: 1.35rem;
-  }
-
-  .notif-page-title-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .notif-filter-chips {
-    flex-wrap: wrap;
-  }
-
-  .notif-content-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  :host-context(body.dark-theme) .sidebar-link.active::after { background: #5ab4d4; }
+  .notif-icon-wrapper { display: flex; align-items: center; justify-content: center; }
+  .sidebar-notif-badge { top: -5px; right: -6px; font-size: 0.55rem; padding: 1px 4px; min-width: 14px; }
+  .badge-count, .badge-soon { display: none; }
+  /* Main content — account for fixed bottom bar */
+  .dashboard-main,
+  .missions-main,
+  .mission-main,
+  .main-content { padding: 20px 16px 80px; overflow-y: auto; }
+  .page-title, .dashboard-title { font-size: 1.4rem; }
+  .page-header, .dashboard-header { flex-direction: column; gap: 12px; }
+  .notif-page-title { font-size: 1.35rem; }
+  .notif-page-title-row { flex-direction: column; align-items: flex-start; }
+  .notif-filter-chips { flex-wrap: wrap; }
+  .notif-content-header { flex-direction: column; align-items: flex-start; }
+  .notif-list { gap: 8px; }
+  .notif-item { padding: 14px 16px; }
 }
 
 /* ── Pagination ── */
@@ -1085,3 +1079,16 @@
 :host-context(body.dark-theme) .pag-btn { background: #1e2535; border-color: #2a3040; color: #d1d5db; }
 :host-context(body.dark-theme) .pag-btn:hover:not(:disabled):not(.pag-active) { background: #252d3f; }
 :host-context(body.dark-theme) .pag-btn.pag-active { background: #3793B0; border-color: #3793B0; color: #fff; }
+
+@media (max-width: 1024px) {
+  .notif-main, .notifications-main, .dashboard-main { padding: 24px 20px; }
+}
+
+@media (max-width: 480px) {
+  .sidebar-link svg { width: 20px; height: 20px; }
+  .dashboard-main, .missions-main, .mission-main, .main-content { padding: 14px 12px 80px; }
+  .notif-main, .notifications-main { padding: 14px 12px 80px; }
+  .page-title, .dashboard-title { font-size: 1.25rem; }
+  .notif-header, .notifications-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+  .notif-filters { flex-wrap: wrap; gap: 6px; }
+}

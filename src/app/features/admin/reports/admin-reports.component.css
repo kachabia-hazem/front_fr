@@ -530,3 +530,32 @@
 :host-context(body.dark-theme) .modal-textarea { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #e4e4ef; }
 :host-context(body.dark-theme) .modal-footer { border-top-color: rgba(255,255,255,0.07); }
 :host-context(body.dark-theme) .modal-btn-cancel { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .content-area.has-panel { grid-template-columns: 1fr; }
+  .detail-panel { position: fixed; top: 0; left: 0; right: 0; bottom: 0; border-radius: 0; max-height: 100vh; z-index: 600; }
+}
+
+@media (max-width: 768px) {
+  .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .stats-row { gap: 8px; }
+  .stat-chip { padding: 10px 14px; min-width: 70px; }
+  .stat-chip-val { font-size: 18px; }
+  .filters-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+  .filter-tabs { flex-wrap: wrap; }
+  .filter-tabs button { padding: 6px 12px; font-size: 0.75rem; }
+  .search-input { min-width: unset; width: 100%; }
+  .rc-top { flex-wrap: wrap; }
+  .modal-box { max-width: 95vw; }
+  .modal-header { padding: 16px 18px 14px; }
+  .modal-body { padding: 16px 18px; }
+  .modal-footer { padding: 12px 18px 18px; }
+}
+
+@media (max-width: 480px) {
+  .rc-footer { flex-direction: column; align-items: flex-start; }
+  .rc-actions { flex-wrap: wrap; }
+  .modal-footer { flex-direction: column-reverse; }
+  .modal-btn { width: 100%; justify-content: center; }
+}
