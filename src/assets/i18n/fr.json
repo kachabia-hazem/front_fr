@@ -1818,6 +1818,8 @@
     "btn_clear": "Effacer",
     "signing": "Signature...",
     "btn_sign_confirm": "Signer & Confirmer",
+    "sign_expired_title": "Signature impossible",
+    "sign_expired_sub": "Vous n'avez pas signé ce contrat avant la date de début de mission ({{ date }}). Le délai de signature est expiré et ce contrat est désormais annulé.",
     "rejected_title": "Vous avez refusé ce contrat",
     "rejected_reason_prefix": "Motif :",
     "success_title": "Contrat signé avec succès !",

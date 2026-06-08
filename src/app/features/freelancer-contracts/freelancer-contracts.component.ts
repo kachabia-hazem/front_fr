@@ -397,6 +397,11 @@ export class FreelancerContractsComponent implements OnInit, AfterViewInit, OnDe
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
+  isMissionStarted(contract: Contract): boolean {
+    if (!contract.startDate) return false;
+    return new Date(contract.startDate) <= new Date();
+  }
+
   getFileUrl(path: string | null | undefined): string {
     return this.contractService.getFileUrl(path);
   }

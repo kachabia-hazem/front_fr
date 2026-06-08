@@ -313,10 +313,19 @@ export class MissionsComponent implements OnInit, OnDestroy{
     return this.showAllSpecialities ? this.specialities : this.specialities.slice(0, 6);
   }
 
+  // Missions actually selectable by filters (same base as applyFilters: not expired, not hidden)
+  private get countableMissions(): Mission[] {
+    let base = this.missions.filter(m => !this.isExpiredOver1h(m));
+    if (this.isFreelancer) {
+      base = base.filter(m => !m.id || !this.isHiddenBecauseAccepted(m.id));
+    }
+    return base;
+  }
+
   // Count matching missions per filter option
   getCategoryCount(value: string): number {
     const v = value.toLowerCase();
-    return this.missions.filter(m =>
+    return this.countableMissions.filter(m =>
       m.field?.toLowerCase().includes(v) ||
       m.jobTitle?.toLowerCase().includes(v) ||
       m.requiredSkills?.toLowerCase().includes(v)
@@ -325,7 +334,7 @@ export class MissionsComponent implements OnInit, OnDestroy{
 
   getSectorCount(value: string): number {
     const v = value.toLowerCase();
-    return this.missions.filter(m =>
+    return this.countableMissions.filter(m =>
       m.businessSector?.toLowerCase().includes(v) ||
       m.missionBusinessSector?.toLowerCase().includes(v)
     ).length;

@@ -1818,6 +1818,8 @@
     "btn_clear": "Clear",
     "signing": "Signing...",
     "btn_sign_confirm": "Sign & Confirm",
+    "sign_expired_title": "Signature no longer available",
+    "sign_expired_sub": "You did not sign this contract before the mission start date ({{ date }}). The signing window is now closed and the contract is void.",
     "rejected_title": "You rejected this contract",
     "rejected_reason_prefix": "Reason:",
     "success_title": "Contract signed successfully!",
