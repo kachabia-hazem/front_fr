@@ -12,13 +12,14 @@ import { Application, RankedApplication } from '../../core/models/application.mo
 import { Mission } from '../../core/models/mission.model';
 import { Company } from '../../core/models/user.model';
 import { environment } from '../../../environments/environment';
+import { ApplicationDetailsModalComponent } from '../../shared/components/application-details-modal/application-details-modal.component';
 
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-mission-applications',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule, ApplicationDetailsModalComponent],
   templateUrl: './mission-applications.component.html',
   styleUrl: './mission-applications.component.css',
 })
@@ -26,6 +27,7 @@ export class MissionApplicationsComponent implements OnInit, OnDestroy{
   company = signal<Company | null>(null);
   mission = signal<Mission | null>(null);
   applications = signal<Application[]>([]);
+  selectedApplication = signal<Application | null>(null);
   loading = signal(true);
   sidebarCollapsed = signal(false);
   updatingId = signal<string | null>(null);
@@ -147,6 +149,26 @@ export class MissionApplicationsComponent implements OnInit, OnDestroy{
   goToProfile(event: Event, freelancerId: string): void {
     event.stopPropagation();
     this.router.navigate(['/profile', freelancerId]);
+  }
+
+  viewDetails(event: Event, app: Application): void {
+    event.stopPropagation();
+    this.selectedApplication.set(app);
+  }
+
+  closeDetails(): void {
+    this.selectedApplication.set(null);
+  }
+
+  onModalViewProfile(freelancerId: string): void {
+    this.selectedApplication.set(null);
+    this.router.navigate(['/profile', freelancerId]);
+  }
+
+  viewDetailsRanked(event: Event, r: RankedApplication): void {
+    event.stopPropagation();
+    const app = this.applications().find(a => a.id === r.applicationId);
+    if (app) this.selectedApplication.set(app);
   }
 
   openRankConfirm(): void { this.showRankConfirm.set(true); }

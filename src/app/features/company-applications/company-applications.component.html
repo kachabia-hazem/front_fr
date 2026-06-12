@@ -1,3 +1,12 @@
+<!-- ═══ Application Details Modal ═══ -->
+@if (selectedApplication()) {
+  <app-application-details-modal
+    [application]="selectedApplication()!"
+    (closed)="closeDetails()"
+    (viewProfile)="onModalViewProfile($event)"
+  />
+}
+
 <div class="dashboard-layout">
 
   <!-- ── Sidebar ── -->
@@ -213,6 +222,7 @@
                   <th>{{ 'company_apps.th_skills' | translate }}</th>
                   <th>{{ 'company_apps.th_cv' | translate }}</th>
                   <th>{{ 'company_apps.th_status' | translate }}</th>
+                  <th>{{ 'app_details.details' | translate }}</th>
                   <th>{{ 'company_apps.th_actions' | translate }}</th>
                 </tr>
               </thead>
@@ -286,10 +296,18 @@
                       </span>
                     </td>
 
+                    <!-- Details -->
+                    <td>
+                      <button class="act-btn details" (click)="viewDetails($event, app)" title="{{ 'app_details.details' | translate }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        {{ 'app_details.details' | translate }}
+                      </button>
+                    </td>
+
                     <!-- Actions -->
                     <td>
-                      @if (app.status === 'PENDING') {
-                        <div class="action-group">
+                      <div class="action-group">
+                        @if (app.status === 'PENDING') {
                           <button class="act-btn accept" [disabled]="updatingId() === app.id" (click)="accept($event, app)">
                             @if (updatingId() === app.id) { <span class="mini-spinner"></span> }
                             @else {
@@ -304,9 +322,7 @@
                               {{ 'company_apps.reject' | translate }}
                             }
                           </button>
-                        </div>
-                      } @else if (app.status === 'ACCEPTED' || app.status === 'REJECTED') {
-                        <div class="action-group">
+                        } @else if (app.status === 'ACCEPTED' || app.status === 'REJECTED') {
                           <span class="decided">{{ 'company_apps.decided' | translate }}</span>
                           <button class="act-btn dismiss" [disabled]="dismissingId() === app.id" (click)="dismiss($event, app)" title="Supprimer de l'historique">
                             @if (dismissingId() === app.id) { <span class="mini-spinner"></span> }
@@ -314,10 +330,10 @@
                               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
                             }
                           </button>
-                        </div>
-                      } @else {
-                        <span class="decided">{{ 'company_apps.decided' | translate }}</span>
-                      }
+                        } @else {
+                          <span class="decided">{{ 'company_apps.decided' | translate }}</span>
+                        }
+                      </div>
                     </td>
 
                   </tr>

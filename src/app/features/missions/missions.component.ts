@@ -63,6 +63,8 @@ export class MissionsComponent implements OnInit, OnDestroy{
     { label: 'missions_page.filter_fulltime',  value: 'Full-time', checked: false },
     { label: 'missions_page.filter_parttime',  value: 'Part-time', checked: false },
     { label: 'missions_page.filter_remote',    value: 'Remote',    checked: false },
+    { label: 'missions_page.filter_hybrid',    value: 'Hybrid',    checked: false },
+    { label: 'missions_page.filter_onsite',    value: 'On-site',   checked: false },
     { label: 'missions_page.filter_freelance', value: 'Freelance', checked: false },
   ];
 
@@ -696,9 +698,10 @@ export class MissionsComponent implements OnInit, OnDestroy{
     result = result.filter(m => !m.tjm || (m.tjm >= this.tjmRangeMin && m.tjm <= this.tjmRangeMax));
 
     // Filter by employment type
-    const activeTypes = this.employmentTypes.filter(t => t.checked).map(t => t.value.toLowerCase());
+    const normalizeType = (s: string) => s.toLowerCase().replace(/[\s_-]/g, '');
+    const activeTypes = this.employmentTypes.filter(t => t.checked).map(t => normalizeType(t.value));
     if (activeTypes.length > 0) {
-      result = result.filter(m => m.missionType && activeTypes.some(t => m.missionType.toLowerCase().includes(t)));
+      result = result.filter(m => m.missionType && activeTypes.some(t => normalizeType(m.missionType).includes(t)));
     }
 
     // Filter by speciality

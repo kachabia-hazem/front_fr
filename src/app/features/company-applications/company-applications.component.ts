@@ -11,17 +11,19 @@ import { NotificationService } from '../../core/services/notification.service';
 import { Application } from '../../core/models/application.model';
 import { Company } from '../../core/models/user.model';
 import { environment } from '../../../environments/environment';
+import { ApplicationDetailsModalComponent } from '../../shared/components/application-details-modal/application-details-modal.component';
 
 @Component({
   selector: 'app-company-applications',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule, ApplicationDetailsModalComponent],
   templateUrl: './company-applications.component.html',
   styleUrl: './company-applications.component.css',
 })
 export class CompanyApplicationsComponent implements OnInit, OnDestroy {
   company = signal<Company | null>(null);
   allApplications = signal<Application[]>([]);
+  selectedApplication = signal<Application | null>(null);
   loading = signal(true);
   sidebarCollapsed = signal(false);
   unreadCount = computed(() => this.notificationService.unreadCount());
@@ -171,6 +173,20 @@ export class CompanyApplicationsComponent implements OnInit, OnDestroy {
   viewMissionApplications(event: Event, missionId: string): void {
     event.stopPropagation();
     this.router.navigate(['/mission-applications', missionId]);
+  }
+
+  viewDetails(event: Event, app: Application): void {
+    event.stopPropagation();
+    this.selectedApplication.set(app);
+  }
+
+  closeDetails(): void {
+    this.selectedApplication.set(null);
+  }
+
+  onModalViewProfile(freelancerId: string): void {
+    this.selectedApplication.set(null);
+    this.router.navigate(['/profile', freelancerId]);
   }
 
   // ── Filters ──────────────────────────────────────────

@@ -1,3 +1,12 @@
+<!-- ═══ Application Details Modal ═══ -->
+@if (selectedApplication()) {
+  <app-application-details-modal
+    [application]="selectedApplication()!"
+    (closed)="closeDetails()"
+    (viewProfile)="onModalViewProfile($event)"
+  />
+}
+
 <!-- ═══ AI Ranking Confirm Dialog ═══ -->
 @if (showRankConfirm()) {
   <div class="ai-confirm-overlay" (click)="cancelRankConfirm()">
@@ -147,6 +156,7 @@
                 <th class="col-skills">Main Skills</th>
                 <th class="col-cv">CV</th>
                 <th class="col-status">Status</th>
+                <th class="col-details">{{ 'app_details.details' | translate }}</th>
                 <th class="col-actions">Actions</th>
               </tr>
             </thead>
@@ -215,10 +225,22 @@
                     </span>
                   </td>
 
+                  <!-- Details -->
+                  <td class="col-details">
+                    <button
+                      class="action-btn details-btn"
+                      (click)="viewDetails($event, app)"
+                      title="View details"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      {{ 'app_details.details' | translate }}
+                    </button>
+                  </td>
+
                   <!-- Actions -->
                   <td class="col-actions">
-                    @if (app.status === 'PENDING') {
-                      <div class="action-group">
+                    <div class="action-group">
+                      @if (app.status === 'PENDING') {
                         <button
                           class="action-btn accept-btn"
                           [disabled]="updatingId() === app.id"
@@ -245,10 +267,10 @@
                             Reject
                           }
                         </button>
-                      </div>
-                    } @else {
-                      <span class="decision-made">Decision made</span>
-                    }
+                      } @else {
+                        <span class="decision-made">Decision made</span>
+                      }
+                    </div>
                   </td>
                 </tr>
               }
@@ -366,6 +388,10 @@
                       CV
                     </a>
                   }
+                  <button class="action-btn details-btn" (click)="viewDetailsRanked($event, r)" title="View details">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    {{ 'app_details.details' | translate }}
+                  </button>
                   @if (r.status === 'PENDING') {
                     <button class="action-btn accept-btn" [disabled]="updatingId() === r.applicationId" (click)="acceptRanked($event, r.applicationId)">Accept</button>
                     <button class="action-btn reject-btn" [disabled]="updatingId() === r.applicationId" (click)="rejectRanked($event, r.applicationId)">Reject</button>

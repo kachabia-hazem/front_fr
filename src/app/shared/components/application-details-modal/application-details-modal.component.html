@@ -1,0 +1,157 @@
+<div class="appdet-overlay" (click)="overlayClick($event)">
+  <div class="appdet-modal">
+
+    <!-- Header -->
+    <div class="appdet-header">
+      <div class="appdet-header-left">
+        @if (application.freelancerProfilePicture) {
+          <img [src]="getFileUrl(application.freelancerProfilePicture)" alt="Photo" class="appdet-avatar" />
+        } @else {
+          <div class="appdet-avatar appdet-initials">{{ getInitials(application.firstName, application.lastName) }}</div>
+        }
+        <div class="appdet-header-info">
+          <h2 class="appdet-name">{{ application.firstName }} {{ application.lastName }}</h2>
+          @if (application.freelancerCurrentPosition) {
+            <p class="appdet-position">{{ application.freelancerCurrentPosition }}</p>
+          }
+          @if (application.missionTitle) {
+            <p class="appdet-mission">{{ 'app_details.applied_for' | translate }} <strong>{{ application.missionTitle }}</strong></p>
+          }
+        </div>
+      </div>
+      <div class="appdet-header-right">
+        <span class="appdet-status-badge" [class]="getStatusClass(application.status)">{{ application.status | titlecase }}</span>
+        <button class="appdet-close" (click)="close()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="appdet-body">
+
+      <!-- Contact -->
+      <div class="appdet-section">
+        <h3 class="appdet-section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          {{ 'app_details.contact' | translate }}
+        </h3>
+        <div class="appdet-grid">
+          <div class="appdet-field">
+            <span class="appdet-label">{{ 'app_details.email' | translate }}</span>
+            <span class="appdet-value">{{ application.email || '—' }}</span>
+          </div>
+          <div class="appdet-field">
+            <span class="appdet-label">{{ 'app_details.phone' | translate }}</span>
+            <span class="appdet-value">{{ application.phoneNumber || '—' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div class="appdet-section">
+        <h3 class="appdet-section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          {{ 'app_details.location' | translate }}
+        </h3>
+        <div class="appdet-grid">
+          <div class="appdet-field">
+            <span class="appdet-label">{{ 'app_details.country' | translate }}</span>
+            <span class="appdet-value">{{ application.country || '—' }}</span>
+          </div>
+          <div class="appdet-field">
+            <span class="appdet-label">{{ 'app_details.city' | translate }}</span>
+            <span class="appdet-value">{{ application.city || '—' }}</span>
+          </div>
+          <div class="appdet-field">
+            <span class="appdet-label">{{ 'app_details.postal_code' | translate }}</span>
+            <span class="appdet-value">{{ application.postalCode || '—' }}</span>
+          </div>
+          <div class="appdet-field appdet-field-wide">
+            <span class="appdet-label">{{ 'app_details.address' | translate }}</span>
+            <span class="appdet-value">{{ application.postalAddress || '—' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CV -->
+      <div class="appdet-section">
+        <h3 class="appdet-section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          {{ 'app_details.cv' | translate }}
+        </h3>
+        @if (application.cvUrl) {
+          <a [href]="getFileUrl(application.cvUrl)" target="_blank" rel="noopener noreferrer" class="appdet-cv-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            {{ 'app_details.view_cv' | translate }}
+          </a>
+        } @else {
+          <span class="appdet-empty">{{ 'app_details.no_cv' | translate }}</span>
+        }
+      </div>
+
+      <!-- Skills -->
+      @if (application.freelancerSkills && application.freelancerSkills.length > 0) {
+        <div class="appdet-section">
+          <h3 class="appdet-section-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            {{ 'app_details.skills' | translate }}
+          </h3>
+          <div class="appdet-skills">
+            @for (s of application.freelancerSkills; track s) {
+              <span class="appdet-skill-tag">{{ s }}</span>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Employer questions -->
+      <div class="appdet-section">
+        <h3 class="appdet-section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          {{ 'app_details.employer_questions' | translate }}
+        </h3>
+        <div class="appdet-grid">
+          <div class="appdet-field appdet-field-wide">
+            <span class="appdet-label">{{ 'app_details.salary_expectations' | translate }}</span>
+            <span class="appdet-value">{{ application.salaryExpectations || '—' }}</span>
+          </div>
+          <div class="appdet-field appdet-field-wide">
+            <span class="appdet-label">{{ 'app_details.current_salary' | translate }}</span>
+            <span class="appdet-value">{{ application.currentSalaryAndNotice || '—' }}</span>
+          </div>
+          <div class="appdet-field">
+            <span class="appdet-label">{{ 'app_details.previously_worked' | translate }}</span>
+            <span class="appdet-value">{{ (application.previouslyWorked === 'yes' ? 'app_details.yes' : 'app_details.no') | translate }}</span>
+          </div>
+          @if (application.previouslyWorked === 'yes') {
+            <div class="appdet-field">
+              <span class="appdet-label">{{ 'app_details.previous_work_date' | translate }}</span>
+              <span class="appdet-value">{{ formatDate(application.previousWorkDate) }}</span>
+            </div>
+            <div class="appdet-field appdet-field-wide">
+              <span class="appdet-label">{{ 'app_details.previous_work_experience' | translate }}</span>
+              <span class="appdet-value appdet-value-multiline">{{ application.previousWorkExperience || '—' }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Meta -->
+      <div class="appdet-meta">
+        {{ 'app_details.applied_on' | translate }} {{ formatDate(application.submittedAt) }}
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="appdet-footer">
+      <button class="appdet-btn-profile" (click)="onViewProfile()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        {{ 'app_details.view_profile' | translate }}
+      </button>
+      <button class="appdet-btn-close" (click)="close()">{{ 'app_details.close' | translate }}</button>
+    </div>
+
+  </div>
+</div>

@@ -358,7 +358,7 @@
 :host-context(body.dark-theme) .status-withdrawn { background:rgba(107,114,128,.15); color:#9ca3af; }
 
 /* Action buttons */
-.action-group { display:flex; gap:5px; }
+.action-group { display:flex; gap:5px; flex-wrap:wrap; }
 .act-btn {
   display:inline-flex; align-items:center; gap:4px;
   padding:5px 11px; font-size:.77rem; font-weight:600;
@@ -366,12 +366,15 @@
   transition:all .18s; white-space:nowrap; font-family:inherit;
 }
 .act-btn:disabled { opacity:.55; cursor:not-allowed; }
+.act-btn.details { background:rgba(90,170,158,.1); color:#3793B0; }
+.act-btn.details:hover:not(:disabled) { background:rgba(90,170,158,.2); }
 .act-btn.accept { background:rgba(16,185,129,.1); color:#059669; }
 .act-btn.accept:hover:not(:disabled) { background:rgba(16,185,129,.2); }
 .act-btn.reject { background:rgba(239,68,68,.08); color:#dc2626; }
 .act-btn.reject:hover:not(:disabled) { background:rgba(239,68,68,.16); }
 .act-btn.dismiss { background:rgba(107,114,128,.08); color:#6b7280; padding:5px 8px; }
 .act-btn.dismiss:hover:not(:disabled) { background:rgba(220,38,38,.08); color:#dc2626; }
+:host-context(body.dark-theme) .act-btn.details { background:rgba(90,170,158,.15); color:#6dc4b8; }
 :host-context(body.dark-theme) .act-btn.accept { background:rgba(16,185,129,.15); color:#34d399; }
 :host-context(body.dark-theme) .act-btn.reject { background:rgba(239,68,68,.12); color:#f87171; }
 :host-context(body.dark-theme) .act-btn.dismiss { background:rgba(255,255,255,.06); color:#9ca3b0; }
