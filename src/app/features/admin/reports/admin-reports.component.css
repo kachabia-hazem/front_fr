@@ -78,7 +78,6 @@
 .stat-chip-total    { background: #f1f5f9; color: #475569; }
 .stat-chip-pending  { background: #fef3c7; color: #92400e; }
 .stat-chip-progress { background: #eff6ff; color: #1d4ed8; }
-.stat-chip-done     { background: #f0fdf4; color: #166534; }
 .stat-chip-rejected { background: #fef2f2; color: #991b1b; }
 
 /* ── Filters bar ── */
@@ -449,7 +448,6 @@
 :host-context(body.dark-theme) .stat-chip-total    { background: rgba(100,116,139,0.15); color: #94a3b8; }
 :host-context(body.dark-theme) .stat-chip-pending  { background: rgba(245,158,11,0.12); color: #fbbf24; }
 :host-context(body.dark-theme) .stat-chip-progress { background: rgba(59,130,246,0.12); color: #93c5fd; }
-:host-context(body.dark-theme) .stat-chip-done     { background: rgba(16,185,129,0.12); color: #34d399; }
 :host-context(body.dark-theme) .stat-chip-rejected { background: rgba(239,68,68,0.12);  color: #f87171; }
 :host-context(body.dark-theme) .filter-tabs button { background: #1e2435; border-color: rgba(255,255,255,0.1); color: #9ca3b0; }
 :host-context(body.dark-theme) .filter-tabs button.active { background: #3793B0; border-color: #3793B0; color: #fff; }

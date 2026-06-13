@@ -898,7 +898,6 @@
     "stat_total": "Total",
     "stat_pending": "Pending",
     "stat_in_progress": "In Progress",
-    "stat_resolved": "Resolved",
     "stat_rejected": "Rejected",
     "tab_all": "All",
     "search_placeholder": "Search a report...",

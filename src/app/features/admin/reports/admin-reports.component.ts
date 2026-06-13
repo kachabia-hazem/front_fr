@@ -35,7 +35,7 @@ export class AdminReportsComponent implements OnInit, OnDestroy{
 
   private langSub?: Subscription;
 
-  readonly TABS = ['ALL', 'EN_ATTENTE', 'EN_COURS', 'TRAITE', 'REJETE'];
+  readonly TABS = ['ALL', 'EN_ATTENTE', 'EN_COURS', 'REJETE'];
 
   filteredReports = computed(() => {
     const q = this.searchQuery().toLowerCase();
