@@ -25,10 +25,6 @@ export class AdminReportsComponent implements OnInit, OnDestroy{
 
   selected = signal<Report | null>(null);
 
-  warnTarget  = signal<Report | null>(null);
-  warnNote    = signal('');
-  warning     = signal(false);
-
   rejectTarget = signal<Report | null>(null);
   rejectReason = signal('');
   rejecting    = signal(false);
@@ -95,32 +91,6 @@ export class AdminReportsComponent implements OnInit, OnDestroy{
       error: () => {
         this.processing.set(null);
         this.showToast(this.translate.instant('admin_reports.toast_status_err'), 'error');
-      },
-    });
-  }
-
-  openWarnModal(r: Report, event?: MouseEvent) {
-    event?.stopPropagation();
-    this.warnTarget.set(r);
-    this.warnNote.set('');
-  }
-
-  closeWarnModal() { this.warnTarget.set(null); this.warnNote.set(''); }
-
-  confirmWarn() {
-    const target = this.warnTarget();
-    if (!target || !this.warnNote().trim()) return;
-    this.warning.set(true);
-    this.reportService.warnReporter(target.id, this.warnNote()).subscribe({
-      next: (updated) => {
-        this.updateReport(updated);
-        this.warning.set(false);
-        this.closeWarnModal();
-        this.showToast(this.translate.instant('admin_reports.toast_warn_ok'), 'success');
-      },
-      error: () => {
-        this.warning.set(false);
-        this.showToast(this.translate.instant('admin_reports.toast_warn_err'), 'error');
       },
     });
   }

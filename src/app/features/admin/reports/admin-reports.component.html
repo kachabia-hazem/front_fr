@@ -136,10 +136,6 @@
                       {{ 'admin_reports.card_btn_progress' | translate }}
                     </button>
                   }
-                  <button class="rc-btn rc-btn-warn" (click)="openWarnModal(r, $event)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                    {{ 'admin_reports.card_btn_warn' | translate }}
-                  </button>
                   <button class="rc-btn rc-btn-reject" (click)="openRejectModal(r, $event)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                     {{ 'admin_reports.card_btn_reject' | translate }}
@@ -233,10 +229,6 @@
                   {{ 'admin_reports.btn_mark_progress' | translate }}
                 </button>
               }
-              <button class="dp-btn dp-btn-warn" (click)="openWarnModal(selected()!)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                {{ 'admin_reports.btn_warn' | translate }}
-              </button>
               <button class="dp-btn dp-btn-reject" (click)="openRejectModal(selected()!)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                 {{ 'admin_reports.btn_reject' | translate }}
@@ -249,37 +241,6 @@
     }
   </div>
 </div>
-
-<!-- Warn modal -->
-@if (warnTarget()) {
-  <div class="modal-overlay" (click)="closeWarnModal()">
-    <div class="modal-box" (click)="$event.stopPropagation()">
-      <div class="modal-header modal-header-warn">
-        <div class="modal-icon modal-icon-warn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
-        <h3 class="modal-title">{{ 'admin_reports.warn_modal_title' | translate }}</h3>
-      </div>
-      <div class="modal-body">
-        <p class="modal-desc">{{ 'admin_reports.warn_modal_desc' | translate }}</p>
-        <label class="modal-label">{{ 'admin_reports.warn_modal_label' | translate }}</label>
-        <textarea class="modal-textarea" rows="4"
-          [placeholder]="'admin_reports.warn_modal_placeholder' | translate"
-          [ngModel]="warnNote()" (ngModelChange)="warnNote.set($event)">
-        </textarea>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-btn modal-btn-cancel" (click)="closeWarnModal()" [disabled]="warning()">
-          {{ 'admin_reports.warn_modal_cancel' | translate }}
-        </button>
-        <button class="modal-btn modal-btn-warn" (click)="confirmWarn()" [disabled]="warning() || !warnNote().trim()">
-          @if (warning()) { <span class="modal-spinner"></span> {{ 'admin_reports.warn_modal_processing' | translate }} }
-          @else { {{ 'admin_reports.warn_modal_submit' | translate }} }
-        </button>
-      </div>
-    </div>
-  </div>
-}
 
 <!-- Reject modal -->
 @if (rejectTarget()) {

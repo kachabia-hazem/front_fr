@@ -32,10 +32,6 @@ export class ReportService {
     return this.http.put<Report>(`${this.adminUrl}/${id}/status`, { status });
   }
 
-  warnReporter(id: string, note: string): Observable<Report> {
-    return this.http.post<Report>(`${this.adminUrl}/${id}/warn`, { note });
-  }
-
   rejectReport(id: string, reason: string): Observable<Report> {
     return this.http.post<Report>(`${this.adminUrl}/${id}/reject`, { reason });
   }
